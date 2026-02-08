@@ -1,0 +1,28 @@
+# Brain19 Knowledge Importers Build
+
+CXX = g++
+CXXFLAGS = -std=c++20 -Wall -Wextra -Wpedantic -O2 -I.
+LDFLAGS = 
+
+# Source files
+IMPORTER_SOURCES = importers/wikipedia_importer.cpp importers/scholar_importer.cpp
+TEST_SOURCE = test_importers.cpp
+
+OBJECTS = $(IMPORTER_SOURCES:.cpp=.o) test_importers.o
+TARGET = test_importers
+
+.PHONY: all clean run
+
+all: $(TARGET)
+
+$(TARGET): $(OBJECTS)
+	$(CXX) $(CXXFLAGS) $(OBJECTS) -o $(TARGET) $(LDFLAGS)
+
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+clean:
+	rm -f $(OBJECTS) $(TARGET)
+
+run: $(TARGET)
+	./$(TARGET)

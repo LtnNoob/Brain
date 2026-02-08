@@ -1,0 +1,52 @@
+# Brain19 - Complete Epistemic Enforcement Demo
+# Compiles full system with LTM, STM, KAN, Curiosity, Importers
+
+CXX = g++
+CXXFLAGS = -std=c++20 -Wall -Wextra -Wpedantic -O2 -I.
+LDFLAGS = 
+
+# All source files needed for complete demo
+SOURCES = \
+	memory/stm.cpp \
+	memory/brain_controller.cpp \
+	ltm/long_term_memory.cpp \
+	kan/kan_module.cpp \
+	kan/kan_layer.cpp \
+	kan/kan_node.cpp \
+	adapter/kan_adapter.cpp \
+	curiosity/curiosity_engine.cpp \
+	snapshot_generator.cpp \
+	importers/wikipedia_importer.cpp \
+	importers/scholar_importer.cpp
+
+DEMO_SOURCE = demo_epistemic_complete.cpp
+
+OBJECTS = $(SOURCES:.cpp=.o)
+DEMO_OBJECT = demo_epistemic_complete.o
+TARGET = demo_epistemic_complete
+
+.PHONY: all clean run
+
+all: $(TARGET)
+
+$(TARGET): $(OBJECTS) $(DEMO_OBJECT)
+	@echo "Linking complete epistemic demo..."
+	$(CXX) $(CXXFLAGS) $(OBJECTS) $(DEMO_OBJECT) -o $(TARGET) $(LDFLAGS)
+	@echo "✓ Build complete: $(TARGET)"
+
+%.o: %.cpp
+	@echo "Compiling $<..."
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+clean:
+	@echo "Cleaning..."
+	rm -f $(OBJECTS) $(DEMO_OBJECT) $(TARGET) snapshot.json
+	@echo "✓ Clean complete"
+
+run: $(TARGET)
+	@echo ""
+	@echo "═══════════════════════════════════════════════════════"
+	@echo " Running Complete Epistemic Enforcement Demo"
+	@echo "═══════════════════════════════════════════════════════"
+	@echo ""
+	./$(TARGET)

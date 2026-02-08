@@ -1,0 +1,32 @@
+CXX = g++
+CXXFLAGS = -std=c++20 -Wall -Wextra -O2 -I.
+LDFLAGS =
+
+# Cognitive Dynamics objects
+COGNITIVE_OBJS = \
+    cognitive/cognitive_dynamics.o
+
+# Dependencies
+MEMORY_OBJS = \
+    memory/stm.o \
+    memory/brain_controller.o
+
+LTM_OBJS = \
+    ltm/long_term_memory.o
+
+# Targets
+all: demo_cognitive_dynamics test_cognitive_dynamics
+
+demo_cognitive_dynamics: demo_cognitive_dynamics.o $(COGNITIVE_OBJS) $(MEMORY_OBJS) $(LTM_OBJS)
+	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
+
+test_cognitive_dynamics: test_cognitive_dynamics.o $(COGNITIVE_OBJS) $(MEMORY_OBJS) $(LTM_OBJS)
+	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
+
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+clean:
+	rm -f cognitive/*.o demo_cognitive_dynamics test_cognitive_dynamics *.o memory/*.o ltm/*.o
+
+.PHONY: all clean

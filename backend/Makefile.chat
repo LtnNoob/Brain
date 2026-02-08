@@ -1,0 +1,38 @@
+# Brain19 - Interactive Chat Demo
+CXX = g++
+CXXFLAGS = -std=c++20 -Wall -Wextra -Wpedantic -O2 -I.
+LDFLAGS = 
+
+SOURCES = \
+	memory/stm.cpp \
+	memory/brain_controller.cpp \
+	ltm/long_term_memory.cpp \
+	llm/chat_interface.cpp
+
+DEMO = demo_chat.cpp
+OBJECTS = $(SOURCES:.cpp=.o)
+DEMO_OBJ = demo_chat.o
+TARGET = demo_chat
+
+.PHONY: all clean run
+
+all: $(TARGET)
+
+$(TARGET): $(OBJECTS) $(DEMO_OBJ)
+	@echo "Linking chat demo..."
+	$(CXX) $(CXXFLAGS) $(OBJECTS) $(DEMO_OBJ) -o $(TARGET) $(LDFLAGS)
+	@echo "✓ Build complete: $(TARGET)"
+	@echo ""
+	@echo "Run: ./$(TARGET)"
+
+%.o: %.cpp
+	@echo "Compiling $<..."
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+clean:
+	@echo "Cleaning..."
+	rm -f $(OBJECTS) $(DEMO_OBJ) $(TARGET)
+	@echo "✓ Clean"
+
+run: $(TARGET)
+	./$(TARGET)

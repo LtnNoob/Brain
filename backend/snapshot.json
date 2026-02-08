@@ -1,0 +1,21 @@
+{
+  "stm": {
+    "context_id": 1,
+    "active_concepts": [
+      {"concept_id": 4, "activation": 0.40},
+      {"concept_id": 3, "activation": 0.70},
+      {"concept_id": 2, "activation": 0.85},
+      {"concept_id": 1, "activation": 0.95}
+    ],
+    "active_relations": [
+    ]
+  },
+  "concepts": [
+    {"id": 4, "label": "Multiverse", "epistemic_type": "SPECULATION", "epistemic_status": "ACTIVE", "trust": 0.30},
+    {"id": 3, "label": "Dark Matter", "epistemic_type": "HYPOTHESIS", "epistemic_status": "ACTIVE", "trust": 0.65},
+    {"id": 2, "label": "Evolution", "epistemic_type": "THEORY", "epistemic_status": "ACTIVE", "trust": 0.85},
+    {"id": 1, "label": "Cat", "epistemic_type": "FACT", "epistemic_status": "ACTIVE", "trust": 0.98}
+  ],
+  "curiosity_triggers": [
+  ]
+}

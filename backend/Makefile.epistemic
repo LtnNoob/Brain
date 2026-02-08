@@ -1,0 +1,55 @@
+# Brain19 - Epistemic Enforcement Test Build
+# BUG-001 Closure Verification
+
+CXX = g++
+CXXFLAGS = -std=c++20 -Wall -Wextra -Wpedantic -O2 -I.
+LDFLAGS = 
+
+# Source files for epistemic enforcement test
+EPISTEMIC_SOURCES = \
+	ltm/long_term_memory.cpp \
+	importers/wikipedia_importer.cpp \
+	importers/scholar_importer.cpp
+
+TEST_SOURCE = test_epistemic_enforcement.cpp
+
+OBJECTS = $(EPISTEMIC_SOURCES:.cpp=.o) test_epistemic_enforcement.o
+TARGET = test_epistemic_enforcement
+
+.PHONY: all clean run test
+
+all: $(TARGET)
+
+$(TARGET): $(OBJECTS)
+	@echo "Linking epistemic enforcement test..."
+	$(CXX) $(CXXFLAGS) $(OBJECTS) -o $(TARGET) $(LDFLAGS)
+	@echo "✓ Build complete"
+
+%.o: %.cpp
+	@echo "Compiling $<..."
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+clean:
+	@echo "Cleaning..."
+	rm -f $(OBJECTS) $(TARGET)
+	@echo "✓ Clean complete"
+
+run: $(TARGET)
+	@echo ""
+	@echo "═══════════════════════════════════════════════════════"
+	@echo " Running BUG-001 Epistemic Enforcement Tests"
+	@echo "═══════════════════════════════════════════════════════"
+	@echo ""
+	./$(TARGET)
+
+test: run
+
+# Debug build with assertions enabled
+debug: CXXFLAGS += -g -DDEBUG
+debug: clean all
+	@echo "✓ Debug build complete (assertions enabled)"
+
+# Release build with optimizations
+release: CXXFLAGS += -O3 -DNDEBUG
+release: clean all
+	@echo "✓ Release build complete (assertions disabled)"

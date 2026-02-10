@@ -47,32 +47,9 @@ struct ConceptInfo {
     ConceptInfo(const ConceptInfo&) = default;
     ConceptInfo(ConceptInfo&&) = default;
     
-    // Assignment operators - need custom implementation
-    // because EpistemicMetadata has deleted assignment
-    ConceptInfo& operator=(const ConceptInfo& other) {
-        if (this != &other) {
-            // Recreate with new metadata
-            id = other.id;
-            label = other.label;
-            definition = other.definition;
-            // Can't assign epistemic directly (deleted), so use placement new
-            epistemic.~EpistemicMetadata();
-            new (&epistemic) EpistemicMetadata(other.epistemic);
-        }
-        return *this;
-    }
-    
-    ConceptInfo& operator=(ConceptInfo&& other) {
-        if (this != &other) {
-            id = other.id;
-            label = std::move(other.label);
-            definition = std::move(other.definition);
-            // Can't assign epistemic directly (deleted), so use placement new
-            epistemic.~EpistemicMetadata();
-            new (&epistemic) EpistemicMetadata(other.epistemic);
-        }
-        return *this;
-    }
+    // Assignment operators - defaulted now that EpistemicMetadata supports assignment
+    ConceptInfo& operator=(const ConceptInfo&) = default;
+    ConceptInfo& operator=(ConceptInfo&&) = default;
 };
 
 // LongTermMemory: Persistent knowledge storage

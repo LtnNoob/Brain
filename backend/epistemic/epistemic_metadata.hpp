@@ -80,8 +80,9 @@ struct EpistemicMetadata {
         #endif
     }
     
-    // Immutability: No assignment operator
-    EpistemicMetadata& operator=(const EpistemicMetadata&) = delete;
+    // Assignment operators (needed for ConceptInfo container operations)
+    EpistemicMetadata& operator=(const EpistemicMetadata&) = default;
+    EpistemicMetadata& operator=(EpistemicMetadata&&) = default;
     
     // Copy constructor allowed (for storage/retrieval)
     EpistemicMetadata(const EpistemicMetadata&) = default;

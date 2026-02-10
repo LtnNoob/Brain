@@ -46,7 +46,7 @@ public:
     
 private:
     struct KANModuleEntry {
-        std::unique_ptr<KANModule> module;
+        std::shared_ptr<KANModule> module;
         size_t input_dim;
         size_t output_dim;
     };

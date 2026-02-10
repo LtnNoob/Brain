@@ -29,7 +29,7 @@ RelevanceMap RelevanceMap::compute(
     for (ConceptId cid : all_ids) {
         if (cid == source) continue;  // Skip self
         // BUG-C1 FIX: Use target-specific context embedding so scores differ per target
-        const Vec10& c = embeddings.get_context_embedding(context + "_target_" + std::to_string(cid));
+        Vec10 c = embeddings.make_context_embedding(context + "_target_" + std::to_string(cid));
         double score = model->predict(e, c);
         map.scores_[cid] = score;
     }

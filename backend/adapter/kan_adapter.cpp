@@ -18,7 +18,7 @@ uint64_t KANAdapter::create_kan_module(size_t input_dim, size_t output_dim, size
     uint64_t id = next_module_id_++;
     
     KANModuleEntry entry;
-    entry.module = std::make_unique<KANModule>(input_dim, output_dim, num_knots);
+    entry.module = std::make_shared<KANModule>(input_dim, output_dim, num_knots);
     entry.input_dim = input_dim;
     entry.output_dim = output_dim;
     
@@ -44,7 +44,7 @@ std::unique_ptr<FunctionHypothesis> KANAdapter::train_kan_module(
     auto hypothesis = std::make_unique<FunctionHypothesis>(
         entry.input_dim,
         entry.output_dim,
-        std::shared_ptr<KANModule>(entry.module.get(), [](KANModule*){}),  // Non-owning share
+        entry.module,  // Non-owning share
         result.iterations_run,
         result.final_loss
     );

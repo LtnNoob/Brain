@@ -34,6 +34,9 @@ public:
     // Context embeddings (auto-created on first access)
     const Vec10& get_context_embedding(const std::string& name);
 
+    // Create a context embedding without caching (for temporary use)
+    Vec10 make_context_embedding(const std::string& name) const;
+
     // Convenience context accessors
     const Vec10& query_context() { return get_context_embedding("query"); }
     const Vec10& recall_context() { return get_context_embedding("recall"); }
@@ -55,7 +58,6 @@ public:
 
 private:
     void init_relation_embeddings();
-    Vec10 make_context_embedding(const std::string& name) const;
 
     std::array<Vec10, NUM_RELATION_TYPES> relation_embeddings_;
     std::unordered_map<std::string, Vec10> context_embeddings_;

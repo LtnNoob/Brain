@@ -51,18 +51,10 @@ bool LongTermMemory::update_epistemic_metadata(
         return false;
     }
     
-    // Extract current data
-    std::string label = it->second.label;
-    std::string definition = it->second.definition;
-    
-    // Erase old entry
-    concepts_.erase(it);
-    
-    // Create new ConceptInfo with updated metadata
-    ConceptInfo updated(id, label, definition, new_metadata);
-    
-    // Insert updated entry
-    concepts_.emplace(id, std::move(updated));
+    // Atomic update: construct new entry first, then move-assign
+    // If construction throws, old entry remains intact
+    ConceptInfo updated(id, it->second.label, it->second.definition, new_metadata);
+    it->second = std::move(updated);
     
     return true;
 }

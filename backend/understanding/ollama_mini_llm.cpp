@@ -53,6 +53,8 @@ std::string OllamaMiniLLM::build_concept_description(
                 case EpistemicType::THEORY: desc << "THEORY"; break;
                 case EpistemicType::HYPOTHESIS: desc << "HYPOTHESIS"; break;
                 case EpistemicType::SPECULATION: desc << "SPECULATION"; break;
+                case EpistemicType::DEFINITION: desc << "DEFINITION"; break;
+                case EpistemicType::INFERENCE: desc << "INFERENCE"; break;
                 default: desc << "UNKNOWN"; break;
             }
             desc << ", trust=" << concept_info->epistemic.trust << ")\n";

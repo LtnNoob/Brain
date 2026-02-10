@@ -42,28 +42,15 @@ void KANNode::set_coefficients(const std::vector<double>& coefs) {
     coefficients_ = coefs;
 }
 
-std::vector<double> KANNode::gradient(double x, double epsilon) const {
+std::vector<double> KANNode::gradient(double x, [[maybe_unused]] double epsilon) const {
+    // Analytical gradient: df/dc_i = B_i(x)
+    // Since f(x) = sum_i c_i * B_i(x), the gradient w.r.t. c_i is simply B_i(x)
+    x = std::max(0.0, std::min(1.0, x));
+    
     std::vector<double> grad(coefficients_.size());
-    
     for (size_t i = 0; i < coefficients_.size(); i++) {
-        // Finite difference approximation
-        double original = coefficients_[i];
-        
-        // f(c + ε)
-        const_cast<KANNode*>(this)->coefficients_[i] = original + epsilon;
-        double f_plus = evaluate(x);
-        
-        // f(c - ε)
-        const_cast<KANNode*>(this)->coefficients_[i] = original - epsilon;
-        double f_minus = evaluate(x);
-        
-        // Central difference
-        grad[i] = (f_plus - f_minus) / (2.0 * epsilon);
-        
-        // Restore
-        const_cast<KANNode*>(this)->coefficients_[i] = original;
+        grad[i] = basis_function(i, x, 3);
     }
-    
     return grad;
 }
 
@@ -74,6 +61,10 @@ double KANNode::basis_function(size_t i, double x, size_t degree) const {
 double KANNode::cox_de_boor(size_t i, size_t k, double x) const {
     // Cox-de Boor recursion for B-spline basis
     if (k == 0) {
+        // Fix boundary: include right endpoint for last interval
+        if (i + 1 == knots_.size() - 1) {
+            return (x >= knots_[i] && x <= knots_[i + 1]) ? 1.0 : 0.0;
+        }
         return (x >= knots_[i] && x < knots_[i + 1]) ? 1.0 : 0.0;
     }
     

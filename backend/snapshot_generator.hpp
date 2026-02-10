@@ -5,7 +5,6 @@
 #include <string>
 #include <sstream>
 #include <memory>
-#include "common/types.hpp"
 
 namespace brain19 {
 

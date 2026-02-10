@@ -198,9 +198,18 @@ void ShortTermMemory::decay_all(ContextId context_id, double time_delta_seconds)
         return;
     }
     
-    // Decay concepts (never removed)
+    // Decay concepts
     for (auto& pair : ctx_it->second.concepts) {
         apply_decay(pair.second, time_delta_seconds);
+    }
+    
+    // Remove concepts that decayed below removal threshold
+    for (auto it = ctx_it->second.concepts.begin(); it != ctx_it->second.concepts.end(); ) {
+        if (it->second.activation < relation_removal_threshold_) {
+            it = ctx_it->second.concepts.erase(it);
+        } else {
+            ++it;
+        }
     }
     
     // Two-phase decay for relations

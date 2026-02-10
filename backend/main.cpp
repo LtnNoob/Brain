@@ -1,0 +1,81 @@
+#include "core/brain19_app.hpp"
+#include <iostream>
+#include <string>
+#include <cstring>
+
+static void print_usage(const char* prog) {
+    std::cout << "Usage: " << prog << " [options] [command] [args...]\n\n";
+    std::cout << "Options:\n";
+    std::cout << "  --data-dir <path>      Data directory (default: brain19_data/)\n";
+    std::cout << "  --ollama-host <url>    Ollama host (default: http://localhost:11434)\n";
+    std::cout << "  --ollama-model <name>  Ollama model (default: llama3.2:3b)\n";
+    std::cout << "  --no-persistence       Disable persistence\n";
+    std::cout << "  --no-foundation        Skip foundation seeding\n";
+    std::cout << "  --max-streams <n>      Max thinking streams (0=auto)\n";
+    std::cout << "  --no-monitor           Disable stream monitoring\n";
+    std::cout << "  --help                 Show this help\n\n";
+    std::cout << "Commands:\n";
+    std::cout << "  ask <question>         Ask a question\n";
+    std::cout << "  ingest <text>          Ingest knowledge\n";
+    std::cout << "  import <url>           Import from Wikipedia\n";
+    std::cout << "  status                 Show system status\n";
+    std::cout << "  (none)                 Interactive REPL\n";
+}
+
+int main(int argc, char* argv[]) {
+    brain19::SystemOrchestrator::Config config;
+
+    // Parse options
+    int arg_start = 1;
+    for (int i = 1; i < argc; ++i) {
+        if (std::strcmp(argv[i], "--data-dir") == 0 && i + 1 < argc) {
+            config.data_dir = argv[++i];
+            arg_start = i + 1;
+        } else if (std::strcmp(argv[i], "--ollama-host") == 0 && i + 1 < argc) {
+            config.ollama_host = argv[++i];
+            arg_start = i + 1;
+        } else if (std::strcmp(argv[i], "--ollama-model") == 0 && i + 1 < argc) {
+            config.ollama_model = argv[++i];
+            arg_start = i + 1;
+        } else if (std::strcmp(argv[i], "--no-persistence") == 0) {
+            config.enable_persistence = false;
+            arg_start = i + 1;
+        } else if (std::strcmp(argv[i], "--no-foundation") == 0) {
+            config.seed_foundation = false;
+            arg_start = i + 1;
+        } else if (std::strcmp(argv[i], "--max-streams") == 0 && i + 1 < argc) {
+            config.max_streams = std::stoul(argv[++i]);
+            arg_start = i + 1;
+        } else if (std::strcmp(argv[i], "--no-monitor") == 0) {
+            config.enable_monitoring = false;
+            arg_start = i + 1;
+        } else if (std::strcmp(argv[i], "--help") == 0 || std::strcmp(argv[i], "-h") == 0) {
+            print_usage(argv[0]);
+            return 0;
+        } else {
+            // Not an option — start of command
+            arg_start = i;
+            break;
+        }
+    }
+
+    brain19::Brain19App app(config);
+
+    // If command specified, run it
+    if (arg_start < argc) {
+        std::string command = argv[arg_start];
+
+        // Collect remaining args as single string
+        std::string arg;
+        for (int i = arg_start + 1; i < argc; ++i) {
+            if (!arg.empty()) arg += " ";
+            arg += argv[i];
+        }
+
+        // Initialize for single command
+        return app.run_command(command, arg);
+    }
+
+    // Interactive mode
+    return app.run_interactive();
+}

@@ -120,4 +120,17 @@ std::vector<std::string> EmbeddingManager::get_context_names() const {
     return names;
 }
 
+
+Vec10 EmbeddingManager::make_target_embedding(size_t context_hash, uint64_t source_id, uint64_t target_id) const {
+    // Deterministic pseudo-random from numeric values only (zero string allocation)
+    Vec10 emb;
+    size_t seed = context_hash ^ (source_id * 2654435761ULL) ^ (target_id * 2246822519ULL);
+    for (size_t i = 0; i < EMBED_DIM; ++i) {
+        size_t mixed = seed ^ (i * 2654435761ULL);
+        double val = static_cast<double>(mixed % 10000) / 50000.0 - 0.1;
+        emb[i] = val;
+    }
+    return emb;
+}
+
 } // namespace brain19

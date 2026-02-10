@@ -36,6 +36,9 @@ public:
 
     // Create a context embedding without caching (for temporary use)
     Vec10 make_context_embedding(const std::string& name) const;
+    Vec10 make_target_embedding(size_t context_hash, uint64_t source_id, uint64_t target_id) const;
+    
+    // Compute target-specific embedding without string allocation
 
     // Convenience context accessors
     const Vec10& query_context() { return get_context_embedding("query"); }

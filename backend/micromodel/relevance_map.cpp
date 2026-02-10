@@ -25,11 +25,14 @@ RelevanceMap RelevanceMap::compute(
 
     const Vec10& e = embeddings.get_relation_embedding(rel_type);
 
+    // Pre-compute context hash once (avoids per-target string allocation)
+    size_t context_hash = std::hash<std::string>{}(context);
+
     auto all_ids = ltm.get_all_concept_ids();
     for (ConceptId cid : all_ids) {
         if (cid == source) continue;  // Skip self
-        // BUG-C1 FIX: Use target-specific context embedding so scores differ per target
-        Vec10 c = embeddings.make_context_embedding(context + "_target_" + std::to_string(cid));
+        // Performance fix: numeric target embedding without string allocation
+        Vec10 c = embeddings.make_target_embedding(context_hash, source, cid);
         double score = model->predict(e, c);
         map.scores_[cid] = score;
     }

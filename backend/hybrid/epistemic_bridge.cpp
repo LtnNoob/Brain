@@ -104,7 +104,8 @@ double EpistemicBridge::compute_trust(
     }
 
     // H2: Minimum data points for high trust
-    if (num_data_points > 0 && num_data_points < config_.min_data_points_for_high_trust) {
+    // FIX NEW-3: num_data_points=0 means "unknown" → treat as insufficient data
+    if (num_data_points < config_.min_data_points_for_high_trust) {
         trust = std::min(trust, 0.5);
     }
 

@@ -104,7 +104,8 @@ size_t HypothesisTranslator::count_variables(const std::string& text) const {
     auto end = std::sregex_iterator();
     for (auto it = begin; it != end; ++it) {
         char v = (*it)[1].str()[0];
-        if (v != 'a' && v != 'i') { // skip articles
+        // FIX NEW-2: Skip common non-variable single letters
+        if (v != 'a' && v != 'i' && v != 's' && v != 't' && v != 'o') {
             vars.insert(v);
         }
     }
@@ -201,7 +202,10 @@ PatternDetectionResult HypothesisTranslator::detect_pattern_detailed(const std::
         // --- POLYNOMIAL ---
         std::vector<KeywordGroup> poly_kw = {
             {"quadratic", 0.9}, {"polynomial", 0.95}, {"squared", 0.85}, {"cubic", 0.85},
-            {"parabol", 0.85}, {"power law", 0.8}, {"nonlinear", 0.5}
+            {"parabol", 0.85}, {"power law", 0.8}, {"nonlinear", 0.5},
+            {"inverted-u", 0.85}, {"inverted u", 0.85}, {"u-shaped", 0.85}, {"u shaped", 0.85},
+            {"bell curve", 0.8}, {"bell-curve", 0.8}, {"diminishing returns", 0.7},
+            {"peaks at", 0.7}, {"optimal at", 0.7}
         };
         for (const auto& [kw, w] : poly_kw) {
             if (text.find(kw) != std::string::npos) {
@@ -477,16 +481,23 @@ std::vector<DataPoint> HypothesisTranslator::generate_linear_data(
     double step = (max - min) / static_cast<double>(n - 1);
 
     if (!hints.has_hints()) {
-        // Generate diverse variants instead of single canonical
-        // Use 3 different parameter sets, interleaved
+        // Generate 3 separate coherent datasets (not interleaved)
+        // FIX NEW-1: Each subset uses ONE consistent slope/bias pair
         std::vector<std::pair<double, double>> params = {
             {0.7, 0.1}, {1.5, -0.2}, {0.3, 0.4}
         };
-        for (size_t i = 0; i < n; ++i) {
-            double x = min + step * static_cast<double>(i);
-            auto& [s, b] = params[i % params.size()];
-            double y = s * x + b;
-            data.emplace_back(std::vector<double>{x}, std::vector<double>{y});
+        size_t points_per_set = n / params.size();
+        size_t remainder = n % params.size();
+        size_t global_idx = 0;
+        for (size_t p = 0; p < params.size(); ++p) {
+            auto& [s, b] = params[p];
+            size_t count = points_per_set + (p < remainder ? 1 : 0);
+            for (size_t j = 0; j < count; ++j) {
+                double x = min + step * static_cast<double>(global_idx);
+                double y = s * x + b;
+                data.emplace_back(std::vector<double>{x}, std::vector<double>{y});
+                ++global_idx;
+            }
         }
     } else {
         // H1: Hypothesis-specific

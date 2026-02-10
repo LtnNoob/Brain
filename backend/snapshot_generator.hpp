@@ -12,6 +12,8 @@ namespace brain19 {
 // Forward declarations
 class BrainController;
 class CuriosityEngine;
+class CognitiveDynamics;
+class MicroModelRegistry;
 class LongTermMemory;  // Added for epistemic metadata access
 struct SystemObservation;
 
@@ -33,7 +35,9 @@ public:
         const BrainController* brain,
         const LongTermMemory* ltm,        // REQUIRED for epistemic data
         const CuriosityEngine* curiosity,
-        ContextId context_id
+        ContextId context_id,
+        const CognitiveDynamics* cognitive = nullptr,
+        const MicroModelRegistry* micro_models = nullptr
     ) const;
     
 private:

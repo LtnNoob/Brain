@@ -5,19 +5,51 @@
 
 namespace brain19 {
 
+// Multi-layer constructor
+KANModule::KANModule(const std::vector<size_t>& layer_dims, size_t num_knots)
+    : layer_dims_(layer_dims)
+{
+    if (layer_dims.size() < 2) {
+        throw std::invalid_argument("KANModule topology requires at least 2 dimensions (input + output)");
+    }
+    for (auto d : layer_dims) {
+        if (d == 0) throw std::invalid_argument("KANModule requires non-zero dimensions");
+    }
+    
+    input_dim_ = layer_dims.front();
+    output_dim_ = layer_dims.back();
+    
+    layers_.reserve(layer_dims.size() - 1);
+    for (size_t k = 0; k + 1 < layer_dims.size(); k++) {
+        layers_.push_back(std::make_unique<KANLayer>(layer_dims[k], layer_dims[k + 1], num_knots));
+    }
+}
+
+// Legacy single-layer constructor (backward compatible)
 KANModule::KANModule(size_t input_dim, size_t output_dim, size_t num_knots)
     : input_dim_(input_dim)
     , output_dim_(output_dim)
+    , layer_dims_({input_dim, output_dim})
 {
     if (input_dim == 0 || output_dim == 0) {
         throw std::invalid_argument("KANModule requires non-zero dimensions");
     }
     
-    // Create one layer per output dimension
-    layers_.reserve(output_dim);
-    for (size_t i = 0; i < output_dim; i++) {
-        layers_.push_back(std::make_unique<KANLayer>(input_dim, num_knots));
+    // Single layer: input_dim → output_dim
+    layers_.push_back(std::make_unique<KANLayer>(input_dim, output_dim, num_knots));
+}
+
+std::vector<std::vector<double>> KANModule::forward_all(const std::vector<double>& inputs) const {
+    // Returns activations[0] = inputs, activations[k+1] = output of layer k
+    std::vector<std::vector<double>> activations;
+    activations.reserve(layers_.size() + 1);
+    activations.push_back(inputs);
+    
+    for (size_t k = 0; k < layers_.size(); k++) {
+        activations.push_back(layers_[k]->evaluate(activations[k]));
     }
+    
+    return activations;
 }
 
 std::vector<double> KANModule::evaluate(const std::vector<double>& inputs) const {
@@ -25,19 +57,12 @@ std::vector<double> KANModule::evaluate(const std::vector<double>& inputs) const
         throw std::invalid_argument("Input dimension mismatch");
     }
     
-    std::vector<double> outputs(output_dim_);
-    
-    for (size_t out_idx = 0; out_idx < output_dim_; out_idx++) {
-        // Each layer produces node outputs, sum them
-        auto node_outputs = layers_[out_idx]->evaluate(inputs);
-        double sum = 0.0;
-        for (double val : node_outputs) {
-            sum += val;
-        }
-        outputs[out_idx] = sum;
+    std::vector<double> current = inputs;
+    for (size_t k = 0; k < layers_.size(); k++) {
+        current = layers_[k]->evaluate(current);
     }
     
-    return outputs;
+    return current;
 }
 
 KanTrainingResult KANModule::train(
@@ -62,10 +87,6 @@ KanTrainingResult KANModule::train(
         double current_loss = compute_loss(dataset);
         result.iterations_run = iter + 1;
         result.final_loss = current_loss;
-        
-        if (config.verbose && iter % 100 == 0) {
-            // Note: Would print here but avoiding IO
-        }
         
         // Check convergence
         if (std::abs(prev_loss - current_loss) < config.convergence_threshold) {
@@ -109,39 +130,71 @@ void KANModule::gradient_descent_step(
     const std::vector<DataPoint>& dataset,
     double learning_rate
 ) {
-    const double epsilon = 1e-6;
+    // For multi-layer KAN, we use layer-wise gradient computation.
+    // Since f(x) = sum_i c_i * B_i(x), gradient of each node output 
+    // w.r.t. its coefficients is analytical: ∂φ/∂c_i = B_i(x).
+    //
+    // For multi-layer, we need chain rule. But since KAN layers are 
+    // sums of univariate functions, the gradient of output j of layer k
+    // w.r.t. coefficient c of node(i,j) is simply B_c(activation_i).
+    //
+    // The chain rule through layers: we compute ∂L/∂activation for each layer
+    // and propagate backward.
     
-    // For each output dimension
-    for (size_t out_idx = 0; out_idx < output_dim_; out_idx++) {
-        auto& layer = layers_[out_idx];
-        auto& nodes = layer->get_nodes_mutable();
+    for (const auto& point : dataset) {
+        // Forward pass: collect all activations
+        auto activations = forward_all(point.inputs);
         
-        // For each node in layer
-        for (size_t node_idx = 0; node_idx < nodes.size(); node_idx++) {
-            auto& node = nodes[node_idx];
-            auto coefs = node->get_coefficients();
-            std::vector<double> gradient(coefs.size(), 0.0);
+        // Final output
+        const auto& predictions = activations.back();
+        
+        // Compute output error gradient: dL/d_output_j = 2*(pred_j - target_j) / N
+        std::vector<double> d_output(output_dim_);
+        for (size_t j = 0; j < output_dim_; j++) {
+            d_output[j] = 2.0 * (predictions[j] - point.outputs[j]) / static_cast<double>(dataset.size());
+        }
+        
+        // Backward pass through layers
+        std::vector<double> d_activation = d_output;  // gradient w.r.t. current layer output
+        
+        for (int k = static_cast<int>(layers_.size()) - 1; k >= 0; k--) {
+            auto& layer = *layers_[k];
+            const auto& input_act = activations[k];  // input to this layer
+            size_t n_in = layer.input_dim();
+            size_t n_out = layer.output_dim();
             
-            // Accumulate gradients over dataset
-            for (const auto& point : dataset) {
-                auto predictions = evaluate(point.inputs);
-                double error = predictions[out_idx] - point.outputs[out_idx];
-                
-                // Compute gradient of node output w.r.t. coefficients
-                auto node_grad = node->gradient(point.inputs[node_idx], epsilon);
-                
-                for (size_t c = 0; c < coefs.size(); c++) {
-                    gradient[c] += 2.0 * error * node_grad[c];
+            // Gradient w.r.t. input of this layer (for propagation to previous layer)
+            std::vector<double> d_input(n_in, 0.0);
+            
+            for (size_t i = 0; i < n_in; i++) {
+                for (size_t j = 0; j < n_out; j++) {
+                    auto& nd = layer.node(i, j);
+                    
+                    // Update coefficients of node(i,j)
+                    // ∂L/∂c = d_activation[j] * B_c(input_act[i])
+                    auto node_grad = nd.gradient(input_act[i]);
+                    auto coefs = nd.get_coefficients();
+                    
+                    for (size_t c = 0; c < coefs.size(); c++) {
+                        coefs[c] -= learning_rate * d_activation[j] * node_grad[c];
+                    }
+                    nd.set_coefficients(coefs);
+                    
+                    // For backprop: ∂L/∂input_i += d_activation[j] * ∂φ_{i,j}/∂x_i
+                    // ∂φ/∂x = sum_c c_c * ∂B_c/∂x (numerical)
+                    // Approximate with finite differences
+                    if (k > 0) {
+                        double eps = 1e-6;
+                        double x = input_act[i];
+                        double f_plus = nd.evaluate(std::min(1.0, x + eps));
+                        double f_minus = nd.evaluate(std::max(0.0, x - eps));
+                        double df_dx = (f_plus - f_minus) / (2.0 * eps);
+                        d_input[i] += d_activation[j] * df_dx;
+                    }
                 }
             }
             
-            // Average gradient and update
-            for (size_t c = 0; c < coefs.size(); c++) {
-                gradient[c] /= static_cast<double>(dataset.size());
-                coefs[c] -= learning_rate * gradient[c];
-            }
-            
-            node->set_coefficients(coefs);
+            d_activation = d_input;
         }
     }
 }

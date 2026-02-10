@@ -221,6 +221,25 @@ public:
         std::atomic<uint64_t> total_focus_updates{0};
         std::atomic<uint64_t> total_path_searches{0};
         SpreadingStats last_spread;  // THREAD-SAFETY: protected by single-writer assumption
+        
+        Stats() = default;
+        Stats(Stats&& o) noexcept
+            : total_spreads(o.total_spreads.load(std::memory_order_relaxed))
+            , total_salience_computations(o.total_salience_computations.load(std::memory_order_relaxed))
+            , total_focus_updates(o.total_focus_updates.load(std::memory_order_relaxed))
+            , total_path_searches(o.total_path_searches.load(std::memory_order_relaxed))
+            , last_spread(o.last_spread)
+        {}
+        Stats& operator=(Stats&& o) noexcept {
+            total_spreads.store(o.total_spreads.load(std::memory_order_relaxed), std::memory_order_relaxed);
+            total_salience_computations.store(o.total_salience_computations.load(std::memory_order_relaxed), std::memory_order_relaxed);
+            total_focus_updates.store(o.total_focus_updates.load(std::memory_order_relaxed), std::memory_order_relaxed);
+            total_path_searches.store(o.total_path_searches.load(std::memory_order_relaxed), std::memory_order_relaxed);
+            last_spread = o.last_spread;
+            return *this;
+        }
+        Stats(const Stats&) = delete;
+        Stats& operator=(const Stats&) = delete;
     };
     
     Stats get_stats() const {

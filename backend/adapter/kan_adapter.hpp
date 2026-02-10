@@ -20,9 +20,13 @@ public:
     KANAdapter();
     ~KANAdapter();
     
-    // Create new KAN module
+    // Create new KAN module (single-layer, backward compatible)
     // Returns module ID for later reference
     uint64_t create_kan_module(size_t input_dim, size_t output_dim, size_t num_knots = 10);
+    
+    // Create new multi-layer KAN module
+    // layer_dims: [input_dim, hidden1, ..., output_dim]
+    uint64_t create_kan_module_multilayer(const std::vector<size_t>& layer_dims, size_t num_knots = 10);
     
     // Train existing KAN module
     // Returns FunctionHypothesis (pure data wrapper)
@@ -43,6 +47,9 @@ public:
     
     // Query if module exists
     bool has_module(uint64_t module_id) const;
+    
+    // Query module topology
+    std::vector<size_t> get_topology(uint64_t module_id) const;
     
 private:
     struct KANModuleEntry {

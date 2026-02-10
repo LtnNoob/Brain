@@ -4,6 +4,8 @@
 #include "ltm/long_term_memory.hpp"
 #include "epistemic/epistemic_metadata.hpp"
 #include "curiosity/curiosity_engine.hpp"
+#include "cognitive/cognitive_dynamics.hpp"
+#include "micromodel/micro_model_registry.hpp"
 #include <sstream>
 #include <iomanip>
 
@@ -19,7 +21,9 @@ std::string SnapshotGenerator::generate_json_snapshot(
     const BrainController* brain,
     const LongTermMemory* ltm,
     const CuriosityEngine* curiosity,
-    ContextId context_id
+    ContextId context_id,
+    const CognitiveDynamics* cognitive,
+    const MicroModelRegistry* micro_models
 ) const {
     if (!brain) {
         return "{}";
@@ -116,7 +120,71 @@ std::string SnapshotGenerator::generate_json_snapshot(
         // auto triggers = curiosity->observe_and_generate_triggers(observations);
         // Simplified for now
     }
-    json << "  ]\n";
+    json << "  ],\n";
+    
+    // Cognitive Dynamics: Focus-Sets and Tick
+    json << "  \"cognitive_dynamics\": {\n";
+    if (cognitive) {
+        auto focus_set = cognitive->get_focus_set(context_id);
+        // Note: current_tick_ is private in CognitiveDynamics, not exposed via public API
+        json << "    \"focus_set\": [\n";
+        for (size_t i = 0; i < focus_set.size(); i++) {
+            json << "      {\"concept_id\": " << focus_set[i].concept_id
+                 << ", \"focus_score\": " << focus_set[i].focus_score
+                 << ", \"last_accessed_tick\": " << focus_set[i].last_accessed_tick << "}";
+            if (i < focus_set.size() - 1) json << ",";
+            json << "\n";
+        }
+        json << "    ],\n";
+        auto stats = cognitive->get_stats();
+        json << "    \"stats\": {"
+             << "\"total_spreads\": " << stats.total_spreads.load()
+             << ", \"total_salience_computations\": " << stats.total_salience_computations.load()
+             << ", \"total_focus_updates\": " << stats.total_focus_updates.load()
+             << ", \"total_path_searches\": " << stats.total_path_searches.load()
+             << "}\n";
+    } else {
+        json << "    \"focus_set\": [],\n";
+        json << "    \"stats\": null\n";
+    }
+    json << "  },\n";
+    
+    // MicroModel Metrics
+    json << "  \"micromodel_metrics\": {\n";
+    if (micro_models) {
+        size_t model_count = micro_models->size();
+        json << "    \"trained_model_count\": " << model_count << ",\n";
+        
+        // Compute average loss across all models
+        double total_loss = 0.0;
+        size_t loss_count = 0;
+        auto model_ids = micro_models->get_model_ids();
+        for (auto cid : model_ids) {
+            const auto* model = micro_models->get_model(cid);
+            if (model) {
+                // Access training state via to_flat - extract last_loss
+                std::array<double, FLAT_SIZE> flat;
+                model->to_flat(flat);
+                // last_loss is at offset: 100(W) + 10(b) + 10(e_init) + 10(c_init) + 100(dW_mom) + 10(db_mom) + 100(dW_var) + 10(db_var) + 10(e_grad) + 10(c_grad) + 1(timestep) + 0 = index 371
+                double last_loss = flat[371]; // TrainingState::last_loss
+                total_loss += last_loss;
+                loss_count++;
+            }
+        }
+        double avg_loss = (loss_count > 0) ? (total_loss / static_cast<double>(loss_count)) : 0.0;
+        json << "    \"average_loss\": " << avg_loss << ",\n";
+        json << "    \"model_ids\": [";
+        for (size_t i = 0; i < model_ids.size(); i++) {
+            json << model_ids[i];
+            if (i < model_ids.size() - 1) json << ", ";
+        }
+        json << "]\n";
+    } else {
+        json << "    \"trained_model_count\": 0,\n";
+        json << "    \"average_loss\": 0.0,\n";
+        json << "    \"model_ids\": []\n";
+    }
+    json << "  }\n";
     
     json << "}\n";
     

@@ -73,9 +73,27 @@ ParseResult KnowledgeIngestor::parse_json(const std::string& json_str) const {
 std::string KnowledgeIngestor::json_extract_string(
     const std::string& json, const std::string& key) const
 {
-    // Find "key": "value"
+    // Scope-aware: find key only at the outermost nesting level of the input
     std::string search = "\"" + key + "\"";
-    size_t key_pos = json.find(search);
+    size_t key_pos = std::string::npos;
+    {
+        int depth = 0;
+        bool in_str = false;
+        for (size_t i = 0; i < json.size(); ++i) {
+            char c = json[i];
+            if (c == '"' && (i == 0 || json[i - 1] != '\\')) {
+                in_str = !in_str;
+            }
+            if (in_str) continue;
+            if (c == '{') ++depth;
+            else if (c == '}') --depth;
+            // Match key only at depth == 1 (top-level object)
+            if (depth == 1 && !in_str && i + search.size() <= json.size() && json.compare(i, search.size(), search) == 0) {
+                key_pos = i;
+                break;
+            }
+        }
+    }
     if (key_pos == std::string::npos) return "";
 
     // Find colon after key

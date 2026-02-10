@@ -229,12 +229,12 @@ ThinkStream* StreamOrchestrator::find_stream(ThinkStream::StreamId id) const {
 
 ThinkStream* StreamOrchestrator::least_loaded_stream() const {
     ThinkStream* best = nullptr;
-    uint64_t min_ticks = UINT64_MAX;
+    size_t min_pending = SIZE_MAX;
     for (auto& [id, stream] : streams_) {
         if (stream->state() != StreamState::Running) continue;
-        uint64_t t = stream->metrics().total_ticks.load(std::memory_order_relaxed);
-        if (t < min_ticks) {
-            min_ticks = t;
+        size_t pending = stream->pending_tasks();
+        if (pending < min_pending) {
+            min_pending = pending;
             best = stream.get();
         }
     }

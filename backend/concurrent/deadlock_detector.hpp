@@ -30,14 +30,23 @@ public:
         return dd;
     }
 
+    static constexpr size_t max_log_size = 10000;
+
     void on_acquire(std::thread::id tid, uint32_t level, const char* label) {
         std::lock_guard lk(mtx_);
+        if (log_.size() >= max_log_size) {
+            // Rotate: drop oldest half
+            log_.erase(log_.begin(), log_.begin() + static_cast<ptrdiff_t>(max_log_size / 2));
+        }
         log_.push_back({tid, level, label, LockEvent::Acquire});
         held_[tid].insert(level);
     }
 
     void on_release(std::thread::id tid, uint32_t level, const char* label) {
         std::lock_guard lk(mtx_);
+        if (log_.size() >= max_log_size) {
+            log_.erase(log_.begin(), log_.begin() + static_cast<ptrdiff_t>(max_log_size / 2));
+        }
         log_.push_back({tid, level, label, LockEvent::Release});
         held_[tid].erase(level);
     }

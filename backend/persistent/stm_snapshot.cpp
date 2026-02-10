@@ -5,12 +5,41 @@
 #include <algorithm>
 #include <filesystem>
 #include <cstring>
+#include <bit>
 
 namespace brain19 {
+
+// Snapshot format assumes little-endian. Guard against silent corruption on big-endian.
+static_assert(std::endian::native == std::endian::little,
+              "STM snapshot binary format requires little-endian architecture");
 
 // ── helpers ──
 
 namespace {
+
+// CRC32 for snapshot integrity (same algorithm as WAL)
+static const std::array<uint32_t, 256>& crc32_table() {
+    static const auto table = []() {
+        std::array<uint32_t, 256> t{};
+        for (uint32_t i = 0; i < 256; ++i) {
+            uint32_t c = i;
+            for (int j = 0; j < 8; ++j)
+                c = (c >> 1) ^ (0xEDB88320u & (-(c & 1)));
+            t[i] = c;
+        }
+        return t;
+    }();
+    return table;
+}
+
+static uint32_t crc32_update(uint32_t crc, const void* data, size_t len) {
+    const auto& table = crc32_table();
+    auto* p = static_cast<const uint8_t*>(data);
+    crc = ~crc;
+    for (size_t i = 0; i < len; ++i)
+        crc = table[(crc ^ p[i]) & 0xFF] ^ (crc >> 8);
+    return ~crc;
+}
 
 template<typename T>
 void write_pod(std::ofstream& f, const T& v) {
@@ -77,7 +106,22 @@ bool STMSnapshotManager::create_snapshot(ShortTermMemory& stm, const std::string
         }
     }
 
-    return out.good();
+    if (!out.good()) return false;
+
+    // Write CRC32 footer over entire file content
+    out.flush();
+    std::ifstream reread(path, std::ios::binary);
+    if (!reread) return false;
+    uint32_t crc = 0;
+    char buf[4096];
+    while (reread.read(buf, sizeof(buf)) || reread.gcount() > 0) {
+        crc = crc32_update(crc, buf, static_cast<size_t>(reread.gcount()));
+    }
+    reread.close();
+    std::ofstream append(path, std::ios::binary | std::ios::app);
+    if (!append) return false;
+    write_pod(append, crc);
+    return append.good();
 }
 
 bool STMSnapshotManager::load_snapshot(const std::string& path, STMSnapshotData& out) {
@@ -125,6 +169,27 @@ bool STMSnapshotManager::load_snapshot(const std::string& path, STMSnapshotData&
             if (!read_pod(in, r.activation)) return false;
         }
     }
+
+    // Verify CRC32 footer
+    auto data_end = in.tellg();
+    uint32_t stored_crc;
+    if (!read_pod(in, stored_crc)) return true;  // No CRC = legacy snapshot, accept
+    in.close();
+
+    // Recompute CRC over data portion
+    std::ifstream verify(path, std::ios::binary);
+    if (!verify) return false;
+    uint32_t computed_crc = 0;
+    size_t remaining = static_cast<size_t>(data_end);
+    char buf[4096];
+    while (remaining > 0) {
+        size_t to_read = std::min(remaining, sizeof(buf));
+        verify.read(buf, static_cast<std::streamsize>(to_read));
+        if (!verify.good() && !verify.eof()) return false;
+        computed_crc = crc32_update(computed_crc, buf, static_cast<size_t>(verify.gcount()));
+        remaining -= static_cast<size_t>(verify.gcount());
+    }
+    if (computed_crc != stored_crc) return false;
 
     return true;
 }

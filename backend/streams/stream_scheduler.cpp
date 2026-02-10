@@ -129,8 +129,10 @@ bool StreamScheduler::schedule_task_by_priority(ThinkTask task) {
         auto idx = static_cast<size_t>(cat);
         auto starved = stats_[idx].starvation_count.load(std::memory_order_relaxed);
         if (starved >= config_.max_starvation_rounds) {
-            // Force schedule to this starved category
-            if (schedule_task(cat, std::move(task))) return true;
+            // Force schedule to this starved category (copy, not move — 
+            // task may be needed by normal-priority path below)
+            ThinkTask copy = task;
+            if (schedule_task(cat, std::move(copy))) return true;
         }
     }
 

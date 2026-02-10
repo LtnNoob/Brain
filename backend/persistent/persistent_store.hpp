@@ -105,7 +105,7 @@ public:
     
     // Access record by slot index (0-based)
     RecordT* record(size_t index) {
-        if (index >= header()->capacity) {
+        if (index >= header()->record_count) {
             throw std::out_of_range("PersistentStore: index out of range");
         }
         char* base = static_cast<char*>(mapped_) + sizeof(StoreHeader);
@@ -113,7 +113,7 @@ public:
     }
     
     const RecordT* record(size_t index) const {
-        if (index >= header()->capacity) {
+        if (index >= header()->record_count) {
             throw std::out_of_range("PersistentStore: index out of range");
         }
         const char* base = static_cast<const char*>(mapped_) + sizeof(StoreHeader);
@@ -128,7 +128,7 @@ public:
             hdr = header(); // re-acquire after remap
         }
         size_t slot = hdr->record_count;
-        *record(slot) = rec;
+        *record_at(slot) = rec;
         hdr->record_count++;
         return slot;
     }
@@ -177,6 +177,15 @@ public:
     }
 
 private:
+    // Internal: access by capacity (for append before record_count is incremented)
+    RecordT* record_at(size_t index) {
+        if (index >= header()->capacity) {
+            throw std::out_of_range("PersistentStore: internal index out of range");
+        }
+        char* base = static_cast<char*>(mapped_) + sizeof(StoreHeader);
+        return reinterpret_cast<RecordT*>(base + index * sizeof(RecordT));
+    }
+
     void map_file(size_t size) {
         mapped_ = ::mmap(nullptr, size, PROT_READ | PROT_WRITE, MAP_SHARED, fd_, 0);
         if (mapped_ == MAP_FAILED) {

@@ -49,7 +49,10 @@ public:
             ::msync(mapped_, sizeof(StringPoolHeader), MS_SYNC);
         } else {
             struct stat st;
-            ::fstat(fd_, &st);
+            if (::fstat(fd_, &st) != 0) {
+                ::close(fd_);
+                throw std::runtime_error("StringPool: fstat failed: " + std::string(strerror(errno)));
+            }
             map_file(st.st_size);
             
             auto* hdr = header();

@@ -196,8 +196,14 @@ void ThinkStream::do_salience() {
 void ThinkStream::do_curiosity() {
     // Curiosity: find concepts with low activation but high connectivity
     // and give them a small boost (exploration)
+    // Round-robin sampling to avoid iterating all concepts every tick
+    constexpr size_t max_per_tick = 64;
     auto all_ids = ltm_.get_all_concept_ids();
-    for (auto cid : all_ids) {
+    if (all_ids.empty()) return;
+    if (curiosity_offset_ >= all_ids.size()) curiosity_offset_ = 0;
+    size_t end = std::min(curiosity_offset_ + max_per_tick, all_ids.size());
+    for (size_t i = curiosity_offset_; i < end; ++i) {
+        auto cid = all_ids[i];
         double act = stm_.get_concept_activation(context_id_, cid);
         if (act < 0.1) {
             size_t rel_count = ltm_.get_relation_count(cid);
@@ -207,6 +213,7 @@ void ThinkStream::do_curiosity() {
             }
         }
     }
+    curiosity_offset_ = end;
 }
 
 void ThinkStream::do_understanding() {

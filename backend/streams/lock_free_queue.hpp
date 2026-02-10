@@ -19,7 +19,7 @@ class MPMCQueue {
                   "T must be nothrow move- or copy-constructible");
 public:
     explicit MPMCQueue(size_t capacity)
-        : capacity_(next_pow2(capacity))
+        : capacity_(next_pow2(std::max(capacity, size_t(2))))
         , mask_(capacity_ - 1)
         , buffer_(capacity_)
         , head_(0)
@@ -106,6 +106,7 @@ public:
         return h >= t;
     }
 
+    // Approximate size (may be stale, suitable for load-balancing heuristics)
     size_t size_approx() const {
         size_t t = tail_.load(std::memory_order_relaxed);
         size_t h = head_.load(std::memory_order_relaxed);
@@ -140,7 +141,7 @@ template <typename T>
 class SPSCQueue {
 public:
     explicit SPSCQueue(size_t capacity)
-        : capacity_(next_pow2(capacity))
+        : capacity_(next_pow2(std::max(capacity, size_t(2))))
         , mask_(capacity_ - 1)
         , buffer_(capacity_)
         , head_(0)

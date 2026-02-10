@@ -29,7 +29,7 @@ enum class StreamState : uint32_t {
 };
 
 // Per-stream metrics
-struct StreamMetrics {
+struct alignas(64) StreamMetrics {
     std::atomic<uint64_t> total_ticks{0};
     std::atomic<uint64_t> spreading_ticks{0};
     std::atomic<uint64_t> salience_ticks{0};
@@ -89,6 +89,7 @@ public:
     ContextId context_id() const { return context_id_; }
     StreamState state() const { return state_.load(std::memory_order_acquire); }
     const StreamMetrics& metrics() const { return metrics_; }
+    size_t pending_tasks() const { return work_queue_.size_approx(); }
 
     // Configuration
     void set_subsystems(Subsystem flags);
@@ -118,6 +119,8 @@ private:
 
     MPMCQueue<ThinkTask> work_queue_;
     StreamMetrics metrics_;
+
+    size_t curiosity_offset_ = 0;  // Round-robin offset for do_curiosity sampling
 
     std::thread thread_;
 };

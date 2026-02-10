@@ -100,7 +100,30 @@ test_stream_monitor: tests/test_stream_monitor.cpp $(STREAM_SRCS) $(SCHEDULER_SR
 		tests/test_stream_monitor.cpp $(STREAM_SRCS) $(SCHEDULER_SRCS) $(MONITOR_SRCS)
 	./test_stream_monitor
 
-clean:
-	rm -f test_streams test_streams_tsan test_lock_hierarchy test_stream_categories brain19_checkpoint test_checkpoint brain19_monitor test_stream_monitor
+# ─── Phase 7: KAN-LLM Hybrid ───────────────────────────────────────────
 
-.PHONY: test_streams test_streams_lite test_streams_tsan test_lock_hierarchy test_stream_categories brain19_checkpoint test_checkpoint brain19_monitor test_stream_monitor clean
+HYBRID_SRCS = \
+	$(BACKEND)/hybrid/hypothesis_translator.cpp \
+	$(BACKEND)/hybrid/epistemic_bridge.cpp \
+	$(BACKEND)/hybrid/kan_validator.cpp \
+	$(BACKEND)/hybrid/domain_manager.cpp \
+	$(BACKEND)/hybrid/refinement_loop.cpp
+
+KAN_SRCS = \
+	$(BACKEND)/kan/kan_node.cpp \
+	$(BACKEND)/kan/kan_layer.cpp \
+	$(BACKEND)/kan/kan_module.cpp
+
+LTM_SRCS = \
+	$(BACKEND)/ltm/long_term_memory.cpp \
+	$(BACKEND)/memory/stm.cpp
+
+test_kan_llm_hybrid: tests/test_kan_llm_hybrid.cpp $(HYBRID_SRCS) $(KAN_SRCS) $(LTM_SRCS)
+	$(CXX) $(CXXFLAGS) -I$(BACKEND) -o test_kan_llm_hybrid \
+		tests/test_kan_llm_hybrid.cpp $(HYBRID_SRCS) $(KAN_SRCS) $(LTM_SRCS)
+	./test_kan_llm_hybrid
+
+clean:
+	rm -f test_streams test_streams_tsan test_lock_hierarchy test_stream_categories brain19_checkpoint test_checkpoint test_kan_llm_hybrid brain19_monitor test_stream_monitor
+
+.PHONY: test_streams test_streams_lite test_streams_tsan test_lock_hierarchy test_stream_categories brain19_checkpoint test_checkpoint brain19_monitor test_stream_monitor test_kan_llm_hybrid clean

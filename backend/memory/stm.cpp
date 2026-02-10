@@ -279,7 +279,10 @@ ActivationLevel ShortTermMemory::classify_level(double activation) const {
 }
 
 uint64_t ShortTermMemory::hash_relation(ConceptId source, ConceptId target) const {
-    return (static_cast<uint64_t>(source) << 32) | static_cast<uint64_t>(target);
+    // hash_combine pattern: handles full 64-bit ConceptIds without truncation
+    uint64_t h = std::hash<uint64_t>{}(source);
+    h ^= std::hash<uint64_t>{}(target) + 0x9e3779b97f4a7c15ULL + (h << 6) + (h >> 2);
+    return h;
 }
 
 void ShortTermMemory::apply_decay(STMEntry& entry, double time_delta) const {

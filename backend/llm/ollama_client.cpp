@@ -3,6 +3,7 @@
 #include <sstream>
 #include <iostream>
 #include <cstring>
+#include <mutex>
 #include <nlohmann/json.hpp>
 
 using json = nlohmann::json;
@@ -15,14 +16,21 @@ static size_t write_callback(void* contents, size_t size, size_t nmemb, void* us
     return size * nmemb;
 }
 
+// Thread-safe curl global init via call_once
+static std::once_flag curl_init_flag;
+
 OllamaClient::OllamaClient()
     : initialized_(false)
 {
-    curl_global_init(CURL_GLOBAL_DEFAULT);
+    std::call_once(curl_init_flag, []() {
+        curl_global_init(CURL_GLOBAL_DEFAULT);
+    });
 }
 
 OllamaClient::~OllamaClient() {
-    curl_global_cleanup();
+    // Note: curl_global_cleanup() intentionally omitted.
+    // With multiple OllamaClient instances, cleanup by one would
+    // invalidate curl for others. Cleanup happens at process exit.
 }
 
 bool OllamaClient::initialize(const OllamaConfig& config) {

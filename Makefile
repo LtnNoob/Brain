@@ -47,7 +47,16 @@ test_lock_hierarchy: tests/test_lock_hierarchy.cpp backend/concurrent/lock_hiera
 		-o test_lock_hierarchy tests/test_lock_hierarchy.cpp
 	./test_lock_hierarchy
 
-clean:
-	rm -f test_streams test_streams_tsan test_lock_hierarchy
+SCHEDULER_SRCS = \
+	$(BACKEND)/streams/stream_scheduler.cpp
 
-.PHONY: test_streams test_streams_lite test_streams_tsan test_lock_hierarchy clean
+# Stream categories test (Phase 5.2)
+test_stream_categories: tests/test_stream_categories.cpp $(STREAM_SRCS) $(SCHEDULER_SRCS)
+	$(CXX) $(CXXFLAGS) -DHAS_FULL_BACKEND -I$(BACKEND) -o test_stream_categories \
+		tests/test_stream_categories.cpp $(STREAM_SRCS) $(SCHEDULER_SRCS)
+	./test_stream_categories
+
+clean:
+	rm -f test_streams test_streams_tsan test_lock_hierarchy test_stream_categories
+
+.PHONY: test_streams test_streams_lite test_streams_tsan test_lock_hierarchy test_stream_categories clean

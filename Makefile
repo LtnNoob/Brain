@@ -56,7 +56,36 @@ test_stream_categories: tests/test_stream_categories.cpp $(STREAM_SRCS) $(SCHEDU
 		tests/test_stream_categories.cpp $(STREAM_SRCS) $(SCHEDULER_SRCS)
 	./test_stream_categories
 
-clean:
-	rm -f test_streams test_streams_tsan test_lock_hierarchy test_stream_categories
+# ─── Phase 4: Checkpoint Manager ───────────────────────────────────────────
 
-.PHONY: test_streams test_streams_lite test_streams_tsan test_lock_hierarchy test_stream_categories clean
+CHECKPOINT_SRCS = \
+	$(BACKEND)/persistent/checkpoint_manager.cpp \
+	$(BACKEND)/persistent/checkpoint_restore.cpp \
+	$(BACKEND)/persistent/persistent_ltm.cpp \
+	$(BACKEND)/persistent/wal.cpp \
+	$(BACKEND)/persistent/stm_snapshot.cpp \
+	$(BACKEND)/micromodel/micro_model.cpp \
+	$(BACKEND)/micromodel/micro_model_registry.cpp \
+	$(BACKEND)/micromodel/embedding_manager.cpp \
+	$(BACKEND)/micromodel/micro_trainer.cpp \
+	$(BACKEND)/micromodel/persistence.cpp \
+	$(BACKEND)/micromodel/relevance_map.cpp \
+	$(BACKEND)/kan/kan_node.cpp \
+	$(BACKEND)/kan/kan_layer.cpp \
+	$(BACKEND)/kan/kan_module.cpp \
+	$(BACKEND)/ltm/long_term_memory.cpp \
+	$(BACKEND)/memory/stm.cpp
+
+brain19_checkpoint: $(BACKEND)/checkpoint_cli.cpp $(CHECKPOINT_SRCS)
+	$(CXX) $(CXXFLAGS) -I$(BACKEND) -o brain19_checkpoint \
+		$(BACKEND)/checkpoint_cli.cpp $(CHECKPOINT_SRCS)
+
+test_checkpoint: tests/test_checkpoint.cpp $(CHECKPOINT_SRCS)
+	$(CXX) $(CXXFLAGS) -I$(BACKEND) -o test_checkpoint \
+		tests/test_checkpoint.cpp $(CHECKPOINT_SRCS)
+	./test_checkpoint
+
+clean:
+	rm -f test_streams test_streams_tsan test_lock_hierarchy test_stream_categories brain19_checkpoint test_checkpoint
+
+.PHONY: test_streams test_streams_lite test_streams_tsan test_lock_hierarchy test_stream_categories brain19_checkpoint test_checkpoint clean

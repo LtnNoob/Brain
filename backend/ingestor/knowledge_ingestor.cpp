@@ -139,8 +139,26 @@ std::string KnowledgeIngestor::json_extract_string(
 std::string KnowledgeIngestor::json_extract_array(
     const std::string& json, const std::string& key) const
 {
+    // Scope-aware: find key only at the outermost nesting level of the input
     std::string search = "\"" + key + "\"";
-    size_t key_pos = json.find(search);
+    size_t key_pos = std::string::npos;
+    {
+        int depth = 0;
+        bool in_str = false;
+        for (size_t i = 0; i < json.size(); ++i) {
+            char c = json[i];
+            if (c == '"' && (i == 0 || json[i - 1] != '\\')) {
+                in_str = !in_str;
+            }
+            if (in_str) continue;
+            if (c == '{') ++depth;
+            else if (c == '}') --depth;
+            if (depth == 1 && !in_str && i + search.size() <= json.size() && json.compare(i, search.size(), search) == 0) {
+                key_pos = i;
+                break;
+            }
+        }
+    }
     if (key_pos == std::string::npos) return "";
 
     size_t colon = json.find(':', key_pos + search.size());
@@ -206,8 +224,26 @@ std::vector<std::string> KnowledgeIngestor::json_split_array(
 double KnowledgeIngestor::json_extract_number(
     const std::string& json, const std::string& key, double default_val) const
 {
+    // Scope-aware: find key only at the outermost nesting level of the input
     std::string search = "\"" + key + "\"";
-    size_t key_pos = json.find(search);
+    size_t key_pos = std::string::npos;
+    {
+        int depth = 0;
+        bool in_str = false;
+        for (size_t i = 0; i < json.size(); ++i) {
+            char c = json[i];
+            if (c == '"' && (i == 0 || json[i - 1] != '\\')) {
+                in_str = !in_str;
+            }
+            if (in_str) continue;
+            if (c == '{') ++depth;
+            else if (c == '}') --depth;
+            if (depth == 1 && !in_str && i + search.size() <= json.size() && json.compare(i, search.size(), search) == 0) {
+                key_pos = i;
+                break;
+            }
+        }
+    }
     if (key_pos == std::string::npos) return default_val;
 
     size_t colon = json.find(':', key_pos + search.size());

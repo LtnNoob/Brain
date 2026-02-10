@@ -1,0 +1,58 @@
+# Brain19 Interactive CLI Tool
+# Links Phase 1 (Ingestor) + Phase 2 (MicroModel) + LTM
+
+CXX = g++
+CXXFLAGS = -std=c++20 -Wall -Wextra -Wpedantic -O2 -I. -DNDEBUG
+LDFLAGS =
+
+# CLI source
+CLI_SOURCE = tools/brain19_cli.cpp
+
+# LTM compiled into tools/ to avoid permission issues
+LTM_OBJ = tools/long_term_memory.o
+
+# Ingestor sources
+INGESTOR_SOURCES = \
+	ingestor/text_chunker.cpp \
+	ingestor/entity_extractor.cpp \
+	ingestor/relation_extractor.cpp \
+	ingestor/trust_tagger.cpp \
+	ingestor/proposal_queue.cpp \
+	ingestor/knowledge_ingestor.cpp \
+	ingestor/ingestion_pipeline.cpp
+
+# MicroModel sources
+MICROMODEL_SOURCES = \
+	micromodel/micro_model.cpp \
+	micromodel/micro_model_registry.cpp \
+	micromodel/embedding_manager.cpp \
+	micromodel/micro_trainer.cpp \
+	micromodel/relevance_map.cpp \
+	micromodel/persistence.cpp
+
+CLI_OBJ = $(CLI_SOURCE:.cpp=.o)
+INGESTOR_OBJECTS = $(INGESTOR_SOURCES:.cpp=.o)
+MICROMODEL_OBJECTS = $(MICROMODEL_SOURCES:.cpp=.o)
+ALL_OBJECTS = $(CLI_OBJ) $(LTM_OBJ) $(INGESTOR_OBJECTS) $(MICROMODEL_OBJECTS)
+
+TARGET = tools/brain19_cli
+
+.PHONY: all clean run
+
+all: $(TARGET)
+
+# Compile LTM source into tools/ directory
+$(LTM_OBJ): ltm/long_term_memory.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+$(TARGET): $(ALL_OBJECTS)
+	$(CXX) $(CXXFLAGS) $(ALL_OBJECTS) -o $(TARGET) $(LDFLAGS)
+
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+clean:
+	rm -f $(CLI_OBJ) $(LTM_OBJ) $(TARGET)
+
+run: $(TARGET)
+	./$(TARGET)

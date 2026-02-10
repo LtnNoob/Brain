@@ -1,16 +1,14 @@
 #pragma once
 // Phase 1.1: PersistentLTM — mmap-backed LongTermMemory implementation
+// Phase 1.2: WAL integration for crash recovery
 //
 // Wraps PersistentStore + StringPool to provide the same interface as LongTermMemory
 // but with data living on disk via mmap.
-//
-// Usage:
-//   PersistentLTM ltm("/path/to/data_dir");
-//   // Same API as LongTermMemory
 
 #include "persistent_store.hpp"
 #include "string_pool.hpp"
 #include "persistent_records.hpp"
+#include "wal.hpp"
 #include "../epistemic/epistemic_metadata.hpp"
 #include "../ltm/relation.hpp"
 #include "../ltm/long_term_memory.hpp"
@@ -61,8 +59,22 @@ public:
     
     // Persistence-specific
     void sync();
+    void checkpoint();  // msync all stores + truncate WAL
     size_t concept_count() const;
     size_t relation_count() const;
+    
+    // WAL replay helpers (used by WALRecovery — idempotent)
+    void replay_store_concept(
+        uint64_t concept_id,
+        uint32_t label_offset, uint32_t label_length,
+        uint32_t def_offset, uint32_t def_length,
+        uint8_t epistemic_type, uint8_t epistemic_status,
+        double trust, uint64_t created_epoch_us
+    );
+    void replay_add_relation(
+        uint64_t relation_id, uint64_t source, uint64_t target,
+        uint8_t type, double weight
+    );
     
 private:
     void rebuild_indices();
@@ -76,6 +88,8 @@ private:
     std::unique_ptr<PersistentStore<PersistentConceptRecord>> concepts_;
     std::unique_ptr<PersistentStore<PersistentRelationRecord>> relations_;
     std::unique_ptr<StringPool> strings_;
+    std::unique_ptr<WALWriter> wal_;
+    std::string data_dir_;
     
     // In-memory indices (rebuilt on load from mmap data)
     std::unordered_map<ConceptId, size_t> concept_index_;   // id -> slot

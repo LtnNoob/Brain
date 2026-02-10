@@ -8,6 +8,8 @@
 #include <unordered_map>
 #include <vector>
 
+#include "../persistent/stm_snapshot_data.hpp"
+
 namespace brain19 {
 
 
@@ -53,6 +55,10 @@ public:
     void set_relation_inactive_threshold(double threshold);
     void set_relation_removal_threshold(double threshold);
     void set_concept_removal_threshold(double threshold);
+    
+    // Snapshot support
+    STMSnapshotData export_state() const;
+    void import_state(const STMSnapshotData& data);
     
     // Debug introspection (NOT for operational logic)
     size_t debug_active_concept_count(ContextId context_id) const;

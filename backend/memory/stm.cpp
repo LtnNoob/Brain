@@ -1,6 +1,7 @@
 #include "stm.hpp"
 #include <algorithm>
 #include <cmath>
+#include <chrono>
 
 namespace brain19 {
 
@@ -267,6 +268,43 @@ size_t ShortTermMemory::debug_active_relation_count(ContextId context_id) const 
         return 0;
     }
     return ctx_it->second.relations.size();
+}
+
+STMSnapshotData ShortTermMemory::export_state() const {
+    STMSnapshotData data;
+    data.timestamp = static_cast<uint64_t>(
+        std::chrono::duration_cast<std::chrono::seconds>(
+            std::chrono::system_clock::now().time_since_epoch()).count());
+
+    for (const auto& [ctx_id, ctx] : contexts_) {
+        SnapshotContext sc;
+        sc.context_id = ctx_id;
+        for (const auto& [cid, entry] : ctx.concepts) {
+            sc.concepts.push_back({entry.concept_id, entry.activation, entry.classification});
+        }
+        for (const auto& [hash, rel] : ctx.relations) {
+            sc.relations.push_back({rel.source, rel.target, rel.type, rel.activation});
+        }
+        data.contexts.push_back(std::move(sc));
+    }
+    return data;
+}
+
+void ShortTermMemory::import_state(const STMSnapshotData& data) {
+    contexts_.clear();
+    for (const auto& sc : data.contexts) {
+        if (sc.context_id >= next_context_id_) {
+            next_context_id_ = sc.context_id + 1;
+        }
+        Context& ctx = contexts_[sc.context_id];
+        for (const auto& c : sc.concepts) {
+            ctx.concepts[c.concept_id] = STMEntry(c.concept_id, c.activation, c.classification);
+        }
+        for (const auto& r : sc.relations) {
+            uint64_t h = hash_relation(r.source, r.target);
+            ctx.relations[h] = ActiveRelation(r.source, r.target, r.type, r.activation);
+        }
+    }
 }
 
 double ShortTermMemory::clamp_activation(double value) const {

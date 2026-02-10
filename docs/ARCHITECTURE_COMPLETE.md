@@ -1,982 +1,858 @@
-# Brain19 – Vollständige Architektur-Dokumentation
+# Brain19 — Vollständige Architektur-Dokumentation & Professor-Review
 
-> Automatisch generiert aus dem Quellcode in `backend/`. Nur dokumentiert was im Code steht.
-
----
-
-## Inhaltsverzeichnis
-
-1. [Klassen-Katalog](#1-klassen-katalog)
-2. [Subsystem-Map](#2-subsystem-map)
-3. [Datenfluss-Diagramme](#3-datenfluss-diagramme)
-4. [Ownership & Lifecycle](#4-ownership--lifecycle)
-5. [Epistemischer Fluss](#5-epistemischer-fluss)
-6. [Dependency Graph](#6-dependency-graph)
+> **Stand:** 2026-02-10  
+> **Codebase:** ~16.755 LOC C++20 (Backend) + React Frontend  
+> **Grundlage:** Code-Audit aller 4 Teil-Agenten, vollständige Source-Analyse  
+> **Autor:** Architektur-Dokumentarist (automatisch generiert)
 
 ---
 
-## 1. Klassen-Katalog
+# TEIL 1: ARCHITEKTUR-DOKUMENTATION
 
-### 1.1 common/
+---
 
-| Klasse/Typedef | File | Verantwortung |
+## 1. Gesamtübersicht
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                            BRAIN19 COGNITIVE ARCHITECTURE                    │
+│                                                                             │
+│  ┌─────────────────────────────────────────────────────────────────────┐    │
+│  │                        BrainController                              │    │
+│  │              (Orchestrierung, Lifecycle, Delegation)                 │    │
+│  │              memory/brain_controller.hpp (~207 LOC)                  │    │
+│  └──────┬──────────────┬──────────────┬──────────────┬─────────────────┘    │
+│         │              │              │              │                       │
+│         ▼              ▼              ▼              ▼                       │
+│  ┌──────────┐   ┌───────────┐  ┌───────────┐  ┌──────────────────┐         │
+│  │   STM    │   │    LTM    │  │ Cognitive  │  │   Epistemic      │         │
+│  │ Short-   │   │  Long-    │  │ Dynamics   │  │   System         │         │
+│  │ Term     │   │  Term     │  │            │  │                  │         │
+│  │ Memory   │   │  Memory   │  │ Spreading  │  │ 6 Types          │         │
+│  │          │   │  (KG)     │  │ Activation │  │ 4 States         │         │
+│  │ Contexts │   │ Concepts  │  │ Salience   │  │ Compile-Time     │         │
+│  │ Entries  │   │ Relations │  │ Focus Mgmt │  │ Enforcement      │         │
+│  │ Decay    │   │ Epistemic │  │ ThoughtPath│  │                  │         │
+│  └────┬─────┘   └─────┬─────┘  └─────┬──────┘  └────────┬─────────┘        │
+│       │               │              │                   │                  │
+│       │         ┌─────┴──────────────┴───────────────────┘                  │
+│       │         │                                                           │
+│       ▼         ▼                                                           │
+│  ┌──────────────────────┐    ┌──────────────────────────────────┐           │
+│  │  MicroModel Layer    │    │  Curiosity Engine                │           │
+│  │                      │    │                                  │           │
+│  │  MicroModel (130P)   │    │  Pattern Detection               │           │
+│  │  MicroModelRegistry  │◄───│  Trigger Generation              │           │
+│  │  MicroTrainer        │    │  SHALLOW_RELATIONS               │           │
+│  │  EmbeddingManager    │    │  LOW_CONNECTIVITY                │           │
+│  │  RelevanceMap        │    │  HIGH_UNCERTAINTY                │           │
+│  │  (Overlay/Combine)   │    │  (MISSING_DEPTH,RECURRENT n/a)  │           │
+│  └──────────┬───────────┘    └──────────────────────────────────┘           │
+│             │                                                               │
+│             ▼                                                               │
+│  ┌──────────────────────┐    ┌──────────────────────────────────┐           │
+│  │  KAN Subsystem       │    │  Understanding Layer (OPTIONAL)  │           │
+│  │                      │    │                                  │           │
+│  │  KANModule           │    │  MiniLLM (Stub/Ollama)           │           │
+│  │  KANLayer            │    │  UnderstandingLayer              │           │
+│  │  KANNode (B-Spline)  │    │  Proposals (Hypothesis,         │           │
+│  │  KANAdapter          │    │   Analogy, Contradiction,       │           │
+│  │  FunctionHypothesis  │    │   Meaning)                      │           │
+│  └──────────────────────┘    │  Trust-Ceiling: 0.3-0.5         │           │
+│                              └──────────────────────────────────┘           │
+│                                                                             │
+│  ┌──────────────────────┐    ┌──────────────────────────────────┐           │
+│  │  Ingestor Pipeline   │    │  Importers                      │           │
+│  │                      │    │                                  │           │
+│  │  TextChunker         │    │  WikipediaImporter               │           │
+│  │  EntityExtractor     │    │  ScholarImporter                 │           │
+│  │  RelationExtractor   │    │  KnowledgeProposal              │           │
+│  │  TrustTagger         │    │                                  │           │
+│  │  ProposalQueue       │    │                                  │           │
+│  │  IngestionPipeline   │    └──────────────────────────────────┘           │
+│  │  KnowledgeIngestor   │                                                   │
+│  └──────────────────────┘    ┌──────────────────────────────────┐           │
+│                              │  Snapshot Generator              │           │
+│  ┌──────────────────────┐    │  (Read-Only State Export)        │           │
+│  │  LLM / Chat          │    │  → snapshot.json                │           │
+│  │  OllamaClient        │    └──────────────────────────────────┘           │
+│  │  ChatInterface       │                                                   │
+│  └──────────────────────┘    ┌──────────────────────────────────┐           │
+│                              │  CLI Tool                        │           │
+│                              │  brain19_cli                     │           │
+│                              │  (ingest/query/explore/snapshot) │           │
+│                              └──────────────────────────────────┘           │
+│                                                                             │
+│  ┌──────────────────────────────────────────────────────────────────────┐   │
+│  │                     React Frontend (Read-Only)                       │   │
+│  │              STM Graph (SVG) │ Epistemic Panel │ Curiosity Panel     │   │
+│  └──────────────────────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 2. Klassen-Katalog
+
+### 2.1 Kern-Subsysteme
+
+| Klasse/Struct | Datei | Verantwortung | Zugriff |
+|---|---|---|---|
+| `BrainController` | `memory/brain_controller.hpp` | Orchestrierung, STM-Ownership, Thinking-Lifecycle | Schreibt: STM (via Delegation) |
+| `ShortTermMemory` | `memory/stm.hpp` | Aktivierungsspeicher, Context-Isolation, Decay | Schreibt: eigenen State |
+| `STMEntry` | `memory/stm_entry.hpp` | Einzelner Aktivierungseintrag (ID, activation, class, timestamp) | Datenstruktur |
+| `ActiveRelation` | `memory/active_relation.hpp` | Aktive Relation im STM (source, target, type, activation) | Datenstruktur |
+| `LongTermMemory` | `ltm/long_term_memory.hpp` | Persistenter Knowledge Graph (Concepts + Relations) | Schreibt: eigenen State |
+| `ConceptInfo` | `ltm/long_term_memory.hpp` | Konzept mit EpistemicMetadata (kein Default-Ctor!) | Datenstruktur |
+| `RelationInfo` | `ltm/relation.hpp` | Relation mit source, target, type, trust, label | Datenstruktur |
+| `EpistemicMetadata` | `epistemic/epistemic_metadata.hpp` | Type + Status + Trust + Provenance (kein Default-Ctor!) | Datenstruktur |
+
+### 2.2 Cognitive Dynamics
+
+| Klasse/Struct | Datei | Verantwortung | Zugriff |
+|---|---|---|---|
+| `CognitiveDynamics` | `cognitive/cognitive_dynamics.hpp` | Spreading Activation, Salience, Focus Mgmt, ThoughtPaths | Liest: LTM, STM; Schreibt: STM |
+| `SalienceScore` | `cognitive/cognitive_config.hpp` | Gewichteter Score (frequency, recency, connectivity, epistemics) | Datenstruktur |
+| `FocusEntry` | `cognitive/cognitive_config.hpp` | Fokus-Eintrag pro Kontext (concept_id, strength, tick) | Datenstruktur |
+| `ActivationEntry` | `cognitive/cognitive_config.hpp` | Spreading-Ergebnis (concept_id, activation, depth) | Datenstruktur |
+| `ThoughtPath` | `cognitive/cognitive_config.hpp` | Kette von Konzepten mit Score | Datenstruktur |
+| `SpreadingStats` | `cognitive/cognitive_config.hpp` | Statistiken über Spreading-Durchläufe | Datenstruktur |
+| `CognitiveDynamicsConfig` | `cognitive/cognitive_config.hpp` | Konfiguration (Weights, Thresholds, Limits) | Config |
+
+### 2.3 MicroModel Layer
+
+| Klasse/Struct | Datei | Verantwortung | Zugriff |
+|---|---|---|---|
+| `MicroModel` | `micromodel/micro_model.hpp` | 130-Parameter bilineares Modell (W·c+b → eᵀ·v → σ) | Schreibt: eigene Weights |
+| `MicroModelRegistry` | `micromodel/micro_model_registry.hpp` | Verwaltung aller MicroModels per ConceptId | Schreibt: Registry |
+| `MicroTrainer` | `micromodel/micro_trainer.hpp` | Adam-Optimizer, Batch-Training | Schreibt: MicroModel-Weights |
+| `EmbeddingManager` | `micromodel/embedding_manager.hpp` | Relation/Context-Embeddings (10D), Caching | Schreibt: Embedding-Cache |
+| `RelevanceMap` | `micromodel/relevance_map.hpp` | Relevanz-Scores eines Konzepts für alle anderen | Read-Only (nach compute) |
+| `TrainingSample` | `micromodel/micro_model.hpp` | (embedding, context, target) Trainingsdatum | Datenstruktur |
+| `TrainingState` | `micromodel/micro_model.hpp` | Adam-State (momentum, variance, timestep) | Datenstruktur |
+
+### 2.4 KAN Subsystem
+
+| Klasse/Struct | Datei | Verantwortung | Zugriff |
+|---|---|---|---|
+| `KANNode` | `kan/kan_node.hpp` | Einzelne B-Spline-Funktion (Cox-de Boor) | Schreibt: Koeffizienten |
+| `KANLayer` | `kan/kan_layer.hpp` | Schicht von KANNodes | Schreibt: via Nodes |
+| `KANModule` | `kan/kan_module.hpp` | Gesamt-KAN-Netzwerk (Training + Inference) | Schreibt: via Layers |
+| `KANAdapter` | `adapter/kan_adapter.hpp` | KAN↔Brain19 Interface, Modul-Lifecycle | Schreibt: Module-Map |
+| `FunctionHypothesis` | `kan/function_hypothesis.hpp` | KAN-Ergebnis mit Provenance + shared_ptr<KANModule> | Datenstruktur |
+| `DataPoint` | `kan/kan_module.hpp` | (input, output) Trainingsdatum | Datenstruktur |
+| `KanTrainingConfig` | `kan/kan_module.hpp` | Lernrate, Epochen, Regularisierung | Config |
+
+### 2.5 Understanding Layer
+
+| Klasse/Struct | Datei | Verantwortung | Zugriff |
+|---|---|---|---|
+| `UnderstandingLayer` | `understanding/understanding_layer.hpp` | Semantische Analyse via MiniLLMs | Liest: STM, LTM; Schreibt: Proposals |
+| `MiniLLM` | `understanding/mini_llm.hpp` | Abstrakte LLM-Schnittstelle | Interface |
+| `StubMiniLLM` | `understanding/mini_llm.hpp` | Deterministischer Stub für Tests | Implementation |
+| `OllamaMiniLLM` | `understanding/ollama_mini_llm.hpp` | Ollama-basierte Implementation | Implementation |
+| `MiniLLMFactory` | `understanding/mini_llm_factory.hpp` | Factory für spezialisierte MiniLLMs | Factory |
+| `HypothesisProposal` | `understanding/understanding_proposals.hpp` | LLM-generierte Hypothese | Datenstruktur |
+| `AnalogyProposal` | `understanding/understanding_proposals.hpp` | Analogie-Vorschlag | Datenstruktur |
+| `ContradictionProposal` | `understanding/understanding_proposals.hpp` | Widerspruchs-Erkennung | Datenstruktur |
+| `MeaningProposal` | `understanding/understanding_proposals.hpp` | Bedeutungs-Extraktion | Datenstruktur |
+
+### 2.6 Ingestor Pipeline
+
+| Klasse/Struct | Datei | Verantwortung | Zugriff |
+|---|---|---|---|
+| `IngestionPipeline` | `ingestor/ingestion_pipeline.hpp` | Orchestrierung: Text → LTM | Schreibt: LTM (via commit) |
+| `KnowledgeIngestor` | `ingestor/knowledge_ingestor.hpp` | JSON-Parsing → StructuredInput | Transformer |
+| `TextChunker` | `ingestor/text_chunker.hpp` | Text → Chunks (konfigurierbar) | Transformer |
+| `EntityExtractor` | `ingestor/entity_extractor.hpp` | Text → Entities (Regex+Heuristik) | Transformer |
+| `RelationExtractor` | `ingestor/relation_extractor.hpp` | Text → Relationen (Pattern-basiert) | Transformer |
+| `TrustTagger` | `ingestor/trust_tagger.hpp` | Source → Trust-Kategorie → Trust-Score | Transformer |
+| `ProposalQueue` | `ingestor/proposal_queue.hpp` | Puffer zwischen Ingestion und LTM-Commit | Queue |
+| `IngestProposal` | `ingestor/proposal_queue.hpp` | Einzelner Ingestion-Vorschlag mit Status | Datenstruktur |
+
+### 2.7 Importers & LLM
+
+| Klasse/Struct | Datei | Verantwortung | Zugriff |
+|---|---|---|---|
+| `WikipediaImporter` | `importers/wikipedia_importer.hpp` | URL/Text → KnowledgeProposal | Transformer |
+| `ScholarImporter` | `importers/scholar_importer.hpp` | DOI/URL/Text → KnowledgeProposal | Transformer |
+| `KnowledgeProposal` | `importers/knowledge_proposal.hpp` | Strukturierter Import-Vorschlag | Datenstruktur |
+| `OllamaClient` | `llm/ollama_client.hpp` | HTTP-Client für Ollama API | Netzwerk |
+| `ChatInterface` | `llm/chat_interface.hpp` | Chat-basierte Interaktion mit Brain19 | Schreibt: STM, LTM |
+| `SnapshotGenerator` | `snapshot_generator.hpp` | JSON-Export des Systemzustands | Read-Only |
+
+### 2.8 Enums
+
+| Enum | Datei | Werte |
 |---|---|---|
-| `ConceptId` (uint64_t) | `common/types.hpp` | Eindeutige Konzept-ID |
-| `ContextId` (uint64_t) | `common/types.hpp` | Eindeutige Kontext-ID |
-| `RelationId` (uint64_t) | `common/types.hpp` | Eindeutige Relations-ID |
-
----
-
-### 1.2 epistemic/
-
-#### `EpistemicMetadata` — `epistemic/epistemic_metadata.hpp`
-- **Verantwortung:** Pflicht-Metadaten für jedes Wissenselement. Erzwingt epistemische Explizitheit.
-- **Key Members:** `EpistemicType type`, `EpistemicStatus status`, `double trust` [0.0, 1.0]
-- **Key Methods:** `is_valid()`, `is_active()`, `is_invalidated()`, `is_superseded()`, `is_contextual()`
-- **Constraints:** Default-Konstruktor gelöscht. Trust wird im Konstruktor validiert. INVALIDATED + trust≥0.2 löst Debug-Assert aus.
-- **Dependencies:** Keine.
-
-#### `EpistemicType` (enum class)
-- Werte: `FACT`, `DEFINITION`, `THEORY`, `HYPOTHESIS`, `INFERENCE`, `SPECULATION`
-- Kein `UNKNOWN` — Abwesenheit ist ein Compile-Error.
-
-#### `EpistemicStatus` (enum class)
-- Werte: `ACTIVE`, `CONTEXTUAL`, `SUPERSEDED`, `INVALIDATED`
-- Kein `UNKNOWN`.
-
----
-
-### 1.3 ltm/ (Long-Term Memory)
-
-#### `ConceptInfo` — `ltm/long_term_memory.hpp`
-- **Verantwortung:** Wissenselement mit obligatorischer epistemischer Metadaten.
-- **Key Members:** `ConceptId id`, `string label`, `string definition`, `EpistemicMetadata epistemic`
-- **Constraints:** Default-Konstruktor gelöscht. Epistemic Metadata pflicht bei Konstruktion.
-- **Dependencies:** `EpistemicMetadata`
-
-#### `LongTermMemory` — `ltm/long_term_memory.hpp/.cpp`
-- **Verantwortung:** Persistenter Wissensgraph. Speichert Konzepte und Relationen.
-- **Key Members:**
-  - `unordered_map<ConceptId, ConceptInfo> concepts_`
-  - `unordered_map<RelationId, RelationInfo> relations_`
-  - `unordered_map<ConceptId, vector<RelationId>> outgoing_relations_`, `incoming_relations_`
-- **Key Methods:**
-  - `store_concept(label, definition, EpistemicMetadata)` → `ConceptId` — **erfordert explizite Epistemic Metadata**
-  - `retrieve_concept(id)` → `optional<ConceptInfo>`
-  - `update_epistemic_metadata(id, new_metadata)` — einziger Weg Status zu ändern
-  - `invalidate_concept(id, trust=0.05)` — setzt Status auf INVALIDATED, löscht NICHT
-  - `add_relation(source, target, type, weight)` → `RelationId`
-  - `get_outgoing_relations(source)`, `get_incoming_relations(target)`
-  - `get_concepts_by_type(type)`, `get_concepts_by_status(status)`, `get_active_concepts()`
-  - `get_all_concept_ids()`, `exists(id)`, `get_relation_count(id)`
-- **Dependencies:** `EpistemicMetadata`, `RelationInfo`
-- **Invariante:** Wissen wird NIEMALS gelöscht, nur invalidiert.
-
-#### `RelationInfo` — `ltm/relation.hpp`
-- **Verantwortung:** Persistente gerichtete Relation zwischen Konzepten.
-- **Key Members:** `RelationId id`, `ConceptId source`, `ConceptId target`, `RelationType type`, `double weight` [0.0, 1.0]
-- **Constraints:** Default-Konstruktor gelöscht. Weight wird geclampt.
-- **Dependencies:** `RelationType` (aus `active_relation.hpp`)
-
-#### `RelationType` (enum class) — `memory/active_relation.hpp`
-- Werte: `IS_A`, `HAS_PROPERTY`, `CAUSES`, `ENABLES`, `PART_OF`, `SIMILAR_TO`, `CONTRADICTS`, `SUPPORTS`, `TEMPORAL_BEFORE`, `CUSTOM`
-
----
-
-### 1.4 memory/ (Short-Term Memory & Controller)
-
-#### `STMEntry` — `memory/stm_entry.hpp`
-- **Verantwortung:** Aktivierungszustand eines Konzepts in STM.
-- **Key Members:** `ConceptId concept_id`, `double activation` [0.0, 1.0], `ActivationClass classification`, `time_point last_used`
-- **Dependencies:** `ActivationClass`
-
-#### `ActiveRelation` — `memory/active_relation.hpp`
-- **Verantwortung:** Aktive Relation in STM (kurzfristig).
-- **Key Members:** `ConceptId source/target`, `RelationType type`, `double activation`, `time_point last_used`
-
-#### `ActivationLevel` (enum class) — `memory/activation_level.hpp`
-- Werte: `LOW` (<0.3), `MEDIUM` (0.3–0.7), `HIGH` (≥0.7)
-
-#### `ActivationClass` (enum class) — `memory/activation_level.hpp`
-- Werte: `CORE_KNOWLEDGE` (langsamer Decay), `CONTEXTUAL` (schnellerer Decay)
-
-#### `ShortTermMemory` — `memory/stm.hpp/.cpp`
-- **Verantwortung:** Rein mechanische Aktivierungsschicht. Speichert KEIN Wissen, nur Aktivierungszustände.
-- **Key Members:**
-  - `unordered_map<ContextId, Context> contexts_` (Context enthält Konzept- und Relations-Aktivierungen)
-  - Decay-Raten: `core_decay_rate_`, `contextual_decay_rate_`, `relation_decay_rate_`
-  - Thresholds: `relation_inactive_threshold_`, `relation_removal_threshold_`, `concept_removal_threshold_`
-- **Key Methods:**
-  - `create_context()` / `destroy_context()` / `clear_context()`
-  - `activate_concept()`, `activate_relation()`, `boost_concept()`, `boost_relation()`
-  - `get_concept_activation()`, `get_active_concepts(threshold)`, `get_active_relations(threshold)`
-  - `decay_all(context, time_delta)` — exponentieller Decay mit Zwei-Phasen-Relation-Decay
-- **Invarianten:** STM speichert NUR Aktivierung, nie Wissensinhalt. STM bewertet nie Korrektheit.
-- **Dependencies:** `STMEntry`, `ActiveRelation`, `ActivationClass`
-
-#### `BrainController` — `memory/brain_controller.hpp/.cpp`
-- **Verantwortung:** Minimale Orchestrierungsschicht. Kontext-Management und Flow-Koordination.
-- **Key Members:** `unique_ptr<ShortTermMemory> stm_`, `bool initialized_`, `map<ContextId, ThinkingState>`
-- **Key Methods:**
-  - `initialize()` / `shutdown()`
-  - `create_context()` / `destroy_context()`
-  - `begin_thinking()` / `end_thinking()`
-  - `activate_concept_in_context()`, `activate_relation_in_context()`
-  - `decay_context()`, `query_concept_activation()`, `query_active_concepts()`
-  - `get_stm()` (const), `get_stm_mutable()`
-- **NICHT:** Lernen, Schlussfolgern, Bewerten, Entscheidungen über Wichtigkeit.
-- **Dependencies:** `ShortTermMemory`
-
----
-
-### 1.5 cognitive/ (Cognitive Dynamics)
-
-#### Konfigurationsstructs — `cognitive/cognitive_config.hpp`
-- `ActivationSpreaderConfig` — max_depth, damping_factor, activation_threshold, trust_weighted, relation_weighted
-- `FocusManagerConfig` — max_focus_size (7±2 Miller), decay_rate, focus_threshold, attention_boost
-- `SalienceComputerConfig` — Gewichte für activation/trust/connectivity/recency, query_boost_factor
-- `ThoughtPathConfig` — max_paths (beam width), depth_penalty, salience/trust/coherence Gewichte
-- `CognitiveDynamicsConfig` — Master-Config mit enable-Flags und debug_mode
-
-#### Zustandstypen — `cognitive/cognitive_config.hpp`
-- `ActivationEntry`, `FocusEntry`, `SalienceScore`, `ThoughtPathNode`, `ThoughtPath`, `SpreadingStats`
-
-#### `CognitiveDynamics` — `cognitive/cognitive_dynamics.hpp/.cpp`
-- **Verantwortung:** Additive kognitive Schicht: Spreading Activation, Salience, Focus, Thought Path Ranking.
-- **Key Members:**
-  - `CognitiveDynamicsConfig config_`
-  - `unordered_map<ContextId, vector<FocusEntry>> focus_sets_`
-  - `Stats stats_` (atomic counters)
-- **Key Methods:**
-  - **Spreading Activation:**
-    - `spread_activation(source, activation, context, ltm, stm)` → `SpreadingStats`
-    - `spread_activation_multi(sources, activation, context, ltm, stm)`
-    - Formel: `activation(B) += activation(A) × relation_weight × trust(A) × damping^depth`
-    - Zyklen-Erkennung via visited-Set, Depth-Limited, INVALIDATED werden übersprungen
-  - **Salience:**
-    - `compute_salience(cid, context, ltm, stm)` → `SalienceScore`
-    - `compute_salience_batch()`, `get_top_k_salient()`, `compute_query_salience()`
-    - Gewichtete Summe: activation × w_a + trust × w_t + connectivity × w_c + recency × w_r + query_boost
-  - **Focus:**
-    - `init_focus()`, `focus_on()`, `decay_focus()`, `get_focus_set()`, `is_focused()`, `get_focus_score()`
-    - Kapazitätslimit (max_focus_size), exponentieller Decay
-  - **Thought Paths:**
-    - `find_best_paths(source, context, ltm, stm)` — Beam Search
-    - `find_paths_to(source, target, context, ltm, stm)` — Zielgerichtete Suche
-    - `score_path()` — salience × w_s + trust × w_t + coherence × w_c − depth_penalty
-- **Architekturvertrag:**
-  - ✅ READ-ONLY auf LTM und Trust
-  - ✅ Schreibt NUR in STM (Aktivierungen) und eigenen Zustand
-  - ✅ Deterministisch, bounded [0.0, 1.0], depth-limited
-  - ❌ Darf NICHT: Wissen erzeugen, Hypothesen generieren, Trust ändern, epistemische Entscheidungen treffen
-- **Dependencies:** `LongTermMemory` (read-only), `ShortTermMemory` (write Aktivierungen)
-
----
-
-### 1.6 curiosity/
-
-#### `TriggerType` (enum class) — `curiosity/curiosity_trigger.hpp`
-- Werte: `SHALLOW_RELATIONS`, `MISSING_DEPTH`, `LOW_EXPLORATION`, `RECURRENT_WITHOUT_FUNCTION`, `UNKNOWN`
-
-#### `CuriosityTrigger` — `curiosity/curiosity_trigger.hpp`
-- **Verantwortung:** Reines Datensignal (keine Logik).
-- **Key Members:** `TriggerType type`, `ContextId context_id`, `vector<ConceptId> related_concept_ids`, `string description`
-
-#### `SystemObservation` — `curiosity/curiosity_engine.hpp`
-- **Members:** `ContextId context_id`, `size_t active_concept_count`, `size_t active_relation_count`
-
-#### `CuriosityEngine` — `curiosity/curiosity_engine.hpp/.cpp`
-- **Verantwortung:** Reiner Signalgenerator. Beobachtet Systemzustand, emittiert Trigger.
-- **Key Methods:**
-  - `observe_and_generate_triggers(observations)` → `vector<CuriosityTrigger>`
-  - `set_shallow_relation_threshold()`, `set_low_exploration_threshold()`
-- **Constraints:** KEINE Aktionen, KEIN Lernen, KEINE direkten Modifikationen.
-- **Dependencies:** Keine (nur eigene Structs)
-
----
-
-### 1.7 kan/ (Kolmogorov-Arnold Networks)
-
-#### `KANNode` — `kan/kan_node.hpp/.cpp`
-- **Verantwortung:** Univariate lernbare Funktion via kubischen B-Splines.
-- **Key Members:** `vector<double> knots_`, `vector<double> coefficients_`
-- **Key Methods:** `evaluate(x)` → double, `gradient(x)`, `set_coefficients()`, `get_coefficients()`
-- **Dependencies:** Keine.
-
-#### `KANLayer` — `kan/kan_layer.hpp/.cpp`
-- **Verantwortung:** Kollektion von KANNodes. Additive Kombination.
-- **Key Members:** `vector<unique_ptr<KANNode>> nodes_`
-- **Key Methods:** `evaluate(inputs)` → `vector<double>`, `input_dim()`
-- **Dependencies:** `KANNode`
-
-#### `KANModule` — `kan/kan_module.hpp/.cpp`
-- **Verantwortung:** Vollständiger Funktionsapproximator f: ℝⁿ → ℝᵐ.
-- **Key Members:** `size_t input_dim_`, `size_t output_dim_`, `vector<unique_ptr<KANLayer>> layers_` (ein Layer pro Output-Dimension)
-- **Key Methods:** `evaluate(inputs)`, `train(dataset, config)` → `KanTrainingResult`, `compute_mse(dataset)`
-- **Training:** Numerischer Gradient-Descent über Spline-Koeffizienten.
-- **Dependencies:** `KANLayer`
-
-#### `FunctionHypothesis` — `kan/function_hypothesis.hpp`
-- **Verantwortung:** Reiner Daten-Wrapper für gelernten Funktionszustand.
-- **Key Members:** `size_t input/output_dim`, `shared_ptr<KANModule> module`, `size_t training_iterations`, `double training_error`
-- **Dependencies:** `KANModule`
-
-#### `DataPoint`, `KanTrainingConfig`, `KanTrainingResult` — `kan/kan_module.hpp`
-- Trainings-Datenstrukturen.
-
----
-
-### 1.8 adapter/
-
-#### `KANAdapter` — `adapter/kan_adapter.hpp/.cpp`
-- **Verantwortung:** Saubere Schnittstelle zwischen BrainController und KAN. Explizite Delegation, KEINE Entscheidungslogik.
-- **Key Members:** `unordered_map<uint64_t, KANModuleEntry> modules_`, `uint64_t next_module_id_`
-- **Key Methods:**
-  - `create_kan_module(input_dim, output_dim, num_knots)` → `uint64_t`
-  - `train_kan_module(module_id, dataset, config)` → `unique_ptr<FunctionHypothesis>`
-  - `evaluate_kan_module(module_id, inputs)` → `vector<double>`
-  - `destroy_kan_module(module_id)`, `has_module(module_id)`
-- **Dependencies:** `KANModule`, `FunctionHypothesis`
-
----
-
-### 1.9 micromodel/ (Per-Concept Bilineare Micro-Modelle)
-
-#### `MicroModel` — `micromodel/micro_model.hpp/.cpp`
-- **Verantwortung:** Bilineares Modell pro Konzept: berechnet personalisierte Relevanz.
-- **Architektur:** v = W·c + b (10D), z = eᵀ·v (Skalar), w = σ(z) ∈ (0,1)
-- **Key Members:** `Mat10x10 W_`, `Vec10 b_`, `Vec10 e_init_`, `Vec10 c_init_`, `TrainingState state_` (Adam-Optimizer)
-- **Key Methods:**
-  - `predict(e, c)` → double ∈ (0,1)
-  - `train_step(e, c, target, config)` → loss (Adam-Optimizer)
-  - `train(samples, config)` → `MicroTrainingResult`
-  - `to_flat() / from_flat()` — Serialisierung in 430 doubles
-- **FLAT_SIZE:** 430 doubles (100 W + 10 b + 10 e_init + 10 c_init + 300 TrainingState)
-- **Dependencies:** Keine externen.
-
-#### `MicroModelRegistry` — `micromodel/micro_model_registry.hpp/.cpp`
-- **Verantwortung:** Ein MicroModel pro ConceptId. Keyed Lookup, Bulk-Operationen.
-- **Key Members:** `unordered_map<ConceptId, MicroModel> models_`
-- **Key Methods:**
-  - `create_model(cid)`, `get_model(cid)`, `has_model(cid)`, `remove_model(cid)`
-  - `ensure_models_for(ltm)` — Bulk-Erstellung für alle LTM-Konzepte
-- **Dependencies:** `MicroModel`, `LongTermMemory`
-
-#### `EmbeddingManager` — `micromodel/embedding_manager.hpp/.cpp`
-- **Verantwortung:** 10D-Embeddings für RelationTypes und Named Contexts.
-- **Key Members:**
-  - `array<Vec10, 10> relation_embeddings_` — heuristisch initialisiert (hierarchisch, kausal, etc.)
-  - `unordered_map<string, Vec10> context_embeddings_` — deterministisch aus Name-Hash generiert
-- **Key Methods:**
-  - `get_relation_embedding(type)`, `get_context_embedding(name)` (auto-create)
-  - `make_target_embedding(context_hash, source_id, target_id)` — ohne String-Allokation
-  - Convenience: `query_context()`, `recall_context()`, `creative_context()`, `analytical_context()`
-- **Dependencies:** `RelationType`
-
-#### `MicroTrainer` — `micromodel/micro_trainer.hpp/.cpp`
-- **Verantwortung:** Bootstrapped Trainingsdaten aus KG-Struktur, trainiert MicroModels.
-- **Trainingsdata-Generierung:**
-  - Positiv: Ausgehende Relationen (C→T, weight), eingehende Relationen (discount 0.8)
-  - Negativ: 3× Negatives pro Positiv, von nicht-verbundenen Konzepten, target ≈ 0.05
-- **Key Methods:**
-  - `train_all(registry, embeddings, ltm)` → `TrainerStats`
-  - `train_single(cid, model, embeddings, ltm)` → `MicroTrainingResult`
-  - `generate_samples(cid, embeddings, ltm)` → `vector<TrainingSample>`
-- **Dependencies:** `MicroModel`, `MicroModelRegistry`, `EmbeddingManager`, `LongTermMemory`
-
-#### `RelevanceMap` — `micromodel/relevance_map.hpp/.cpp`
-- **Verantwortung:** Evaluiert MicroModel eines Konzepts über alle KG-Knoten → scored Relevanz-Map.
-- **Key Methods:**
-  - `RelevanceMap::compute(source, registry, embeddings, ltm, rel_type, context)` (statisch)
-  - `score(cid)`, `top_k(k)`, `above_threshold(threshold)`
-  - `overlay(other, mode, weight)` — Kombination mehrerer Perspektiven (Phase 3 Creativity)
-  - `combine(maps, mode, weights)` (statisch), `normalize()` → [0,1]
-- **OverlayMode:** `ADDITION`, `MAX`, `WEIGHTED_AVERAGE`
-- **Dependencies:** `MicroModel`, `MicroModelRegistry`, `EmbeddingManager`, `LongTermMemory`
-
-#### `persistence` (Namespace) — `micromodel/persistence.hpp/.cpp`
-- **Verantwortung:** Binäre Serialisierung von MicroModel-Registry + Embeddings.
-- **Format:** Header (Magic "BM19", Version, Counts) + Models (3448 Bytes/Stk) + Relation Embeddings + Context Embeddings + XOR-Checksum
-- **Key Methods:** `save(filepath, registry, embeddings)`, `load(filepath, registry, embeddings)`, `validate(filepath)`
-- **Dependencies:** `MicroModelRegistry`, `EmbeddingManager`
-
----
-
-### 1.10 importers/
-
-#### `KnowledgeProposal` — `importers/knowledge_proposal.hpp`
-- **Verantwortung:** Reine Datenstruktur für Wissens-VORSCHLÄGE (nicht akzeptiertes Wissen).
-- **Key Members:** `uint64_t proposal_id`, `SourceType source_type`, `string source_reference`, `string extracted_text/title`, `vector<SuggestedConcept>`, `vector<SuggestedRelation>`, `SuggestedEpistemicType` (NUR Vorschlag!)
-- **Epistemic Rule:** Importers DÜRFEN NICHT EpistemicType/Trust/Status zuweisen. Nur Suggestions.
-- **Dependencies:** Keine.
-
-#### `SuggestedEpistemicType` (enum class) — `importers/knowledge_proposal.hpp`
-- Werte: `FACT_CANDIDATE`, `THEORY_CANDIDATE`, `HYPOTHESIS_CANDIDATE`, `DEFINITION_CANDIDATE`, `UNKNOWN_CANDIDATE`
-
-#### `WikipediaImporter` — `importers/wikipedia_importer.hpp/.cpp`
-- **Verantwortung:** Extrahiert strukturierte Übersicht aus Wikipedia. Schreibt NICHT in LTM.
-- **Key Methods:** `import_article(title)`, `parse_wikipedia_text(title, html)` → `unique_ptr<KnowledgeProposal>`
-- **Interne Extraktion:** Lead-Section, Konzepte (Regex auf Großschreibung), "X is a Y"-Relationen
-- **Dependencies:** `KnowledgeProposal`
-
-#### `ScholarImporter` — `importers/scholar_importer.hpp/.cpp`
-- **Verantwortung:** Extrahiert Forschungswissen aus Papers. Schreibt NICHT in LTM.
-- **Key Methods:** `import_paper_by_doi(doi)`, `parse_paper_text(title, text, authors, year, venue, is_preprint)` → `unique_ptr<KnowledgeProposal>`
-- **Uncertainty Detection:** Erkennt Hedging-Sprache (may, might, could, etc.) → `HYPOTHESIS_CANDIDATE`
-- **Dependencies:** `KnowledgeProposal`
-
----
-
-### 1.11 ingestor/ (Ingestion Pipeline)
-
-#### `TextChunker` — `ingestor/text_chunker.hpp/.cpp`
-- **Verantwortung:** Teilt Plaintext in satzbasierte Chunks mit optionalem Overlap.
-- **Config:** `sentences_per_chunk` (3), `overlap_sentences` (1), `max_chunk_chars` (2000)
-- **Key Methods:** `chunk_text(text)` → `vector<TextChunk>`, `split_sentences(text)`
-- **Dependencies:** Keine.
-
-#### `EntityExtractor` — `ingestor/entity_extractor.hpp/.cpp`
-- **Verantwortung:** Musterbasierte Entity-Extraktion aus Text (ohne externe NLP).
-- **Extraktionsstrategien:** Großgeschriebene Phrasen, Zitate, Definitionsmuster ("X is a..."), frequente Terme
-- **Key Methods:** `extract_from_text(text)`, `extract_from_chunks(chunks)` → `vector<ExtractedEntity>`
-- **Dependencies:** `TextChunk`
-
-#### `RelationExtractor` — `ingestor/relation_extractor.hpp/.cpp`
-- **Verantwortung:** Musterbasierte Relationsextraktion. Mapped Patterns auf `RelationType`.
-- **Patterns:** "X is a Y" → IS_A, "X causes Y" → CAUSES, "X enables Y" → ENABLES, etc. (15+ Muster)
-- **Key Methods:** `extract_relations(text, known_entities)`, `extract_relations_blind(text)` → `vector<ExtractedRelation>`
-- **Dependencies:** `ExtractedEntity`, `RelationType`
-
-#### `TrustTagger` — `ingestor/trust_tagger.hpp/.cpp`
-- **Verantwortung:** Mappt Trust-Kategorien auf EpistemicMetadata. Heuristisch basiert auf Text-Signalen.
-- **TrustCategory → EpistemicType + Trust Mapping:**
-  - FACTS → FACT, 0.95–0.99
-  - DEFINITIONS → DEFINITION, 0.90–0.99
-  - THEORIES → THEORY, 0.85–0.95
-  - HYPOTHESES → HYPOTHESIS, 0.50–0.80
-  - INFERENCES → INFERENCE, 0.40–0.70
-  - SPECULATION → SPECULATION, 0.10–0.40
-  - INVALIDATED → INVALIDATED, 0.01–0.10
-- **Text-Signale:** Hedging Language, Certainty Language, Definition Patterns, Citation Markers
-- **Key Methods:** `assign_trust(category)`, `suggest_from_text(text)`, `suggest_from_source(source)`, `suggest_from_proposal(suggested_type)`
-- **Dependencies:** `EpistemicMetadata`
-
-#### `ProposalQueue` — `ingestor/proposal_queue.hpp/.cpp`
-- **Verantwortung:** Staging-Area für unvalidierte Wissensvorschläge. Nichts gelangt in LTM ohne diese Queue.
-- **ProposalStatus:** `PENDING`, `APPROVED`, `REJECTED`, `MODIFIED`, `EXPIRED`
-- **Key Methods:**
-  - `enqueue(proposal)`, `enqueue_batch(proposals)`
-  - `review(id, decision)`, `review_batch(ids, decision)`, `auto_approve_all()`
-  - `get_pending()`, `get_approved()`, `pop_approved()`
-  - `expire_old(max_age)`
-- **ReviewDecision:** `approve()`, `reject()`, `approve_with_trust(category)`
-- **Dependencies:** `IngestProposal`, `TrustTagger`
-
-#### `KnowledgeIngestor` — `ingestor/knowledge_ingestor.hpp/.cpp`
-- **Verantwortung:** Parst strukturierten Input (JSON, CSV) in `StructuredInput`.
-- **JSON-Format:** `{"source": "...", "concepts": [...], "relations": [...]}`
-- **CSV-Format:** `label,definition,trust_category,trust_value`
-- **Key Methods:** `parse_json(json_str)`, `parse_csv_concepts(csv)`, `to_proposals(input, tagger)`
-- **Kein externer JSON-Parser** — handgeschriebener Minimal-Parser.
-- **Dependencies:** `TrustTagger`, `StructuredInput`
-
-#### `IngestionPipeline` — `ingestor/ingestion_pipeline.hpp/.cpp`
-- **Verantwortung:** Vollständige Pipeline: Input → Chunking → Extraktion → Trust → Queue → LTM.
-- **Key Members:** `LongTermMemory& ltm_`, `ProposalQueue queue_`, `TrustTagger`, `KnowledgeIngestor`, `TextChunker`, `EntityExtractor`, `RelationExtractor`
-- **Key Methods:**
-  - `ingest_json(json_str, auto_approve)`, `ingest_csv(concepts_csv, relations_csv, auto_approve)`
-  - `ingest_text(text, source_ref, auto_approve)` — NLP-Pipeline: Chunk → Extract → Trust → Queue
-  - `commit_approved()` — Schreibt approved Proposals in LTM
-- **Architekturverträge:**
-  - Pipeline schreibt NIE direkt in LTM ohne ProposalQueue
-  - Bestehende LTM-Daten werden NIE modifiziert
-  - Pipeline ist ADDITIV (kein Delete, kein Modify)
-- **Dependencies:** Alle Ingestor-Komponenten + `LongTermMemory`
-
----
-
-### 1.12 understanding/ (Understanding Layer)
-
-#### `MiniLLM` (Interface) — `understanding/mini_llm.hpp`
-- **Verantwortung:** Abstrakte Schnittstelle für semantische Modelle.
-- **Architekturvertrag:**
-  - ✅ Texte interpretieren, Muster erkennen, Vorschläge generieren
-  - ❌ KG modifizieren, Trust setzen, epistemische Entscheidungen treffen, in LTM schreiben
-  - Alle Outputs sind HYPOTHESIS
-  - READ-ONLY Zugriff auf LTM
-- **Pure Virtual Methods:** `extract_meaning()`, `generate_hypotheses()`, `detect_analogies()`, `detect_contradictions()`
-- **Dependencies:** `LongTermMemory` (read-only), `ShortTermMemory` (read-only)
-
-#### `StubMiniLLM` — `understanding/mini_llm.hpp/.cpp`
-- **Verantwortung:** Test-Placeholder ohne echtes LLM. Verifiziert epistemische Invarianten.
-
-#### `OllamaMiniLLM` — `understanding/ollama_mini_llm.hpp/.cpp`
-- **Verantwortung:** Echte semantische Analyse via Ollama-LLM.
-- **Key Methods:** Implementiert `MiniLLM`-Interface. Baut Prompts aus Konzepten, parsed LLM-Responses.
-- **Confidence-Heuristik:** Uncertainty-Words senken Confidence, Certainty-Words erhöhen sie.
-- **Dependencies:** `OllamaClient`, `LongTermMemory` (read-only)
-
-#### `MiniLLMFactory` — `understanding/mini_llm_factory.hpp`
-- **Verantwortung:** (TODO/Planned) Erzeugt spezialisierte Mini-LLMs für gelernte Konzepte.
-- **Status:** Header deklariert, nicht implementiert.
-
-#### `SpecializedMiniLLM` — `understanding/mini_llm_factory.hpp`
-- **Verantwortung:** (TODO/Planned) Mini-LLM mit Expertise in spezifischem Bereich.
-- **Status:** Header deklariert, nicht implementiert.
-
-#### Proposal-Typen — `understanding/understanding_proposals.hpp`
-- **`MeaningProposal`:** Semantischer Vorschlag. `epistemic_type` ist IMMER `HYPOTHESIS`.
-- **`HypothesisProposal`:** Vorgeschlagene Hypothese. `suggested_epistemic.suggested_type` ist IMMER `HYPOTHESIS` (unabhängig vom Input).
-- **`AnalogyProposal`:** Strukturelle Analogie zwischen zwei Domänen.
-- **`ContradictionProposal`:** Erkannte potenzielle Inkonsistenz.
-- Alle Confidence-Werte sind model_confidence [0.0, 1.0] — NICHT epistemic trust.
-
-#### `UnderstandingLayer` — `understanding/understanding_layer.hpp/.cpp`
-- **Verantwortung:** Semantische Analyse-Schicht über Cognitive Dynamics.
-- **Key Members:** `vector<unique_ptr<MiniLLM>> mini_llms_`, `UnderstandingLayerConfig config_`, `Statistics stats_`
-- **Key Methods:**
-  - `register_mini_llm(mini_llm)` — übernimmt Ownership
-  - `analyze_meaning(concepts, ltm, stm, context)` → `vector<MeaningProposal>`
-  - `propose_hypotheses()` → `vector<HypothesisProposal>`
-  - `find_analogies()` → `vector<AnalogyProposal>`
-  - `check_contradictions()` → `vector<ContradictionProposal>`
-  - `perform_understanding_cycle(seed, cognitive_dynamics, ltm, stm, context)` → `UnderstandingResult`
-    1. Spreading Activation via CognitiveDynamics
-    2. Salience-Berechnung → Top-10 salient Concepts
-    3. Meaning + Hypothesis + Contradiction Proposals
-    4. Analogy Detection (bei ≥4 Konzepten)
-- **Architekturvertrag:** READ-ONLY LTM, alle Proposals sind HYPOTHESIS, kein autonomes Handeln
-- **Dependencies:** `MiniLLM`, `CognitiveDynamics`, `LongTermMemory`, `ShortTermMemory`
-
----
-
-### 1.13 llm/ (LLM Integration)
-
-#### `OllamaClient` — `llm/ollama_client.hpp/.cpp`
-- **Verantwortung:** HTTP-Client für Ollama REST API.
-- **Key Members:** `OllamaConfig config_` (host, model, temperature, num_predict), `bool initialized_`
-- **Key Methods:** `initialize(config)`, `is_available()`, `list_models()`, `chat(messages)` → `OllamaResponse`, `generate(prompt)`
-- **Impl:** Verwendet libcurl + nlohmann/json.
-- **Dependencies:** Externe: libcurl, nlohmann/json
-
-#### `ChatInterface` — `llm/chat_interface.hpp/.cpp`
-- **Verantwortung:** LLM-powered Verbalisierung von Brain19-Wissen. LLM ist ein TOOL, kein Agent.
-- **Key Methods:**
-  - `ask(question, ltm)` → `ChatResponse` — findet relevante Konzepte, baut epistemischen Kontext, fragt LLM
-  - `explain_concept(id, ltm)`, `compare(id1, id2, ltm)`, `list_knowledge(ltm, type)`, `get_summary(ltm)`
-- **System Prompt:** Enforced epistemische Rigorosität: LLM MUSS Trust-Level und EpistemicType in Antworten einbauen.
-- **Fallback:** Funktioniert ohne LLM mit strukturiertem Output.
-- **Dependencies:** `OllamaClient`, `LongTermMemory` (read-only)
-
----
-
-### 1.14 snapshot_generator*
-
-#### `SnapshotGenerator` — `snapshot_generator.hpp/.cpp`
-- **Verantwortung:** Erzeugt JSON-Snapshots für Visualisierung mit epistemischer Metadaten.
-- **Key Method:** `generate_json_snapshot(brain, ltm, curiosity, context_id)` → JSON string
-- **Epistemic Enforcement:** Jedes Konzept MUSS epistemische Daten enthalten. STM-only Konzepte bekommen `HYPOTHESIS/CONTEXTUAL/0.5`.
-- **Dependencies:** `BrainController`, `LongTermMemory`, `CuriosityEngine`
-
----
-
-### 1.15 tools/
-
-#### `brain19_cli` — `tools/brain19_cli.cpp`
-- **Verantwortung:** Interaktives CLI-Tool. Verknüpft Ingestor + MicroModel.
-- **Modi:** `--review` (manuelles Approve/Reject) oder Direct (auto-approve)
-- **Menü:** [1] JSON ingest, [2] Text ingest, [3] KG anzeigen, [4] Review, [5] Train, [6] Relevance Map, [7] Train All
-- **Dependencies:** `IngestionPipeline`, `MicroModelRegistry`, `EmbeddingManager`, `MicroTrainer`, `RelevanceMap`
-
----
-
-### 1.16 Demo-Programme
-
-| File | Zweck |
-|---|---|
-| `demo_chat.cpp` | Chat-Interface Demo mit LLM |
-| `demo_cognitive_dynamics.cpp` | Cognitive Dynamics Demo |
-| `demo_epistemic_complete.cpp` | Vollständiges Epistemic-Enforcement Demo |
-| `demo_integrated.cpp` | Integrierte Pipeline Demo |
-| `demo_understanding_layer.cpp` | Understanding Layer Demo |
-
----
-
-## 2. Subsystem-Map
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                        BRAIN19 ARCHITEKTUR                       │
-└─────────────────────────────────────────────────────────────────┘
-
-┌──────────────┐     ┌──────────────────┐     ┌──────────────────┐
-│   Importers  │     │   Ingestor       │     │  tools/CLI       │
-│  (Wikipedia, │────>│  (Pipeline,      │────>│  (brain19_cli)   │
-│   Scholar)   │     │   Chunker,       │     └──────────────────┘
-│              │     │   Entity/Relation │
-│  Proposals   │     │   Extractor,     │
-│  ONLY        │     │   TrustTagger,   │
-└──────────────┘     │   ProposalQueue) │
-                     └────────┬─────────┘
-                              │ commit_approved()
-                              ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                    LongTermMemory (LTM)                          │
-│  ┌──────────┐  ┌──────────────┐  ┌────────────────────────┐    │
-│  │ Concepts │  │  Relations   │  │ EpistemicMetadata      │    │
-│  │(ConceptInfo)│(RelationInfo)│  │ (Type, Status, Trust)  │    │
-│  └──────────┘  └──────────────┘  └────────────────────────┘    │
-└─────────────────────────┬───────────────────────────────────────┘
-            READ-ONLY ▼   │ READ-ONLY ▼
-┌───────────────────────┐ │ ┌─────────────────────────────────┐
-│  Cognitive Dynamics   │ │ │     Understanding Layer          │
-│  (Spreading, Salience,│ │ │  ┌────────────────────────┐     │
-│   Focus, ThoughtPaths)│◄┼─│  │ MiniLLM (Interface)    │     │
-│                       │ │ │  │  ├─ StubMiniLLM        │     │
-│  SCHREIBT → STM       │ │ │  │  ├─ OllamaMiniLLM      │     │
-│  LIEST  ← LTM        │ │ │  │  └─ (SpecializedMiniLLM)│    │
-└───────────┬───────────┘ │ │  └────────────────────────┘     │
-            │             │ │  Alle Outputs: HYPOTHESIS        │
-            ▼             │ │  READ-ONLY LTM                   │
-┌───────────────────────┐ │ └─────────────────────────────────┘
-│  ShortTermMemory (STM)│ │
-│  (Aktivierungen,      │ │
-│   Decay, Contexte)    │ │ ┌─────────────────────────────────┐
-└───────────┬───────────┘ │ │      MicroModel Subsystem        │
-            │             │ │  ┌──────────────────────────┐    │
-            ▼             │ │  │ MicroModelRegistry       │    │
-┌───────────────────────┐ │ │  │ EmbeddingManager         │    │
-│  BrainController      │ │ │  │ MicroTrainer             │    │
-│  (Orchestration,      │◄┘ │  │ RelevanceMap             │    │
-│   Context Lifecycle)  │   │  │ Persistence (BM19)       │    │
-└───────────────────────┘   │  └──────────────────────────┘    │
-                            │  LIEST ← LTM (KG-Struktur)      │
-┌───────────────────────┐   └─────────────────────────────────┘
-│  KAN Subsystem        │
-│  ┌──────────┐         │   ┌─────────────────────────────────┐
-│  │ KANNode  │         │   │  LLM Integration                │
-│  │ KANLayer │         │   │  ┌────────────────────────┐     │
-│  │ KANModule│         │   │  │ OllamaClient (curl)    │     │
-│  └──────────┘         │   │  │ ChatInterface          │     │
-│  KANAdapter ──────────┼──>│  └────────────────────────┘     │
-└───────────────────────┘   │  LIEST ← LTM                    │
-                            └─────────────────────────────────┘
-┌───────────────────────┐   ┌─────────────────────────────────┐
-│  CuriosityEngine      │   │  SnapshotGenerator              │
-│  (Signalgenerator)    │   │  (JSON Visualisierung)           │
-│  READ-ONLY            │   │  LIEST ← Brain, LTM, Curiosity  │
-└───────────────────────┘   └─────────────────────────────────┘
-```
+| `EpistemicType` | `epistemic/epistemic_metadata.hpp` | FACT, THEORY, HYPOTHESIS, SPECULATION, DEFINITION, META |
+| `EpistemicStatus` | `epistemic/epistemic_metadata.hpp` | ACTIVE, DEPRECATED, INVALIDATED, UNDER_REVIEW |
+| `ActivationLevel` | `memory/activation_level.hpp` | INACTIVE, LOW, MODERATE, HIGH, PEAK |
+| `ActivationClass` | `memory/activation_level.hpp` | CORE_KNOWLEDGE, CONTEXTUAL |
+| `RelationType` | `memory/active_relation.hpp` | IS_A, HAS_PROPERTY, CAUSES, RELATED_TO, ... |
+| `TriggerType` | `curiosity/curiosity_trigger.hpp` | SHALLOW_RELATIONS, LOW_CONNECTIVITY, HIGH_UNCERTAINTY, MISSING_DEPTH, RECURRENT_WITHOUT_FUNCTION |
+| `OverlayMode` | `micromodel/relevance_map.hpp` | MULTIPLY, HARMONIC_MEAN, SURPRISE, WEIGHTED_AVERAGE |
+| `ProposalStatus` | `ingestor/proposal_queue.hpp` | PENDING, APPROVED, REJECTED, COMMITTED |
+| `SourceType` | `importers/knowledge_proposal.hpp` | WIKIPEDIA, SCHOLAR, MANUAL, ... |
 
 ---
 
 ## 3. Datenfluss-Diagramme
 
-### 3.1 Input → Processing → Storage
+### 3.1 Input → Ingestion → LTM
 
 ```
-Externer Input
-     │
-     ├── JSON/CSV ──────────> KnowledgeIngestor.parse_json/csv()
-     │                              │
-     ├── Plain Text ──────────> TextChunker.chunk_text()
-     │                              │
-     ├── Wikipedia Article ───> WikipediaImporter.import_article()
-     │                              │ KnowledgeProposal (SUGGESTION only)
-     └── Research Paper ──────> ScholarImporter.parse_paper_text()
-                                    │
-                                    ▼
-                          EntityExtractor.extract_from_chunks()
-                                    │
-                                    ▼
-                          RelationExtractor.extract_relations()
-                                    │
-                                    ▼
-                          TrustTagger.suggest_from_text()
-                                    │ TrustAssignment (SUGGESTION)
-                                    ▼
-                          ProposalQueue.enqueue()
-                                    │ IngestProposal (PENDING)
-                                    ▼
-                          [Human Review / auto_approve]
-                                    │ APPROVED / REJECTED
-                                    ▼
-                          IngestionPipeline.commit_approved()
-                                    │
-                                    ▼
-                          LTM.store_concept(label, def, EpistemicMetadata)
-                          LTM.add_relation(source, target, type, weight)
+User Input (Text/URL/JSON)
+      │
+      ▼
+┌─────────────────┐     ┌──────────────────┐
+│ WikipediaImporter│     │ KnowledgeIngestor│
+│ ScholarImporter  │     │ (JSON-Parser)    │
+└────────┬────────┘     └────────┬─────────┘
+         │                       │
+         ▼                       ▼
+   KnowledgeProposal      StructuredInput
+         │                       │
+         └───────┬───────────────┘
+                 ▼
+      ┌──────────────────┐
+      │ IngestionPipeline │
+      │                  │
+      │  1. TextChunker  │  Text → Chunks (overlap-aware)
+      │  2. EntityExtract│  Chunks → Entities (Regex)
+      │  3. RelationExtr │  Chunks → Relations (Pattern)
+      │  4. TrustTagger  │  Source → Trust-Score
+      │  5. ProposalQueue│  Puffer (PENDING)
+      └────────┬─────────┘
+               │ commit()
+               ▼
+      ┌──────────────────┐
+      │   LongTermMemory │
+      │                  │
+      │  add_concept()   │  ← EpistemicMetadata PFLICHT
+      │  add_relation()  │  ← Trust von TrustTagger
+      └──────────────────┘
 ```
 
-### 3.2 Spreading Activation Flow
+### 3.2 Spreading Activation → Salience → Focus
 
 ```
-seed ConceptId + initial_activation
-         │
-         ▼
-CognitiveDynamics.spread_activation()
-         │
-         ├── LTM.retrieve_concept(source) ──── READ-ONLY
-         │   └── Check: is_invalidated()? → SKIP
-         │   └── Get trust value
-         │
-         ├── STM.activate_concept(source, activation)
-         │
-         ├── LTM.get_outgoing_relations(source) ──── READ-ONLY
-         │
-         └── For each relation:
-              │
-              │ propagated = activation × weight × trust × damping^depth
-              │
-              ├── STM.activate_concept(target, propagated) oder boost_concept()
-              │
-              └── REKURSIV: spread_recursive(target, propagated, depth+1)
+Trigger: Konzept wird aktiviert (STM)
+      │
+      ▼
+┌─────────────────────────────────────┐
+│ CognitiveDynamics::spread_activation│
+│                                     │
+│  1. Source-Konzept holen            │
+│  2. Outgoing Relations aus LTM     │
+│  3. Für jede Relation:             │
+│     activation *= relation.trust   │
+│     activation *= decay_per_depth  │
+│  4. Rekursiv (max_depth=3)         │
+│  5. min_relevance Threshold        │
+│  6. STM: activate_concept()        │
+└────────────────┬────────────────────┘
+                 │
+                 ▼
+┌─────────────────────────────────────┐
+│ CognitiveDynamics::compute_salience │
+│                                     │
+│  score = w_freq  × frequency_norm   │  (0.4)
+│        + w_rec   × recency_factor   │  (0.0 — BUG!)
+│        + w_conn  × connectivity     │  (0.2)
+│        + w_epist × epistemic_trust  │  (0.3)
+│                                     │
+│  Batch: relativ normalisiert        │
+│  Single: absolut (inkonsistent!)    │
+└────────────────┬────────────────────┘
+                 │ Top-K
+                 ▼
+┌─────────────────────────────────────┐
+│ CognitiveDynamics::update_focus     │
+│                                     │
+│  focus_sets_[context] ← Top-K nach  │
+│  Salience-Score                     │
+│  Focus-Decay pro Tick               │
+│  Promotion/Demotion                 │
+└─────────────────────────────────────┘
+```
+
+### 3.3 Understanding Cycle
+
+```
+┌────────────────────────────────────┐
+│ UnderstandingLayer::               │
+│   perform_understanding_cycle()    │
+│                                    │
+│  1. Aktive Konzepte aus STM holen  │
+│     (BUG: IDs werden erfunden!)    │
+│                                    │
+│  2. Für jede registrierte MiniLLM: │
+│     ┌─────────────────────────┐    │
+│     │ MiniLLM::generate()     │    │
+│     │ (Stub oder Ollama)      │    │
+│     └──────────┬──────────────┘    │
+│                │                   │
+│  3. Response parsen → Proposals    │
+│     ┌──────────────────────────┐   │
+│     │ HypothesisProposal       │   │
+│     │ AnalogyProposal          │   │
+│     │ ContradictionProposal    │   │
+│     │ MeaningProposal          │   │
+│     └──────────┬───────────────┘   │
+│                │                   │
+│  4. Trust-Ceiling erzwingen        │
+│     max_trust = 0.3-0.5           │
+│                                    │
+│  5. → ProposalQueue oder direkt    │
+│       in LTM (nach Review)         │
+└────────────────────────────────────┘
+```
+
+### 3.4 MicroModel Training + Inference
+
+```
+TRAINING:
+┌────────────────────────────────────┐
+│ MicroTrainer::train()              │
+│                                    │
+│  Für jedes Konzept im LTM:        │
+│  1. TrainingSamples generieren     │
+│     - Positive: echte Relationen   │
+│     - Negative: zufällige Paare    │
+│                                    │
+│  2. EmbeddingManager:              │
+│     e = get_relation_embedding()   │  10D Vektor
+│     c = get_context_embedding()    │  10D Vektor
+│                                    │
+│  3. MicroModel::train_step()       │
+│     v = W·c + b                    │  ℝ¹⁰
+│     z = eᵀ·v                      │  ℝ¹ (Skalar)
+│     pred = σ(z)                    │  (0,1)
+│     loss = BCE(pred, target)       │
+│     Adam-Update(W, b, e, c)       │
+│                                    │
+│  4. → MicroModelRegistry           │
+└────────────────────────────────────┘
+
+INFERENCE (RelevanceMap):
+┌────────────────────────────────────┐
+│ RelevanceMap::compute(source)      │
+│                                    │
+│  Für jedes target ≠ source:        │
+│  1. model = registry.get(source)   │
+│  2. score = model->predict(e, c)   │
+│     (BUG: target wird ignoriert!)  │
+│  3. scores_[target] = score        │
+│                                    │
+│ RelevanceMap::combine(maps, mode)  │
+│  MULTIPLY: ∏ scores               │
+│  HARMONIC: 2·a·b/(a+b)            │
+│  SURPRISE: |a-b|·max(a,b)         │
+│  WEIGHTED_AVG: Σ wᵢ·scoreᵢ       │
+└────────────────────────────────────┘
+```
+
+### 3.5 Curiosity Trigger Flow
+
+```
+┌────────────────────────────────────┐
+│ CuriosityEngine::analyze()         │
+│                                    │
+│  Input: SystemObservation          │
+│    - active_concepts (aus STM)     │
+│    - ltm_stats                     │
+│    - spreading_stats               │
+│                                    │
+│  Checks:                           │
+│  ┌──────────────────────────────┐  │
+│  │ 1. SHALLOW_RELATIONS         │  │
+│  │    Konzept hat < 3 Relations │──│──→ CuriosityTrigger
+│  │                              │  │    (priority, concept_ids)
+│  │ 2. LOW_CONNECTIVITY          │  │
+│  │    Isolierte Subgraphen      │──│──→ CuriosityTrigger
+│  │                              │  │
+│  │ 3. HIGH_UNCERTAINTY          │  │
+│  │    Trust < threshold         │──│──→ CuriosityTrigger
+│  │                              │  │
+│  │ 4. MISSING_DEPTH (TODO)      │  │
+│  │ 5. RECURRENT_W/O_FUNC (TODO)│  │
+│  └──────────────────────────────┘  │
+│                                    │
+│  Output: vector<CuriosityTrigger>  │
+│    → Kann MicroModel-Overlay       │
+│      triggern (Kreativität)        │
+│    → Kann Ingestion triggern       │
+│    → Kann Understanding triggern   │
+└────────────────────────────────────┘
+```
+
+---
+
+## 4. Dependency-Graph
+
+```
+                    common/types.hpp
+                    (ConceptId, ContextId, RelationId)
+                          │
+          ┌───────────────┼───────────────────────┐
+          │               │                       │
+          ▼               ▼                       ▼
+    ┌───────────┐   ┌──────────┐          ┌──────────────┐
+    │ epistemic/│   │ memory/  │          │ ltm/         │
+    │ epistemic_│   │ stm.hpp  │          │ long_term_   │
+    │ metadata  │   │ stm_entry│          │ memory.hpp   │
+    │           │   │ active_  │          │ relation.hpp │
+    │           │   │ relation │          │              │
+    └─────┬─────┘   └────┬─────┘          └──────┬───────┘
+          │               │                       │
+          └───────┬───────┴───────────────────────┘
                   │
-                  ├── BASE: depth ≥ max_depth → STOP
-                  ├── BASE: activation < threshold → STOP
-                  └── BASE: already visited → STOP (Zyklen-Erkennung)
+                  ▼
+          ┌──────────────────┐
+          │ memory/           │
+          │ brain_controller  │─────────────┐
+          └────────┬─────────┘              │
+                   │                        │
+       ┌───────────┼────────────┐           │
+       │           │            │           │
+       ▼           ▼            ▼           ▼
+┌───────────┐ ┌─────────┐ ┌─────────┐ ┌─────────────┐
+│ cognitive/│ │curiosity/│ │snapshot_│ │micromodel/  │
+│ cognitive │ │curiosity │ │generator│ │micro_model  │
+│ _dynamics │ │_engine   │ │         │ │embedding_mgr│
+│           │ │          │ │         │ │relevance_map│
+│           │ │          │ │         │ │micro_trainer│
+│           │ │          │ │         │ │registry     │
+└───────────┘ └─────────┘ └─────────┘ └──────┬──────┘
+                                              │
+                                              ▼
+                                       ┌──────────────┐
+                                       │ kan/          │
+                                       │ kan_module    │
+                                       │ kan_layer     │
+                                       │ kan_node      │
+                                       └──────┬───────┘
+                                              │
+                                              ▼
+                                       ┌──────────────┐
+                                       │ adapter/      │
+                                       │ kan_adapter   │
+                                       └──────────────┘
+
+┌──────────────┐     ┌───────────────┐
+│understanding/│────→│ llm/          │
+│understanding │     │ ollama_client │
+│_layer        │     │ chat_interface│
+│mini_llm*     │     └───────────────┘
+└──────────────┘
+
+┌──────────────┐
+│ ingestor/    │────→ LTM, EpistemicMetadata
+│ ingestion_   │
+│ pipeline     │
+│ text_chunker │
+│ entity_extr  │
+│ relation_extr│
+│ trust_tagger │
+│ proposal_q   │
+└──────────────┘
+
+┌──────────────┐
+│ importers/   │────→ Ingestor Pipeline
+│ wikipedia_   │
+│ scholar_     │
+└──────────────┘
 ```
 
-### 3.3 Salience Flow
+### Abhängigkeitsrichtung (vereinfacht):
 
 ```
-vector<ConceptId> candidates
-         │
-         ▼
-CognitiveDynamics.compute_salience_batch()
-         │
-         ├── For each concept:
-         │    │
-         │    ├── activation_factor ← STM.get_concept_activation()
-         │    ├── trust_factor     ← LTM.retrieve_concept().epistemic.trust
-         │    ├── connectivity     ← LTM.get_relation_count() / max_connectivity
-         │    ├── recency          ← exp(-0.07 × ticks_since_access)
-         │    └── query_boost      ← direct_match(0.5) / indirect_match(0.25)
-         │
-         │ salience = w_a × activation + w_t × trust + w_c × connectivity
-         │          + w_r × recency + query_boost
-         │
-         │ clamp(0.0, max_salience)
-         │
-         └── Sort descending by salience
-              │
-              ▼
-         vector<SalienceScore>
-```
+types.hpp ← epistemic ← ltm ← brain_controller ← cognitive_dynamics
+                                      ↑                    ↑
+                                      │                    │
+                                    stm ←──────────────────┘
+                                      ↑
+                               curiosity_engine
+                               snapshot_generator
 
-### 3.4 Understanding/LLM Cycle
-
-```
-ConceptId seed
-    │
-    ▼
-UnderstandingLayer.perform_understanding_cycle()
-    │
-    ├── Phase 1: CognitiveDynamics.spread_activation(seed)
-    │             → Aktiviert verbundene Konzepte in STM
-    │
-    ├── Phase 2: CognitiveDynamics.compute_salience_batch()
-    │             → Top-10 salient Konzepte identifizieren
-    │
-    ├── Phase 3: For each registered MiniLLM:
-    │    │
-    │    ├── MiniLLM.extract_meaning(salient_concepts, ltm, stm)
-    │    │   → vector<MeaningProposal>  (ALL HYPOTHESIS)
-    │    │
-    │    ├── MiniLLM.generate_hypotheses(salient_concepts, ltm, stm)
-    │    │   → vector<HypothesisProposal>  (ALL HYPOTHESIS)
-    │    │
-    │    └── MiniLLM.detect_contradictions(salient_concepts, ltm, stm)
-    │        → vector<ContradictionProposal>
-    │
-    ├── Phase 4: MiniLLM.detect_analogies(set_a, set_b, ltm, stm)
-    │             → vector<AnalogyProposal>  (wenn ≥4 Konzepte)
-    │
-    └── Filter by confidence thresholds
-         │
-         ▼
-    UnderstandingResult
-    (meaning + hypothesis + analogy + contradiction proposals)
-
-    ⚠ ALLE Proposals sind HYPOTHESIS
-    ⚠ LTM wurde NICHT modifiziert
-    ⚠ Trust wurde NICHT verändert
-```
-
-### 3.5 Ingestion Pipeline (Detailliert)
-
-```
-ingest_text("Cats are mammals...", "source")
-    │
-    ├── TextChunker.chunk_text()
-    │   └── Satz-Splitting → Gruppierung à 3 Sätze mit 1 Overlap
-    │       → vector<TextChunk>
-    │
-    ├── EntityExtractor.extract_from_chunks()
-    │   ├── Capitalized Phrases: "Cat", "Mammal"
-    │   ├── Quoted Terms: "photosynthesis"
-    │   ├── Definition Patterns: "X is a ..."
-    │   └── Frequent Terms (≥2 Vorkommen)
-    │       → vector<ExtractedEntity> (dedupliziert)
-    │
-    ├── RelationExtractor.extract_relations(text, entities)
-    │   ├── Blind: Regex-Matching ("X is a Y" → IS_A, etc.)
-    │   ├── Entity-Boosted: Bekannte Entities × 1.1–1.3 Confidence
-    │   └── Proximity: Entities nahe beieinander + Keywords
-    │       → vector<ExtractedRelation>
-    │
-    ├── For each Entity:
-    │   ├── TrustTagger.suggest_from_text(context_snippet)
-    │   │   └── Hedging → SPECULATION, Definitions → DEFINITIONS, etc.
-    │   └── IngestProposal erstellen
-    │       → ProposalQueue.enqueue()
-    │
-    └── If auto_approve:
-        ├── ProposalQueue.auto_approve_all()
-        └── commit_approved()
-            ├── Check existing concepts (Label-Match)
-            ├── LTM.store_concept(label, def, TrustAssignment.to_epistemic_metadata())
-            └── LTM.add_relation(source_id, target_id, type, confidence)
+micromodel ← kan ← kan_adapter
+understanding ← llm/ollama
+ingestor ← ltm + epistemic
+importers ← ingestor
 ```
 
 ---
 
-## 4. Ownership & Lifecycle
-
-### 4.1 Wer erstellt/besitzt/zerstört was?
-
-| Objekt | Erstellt von | Besitzer | Zerstört von |
-|--------|-------------|----------|-------------|
-| `ShortTermMemory` | `BrainController::initialize()` | `BrainController` (unique_ptr) | `BrainController::shutdown()` |
-| `Context` (in STM) | `STM::create_context()` | `ShortTermMemory` | `STM::destroy_context()` |
-| `STMEntry` | `STM::activate_concept()` | `Context.concepts` map | `STM::decay_all()` (bei threshold) |
-| `ConceptInfo` | `LTM::store_concept()` | `LongTermMemory.concepts_` map | NIE gelöscht (nur invalidiert) |
-| `RelationInfo` | `LTM::add_relation()` | `LongTermMemory.relations_` map | `LTM::remove_relation()` |
-| `KANModule` | `KANAdapter::create_kan_module()` | `KANAdapter` (shared_ptr) | `KANAdapter::destroy_kan_module()` |
-| `FunctionHypothesis` | `KANAdapter::train_kan_module()` | Aufrufer (unique_ptr) | Aufrufer |
-| `MicroModel` | `MicroModelRegistry::create_model()` | `MicroModelRegistry.models_` map | `Registry::remove_model()` oder `clear()` |
-| `MiniLLM` | Extern erstellt | `UnderstandingLayer` (unique_ptr) | `UnderstandingLayer` Destruktor |
-| `KnowledgeProposal` | Importers | Aufrufer (unique_ptr) | Aufrufer |
-| `IngestProposal` | `IngestionPipeline` | `ProposalQueue.proposals_` | `Queue::pop_approved()` oder `clear()` |
-| `CuriosityTrigger` | `CuriosityEngine` | Aufrufer (value) | Aufrufer |
-| `OllamaClient` | `ChatInterface` | `ChatInterface` (unique_ptr) | `ChatInterface` Destruktor |
-
-### 4.2 Lifecycle-Muster
+## 5. Ownership-Map
 
 ```
-BrainController Lifecycle:
-  BrainController() → initialize() → [use] → shutdown() → ~BrainController()
+BrainController
+ └── unique_ptr<ShortTermMemory> stm_        ← EXKLUSIV
 
-Context Lifecycle:
-  create_context() → [activate, decay, query] → destroy_context()
+KANModule
+ └── vector<unique_ptr<KANLayer>> layers_    ← EXKLUSIV
+      └── vector<unique_ptr<KANNode>> nodes_ ← EXKLUSIV
 
-Concept Lifecycle (LTM):
-  store_concept() → [retrieve, query] → invalidate_concept()
-  ⚠ NIE gelöscht. INVALIDATED bleibt in Storage.
+KANAdapter
+ └── map<id, KANModuleEntry>
+      └── shared_ptr<KANModule> module       ← ⚠️ PROBLEM: No-Op Deleter!
 
-Proposal Lifecycle:
-  Importer/Extractor → IngestProposal → enqueue() → [review] → APPROVED/REJECTED
-  → pop_approved() → commit_approved() → LTM.store_concept()
+FunctionHypothesis
+ └── shared_ptr<KANModule> module            ← Shared mit KANAdapter
 
-MicroModel Lifecycle:
-  Registry.create_model() → Trainer.train_single() → RelevanceMap.compute()
-  → Persistence.save() → [restart] → Persistence.load()
+UnderstandingLayer
+ └── vector<unique_ptr<MiniLLM>> mini_llms_  ← EXKLUSIV
+
+ChatInterface
+ └── unique_ptr<OllamaClient> ollama_        ← EXKLUSIV
+
+WikipediaImporter / ScholarImporter
+ └── return unique_ptr<KnowledgeProposal>    ← Transfer zum Aufrufer
+
+LongTermMemory
+ └── unordered_map<ConceptId, ConceptInfo>   ← Wert-Semantik (kein Pointer)
+ └── unordered_map<RelationId, RelationInfo> ← Wert-Semantik
+
+CognitiveDynamics
+ └── Referenzen auf STM, LTM                ← NICHT-BESITZEND
+ └── unordered_map<ContextId, vector<FocusEntry>> ← Wert-Semantik
+
+MicroModelRegistry
+ └── unordered_map<ConceptId, MicroModel>    ← Wert-Semantik
+
+EmbeddingManager
+ └── unordered_map<string, vector<double>>   ← Wert-Semantik (Cache)
+```
+
+### Ownership-Probleme:
+
+1. **KANAdapter → FunctionHypothesis:** `shared_ptr` mit No-Op Deleter auf `unique_ptr`-verwaltetem Speicher → Dangling Pointer wenn Adapter zerstört wird (BUG-H8)
+2. **CognitiveDynamics:** Hält Referenzen auf STM/LTM ohne Lifetime-Garantie → Aufrufer muss sicherstellen
+3. **EmbeddingManager:** Cache wächst unbegrenzt (BUG-4: Embedding-Leak bei RelevanceMap)
+
+---
+
+## 6. Epistemischer Fluss
+
+```
+Wissensquelle                    Trust-Zuweisung              LTM-Eintrag
+─────────────                    ───────────────              ──────────
+Wikipedia-Import ──→ TrustTagger ──→ THEORY (0.85-0.95) ──→ ConceptInfo
+Scholar-Import   ──→ TrustTagger ──→ THEORY (0.90-0.95) ──→   + EpistemicMetadata
+Manual Input     ──→ TrustTagger ──→ FACT   (0.95-0.99) ──→     (Type, Status,
+LLM-Hypothesis   ──→ Trust-Ceil  ──→ HYPOTHESIS (≤0.50) ──→      Trust, Source)
+LLM-Speculation  ──→ Trust-Ceil  ──→ SPECULATION (≤0.30) ──→
+
+Trust-Propagation durch Spreading Activation:
+┌──────────────────────────────────────────────────────────┐
+│                                                          │
+│  Konzept A (FACT, trust=0.98)                           │
+│       │                                                  │
+│       │ Relation (trust=0.90)                           │
+│       ▼                                                  │
+│  Konzept B (THEORY, trust=0.92)                         │
+│       │                                                  │
+│       │ Relation (trust=0.70)                           │
+│       ▼                                                  │
+│  Konzept C (HYPOTHESIS, trust=0.45)                     │
+│                                                          │
+│  Activation(C) = source_act × relation_trust × decay    │
+│                = 0.98 × 0.90 × 0.70 × decay_factor     │
+│                                                          │
+│  → Trust degradiert entlang der Kette                   │
+│  → HYPOTHESIS kann nie zu FACT promoviert werden        │
+│    durch bloße Spreading Activation                     │
+│                                                          │
+│  Salience-Einfluss:                                      │
+│  epistemic_weight (0.3) × trust_score                   │
+│  → Hochvertrauenswürdige Konzepte haben höhere Salience │
+│  → Fokus bevorzugt FACT/THEORY über HYPOTHESIS          │
+└──────────────────────────────────────────────────────────┘
+
+Status-Transitionen:
+  ACTIVE ──→ DEPRECATED (veraltet)
+  ACTIVE ──→ INVALIDATED (widerlegt)
+  ACTIVE ──→ UNDER_REVIEW (wird geprüft)
+  UNDER_REVIEW ──→ ACTIVE (bestätigt)
+  UNDER_REVIEW ──→ INVALIDATED (widerlegt)
+  
+  ⚠️ INVALIDATED → ACTIVE ist möglich aber nicht validiert (BUG-M2)
+  ⚠️ INVALIDATED + trust ≥ 0.2 → assert(false) Crash (BUG-M1)
 ```
 
 ---
 
-## 5. Epistemischer Fluss
-
-### 5.1 Kernprinzipien
-
-1. **Kein Default:** `EpistemicMetadata` hat keinen Default-Konstruktor. Jedes Wissenselement muss explizit typisiert werden.
-2. **Keine Inferenz:** Importers und Understanding Layer dürfen NICHT epistemische Entscheidungen treffen.
-3. **Kein Löschen:** Wissen wird invalidiert, nie gelöscht. `INVALIDATED` bleibt mit trust < 0.2.
-4. **Proposals only:** MiniLLMs und Importers produzieren VORSCHLÄGE, die IMMER `HYPOTHESIS` sind.
-5. **Trust ist immutabel durch Kognition:** CognitiveDynamics und UnderstandingLayer ändern Trust NICHT.
-
-### 5.2 Trust-Propagation durch das System
-
-```
-Externe Quelle (Wikipedia, Paper, JSON, Text)
-        │
-        ▼
-  SuggestedEpistemicType (NUR Vorschlag)
-  ├── FACT_CANDIDATE
-  ├── THEORY_CANDIDATE
-  ├── HYPOTHESIS_CANDIDATE
-  ├── DEFINITION_CANDIDATE
-  └── UNKNOWN_CANDIDATE
-        │
-        ▼
-  TrustTagger (konservativer Downgrade)
-  ├── FACT_CANDIDATE → THEORIES (0.90)  ← konservativ!
-  ├── THEORY_CANDIDATE → HYPOTHESES (0.65)
-  ├── HYPOTHESIS_CANDIDATE → HYPOTHESES (0.65)
-  └── DEFINITION_CANDIDATE → DEFINITIONS (0.95)
-        │
-        ▼  TrustAssignment
-  ProposalQueue (PENDING)
-        │
-        ▼  [Human Review / Auto-Approve]
-  ReviewDecision
-  ├── approve() → TrustAssignment bleibt
-  ├── reject() → wird verworfen
-  └── approve_with_trust(FACTS) → Trust Override
-        │
-        ▼
-  EpistemicMetadata (final, explizit)
-  ├── EpistemicType (FACT/THEORY/HYPOTHESIS/...)
-  ├── EpistemicStatus (ACTIVE)
-  └── trust (0.0–1.0)
-        │
-        ▼
-  LTM.store_concept(..., EpistemicMetadata)
-        │
-        ├──────────────────────────────────────────┐
-        │                                          │
-        ▼  READ-ONLY                               ▼  READ-ONLY
-  CognitiveDynamics                        UnderstandingLayer
-  ├── Trust gewichtet Spreading            ├── LTM lesen
-  │   activation × trust × weight          ├── Vorschläge generieren
-  ├── Trust beeinflusst Salience           │   (IMMER HYPOTHESIS)
-  │   salience += w_t × trust              └── Trust NICHT ändern
-  ├── Trust beeinflusst Path Score
-  │   path_score += w_t × avg_trust
-  └── INVALIDATED → wird übersprungen
-```
-
-### 5.3 Epistemische Barrieren
-
-```
-                    KANN NICHT DURCHBROCHEN WERDEN
-                    ==============================
-
-  Importer ──X──> LTM     (Importers schreiben NIE direkt)
-  MiniLLM  ──X──> LTM     (Understanding ist READ-ONLY)
-  MiniLLM  ──X──> Trust    (Trust wird NIE von LLMs geändert)
-  CogDyn   ──X──> Trust    (Spreading ändert NIE Trust)
-  CogDyn   ──X──> LTM      (CognitiveDynamics schreibt NIE in LTM)
-
-  EINZIGER Schreibpfad in LTM:
-  IngestionPipeline.commit_approved() → LTM.store_concept()
-
-  EINZIGER Weg Trust zu ändern:
-  LTM.update_epistemic_metadata() / LTM.invalidate_concept()
-```
+# TEIL 2: PROFESSOR-REVIEW
 
 ---
 
-## 6. Dependency Graph
+## A) Stärken
 
-```
-                          common/types.hpp
-                               │
-              ┌────────────────┼────────────────┐
-              │                │                │
-              ▼                ▼                ▼
-    epistemic/            memory/           memory/
-    epistemic_metadata    activation_level   active_relation
-              │           stm_entry              │
-              │                │                │
-              │                ▼                │
-              │          memory/stm ◄───────────┘
-              │                │
-              │                ▼
-              │       memory/brain_controller
-              │
-              ├──────────────────────────────────────┐
-              ▼                                      │
-    ltm/long_term_memory ◄── ltm/relation            │
-              │                                      │
-    ┌─────────┼──────────────┬────────────────┐     │
-    │         │              │                │     │
-    ▼         ▼              ▼                ▼     │
-cognitive/  understanding/  micromodel/    ingestor/ │
-cognitive   understanding   micro_model    │         │
-_dynamics   _layer          │              │         │
-    │         │             ▼              │         │
-    │         │       micro_model_registry │         │
-    │         │             │              │         │
-    │         │             ▼              │         │
-    │         │       embedding_manager    │         │
-    │         │             │              │         │
-    │         │             ▼              │         │
-    │         │       micro_trainer        │         │
-    │         │             │              │         │
-    │         │             ▼              │         │
-    │         │       relevance_map        │         │
-    │         │             │              │         │
-    │         │             ▼              │         │
-    │         │       persistence          │         │
-    │         │                            │         │
-    │         ▼                            │         │
-    │   mini_llm (interface)               │         │
-    │     ├── stub_mini_llm                │         │
-    │     └── ollama_mini_llm              │         │
-    │              │                       │         │
-    │              ▼                       │         │
-    │     llm/ollama_client                │         │
-    │              │                       │         │
-    │              ▼                       │         │
-    │     llm/chat_interface               │         │
-    │                                      │         │
-    │   understanding_proposals            │         │
-    │                                      │         │
-    │                            ┌─────────┘         │
-    │                            ▼                   │
-    │                   importers/                   │
-    │                   knowledge_proposal            │
-    │                     ├── wikipedia_importer      │
-    │                     └── scholar_importer        │
-    │                            │                   │
-    │                            ▼                   │
-    │                   ingestor/text_chunker         │
-    │                   ingestor/entity_extractor     │
-    │                   ingestor/relation_extractor   │
-    │                   ingestor/trust_tagger         │
-    │                   ingestor/proposal_queue       │
-    │                   ingestor/knowledge_ingestor   │
-    │                            │                   │
-    │                            ▼                   │
-    │                   ingestor/ingestion_pipeline ──┘
-    │
-    ▼
-curiosity/curiosity_engine ◄── curiosity/curiosity_trigger
+### A1: Epistemische Integrität als Compile-Time-Garantie
+Die Entscheidung, `ConceptInfo() = delete` zu machen, ist **hervorragend**. Es ist strukturell unmöglich, Wissen ohne epistemische Klassifikation ins System zu bringen. Das ist besser als jede Runtime-Validierung — der Compiler wird zum epistemischen Wächter. In der gesamten kognitiven Architektur-Literatur (SOAR, ACT-R, OpenCog) gibt es nichts Vergleichbares.
 
-kan/kan_node ──> kan/kan_layer ──> kan/kan_module
-                                        │
-                                        ▼
-                              kan/function_hypothesis
-                                        │
-                                        ▼
-                              adapter/kan_adapter
+### A2: Klare Separation of Concerns
+Die 9 Subsysteme haben saubere Verantwortlichkeiten. Besonders gut:
+- **CuriosityEngine ist Read-Only** — sie beobachtet und signalisiert, modifiziert aber nichts
+- **ProposalQueue** als Puffer zwischen Ingestion und LTM verhindert unkontrollierte Writes
+- **Understanding Layer ist optional** — das System funktioniert ohne LLM
 
-snapshot_generator ◄── brain_controller + ltm + curiosity_engine
+### A3: MicroModel-Philosophie "Einfache Teile, komplexe Komposition"
+Die mathematische Analyse zeigt: Ein einzelnes MicroModel ist ein linearer Klassifikator (11 effektive Parameter). Aber K MicroModels + Kombinationsschicht = universeller Approximator (Cybenko, 1989). Das ist ein elegantes Designprinzip mit solider theoretischer Fundierung.
 
-tools/brain19_cli ◄── ingestion_pipeline + micromodel subsystem
-```
+### A4: Spreading Activation löst das Skalierungsproblem
+O(K·D) statt O(N²) durch gezielte Aktivierungsausbreitung. Bei 100K Konzepten: 40.000× Speedup gegenüber Brute-Force. Das ist der richtige algorithmische Ansatz.
+
+### A5: "Mechanik statt Magie"
+Die konsequente Philosophie, dass das LLM nur Verbalizer ist und nie im Denkpfad sitzt, ist architektonisch mutig und korrekt. Brain19 kann nicht halluzinieren — das ist ein echter Differentiator.
 
 ---
 
-## Anhang: Dateiübersicht
+## B) Schwächen & Risiken
 
-| Subsystem | Header (.hpp) | Impl (.cpp) | Tests |
-|-----------|--------------|-------------|-------|
-| common | 1 | 0 | — |
-| epistemic | 1 | 0 | test_epistemic_enforcement.cpp |
-| ltm | 2 | 1 | — |
-| memory | 4 | 2 | test_brain.cpp |
-| cognitive | 2 | 1 | test_cognitive_dynamics.cpp |
-| curiosity | 2 | 1 | — |
-| kan | 4 | 3 | — |
-| adapter | 1 | 1 | — |
-| micromodel | 6 | 6 | test_micromodel.cpp |
-| importers | 3 | 2 | test_importers.cpp |
-| ingestor | 7 | 7 | test_ingestor.cpp |
-| understanding | 4 | 3 | test_understanding_layer.cpp |
-| llm | 2 | 2 | — |
-| snapshot | 1 | 1 | — |
-| tools | 0 | 1 | — |
-| demos | 0 | 5 | — |
-| **Gesamt** | **40** | **36** | **6** |
+### B1: KRITISCH — RelevanceMap ist funktional kaputt
+`RelevanceMap::compute()` ignoriert das Target-Konzept (BUG-C1). Das bedeutet: **Die gesamte MicroModel-Inferenz liefert identische Scores für alle Targets.** Kreativität durch Map-Überlagerung ist damit wertlos. Dies ist der schwerwiegendste Bug — er unterminiert das Kernversprechen der Architektur.
+
+**Code-Referenz:** `micromodel/relevance_map.cpp:24-28`
+
+### B2: KRITISCH — Salience-Berechnung systematisch falsch
+- `recency_weight = 0.0` → Weights summieren auf 0.9 statt 1.0
+- `compute_recency_factor()` returniert hardcoded 0.5
+- Single vs. Batch Salience inkonsistent
+- Root Cause: `update_access_time()` nie implementiert
+
+**Code-Referenz:** `cognitive/cognitive_dynamics.cpp:232-236`, `cognitive/cognitive_config.hpp`
+
+### B3: HOCH — Null Thread-Safety
+Kein einziger Mutex, kein atomic, keine Synchronisation. Jeder zukünftige Multi-Threading-Versuch (Phase 3-5 der Roadmap) baut auf einem System auf, das bei concurrent Access sofort UB produziert. Die Roadmap plant Thread-Safety als Phase 3 — aber die mentale Last wird unterschätzt.
+
+### B4: HOCH — W→e Parameterredundanz (91%)
+Die mathematische Analyse beweist: Von 110 Parametern in W und e sind nur 11 funktional unabhängig. Bei 100K Konzepten: 396 MB verschwendeter RAM. Das ist kein Bug, aber eine architektonische Schuld, die bei Skalierung teuer wird.
+
+**Empfehlung:** Prüfen ob der Zwischenvektor v = W·c + b extern genutzt wird. Falls nein → Reduktion auf (a, β).
+
+### B5: MITTEL — KAN ist architektonisch limitiert
+- Nur 1-Schicht möglich (KANLayer hat n_in Nodes mit je 1 Output)
+- const_cast UB in gradient() (BUG-H6)
+- Numerische statt analytische Gradienten (O(n²) statt O(n))
+- Rand-Bug bei x=1.0
+
+KAN soll in Phase 7 das Validierungs-Backbone werden. In seinem jetzigen Zustand ist es dafür nicht bereit.
+
+### B6: MITTEL — Snapshot zeigt nur 50% des Systems
+Relations immer leer, KAN/MicroModels/Ingestor/CognitiveDynamics fehlen. Debugging und Monitoring sind damit stark eingeschränkt.
+
+### B7: NIEDRIG — Understanding Layer arbeitet mit erfundenen IDs
+`perform_understanding_cycle()` erzeugt Concept-IDs als 1..N statt echte LTM-IDs. Alle Proposals referenzieren nicht-existente Konzepte.
+
+**Code-Referenz:** `understanding/understanding_layer.cpp:161-170`
+
+### B8: Architektonische Schulden-Zusammenfassung
+
+| Schuld | Schwere | Aufwand | Blockiert |
+|--------|---------|---------|-----------|
+| RelevanceMap kaputt | 🔴 | 1 Abend | Kreativität, MicroModel-Nutzen |
+| Salience falsch | 🔴 | 3h | Focus Management, Korrekte Priorisierung |
+| Keine Thread-Safety | 🟠 | 2 Wochen | Phase 3-5 der Roadmap |
+| W→e Redundanz | 🟡 | 1 Woche | Skalierung auf 100K+ |
+| KAN 1-Schicht | 🟡 | 2 Abende | Phase 7 (KAN-LLM Hybrid) |
+| Snapshot unvollständig | 🟡 | 1 Abend | Debugging |
+| Understanding IDs | 🟡 | 1 Abend | Understanding Cycle |
+
+---
+
+## C) Roadmap-Validierung
+
+### Gesamtbewertung: Gut strukturiert, realistisch priorisiert (7/10)
+
+### C1: Reihenfolge ist sinnvoll ✅
+Phase 0 (Stabilisierung) → Phase 1 (Persistence) → Phase 2 (Snapshot+KAN) ist korrekt. "Persistence before Performance" ist die richtige Entscheidung für einen Solo-Entwickler. Der Dependency-Graph ist schlüssig.
+
+### C2: Phase 0 wird unterschätzt ⚠️
+"3-5 Abende" für 5 Bugfix-Gruppen klingt optimistisch. Der Salience-Cluster (Bugs 1+2+3+9) allein ist 3h, aber nur wenn alles glatt geht. Realistischer: **1-2 Wochen** mit Tests und Debugging.
+
+### C3: Phase 1 (Persistence) hat versteckte Komplexität ⚠️
+mmap-basierte Persistence mit WAL ist kein Anfängerprojekt. Die Persistent Memory Architecture Docs sind gut, aber:
+- **StringPool** für Labels ist ein eigenes Projekt (Fragmentation, Compaction)
+- **WAL Recovery** braucht extensive Crash-Tests
+- **Dual-Mode LTM** (Heap/Persistent) verdoppelt die Testmatrix
+
+**Empfehlung:** Zuerst einfache File-basierte Serialisierung (JSON/MessagePack), dann mmap als Optimierung. Das halbiert Phase 1 auf 1-2 Wochen und gibt sofort Persistence.
+
+### C4: Phase 3 (Thread-Safety) fehlt ein Schritt ⚠️
+Die Roadmap plant "Shared-State Wrappers" als Adapter-Pattern. Das ist konzeptionell richtig, aber es fehlt:
+- **Immutable State Pattern** für LTM-Reads (Copy-on-Write)
+- **Message-Passing** als Alternative zu shared_mutex
+- **Benchmarking** — shared_mutex ist auf vielen Workloads langsamer als Kopien
+
+### C5: Phase 5 (Multi-Stream) vor Phase 6 (Dynamic Concepts) ✅
+Richtig. Multi-Stream ist infrastrukturell, Dynamic Concepts ist Feature. Infrastruktur vor Features.
+
+### C6: Phase 7 (KAN-LLM Hybrid) Timeline ist optimistisch ⚠️
+"6-8 Wochen" für bidirektionalen KAN-LLM-Dialog ist Research, nicht Engineering. In der Forschung dauern solche Iterationen typischerweise 3-6 Monate. **Empfehlung:** Phase 7 als offenes Forschungsprojekt ohne feste Timeline betrachten.
+
+### C7: Fehlende Schritte
+
+1. **Benchmarking-Framework** — Nirgends eingeplant. Ohne Benchmarks keine validierbaren Performance-Claims.
+2. **Regressions-Tests** — Phase 0 hat Tests pro Bug, aber kein Gesamt-Regressions-Setup (CI/CD).
+3. **Monitoring/Logging** — SnapshotGenerator reicht nicht für Produktivbetrieb. Strukturiertes Logging fehlt.
+4. **Error Handling** — Kein `try/catch` in den Demos, keine Error-Recovery-Strategie.
+
+---
+
+## D) Fehlende Erweiterungen
+
+### D1: Persistence (mmap)
+
+**Andockpunkt:** `LongTermMemory` hat bereits klar definierte Datenstrukturen:
+```
+concepts_: unordered_map<ConceptId, ConceptInfo>
+relations_: unordered_map<RelationId, RelationInfo>
+outgoing_relations_: unordered_map<ConceptId, vector<RelationId>>
+```
+
+**Problem:** `unordered_map` ist nicht mmap-kompatibel (Heap-Pointer in Buckets). Alternativen:
+- **Flat HashMap** (robin_map, absl::flat_hash_map) → mmap-fähig mit Einschränkungen
+- **Custom Arena Allocator** → `PersistentStore<T>` aus der Persistent Memory Architecture
+- **SQLite als Zwischenschritt** → Sofortige Persistence, später mmap
+
+**Empfehlung:** SQLite/LMDB für Phase 1 (1 Woche), mmap als Phase 1.5 (2-3 Wochen). Das gibt sofort Persistence ohne die StringPool-Komplexität.
+
+### D2: Multi-Threading — Engpässe
+
+| Subsystem | Art | Engpass |
+|---|---|---|
+| LTM | Read-heavy | shared_mutex OK, aber Lock-Contention bei vielen Readern |
+| STM | Read+Write | Per-Context-Mutex möglich (Contexts sind unabhängig) |
+| CognitiveDynamics | Write-heavy (STM) | Spreading Activation modifiziert STM → Bottleneck |
+| MicroModelRegistry | Read-heavy | Inference ist embarrassingly parallel |
+| EmbeddingManager | Read+Write (Cache) | concurrent_unordered_map oder Lock-Free Cache |
+| KAN Training | CPU-bound | Embarrassingly parallel pro Modul |
+
+**Hauptengpass:** `CognitiveDynamics::spread_activation()` liest LTM und schreibt STM. Bei Multi-Stream teilen sich alle Streams denselben STM → Serialisierung. **Lösung:** STM per Stream kopieren, am Ende mergen (wie in Multi-Stream Architecture Docs beschrieben).
+
+### D3: KAN-LLM Hybrid — Andockpunkte
+
+```
+Aktuell:                          Ziel:
+┌──────────┐                     ┌──────────┐
+│MicroModel│──→ Relevanz         │MicroModel│──→ Relevanz
+└──────────┘                     └──────────┘
+                                       │
+                                       ▼
+                                 ┌──────────┐
+                                 │ KAN      │──→ Funktions-Validierung
+                                 │ (Multi-  │     (B-Spline → inspizierbar)
+                                 │  Layer)  │
+                                 └──────────┘
+                                       │
+                                       ▼
+                                 ┌──────────┐
+                                 │ LLM      │──→ Hypothesen-Generierung
+                                 │(Ollama)  │     (kreativ aber unvalidiert)
+                                 └──────────┘
+                                       │
+                                       ▼
+                                 ┌──────────────────┐
+                                 │ EpistemicBridge   │
+                                 │ KAN-MSE → Trust   │
+                                 │ Convergence → Type│
+                                 └──────────────────┘
+```
+
+**Andockpunkte:**
+1. `KANAdapter` → erweitern um `EpistemicBridge`
+2. `UnderstandingLayer` → Hypothesen an KAN zur Validierung weiterleiten
+3. `FunctionHypothesis` → um epistemische Metriken erweitern (MSE → Trust)
+4. Neues Interface: `HypothesisTranslator` (LLM-Text → KAN-Trainingsproblem)
+
+### D4: Skalierung auf 100K+ Konzepte — Was bricht
+
+| Komponente | Bei 100K | Problem | Lösung |
+|---|---|---|---|
+| LTM (Heap) | ~50 MB | OK | - |
+| MicroModels (130P×4B) | 52 MB (voll) / 8.4 MB (reduziert) | RAM bei Redundanz | W→e Reduktion |
+| Embeddings (Cache) | Unbegrenzt wachsend | OOM | LRU-Cache + Eviction |
+| Spreading Activation | O(50³) = 125K Evals | OK | - |
+| RelevanceMap (alle) | 100K × 100K Paare | Unmöglich | Spreading statt Brute-Force |
+| STM (kein GC) | Unbegrenzt wachsend | OOM | GC implementieren (BUG-11) |
+| Salience (Batch) | 100K Scores sortieren | O(N log N) | Top-K statt Sort-All |
+| KAN Training | 100K Module × Epochen | CPU-bound | Parallelisierung (Phase 5) |
+
+**Was zuerst bricht:** EmbeddingManager-Cache (kein Eviction) und STM (kein GC). Beide sind einfache Fixes.
+
+---
+
+## E) Architektonische Empfehlungen (priorisiert, 3-6 Monate)
+
+### Priorität 1: Fundament reparieren (Monat 1) 🔴
+
+1. **RelevanceMap::compute() fixen** — Target-Embedding einbauen. Ohne das ist das Kernfeature nutzlos.
+   - Aufwand: 1 Abend
+   - Impact: Schaltet MicroModel-Inferenz und Kreativität frei
+
+2. **Salience-Cluster fixen** (Bugs 1+2+3+9) — update_access_time() implementieren, Weights auf 1.0
+   - Aufwand: 3h
+   - Impact: Korrekte Priorisierung, valides Focus Management
+
+3. **Build-System reparieren** — Alle Demos kompilierbar
+   - Aufwand: 30 Min
+   - Impact: Testbarkeit
+
+### Priorität 2: Persistence (Monat 1-2) 🟠
+
+4. **Einfache Persistence zuerst** — SQLite oder JSON-Serialisierung statt mmap
+   - Aufwand: 1 Woche
+   - Impact: Brain19 überlebt Restarts → Game-Changer für Entwicklung
+
+5. **mmap-Optimierung** — Wenn SQLite-Persistence funktioniert
+   - Aufwand: 2-3 Wochen
+   - Impact: Performance für 100K+ Konzepte
+
+### Priorität 3: Korrektheit (Monat 2-3) 🟡
+
+6. **KAN: Multi-Layer + analytische Gradienten** — Voraussetzung für Phase 7
+   - Aufwand: 2 Abende
+   - Impact: KAN wird nutzbar für echte Funktionsapproximation
+
+7. **W→e Redundanz klären** — Prüfen ob Zwischenvektor v extern genutzt wird, ggf. reduzieren
+   - Aufwand: 1 Abend (Analyse) + 1 Woche (Refactoring)
+   - Impact: 84% RAM-Ersparnis bei MicroModels
+
+8. **Snapshot vervollständigen** + Structured Logging einführen
+   - Aufwand: 1 Abend + 2 Abende
+   - Impact: Debugging wird möglich
+
+### Priorität 4: Skalierung vorbereiten (Monat 3-4) 🟢
+
+9. **STM Garbage Collection** — Konzepte unter Threshold entfernen
+10. **EmbeddingManager LRU-Cache** — Begrenzung + Eviction
+11. **Benchmarking-Framework** — Reproduzierbare Performance-Tests
+12. **Regressions-Test-Suite** — make test, CI-fähig
+
+### Priorität 5: Multi-Threading Fundament (Monat 4-6) 🟢
+
+13. **Thread-Safety per Adapter-Pattern** (wie in Roadmap Phase 3 geplant)
+14. **Aber zuerst:** Immutable-Read-Path für LTM (Copy-on-Write oder Snapshot-Isolation)
+15. **Benchmarking vor Optimierung** — Messen wo die echten Bottlenecks sind
+
+### Anti-Empfehlungen ❌
+
+- **NICHT** Phase 7 (KAN-LLM Hybrid) anfangen bevor Phase 0-2 fertig sind
+- **NICHT** mmap vor einfacher Persistence implementieren
+- **NICHT** Multi-Threading einführen bevor Single-Threaded korrekt funktioniert
+- **NICHT** auf 100K Konzepte skalieren bevor die Grundalgorithmen korrekt sind
+
+---
+
+## Schlusswort
+
+Brain19 ist ein ambitioniertes und architektonisch durchdachtes Projekt. Die Kernidee — epistemisch integre, selbständig denkende kognitive Architektur mit MicroModels statt LLM — ist originell und theoretisch fundiert. Die größte Gefahr ist nicht die Architektur selbst, sondern die Diskrepanz zwischen dem, was die Dokumentation verspricht, und dem, was der Code aktuell liefert. RelevanceMap, Salience und Understanding Layer sind funktional kaputt — das Fundament muss repariert werden, bevor die beeindruckende Roadmap Sinn ergibt.
+
+Die ADHS-optimierte Roadmap mit kleinen, pushbaren Paketen ist klug. Der wichtigste Rat: **Phase 0 fertigmachen, bevor irgendetwas anderes passiert.** Jeder Fix dort hat sofortige, sichtbare Auswirkung — das ist der Dopamin-Hit, der die Motivation für die nächsten 6 Monate liefert.
+
+---
+
+*Generiert 2026-02-10 | Brain19 Architecture Complete v1.0*  
+*Basierend auf: Code-Audit, ROADMAP.md, MATHEMATICAL_ANALYSIS.md, FIX_PLAN.md, TECHNICAL_ANALYSIS.md, ARCHITECTURE_OVERVIEW.md*

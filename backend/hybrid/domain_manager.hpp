@@ -121,6 +121,10 @@ class DomainManager {
 public:
     struct Config {
         size_t min_concepts_per_domain = 3;
+        // L2: Novelty scores per domain-pair distance (moved from hardcoded)
+        double default_novelty = 0.5;
+        double high_novelty = 0.8;    // e.g. PHYSICAL↔SOCIAL
+        double medium_novelty = 0.7;  // e.g. BIOLOGICAL↔ABSTRACT
     };
 
     DomainManager() : DomainManager(Config{}) {}

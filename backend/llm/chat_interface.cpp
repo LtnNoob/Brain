@@ -273,10 +273,10 @@ std::string ChatInterface::list_knowledge(
     auto ids = ltm.get_concepts_by_type(type);
     std::ostringstream out;
     
-    out << "=== " << to_string(type) << " ===\n\n";
+    out << "=== " << epistemic_type_to_string(type) << " ===\n\n";
     
     if (ids.empty()) {
-        out << "Keine " << to_string(type) << " vorhanden.\n";
+        out << "Keine " << epistemic_type_to_string(type) << " vorhanden.\n";
         return out.str();
     }
     

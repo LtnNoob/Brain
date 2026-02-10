@@ -569,6 +569,112 @@ void test_division_by_zero_guard() {
 }
 
 // =============================================================================
+// M7: EDGE CASE TESTS
+// =============================================================================
+
+void test_empty_hypothesis() {
+    HypothesisTranslator translator;
+    auto proposal = make_hypothesis(100, "", {}, "");
+    auto result = translator.translate(proposal);
+    // Empty hypothesis should not crash; likely NOT_QUANTIFIABLE
+    ASSERT(!result.translatable || result.problem.has_value());
+}
+
+void test_very_long_text() {
+    HypothesisTranslator translator;
+    // 10000 chars of repetitive text
+    std::string long_text(10000, 'x');
+    long_text += " linear proportional increases with";
+    auto proposal = make_hypothesis(101, long_text);
+    auto result = translator.translate(proposal);
+    // Should not crash; pattern detection should still work
+    (void)result;
+}
+
+void test_unicode_hypothesis() {
+    HypothesisTranslator translator;
+    auto proposal = make_hypothesis(102,
+        "Temperatur erhöht sich proportional — y ∝ x (linearer Zusammenhang) äöüß 日本語",
+        {"linear"});
+    auto result = translator.translate(proposal);
+    // Should not crash; may or may not detect pattern depending on keywords
+    (void)result;
+}
+
+void test_numbers_only_hypothesis() {
+    HypothesisTranslator translator;
+    auto proposal = make_hypothesis(103, "42 3.14 100 -7 2.718");
+    auto result = translator.translate(proposal);
+    // Numbers alone are not a quantifiable relationship
+    ASSERT(!result.translatable);
+}
+
+// =============================================================================
+// NEW-4: TESTS FOR ITERATION-3 FIXES
+// =============================================================================
+
+void test_linear_data_block_coherence() {
+    HypothesisTranslator translator;
+    // NEW-5/NEW-4: Linear data should have no large discontinuities
+    auto data = translator.generate_training_data(RelationshipPattern::LINEAR, 100, 0.0, 1.0);
+    ASSERT(data.size() == 100);
+
+    // Sort by x and check no huge y-jumps between adjacent points
+    // (With single linear + noise, jumps should be small)
+    std::vector<std::pair<double, double>> sorted;
+    for (const auto& dp : data) {
+        sorted.emplace_back(dp.inputs[0], dp.outputs[0]);
+    }
+    std::sort(sorted.begin(), sorted.end());
+
+    double max_jump = 0.0;
+    for (size_t i = 1; i < sorted.size(); ++i) {
+        double dy = std::abs(sorted[i].second - sorted[i-1].second);
+        double dx = sorted[i].first - sorted[i-1].first;
+        if (dx > 1e-10) {
+            max_jump = std::max(max_jump, dy);
+        }
+    }
+    // With slope 0.7 and step ~0.01, max expected dy ≈ 0.007 + noise
+    // Should never exceed 0.2 (old block discontinuity was ~0.3+)
+    ASSERT(max_jump < 0.2);
+}
+
+void test_variable_filter() {
+    HypothesisTranslator translator;
+    // "a" and "i" should not be counted as variables
+    auto result = translator.detect_pattern_detailed("a cat is a nice animal");
+    ASSERT(result.detected_variables <= 1);
+}
+
+void test_num_data_points_zero_trust() {
+    EpistemicBridge bridge;
+    auto kan = std::make_shared<KANModule>(1, 1, 10);
+    FunctionHypothesis hyp(1, 1, kan, 100, 0.005);
+
+    KanTrainingResult train_result;
+    train_result.iterations_run = 100;
+    train_result.final_loss = 0.005;
+    train_result.converged = true;
+    train_result.duration = std::chrono::milliseconds(50);
+
+    KanTrainingConfig train_config;
+    train_config.max_iterations = 1000;
+
+    // num_data_points=0 → trust ≤ 0.5
+    auto assessment = bridge.assess(hyp, train_result, train_config,
+                                     DataQuality::EXTRACTED, 0);
+    ASSERT(assessment.metadata.trust <= 0.5);
+}
+
+void test_inverted_u_polynomial() {
+    HypothesisTranslator translator;
+    auto result = translator.detect_pattern_detailed("inverted-U curve relationship");
+    ASSERT(result.pattern == RelationshipPattern::POLYNOMIAL);
+    ASSERT(result.confidence > 0.3);
+}
+
+// =============================================================================
 // MAIN
 // =============================================================================
 
@@ -606,6 +712,18 @@ int main() {
 
     std::cout << "\n--- Edge Case Tests ---\n";
     TEST(division_by_zero_guard);
+
+    std::cout << "\n--- M7: Edge Case Tests (empty, long, unicode, numbers-only) ---\n";
+    TEST(empty_hypothesis);
+    TEST(very_long_text);
+    TEST(unicode_hypothesis);
+    TEST(numbers_only_hypothesis);
+
+    std::cout << "\n--- NEW-4: Iteration-3 Fix Tests ---\n";
+    TEST(linear_data_block_coherence);
+    TEST(variable_filter);
+    TEST(num_data_points_zero_trust);
+    TEST(inverted_u_polynomial);
 
     std::cout << "\n=== Results: " << tests_passed << " passed, "
               << tests_failed << " failed ===\n";

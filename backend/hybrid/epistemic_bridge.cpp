@@ -134,6 +134,7 @@ EpistemicStatus EpistemicBridge::determine_status(bool converged) const {
 }
 
 bool EpistemicBridge::check_interpretability(const KANModule& module) const {
+    // M5 FIX: Extended interpretability check with B-spline monotonicity & linearity
     if (module.num_layers() != 1) return false;
     if (module.input_dim() != 1 || module.output_dim() != 1) return false;
 
@@ -143,11 +144,24 @@ bool EpistemicBridge::check_interpretability(const KANModule& module) const {
 
     if (coefs.size() < 3) return false;
 
+    // Compute first differences (approximate first derivative of B-spline)
     std::vector<double> diffs;
+    diffs.reserve(coefs.size() - 1);
     for (size_t i = 1; i < coefs.size(); ++i) {
         diffs.push_back(coefs[i] - coefs[i - 1]);
     }
 
+    // Check 1: Monotonicity — all diffs same sign (or near-zero)
+    bool monotone_increasing = true;
+    bool monotone_decreasing = true;
+    constexpr double mono_eps = 1e-4;
+    for (double d : diffs) {
+        if (d < -mono_eps) monotone_increasing = false;
+        if (d > mono_eps)  monotone_decreasing = false;
+    }
+    bool is_monotone = monotone_increasing || monotone_decreasing;
+
+    // Check 2: Linearity — low variance in first differences (constant slope)
     double mean = 0.0;
     for (double d : diffs) mean += d;
     mean /= static_cast<double>(diffs.size());
@@ -159,7 +173,10 @@ bool EpistemicBridge::check_interpretability(const KANModule& module) const {
     }
     variance /= static_cast<double>(diffs.size());
 
-    return variance < 0.01;
+    bool is_nearly_linear = (variance < 0.01);
+
+    // Interpretable if monotone OR nearly linear
+    return is_monotone || is_nearly_linear;
 }
 
 std::string EpistemicBridge::build_explanation(
@@ -179,7 +196,7 @@ std::string EpistemicBridge::build_explanation(
         return oss.str();
     }
 
-    oss << to_string(type) << " (Trust=" << trust << "). ";
+    oss << epistemic_type_to_string(type) << " (Trust=" << trust << "). ";
     oss << "MSE=" << mse << ", ";
     oss << "Convergence speed=" << (convergence_speed * 100.0) << "% of max iterations";
 

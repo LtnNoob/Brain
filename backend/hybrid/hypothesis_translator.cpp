@@ -481,23 +481,16 @@ std::vector<DataPoint> HypothesisTranslator::generate_linear_data(
     double step = (max - min) / static_cast<double>(n - 1);
 
     if (!hints.has_hints()) {
-        // Generate 3 separate coherent datasets (not interleaved)
-        // FIX NEW-1: Each subset uses ONE consistent slope/bias pair
-        std::vector<std::pair<double, double>> params = {
-            {0.7, 0.1}, {1.5, -0.2}, {0.3, 0.4}
-        };
-        size_t points_per_set = n / params.size();
-        size_t remainder = n % params.size();
-        size_t global_idx = 0;
-        for (size_t p = 0; p < params.size(); ++p) {
-            auto& [s, b] = params[p];
-            size_t count = points_per_set + (p < remainder ? 1 : 0);
-            for (size_t j = 0; j < count; ++j) {
-                double x = min + step * static_cast<double>(global_idx);
-                double y = s * x + b;
-                data.emplace_back(std::vector<double>{x}, std::vector<double>{y});
-                ++global_idx;
-            }
+        // NEW-5 FIX: Use a single linear function with slight noise instead of
+        // piecewise-linear blocks that create discontinuities at block boundaries.
+        // This is semantically "linear" and learnable by a KAN.
+        double s = 0.7, b = 0.1;
+        std::mt19937 rng(42);  // deterministic seed for reproducibility
+        std::normal_distribution<double> noise(0.0, 0.02);
+        for (size_t i = 0; i < n; ++i) {
+            double x = min + step * static_cast<double>(i);
+            double y = s * x + b + noise(rng);
+            data.emplace_back(std::vector<double>{x}, std::vector<double>{y});
         }
     } else {
         // H1: Hypothesis-specific

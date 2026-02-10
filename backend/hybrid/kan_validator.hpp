@@ -5,6 +5,7 @@
 #include "../kan/kan_module.hpp"
 #include "../adapter/kan_adapter.hpp"
 #include <memory>
+#include <optional>
 #include <string>
 
 namespace brain19 {
@@ -53,8 +54,11 @@ public:
     struct Config {
         HypothesisTranslator::Config translator_config{};
         EpistemicBridge::Config bridge_config{};
-        size_t max_epochs = 1000;
-        double convergence_threshold = 1e-6;
+        // M2: Use std::optional — only override translator suggestions when explicitly set
+        std::optional<size_t> max_epochs_override{};          // nullopt = use translator suggestion
+        std::optional<double> convergence_threshold_override{}; // nullopt = use translator suggestion
+        size_t max_epochs = 1000;              // fallback default (used if translator has no suggestion)
+        double convergence_threshold = 1e-6;   // fallback default
         size_t min_data_points = 10;
         size_t default_num_knots = 10;
     };

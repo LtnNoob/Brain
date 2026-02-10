@@ -58,8 +58,14 @@ ValidationResult KanValidator::validate(const HypothesisProposal& proposal) cons
     );
 
     KanTrainingConfig train_config = problem.suggested_config;
-    train_config.max_iterations = config_.max_epochs;
-    train_config.convergence_threshold = config_.convergence_threshold;
+    // M2 FIX: Only override translator suggestions when explicitly configured
+    if (config_.max_epochs_override.has_value()) {
+        train_config.max_iterations = config_.max_epochs_override.value();
+    }
+    // else: keep problem.suggested_config.max_iterations from translator
+    if (config_.convergence_threshold_override.has_value()) {
+        train_config.convergence_threshold = config_.convergence_threshold_override.value();
+    }
 
     auto training_result = kan->train(problem.training_data, train_config);
 

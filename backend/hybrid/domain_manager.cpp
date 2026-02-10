@@ -152,6 +152,14 @@ std::vector<CrossDomainInsight> DomainManager::find_cross_domain_insights(
 
     if (clusters.size() < 2) return insights;
 
+    // M3: O(n²) pairwise domain comparison — acceptable for ≤ MAX_DOMAINS domains.
+    // If domain count grows beyond this, switch to an index-based approach.
+    static constexpr size_t MAX_DOMAINS_FOR_PAIRWISE = 10;
+    if (clusters.size() > MAX_DOMAINS_FOR_PAIRWISE) {
+        // Guard: skip expensive pairwise scan for too many domains
+        return insights;
+    }
+
     // Find concepts that bridge domains (have relations to concepts in other domains)
     std::vector<std::pair<DomainType, std::vector<ConceptId>>> domain_list(
         clusters.begin(), clusters.end()
@@ -176,16 +184,22 @@ std::vector<CrossDomainInsight> DomainManager::find_cross_domain_insights(
                 }
             }
 
+            // M4 FIX: Deduplicate bridge concept IDs
+            {
+                std::sort(bridges.begin(), bridges.end());
+                bridges.erase(std::unique(bridges.begin(), bridges.end()), bridges.end());
+            }
+
             if (!bridges.empty()) {
-                // Novelty: more distant domains = more novel
-                double novelty = 0.5;
+                // L2 FIX: Novelty scores from config (no longer hardcoded)
+                double novelty = config_.default_novelty;
                 if ((domain_a == DomainType::PHYSICAL && domain_b == DomainType::SOCIAL) ||
                     (domain_a == DomainType::SOCIAL && domain_b == DomainType::PHYSICAL)) {
-                    novelty = 0.8;
+                    novelty = config_.high_novelty;
                 }
                 if ((domain_a == DomainType::BIOLOGICAL && domain_b == DomainType::ABSTRACT) ||
                     (domain_a == DomainType::ABSTRACT && domain_b == DomainType::BIOLOGICAL)) {
-                    novelty = 0.7;
+                    novelty = config_.medium_novelty;
                 }
 
                 insights.emplace_back(

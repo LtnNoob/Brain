@@ -119,8 +119,8 @@ inline EpistemicMetadata create_invalidated_metadata(EpistemicType original_type
     return EpistemicMetadata(original_type, EpistemicStatus::INVALIDATED, trust);
 }
 
-// STRINGIFICATION: For debugging and serialization
-inline std::string to_string(EpistemicType type) {
+// L3 FIX: Renamed to avoid potential ADL collision with std::to_string
+inline std::string epistemic_type_to_string(EpistemicType type) {
     switch (type) {
         case EpistemicType::FACT: return "FACT";
         case EpistemicType::DEFINITION: return "DEFINITION";
@@ -132,7 +132,7 @@ inline std::string to_string(EpistemicType type) {
     }
 }
 
-inline std::string to_string(EpistemicStatus status) {
+inline std::string epistemic_status_to_string(EpistemicStatus status) {
     switch (status) {
         case EpistemicStatus::ACTIVE: return "ACTIVE";
         case EpistemicStatus::CONTEXTUAL: return "CONTEXTUAL";

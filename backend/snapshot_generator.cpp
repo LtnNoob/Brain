@@ -46,8 +46,18 @@ std::string SnapshotGenerator::generate_json_snapshot(
     }
     json << "    ],\n";
     
-    // Active relations (simplified - would need actual relation data)
+    // Active relations from STM
     json << "    \"active_relations\": [\n";
+    if (brain->get_stm()) {
+        auto active_relations = brain->get_stm()->get_active_relations(context_id, 0.01);
+        for (size_t i = 0; i < active_relations.size(); i++) {
+            json << "      {\"source\": " << active_relations[i].source
+                 << ", \"target\": " << active_relations[i].target
+                 << ", \"activation\": " << active_relations[i].activation << "}";
+            if (i < active_relations.size() - 1) json << ",";
+            json << "\n";
+        }
+    }
     json << "    ]\n";
     
     json << "  },\n";

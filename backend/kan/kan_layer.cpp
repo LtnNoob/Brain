@@ -17,23 +17,6 @@ KANLayer::KANLayer(size_t input_dim, size_t output_dim, size_t num_knots_per_nod
     }
 }
 
-// Legacy constructor: diagonal-style layer (input_dim == output_dim, 1 node per input)
-KANLayer::KANLayer(size_t input_dim, size_t num_knots_per_node_legacy, bool /*legacy_tag*/)
-    : input_dim_(input_dim)
-    , output_dim_(input_dim)
-{
-    if (input_dim == 0) {
-        throw std::invalid_argument("KANLayer requires at least 1 input");
-    }
-    
-    // For backward compat: create input_dim × input_dim nodes
-    // but this preserves the old behavior where each input maps to one output
-    nodes_.reserve(input_dim * input_dim);
-    for (size_t i = 0; i < input_dim * input_dim; i++) {
-        nodes_.push_back(std::make_unique<KANNode>(num_knots_per_node_legacy));
-    }
-}
-
 std::vector<double> KANLayer::evaluate(const std::vector<double>& inputs) const {
     if (inputs.size() != input_dim_) {
         throw std::invalid_argument("Input dimension mismatch");

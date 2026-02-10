@@ -44,7 +44,7 @@ struct PersistentConceptRecord {
     uint64_t access_count;          // 8B — for future hot/cold tiering
     uint64_t last_access_epoch_us;  // 8B
     uint64_t created_epoch_us;      // 8B
-    uint8_t  _reserved[56];        // 56B — pad to 128
+    uint8_t  _reserved[64];        // 64B — pad to 128
     // Total: 128 bytes
     
     bool is_deleted() const { return flags & 0x01; }
@@ -65,7 +65,7 @@ struct PersistentRelationRecord {
     uint8_t  flags;             // 1B (bit 0 = deleted)
     uint8_t  _pad[6];          // 6B alignment
     double   weight;            // 8B
-    uint8_t  _reserved[16];    // 16B — pad to 64
+    uint8_t  _reserved[24];    // 24B — pad to 64
     // Total: 64 bytes
     
     bool is_deleted() const { return flags & 0x01; }

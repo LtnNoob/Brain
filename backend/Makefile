@@ -23,12 +23,14 @@ INGESTOR_SOURCES = ingestor/entity_extractor.cpp ingestor/relation_extractor.cpp
                    ingestor/text_chunker.cpp ingestor/trust_tagger.cpp \
                    ingestor/knowledge_ingestor.cpp ingestor/proposal_queue.cpp \
                    ingestor/ingestion_pipeline.cpp
+PERSISTENT_SOURCES = persistent/persistent_ltm.cpp
 
 # Core library (everything except mains)
 CORE_SOURCES = $(MEMORY_SOURCES) $(KAN_SOURCES) $(ADAPTER_SOURCES) \
                $(CURIOSITY_SOURCES) $(SNAPSHOT_SOURCES) $(LTM_SOURCES) \
                $(MICROMODEL_SOURCES) $(COGNITIVE_SOURCES) $(UNDERSTANDING_SOURCES) \
-               $(LLM_SOURCES) $(IMPORTER_SOURCES) $(INGESTOR_SOURCES)
+               $(LLM_SOURCES) $(IMPORTER_SOURCES) $(INGESTOR_SOURCES) \
+               $(PERSISTENT_SOURCES)
 
 CORE_OBJECTS = $(CORE_SOURCES:.cpp=.o)
 
@@ -37,7 +39,7 @@ TARGETS = demo_integrated demo_epistemic_complete demo_understanding_layer \
           demo_cognitive_dynamics demo_chat \
           test_cognitive_dynamics test_epistemic_enforcement \
           test_understanding_layer test_importers \
-          test_brain test_micromodel test_ingestor brain19_cli
+          test_brain test_micromodel test_ingestor test_persistent_ltm brain19_cli
 
 .PHONY: all clean run
 
@@ -79,6 +81,9 @@ test_micromodel: micromodel/test_micromodel.o $(CORE_OBJECTS)
 	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
 test_ingestor: ingestor/test_ingestor.o $(CORE_OBJECTS)
+	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
+
+test_persistent_ltm: test_persistent_ltm.o $(CORE_OBJECTS)
 	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
 brain19_cli: tools/brain19_cli.o $(CORE_OBJECTS)

@@ -122,7 +122,7 @@ private:
     std::atomic<bool> monitor_running_{false};
     AlertCallback alert_cb_;
 
-    OrchestratorMetrics metrics_;
+    mutable OrchestratorMetrics metrics_;
 };
 
 } // namespace brain19

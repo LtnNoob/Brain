@@ -97,12 +97,16 @@ bool StreamOrchestrator::shutdown(std::chrono::milliseconds timeout) {
         }
     }
 
-    // Join all with timeout
+    // Join all with shared deadline (not per-stream timeout)
     bool all_stopped = true;
     {
         std::lock_guard lock(streams_mtx_);
+        auto deadline = std::chrono::steady_clock::now() + timeout;
         for (auto& [id, stream] : streams_) {
-            if (!stream->join(timeout)) {
+            auto remaining = std::chrono::duration_cast<std::chrono::milliseconds>(
+                deadline - std::chrono::steady_clock::now());
+            if (remaining.count() <= 0) remaining = std::chrono::milliseconds(1);
+            if (!stream->join(remaining)) {
                 all_stopped = false;
             }
         }
@@ -168,10 +172,10 @@ std::vector<StreamHealth> StreamOrchestrator::health_check() const {
         result.push_back(h);
     }
 
-    // Update orchestrator metrics (const_cast for atomic updates from const method)
-    const_cast<OrchestratorMetrics&>(metrics_).total_ticks_all.store(total_ticks, std::memory_order_relaxed);
-    const_cast<OrchestratorMetrics&>(metrics_).total_errors_all.store(total_errors, std::memory_order_relaxed);
-    const_cast<OrchestratorMetrics&>(metrics_).stalled_streams.store(stalled, std::memory_order_relaxed);
+    // Update orchestrator metrics (metrics_ is mutable)
+    metrics_.total_ticks_all.store(total_ticks, std::memory_order_relaxed);
+    metrics_.total_errors_all.store(total_errors, std::memory_order_relaxed);
+    metrics_.stalled_streams.store(stalled, std::memory_order_relaxed);
 
     return result;
 }

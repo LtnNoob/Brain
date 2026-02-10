@@ -1,7 +1,11 @@
 #include "wikipedia_importer.hpp"
+#include "http_client.hpp"
 #include <sstream>
 #include <algorithm>
 #include <regex>
+#include <nlohmann/json.hpp>
+
+using json = nlohmann::json;
 
 namespace brain19 {
 
@@ -33,6 +37,79 @@ std::unique_ptr<KnowledgeProposal> WikipediaImporter::import_article(
     proposal->suggested_epistemic_type = SuggestedEpistemicType::DEFINITION_CANDIDATE;
     
     return proposal;
+}
+
+std::unique_ptr<KnowledgeProposal> WikipediaImporter::import_article(
+    const std::string& article_title,
+    const std::string& lang
+) {
+    // Build MediaWiki API URL
+    std::string encoded_title = HttpClient::url_encode(article_title);
+    std::string url = "https://" + lang + ".wikipedia.org/w/api.php"
+        "?action=query&titles=" + encoded_title +
+        "&prop=extracts&explaintext=1&format=json";
+
+    auto resp = HttpClient::http_get(url);
+    if (!resp.success) {
+        auto proposal = std::make_unique<KnowledgeProposal>();
+        proposal->proposal_id = next_proposal_id_++;
+        proposal->source_type = SourceType::WIKIPEDIA;
+        proposal->title = article_title;
+        proposal->import_timestamp = std::chrono::system_clock::now();
+        proposal->notes_for_human_review = "FETCH FAILED: " + resp.error;
+        return proposal;
+    }
+
+    // Parse MediaWiki JSON response
+    try {
+        auto j = json::parse(resp.body);
+        auto& pages = j["query"]["pages"];
+
+        // Pages is an object with page IDs as keys
+        for (auto& [page_id, page_data] : pages.items()) {
+            if (page_id == "-1") {
+                // Article not found
+                auto proposal = std::make_unique<KnowledgeProposal>();
+                proposal->proposal_id = next_proposal_id_++;
+                proposal->source_type = SourceType::WIKIPEDIA;
+                proposal->title = article_title;
+                proposal->import_timestamp = std::chrono::system_clock::now();
+                proposal->notes_for_human_review =
+                    "Article not found on " + lang + ".wikipedia.org: " + article_title;
+                return proposal;
+            }
+
+            std::string extract = page_data.value("extract", "");
+            std::string actual_title = page_data.value("title", article_title);
+
+            if (extract.empty()) {
+                auto proposal = std::make_unique<KnowledgeProposal>();
+                proposal->proposal_id = next_proposal_id_++;
+                proposal->source_type = SourceType::WIKIPEDIA;
+                proposal->title = actual_title;
+                proposal->import_timestamp = std::chrono::system_clock::now();
+                proposal->notes_for_human_review = "Article found but extract is empty.";
+                return proposal;
+            }
+
+            // Delegate to existing parse logic
+            auto proposal = parse_wikipedia_text(actual_title, extract);
+            proposal->source_reference = "https://" + lang + ".wikipedia.org/wiki/" +
+                HttpClient::url_encode(actual_title);
+            return proposal;
+        }
+    } catch (const std::exception& e) {
+        auto proposal = std::make_unique<KnowledgeProposal>();
+        proposal->proposal_id = next_proposal_id_++;
+        proposal->source_type = SourceType::WIKIPEDIA;
+        proposal->title = article_title;
+        proposal->import_timestamp = std::chrono::system_clock::now();
+        proposal->notes_for_human_review = std::string("JSON parse error: ") + e.what();
+        return proposal;
+    }
+
+    // Should not reach here
+    return nullptr;
 }
 
 std::unique_ptr<KnowledgeProposal> WikipediaImporter::import_from_url(

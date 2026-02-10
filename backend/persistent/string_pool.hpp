@@ -82,6 +82,9 @@ public:
             hdr = header();
         }
         
+        if (hdr->used_bytes + str.size() > UINT32_MAX) {
+            throw std::overflow_error("StringPool: exceeded 4GB offset limit");
+        }
         uint32_t offset = static_cast<uint32_t>(hdr->used_bytes);
         uint32_t length = static_cast<uint32_t>(str.size());
         

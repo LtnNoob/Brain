@@ -127,10 +127,8 @@ std::optional<ConceptInfo> PersistentLTM::retrieve_concept(ConceptId id) const {
     auto* rec = concepts_->record(it->second);
     if (rec->is_deleted()) return std::nullopt;
     
-    // Update access stats (const_cast acceptable for stats-only mutation)
-    auto* mut_rec = const_cast<PersistentConceptRecord*>(rec);
-    mut_rec->access_count++;
-    mut_rec->last_access_epoch_us = const_cast<PersistentLTM*>(this)->now_epoch_us();
+    // Access stats removed from const method to avoid data race under shared_lock
+    // Stats can be updated via a separate non-const method if needed.
     
     std::string label = strings_->get(rec->label_offset, rec->label_length);
     std::string def = strings_->get(rec->definition_offset, rec->definition_length);
@@ -193,13 +191,12 @@ bool PersistentLTM::invalidate_concept(ConceptId id, double invalidation_trust) 
         wal_->append(WALOpType::INVALIDATE_CONCEPT, &wp, sizeof(wp));
     }
     
-    EpistemicMetadata meta(
-        static_cast<EpistemicType>(rec->epistemic_type),
-        EpistemicStatus::INVALIDATED,
-        invalidation_trust
-    );
+    // Directly mutate record instead of calling update_epistemic_metadata()
+    // to avoid a second WAL entry (double-log bug)
+    rec->epistemic_status = static_cast<uint8_t>(EpistemicStatus::INVALIDATED);
+    rec->trust = invalidation_trust;
     
-    return update_epistemic_metadata(id, meta);
+    return true;
 }
 
 std::vector<ConceptId> PersistentLTM::get_concepts_by_type(EpistemicType type) const {

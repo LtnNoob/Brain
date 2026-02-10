@@ -3,10 +3,12 @@
 
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/uio.h>
 #include <fcntl.h>
 #include <unistd.h>
 #include <cerrno>
 #include <cstring>
+#include <array>
 #include <stdexcept>
 #include <vector>
 
@@ -14,29 +16,29 @@ namespace brain19 {
 namespace persistent {
 
 // =============================================================================
-// CRC32 (simple table-based)
+// CRC32 (thread-safe via function-local static initialization)
 // =============================================================================
-static uint32_t crc32_table[256];
-static bool crc32_initialized = false;
-
-static void init_crc32_table() {
-    if (crc32_initialized) return;
-    for (uint32_t i = 0; i < 256; i++) {
-        uint32_t crc = i;
-        for (int j = 0; j < 8; j++) {
-            crc = (crc >> 1) ^ (0xEDB88320 & (-(crc & 1)));
+static const std::array<uint32_t, 256>& crc32_table() {
+    static const auto table = []() {
+        std::array<uint32_t, 256> t{};
+        for (uint32_t i = 0; i < 256; i++) {
+            uint32_t crc = i;
+            for (int j = 0; j < 8; j++) {
+                crc = (crc >> 1) ^ (0xEDB88320 & (-(crc & 1)));
+            }
+            t[i] = crc;
         }
-        crc32_table[i] = crc;
-    }
-    crc32_initialized = true;
+        return t;
+    }();
+    return table;
 }
 
 static uint32_t crc32_update(uint32_t crc, const void* data, size_t len) {
-    init_crc32_table();
+    const auto& table = crc32_table();
     const uint8_t* buf = static_cast<const uint8_t*>(data);
     crc = ~crc;
     for (size_t i = 0; i < len; i++) {
-        crc = crc32_table[(crc ^ buf[i]) & 0xFF] ^ (crc >> 8);
+        crc = table[(crc ^ buf[i]) & 0xFF] ^ (crc >> 8);
     }
     return ~crc;
 }
@@ -104,17 +106,15 @@ uint64_t WALWriter::append(WALOpType op, const void* payload, uint32_t payload_s
     hdr.payload_size = payload_size;
     hdr.checksum = compute_checksum(hdr, payload, payload_size);
 
-    // Write header + payload atomically (single writev would be ideal, but write+write+fsync is fine)
-    ssize_t w1 = ::write(fd_, &hdr, sizeof(hdr));
-    if (w1 != sizeof(hdr)) {
-        throw std::runtime_error("WALWriter: header write failed");
-    }
-
-    if (payload_size > 0) {
-        ssize_t w2 = ::write(fd_, payload, payload_size);
-        if (w2 != static_cast<ssize_t>(payload_size)) {
-            throw std::runtime_error("WALWriter: payload write failed");
-        }
+    // Write header + payload atomically via writev() to prevent torn writes on crash
+    struct iovec iov[2] = {
+        { &hdr, sizeof(hdr) },
+        { const_cast<void*>(payload), payload_size }
+    };
+    int iovcnt = (payload_size > 0) ? 2 : 1;
+    ssize_t written = ::writev(fd_, iov, iovcnt);
+    if (written != static_cast<ssize_t>(sizeof(hdr) + payload_size)) {
+        throw std::runtime_error("WALWriter: writev failed");
     }
 
     ::fsync(fd_);

@@ -23,7 +23,19 @@ ThinkStream::ThinkStream(StreamId id,
 ThinkStream::~ThinkStream() {
     stop();
     if (thread_.joinable()) {
-        thread_.join();
+        // Wait with timeout to avoid blocking forever
+        auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(5);
+        while (std::chrono::steady_clock::now() < deadline) {
+            auto s = state_.load(std::memory_order_acquire);
+            if (s == StreamState::Stopped || s == StreamState::Error) break;
+            std::this_thread::sleep_for(std::chrono::milliseconds(1));
+        }
+        auto s = state_.load(std::memory_order_acquire);
+        if (s == StreamState::Stopped || s == StreamState::Error) {
+            thread_.join();
+        } else {
+            thread_.detach();  // last resort — stop_requested_ is true, thread will exit
+        }
     }
     // Destroy our context if we created one
     if (context_id_ != 0) {
@@ -43,8 +55,19 @@ bool ThinkStream::start() {
         }
     }
 
+    // Join old thread if still joinable (restart from Stopped)
+    if (thread_.joinable()) {
+        thread_.join();
+    }
+
     stop_requested_.store(false, std::memory_order_relaxed);
     metrics_.reset();
+
+    // Destroy old context if exists (prevent context leak on restart)
+    if (context_id_ != 0) {
+        try { stm_.destroy_context(context_id_); } catch (...) {}
+        context_id_ = 0;
+    }
 
     // Create a dedicated STM context for this stream
     context_id_ = stm_.create_context();

@@ -113,7 +113,7 @@ public:
     }
 
 private:
-    struct Cell {
+    struct alignas(64) Cell {
         std::atomic<size_t> sequence;
         T data{};
     };

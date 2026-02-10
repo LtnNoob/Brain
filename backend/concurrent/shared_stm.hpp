@@ -9,6 +9,7 @@
 #include "../memory/stm.hpp"
 #include <shared_mutex>
 #include <mutex>
+#include <memory>
 #include <unordered_map>
 
 namespace brain19 {
@@ -29,8 +30,8 @@ public:
     ContextId create_context() {
         std::unique_lock lock(global_mtx_);
         auto cid = stm_.create_context();
-        // Pre-create per-context mutex
-        context_mutexes_[cid];
+        // Pre-create per-context mutex (unique_ptr — not moved on rehash)
+        context_mutexes_[cid] = std::make_unique<std::shared_mutex>();
         return cid;
     }
 
@@ -163,11 +164,12 @@ public:
 private:
     ShortTermMemory& stm_;
     mutable std::shared_mutex global_mtx_;
-    mutable std::unordered_map<ContextId, std::shared_mutex> context_mutexes_;
+    mutable std::unordered_map<ContextId, std::unique_ptr<std::shared_mutex>> context_mutexes_;
 
     std::shared_mutex& get_context_mutex(ContextId cid) const {
-        // Context mutex must already exist (created in create_context)
-        return context_mutexes_.at(cid);
+        // Hold global shared lock to protect map access from concurrent destroy_context
+        std::shared_lock lock(global_mtx_);
+        return *context_mutexes_.at(cid);
     }
 };
 

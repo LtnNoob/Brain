@@ -3,6 +3,7 @@
 #include "knowledge_proposal.hpp"
 #include <string>
 #include <memory>
+#include <vector>
 
 namespace brain19 {
 
@@ -13,10 +14,16 @@ public:
     WikipediaImporter();
     ~WikipediaImporter();
     
-    // Extract knowledge proposal from Wikipedia article
-    // Returns nullptr if extraction fails
+    // Extract knowledge proposal from Wikipedia article (stub, no HTTP)
     std::unique_ptr<KnowledgeProposal> import_article(
         const std::string& article_title
+    );
+    
+    // Fetch article via MediaWiki API and parse it
+    // lang: "de" (default) or "en"
+    std::unique_ptr<KnowledgeProposal> import_article(
+        const std::string& article_title,
+        const std::string& lang
     );
     
     // Extract from URL (for testing with local files)

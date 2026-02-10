@@ -23,7 +23,7 @@ public:
 
     // === READ operations (shared_lock) ===
 
-    const Vec10& get_relation_embedding(RelationType type) const {
+    Vec10 get_relation_embedding(RelationType type) const {
         std::shared_lock lock(mtx_);
         return em_.get_relation_embedding(type);
     }
@@ -50,7 +50,7 @@ public:
 
     // === WRITE operations (unique_lock) — auto-create on first access ===
 
-    const Vec10& get_context_embedding(const std::string& name) {
+    Vec10 get_context_embedding(const std::string& name) {
         // Fast path: check with shared lock first
         {
             std::shared_lock lock(mtx_);
@@ -63,10 +63,10 @@ public:
         return em_.get_context_embedding(name);
     }
 
-    const Vec10& query_context() { return get_context_embedding("query"); }
-    const Vec10& recall_context() { return get_context_embedding("recall"); }
-    const Vec10& creative_context() { return get_context_embedding("creative"); }
-    const Vec10& analytical_context() { return get_context_embedding("analytical"); }
+    Vec10 query_context() { return get_context_embedding("query"); }
+    Vec10 recall_context() { return get_context_embedding("recall"); }
+    Vec10 creative_context() { return get_context_embedding("creative"); }
+    Vec10 analytical_context() { return get_context_embedding("analytical"); }
 
     // === Direct access (unique_lock — for persistence) ===
 

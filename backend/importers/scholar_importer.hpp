@@ -21,9 +21,20 @@ public:
     ScholarImporter();
     ~ScholarImporter();
     
-    // Import from DOI
+    // Import from DOI (stub, no HTTP)
     std::unique_ptr<KnowledgeProposal> import_paper_by_doi(
         const std::string& doi
+    );
+    
+    // Import from DOI via Semantic Scholar API
+    std::unique_ptr<KnowledgeProposal> import_paper_by_doi_online(
+        const std::string& doi
+    );
+    
+    // Search papers via Semantic Scholar API
+    std::vector<std::unique_ptr<KnowledgeProposal>> search_papers(
+        const std::string& query,
+        int limit = 5
     );
     
     // Import from URL

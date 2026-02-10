@@ -139,8 +139,12 @@ void test_mpmc_queue_concurrent() {
 
     for (auto& t : producers) t.join();
     done.store(true, std::memory_order_release);
-    // Give consumers time to drain
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    // Wait until queue is fully drained before joining consumers
+    while (!q.empty()) {
+        std::this_thread::yield();
+    }
+    // Small grace period for consumers to finish their last iteration
+    std::this_thread::sleep_for(std::chrono::milliseconds(50));
     for (auto& t : consumers) t.join();
 
     int total_produced = produced.load();

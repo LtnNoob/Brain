@@ -1,7 +1,11 @@
 #include "scholar_importer.hpp"
+#include "http_client.hpp"
 #include <sstream>
 #include <algorithm>
 #include <regex>
+#include <nlohmann/json.hpp>
+
+using json = nlohmann::json;
 
 namespace brain19 {
 
@@ -30,6 +34,121 @@ std::unique_ptr<KnowledgeProposal> ScholarImporter::import_paper_by_doi(
     proposal->suggested_epistemic_type = SuggestedEpistemicType::HYPOTHESIS_CANDIDATE;
     
     return proposal;
+}
+
+std::unique_ptr<KnowledgeProposal> ScholarImporter::import_paper_by_doi_online(
+    const std::string& doi
+) {
+    std::string url = "https://api.semanticscholar.org/graph/v1/paper/DOI:" +
+        HttpClient::url_encode(doi) +
+        "?fields=title,abstract,authors,year,venue,isOpenAccess";
+
+    auto resp = HttpClient::http_get(url);
+    if (!resp.success) {
+        auto proposal = std::make_unique<KnowledgeProposal>();
+        proposal->proposal_id = next_proposal_id_++;
+        proposal->source_type = SourceType::GOOGLE_SCHOLAR;
+        proposal->source_reference = "DOI: " + doi;
+        proposal->import_timestamp = std::chrono::system_clock::now();
+        proposal->notes_for_human_review = "FETCH FAILED: " + resp.error;
+        return proposal;
+    }
+
+    try {
+        auto j = json::parse(resp.body);
+
+        std::string title = j.value("title", "Unknown");
+        std::string abstract_text = j.value("abstract", "");
+        std::string year = j.contains("year") && !j["year"].is_null()
+            ? std::to_string(j["year"].get<int>()) : "";
+        std::string venue = j.value("venue", "");
+
+        std::vector<std::string> authors;
+        if (j.contains("authors") && j["authors"].is_array()) {
+            for (auto& a : j["authors"]) {
+                authors.push_back(a.value("name", ""));
+            }
+        }
+
+        bool is_preprint = venue.empty() || venue.find("arXiv") != std::string::npos;
+
+        // Use existing parse_paper_text
+        std::string full_text = abstract_text.empty() ? title : abstract_text;
+        auto proposal = parse_paper_text(title, full_text, authors, year, venue, is_preprint);
+        proposal->source_reference = "DOI: " + doi;
+        return proposal;
+
+    } catch (const std::exception& e) {
+        auto proposal = std::make_unique<KnowledgeProposal>();
+        proposal->proposal_id = next_proposal_id_++;
+        proposal->source_type = SourceType::GOOGLE_SCHOLAR;
+        proposal->source_reference = "DOI: " + doi;
+        proposal->import_timestamp = std::chrono::system_clock::now();
+        proposal->notes_for_human_review = std::string("JSON parse error: ") + e.what();
+        return proposal;
+    }
+}
+
+std::vector<std::unique_ptr<KnowledgeProposal>> ScholarImporter::search_papers(
+    const std::string& query,
+    int limit
+) {
+    std::vector<std::unique_ptr<KnowledgeProposal>> results;
+
+    std::string url = "https://api.semanticscholar.org/graph/v1/paper/search?query=" +
+        HttpClient::url_encode(query) +
+        "&limit=" + std::to_string(limit) +
+        "&fields=title,abstract,authors,year,venue,isOpenAccess";
+
+    auto resp = HttpClient::http_get(url);
+    if (!resp.success) {
+        auto proposal = std::make_unique<KnowledgeProposal>();
+        proposal->proposal_id = next_proposal_id_++;
+        proposal->source_type = SourceType::GOOGLE_SCHOLAR;
+        proposal->import_timestamp = std::chrono::system_clock::now();
+        proposal->notes_for_human_review = "SEARCH FAILED: " + resp.error;
+        results.push_back(std::move(proposal));
+        return results;
+    }
+
+    try {
+        auto j = json::parse(resp.body);
+
+        if (!j.contains("data") || !j["data"].is_array()) {
+            return results;
+        }
+
+        for (auto& paper : j["data"]) {
+            std::string title = paper.value("title", "Unknown");
+            std::string abstract_text = paper.value("abstract", "");
+            std::string year = paper.contains("year") && !paper["year"].is_null()
+                ? std::to_string(paper["year"].get<int>()) : "";
+            std::string venue = paper.value("venue", "");
+
+            std::vector<std::string> authors;
+            if (paper.contains("authors") && paper["authors"].is_array()) {
+                for (auto& a : paper["authors"]) {
+                    authors.push_back(a.value("name", ""));
+                }
+            }
+
+            bool is_preprint = venue.empty() || venue.find("arXiv") != std::string::npos;
+            std::string full_text = abstract_text.empty() ? title : abstract_text;
+
+            auto proposal = parse_paper_text(title, full_text, authors, year, venue, is_preprint);
+            results.push_back(std::move(proposal));
+        }
+
+    } catch (const std::exception& e) {
+        auto proposal = std::make_unique<KnowledgeProposal>();
+        proposal->proposal_id = next_proposal_id_++;
+        proposal->source_type = SourceType::GOOGLE_SCHOLAR;
+        proposal->import_timestamp = std::chrono::system_clock::now();
+        proposal->notes_for_human_review = std::string("JSON parse error: ") + e.what();
+        results.push_back(std::move(proposal));
+    }
+
+    return results;
 }
 
 std::unique_ptr<KnowledgeProposal> ScholarImporter::import_paper_from_url(

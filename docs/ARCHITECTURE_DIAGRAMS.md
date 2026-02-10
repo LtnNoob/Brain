@@ -352,4 +352,154 @@ flowchart TD
 
 ---
 
+---
+
+## 8. MULTI-STREAM ARCHITECTURE
+
+StreamOrchestrator verwaltet N ThinkStreams die parallel auf geteiltem State arbeiten.
+
+```mermaid
+flowchart TD
+    subgraph Orchestrator["StreamOrchestrator"]
+        SO[StreamOrchestrator<br/>auto-detect hardware_concurrency]
+        MON[Monitor-Thread<br/>Health + Throughput<br/>stall_threshold: 5s]
+    end
+
+    SO -->|owns N| TS1[ThinkStream 0<br/>ContextId: eigener<br/>StreamState: Running]
+    SO -->|owns N| TS2[ThinkStream 1<br/>ContextId: eigener<br/>StreamState: Running]
+    SO -->|owns N| TSN[ThinkStream N-1<br/>ContextId: eigener<br/>StreamState: Running]
+
+    MON -.->|reads metrics| TS1
+    MON -.->|reads metrics| TS2
+    MON -.->|reads metrics| TSN
+
+    subgraph SharedState["Shared State (Reader-Writer Locks)"]
+        SLTM[SharedLTM<br/>shared_mutex<br/>shared_lock: reads<br/>unique_lock: writes]
+        SSTM[SharedSTM<br/>Per-Context shared_mutex<br/>+ global shared_mutex]
+        SREG[SharedRegistry<br/>shared_mutex + per-model mutex<br/>ModelGuard RAII]
+        SEMB[SharedEmbeddings<br/>shared_mutex<br/>fast-path shared_lock]
+    end
+
+    TS1 -->|shared_lock| SLTM
+    TS1 -->|per-ctx lock| SSTM
+    TS1 -->|shared_lock| SREG
+    TS1 -->|shared_lock| SEMB
+    TS2 -->|shared_lock| SLTM
+    TS2 -->|per-ctx lock| SSTM
+    TS2 -->|shared_lock| SREG
+    TS2 -->|shared_lock| SEMB
+    TSN -->|shared_lock| SLTM
+    TSN -->|per-ctx lock| SSTM
+    TSN -->|shared_lock| SREG
+    TSN -->|shared_lock| SEMB
+
+    subgraph Queue["Inter-Stream Kommunikation"]
+        LFQ["MPMCQueue&lt;ThinkTask&gt;<br/>Vyukov bounded MPMC<br/>ABA-safe via sequence counters<br/>alignas(64) head/tail"]
+    end
+
+    SO -->|push_task| LFQ
+    LFQ -->|try_pop| TS1
+    LFQ -->|try_pop| TS2
+    LFQ -->|try_pop| TSN
+
+    subgraph LockHierarchy["Lock-Hierarchie (Deadlock-Prevention)"]
+        direction LR
+        L1["1. SharedLTM"] --> L2["2. SharedSTM"] --> L3["3. SharedRegistry"] --> L4["4. SharedEmbeddings"]
+    end
+
+    style SO fill:#4a90d9,color:#fff
+    style MON fill:#e6a23c,color:#fff
+    style TS1 fill:#67c23a,color:#fff
+    style TS2 fill:#67c23a,color:#fff
+    style TSN fill:#67c23a,color:#fff
+    style LFQ fill:#f56c6c,color:#fff
+    style SLTM fill:#909399,color:#fff
+    style SSTM fill:#909399,color:#fff
+    style SREG fill:#909399,color:#fff
+    style SEMB fill:#909399,color:#fff
+```
+
+---
+
+## 9. MULTI-STREAM THINKING CYCLE
+
+Lebenszyklus eines ThinkStream: Start, autonomer Tick-Loop mit Subsystemen, Backoff und Graceful Shutdown.
+
+```mermaid
+sequenceDiagram
+    participant SO as StreamOrchestrator
+    participant TS as ThinkStream
+    participant WQ as MPMCQueue<ThinkTask>
+    participant SLTM as SharedLTM
+    participant SSTM as SharedSTM
+    participant SREG as SharedRegistry
+    participant SEMB as SharedEmbeddings
+
+    SO->>SSTM: create_context()
+    SSTM-->>SO: ContextId (per Stream)
+    SO->>TS: ThinkStream(id, ltm, stm, registry, embeddings, config)
+    SO->>TS: start()
+    Note over TS: state: Created → Starting → Running
+
+    loop Tick-Loop (solange !stop_requested)
+        TS->>WQ: try_pop()
+        alt Task vorhanden
+            WQ-->>TS: ThinkTask {type: Tick, target_concept}
+        else Queue leer
+            Note over TS: Default-Tick ausführen
+        end
+
+        Note over TS: tick() beginnt
+
+        opt has_subsystem(Spreading)
+            TS->>TS: do_spreading()
+            TS->>SLTM: get_outgoing_relations(source) [shared_lock]
+            SLTM-->>TS: vector<RelationInfo>
+            TS->>SLTM: retrieve_concept(target) [shared_lock]
+            SLTM-->>TS: trust-Wert
+            TS->>SSTM: activate_concept(ctx, target, activation) [per-ctx lock]
+            Note over TS: metrics.spreading_ticks++
+        end
+
+        opt has_subsystem(Salience)
+            TS->>TS: do_salience()
+            TS->>SSTM: get_concept_activation(ctx, cid) [shared_lock]
+            TS->>SLTM: get_relation_count(cid) [shared_lock]
+            Note over TS: metrics.salience_ticks++
+        end
+
+        opt has_subsystem(Curiosity)
+            TS->>TS: do_curiosity()
+            Note over TS: metrics.curiosity_ticks++
+        end
+
+        opt has_subsystem(Understanding)
+            TS->>TS: do_understanding()
+            TS->>SREG: get_model(cid) [shared_lock]
+            TS->>SEMB: get_relation_embedding(type) [shared_lock]
+            Note over TS: metrics.understanding_ticks++
+        end
+
+        Note over TS: metrics.total_ticks++<br/>last_tick_epoch_us = now
+
+        alt Kein Fortschritt (idle)
+            TS->>TS: backoff(idle_count)
+            Note over TS: Tier 1: spin (100x)<br/>Tier 2: yield (10x)<br/>Tier 3: sleep (500µs)
+            Note over TS: metrics.idle_ticks++
+        end
+    end
+
+    SO->>TS: stop()
+    Note over TS: stop_requested_ = true<br/>state: Running → Stopping
+
+    Note over TS: Aktueller Tick wird beendet
+
+    SO->>TS: join(shutdown_timeout: 5s)
+    Note over TS: state: Stopping → Stopped
+
+    SO->>SSTM: destroy_context(ctx)
+```
+
+---
+
 *Generiert aus dem tatsächlichen Code in `backend/`. Stand: 2026-02-10.*

@@ -269,6 +269,7 @@ private:
     
     double compute_recency_factor(
         ConceptId cid,
+        ContextId context,
         uint64_t current_tick
     ) const;
     

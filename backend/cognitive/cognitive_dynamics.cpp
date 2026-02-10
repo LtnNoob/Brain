@@ -286,30 +286,30 @@ double CognitiveDynamics::compute_connectivity_factor(
     const LongTermMemory& ltm,
     size_t max_connectivity
 ) const {
-    if (max_connectivity == 0) {
-        return 0.0;
-    }
     size_t count = ltm.get_relation_count(cid);
+    if (max_connectivity == 0) {
+        // Self-normalize mode: yields 1.0 if relations exist, 0.0 if none
+        max_connectivity = std::max(size_t(1), count);
+    }
     return static_cast<double>(count) / static_cast<double>(max_connectivity);
 }
 
 double CognitiveDynamics::compute_recency_factor(
     ConceptId cid,
+    ContextId context,
     uint64_t current_tick
 ) const {
-    // BUG-H1 FIX: Use focus tracking data for recency if available.
-    // Exponential decay based on ticks since last access.
-    // Note: recency_weight defaults to 0.0 because focus tracking is
-    // per-context but this method has no context parameter.
-    // When proper per-concept access tracking is added, re-enable.
-    for (const auto& [ctx, focus_set] : focus_sets_) {
-        for (const auto& entry : focus_set) {
-            if (entry.concept_id == cid && current_tick > 0) {
-                uint64_t ticks_since = (current_tick > entry.last_accessed_tick)
-                    ? (current_tick - entry.last_accessed_tick) : 0;
-                // Exponential decay with half-life of ~10 ticks
-                return std::exp(-0.07 * static_cast<double>(ticks_since));
-            }
+    // Search only in the relevant context (not all contexts)
+    auto it = focus_sets_.find(context);
+    if (it == focus_sets_.end()) {
+        return 0.0;
+    }
+    for (const auto& entry : it->second) {
+        if (entry.concept_id == cid && current_tick > 0) {
+            uint64_t ticks_since = (current_tick > entry.last_accessed_tick)
+                ? (current_tick - entry.last_accessed_tick) : 0;
+            // Exponential decay with half-life of ~10 ticks
+            return std::exp(-0.07 * static_cast<double>(ticks_since));
         }
     }
     return 0.0;
@@ -374,13 +374,9 @@ SalienceScore CognitiveDynamics::compute_salience(
     // Compute individual factors
     score.activation_contrib = compute_activation_factor(cid, context, stm);
     score.trust_contrib = compute_trust_factor(cid, ltm);
-    // BUG-H2 FIX: Compute connectivity also in single-concept calls
-    {
-        size_t count = ltm.get_relation_count(cid);
-        size_t max_conn = std::max(size_t(1), count);
-        score.connectivity_contrib = compute_connectivity_factor(cid, ltm, max_conn);
-    }
-    score.recency_contrib = compute_recency_factor(cid, current_tick);
+    // Single-concept: pass 0 for self-normalize mode
+    score.connectivity_contrib = compute_connectivity_factor(cid, ltm, 0);
+    score.recency_contrib = compute_recency_factor(cid, context, current_tick);
     score.query_boost = 0.0;
     
     // Weighted sum
@@ -436,7 +432,7 @@ std::vector<SalienceScore> CognitiveDynamics::compute_salience_batch(
         score.activation_contrib = compute_activation_factor(c, context, stm);
         score.trust_contrib = compute_trust_factor(c, ltm);
         score.connectivity_contrib = compute_connectivity_factor(c, ltm, max_connectivity);
-        score.recency_contrib = compute_recency_factor(c, current_tick);
+        score.recency_contrib = compute_recency_factor(c, context, current_tick);
         score.query_boost = 0.0;
         
         score.salience = 
@@ -512,7 +508,7 @@ std::vector<SalienceScore> CognitiveDynamics::compute_query_salience(
         score.activation_contrib = compute_activation_factor(c, context, stm);
         score.trust_contrib = compute_trust_factor(c, ltm);
         score.connectivity_contrib = compute_connectivity_factor(c, ltm, max_connectivity);
-        score.recency_contrib = compute_recency_factor(c, current_tick);
+        score.recency_contrib = compute_recency_factor(c, context, current_tick);
         score.query_boost = compute_query_boost(c, query_concepts, ltm);
         
         score.salience = 
@@ -615,6 +611,19 @@ void CognitiveDynamics::prune_focus_set(ContextId context) {
     // Enforce max size
     if (focus_set.size() > config_.focus.max_focus_size) {
         focus_set.resize(config_.focus.max_focus_size);
+    }
+}
+
+void CognitiveDynamics::update_access_time(ContextId context, ConceptId cid) {
+    auto it = focus_sets_.find(context);
+    if (it == focus_sets_.end()) {
+        return;
+    }
+    for (auto& entry : it->second) {
+        if (entry.concept_id == cid) {
+            entry.last_accessed_tick = current_tick_;
+            return;
+        }
     }
 }
 

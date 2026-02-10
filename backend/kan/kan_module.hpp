@@ -17,7 +17,7 @@ struct DataPoint {
 };
 
 // Training configuration
-struct TrainingConfig {
+struct KanTrainingConfig {
     size_t max_iterations = 1000;
     double learning_rate = 0.01;
     double convergence_threshold = 1e-6;
@@ -25,7 +25,7 @@ struct TrainingConfig {
 };
 
 // Training result
-struct TrainingResult {
+struct KanTrainingResult {
     size_t iterations_run;
     double final_loss;
     bool converged;
@@ -43,8 +43,8 @@ public:
     std::vector<double> evaluate(const std::vector<double>& inputs) const;
     
     // Train on dataset
-    TrainingResult train(const std::vector<DataPoint>& dataset, 
-                        const TrainingConfig& config = TrainingConfig());
+    KanTrainingResult train(const std::vector<DataPoint>& dataset, 
+                        const KanTrainingConfig& config = KanTrainingConfig());
     
     // Validation
     double compute_mse(const std::vector<DataPoint>& dataset) const;

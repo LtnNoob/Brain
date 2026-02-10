@@ -86,7 +86,7 @@ std::vector<TrainingSample> MicroTrainer::generate_samples(
 // Single model training
 // =============================================================================
 
-TrainingResult MicroTrainer::train_single(
+MicroTrainingResult MicroTrainer::train_single(
         ConceptId cid,
         MicroModel& model,
         EmbeddingManager& embeddings,

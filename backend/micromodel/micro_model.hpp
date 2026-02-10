@@ -30,7 +30,7 @@ using Vec10 = std::array<double, EMBED_DIM>;
 using Mat10x10 = std::array<double, EMBED_DIM * EMBED_DIM>;  // row-major
 
 // Training configuration
-struct TrainingConfig {
+struct MicroTrainingConfig {
     double learning_rate = 0.01;
     size_t max_epochs = 100;
     double convergence_threshold = 1e-6;
@@ -38,7 +38,7 @@ struct TrainingConfig {
     double adam_beta2 = 0.999;
     double adam_epsilon = 1e-8;
 
-    TrainingConfig() = default;
+    MicroTrainingConfig() = default;
 };
 
 // Training sample: (relation_embedding, context_embedding, target_score)
@@ -49,7 +49,7 @@ struct TrainingSample {
 };
 
 // Result of a training run
-struct TrainingResult {
+struct MicroTrainingResult {
     size_t epochs_run = 0;
     double final_loss = 0.0;
     bool converged = false;
@@ -104,10 +104,10 @@ public:
 
     // Single training step with Adam optimizer
     // Returns MSE loss for this sample
-    double train_step(const Vec10& e, const Vec10& c, double target, const TrainingConfig& config);
+    double train_step(const Vec10& e, const Vec10& c, double target, const MicroTrainingConfig& config);
 
     // Train on a batch of samples for multiple epochs
-    TrainingResult train(const std::vector<TrainingSample>& samples, const TrainingConfig& config);
+    MicroTrainingResult train(const std::vector<TrainingSample>& samples, const MicroTrainingConfig& config);
 
     // Serialization to/from flat array (430 doubles)
     void to_flat(std::array<double, FLAT_SIZE>& out) const;

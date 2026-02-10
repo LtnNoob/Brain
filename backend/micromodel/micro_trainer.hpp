@@ -23,7 +23,7 @@ namespace brain19 {
 //
 
 struct TrainerConfig {
-    TrainingConfig model_config;    // Per-model training config
+    MicroTrainingConfig model_config;    // Per-model training config
     double incoming_discount = 0.8; // Weight discount for incoming relations
     size_t neg_ratio = 3;           // Negatives per positive sample
     double neg_target = 0.05;       // Target for negative samples
@@ -49,7 +49,7 @@ public:
                            const LongTermMemory& ltm);
 
     // Train a single model
-    TrainingResult train_single(ConceptId cid,
+    MicroTrainingResult train_single(ConceptId cid,
                                 MicroModel& model,
                                 EmbeddingManager& embeddings,
                                 const LongTermMemory& ltm);

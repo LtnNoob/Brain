@@ -30,7 +30,7 @@ uint64_t KANAdapter::create_kan_module(size_t input_dim, size_t output_dim, size
 std::unique_ptr<FunctionHypothesis> KANAdapter::train_kan_module(
     uint64_t module_id,
     const std::vector<DataPoint>& dataset,
-    const TrainingConfig& config
+    const KanTrainingConfig& config
 ) {
     auto it = modules_.find(module_id);
     if (it == modules_.end()) {

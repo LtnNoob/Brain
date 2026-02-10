@@ -114,7 +114,7 @@ int main() {
             data.push_back(DataPoint({x}, {x * 2.0}));
         }
         
-        TrainingConfig config;
+        KanTrainingConfig config;
         config.max_iterations = 100;
         config.learning_rate = 0.05;
         

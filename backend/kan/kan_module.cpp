@@ -40,9 +40,9 @@ std::vector<double> KANModule::evaluate(const std::vector<double>& inputs) const
     return outputs;
 }
 
-TrainingResult KANModule::train(
+KanTrainingResult KANModule::train(
     const std::vector<DataPoint>& dataset,
-    const TrainingConfig& config
+    const KanTrainingConfig& config
 ) {
     if (dataset.empty()) {
         throw std::invalid_argument("Training dataset is empty");
@@ -50,7 +50,7 @@ TrainingResult KANModule::train(
     
     auto start_time = std::chrono::steady_clock::now();
     
-    TrainingResult result;
+    KanTrainingResult result;
     result.iterations_run = 0;
     result.converged = false;
     

@@ -62,7 +62,7 @@ double MicroModel::predict(const Vec10& e, const Vec10& c) const {
 // =============================================================================
 
 double MicroModel::train_step(const Vec10& e, const Vec10& c, double target,
-                               const TrainingConfig& config) {
+                               const MicroTrainingConfig& config) {
     // --- Forward pass ---
     Vec10 v;
     for (size_t i = 0; i < EMBED_DIM; ++i) {
@@ -145,9 +145,9 @@ double MicroModel::train_step(const Vec10& e, const Vec10& c, double target,
 // Batch training
 // =============================================================================
 
-TrainingResult MicroModel::train(const std::vector<TrainingSample>& samples,
-                                  const TrainingConfig& config) {
-    TrainingResult result;
+MicroTrainingResult MicroModel::train(const std::vector<TrainingSample>& samples,
+                                  const MicroTrainingConfig& config) {
+    MicroTrainingResult result;
 
     if (samples.empty()) {
         result.converged = true;

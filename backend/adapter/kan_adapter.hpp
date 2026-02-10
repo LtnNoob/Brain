@@ -11,7 +11,7 @@ namespace brain19 {
 class KANModule;
 struct FunctionHypothesis;
 struct DataPoint;
-struct TrainingConfig;
+struct KanTrainingConfig;
 
 // KANAdapter: Clean interface between BrainController and KAN
 // Provides explicit delegation, NO decision logic
@@ -29,7 +29,7 @@ public:
     std::unique_ptr<FunctionHypothesis> train_kan_module(
         uint64_t module_id,
         const std::vector<DataPoint>& dataset,
-        const TrainingConfig& config
+        const KanTrainingConfig& config
     );
     
     // Evaluate KAN module

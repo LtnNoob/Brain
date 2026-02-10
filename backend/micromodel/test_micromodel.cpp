@@ -98,7 +98,7 @@ void test_micro_model() {
         MicroModel model;
         Vec10 e = {0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5};
         Vec10 c = {0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3};
-        TrainingConfig config;
+        MicroTrainingConfig config;
         config.learning_rate = 0.1;
 
         double loss1 = model.train_step(e, c, 0.9, config);
@@ -117,7 +117,7 @@ void test_micro_model() {
         std::vector<TrainingSample> samples;
         samples.push_back({e, c, 0.8});
 
-        TrainingConfig config;
+        MicroTrainingConfig config;
         config.learning_rate = 0.05;
         config.max_epochs = 500;
         config.convergence_threshold = 1e-8;
@@ -141,7 +141,7 @@ void test_micro_model() {
         samples.push_back({e1, c, 0.7});
         samples.push_back({e2, c, 0.3});
 
-        TrainingConfig config;
+        MicroTrainingConfig config;
         config.learning_rate = 0.02;
         config.max_epochs = 1000;
         config.convergence_threshold = 1e-8;
@@ -155,7 +155,7 @@ void test_micro_model() {
     {
         MicroModel model;
         std::vector<TrainingSample> samples;
-        TrainingConfig config;
+        MicroTrainingConfig config;
         auto result = model.train(samples, config);
         ASSERT(result.converged);
         ASSERT_EQ(result.epochs_run, 0u);
@@ -169,7 +169,7 @@ void test_micro_model() {
         Vec10 c = {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
 
         // Train a bit to get non-trivial state
-        TrainingConfig config;
+        MicroTrainingConfig config;
         config.learning_rate = 0.01;
         original.train_step(e, c, 0.7, config);
         original.train_step(e, c, 0.3, config);
@@ -723,7 +723,7 @@ void test_persistence() {
         MicroModel* m1 = reg.get_model(1);
         Vec10 e = {0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5};
         Vec10 c = {0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3};
-        TrainingConfig config;
+        MicroTrainingConfig config;
         m1->train_step(e, c, 0.8, config);
 
         // Create some contexts

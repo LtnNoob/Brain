@@ -198,11 +198,8 @@ UnderstandingLayer::UnderstandingResult UnderstandingLayer::perform_understandin
                 std::to_string(spread_stats.concepts_activated) + " concepts");
 
     // PHASE 2: Compute salience to identify important concepts
-    std::vector<ConceptId> all_concepts;
-    for (uint64_t i = 1; i <= spread_stats.concepts_activated; ++i) {
-        // This is a simplification - in real implementation, would query STM for active concepts
-        all_concepts.push_back(i);
-    }
+    // BUG-H3 FIX: Get real active concept IDs from STM instead of fabricating 1..N
+    std::vector<ConceptId> all_concepts = stm.get_active_concepts(context, 0.0);
 
     auto salience_scores = cognitive_dynamics.compute_salience_batch(
         all_concepts, context, ltm, stm, 0

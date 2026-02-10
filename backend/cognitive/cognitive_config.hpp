@@ -130,8 +130,8 @@ struct SalienceComputerConfig {
     // Weight for connectivity (relation count)
     double connectivity_weight = 0.2;
     
-    // Weight for recency
-    double recency_weight = 0.1;
+    // Weight for recency (0.0: no per-concept access tracking exists yet)
+    double recency_weight = 0.0;
     
     // Maximum salience score
     double max_salience = 1.0;

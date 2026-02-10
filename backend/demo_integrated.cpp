@@ -88,7 +88,7 @@ int main() {
     
     print_separator("Phase 3: Generate Visualization Snapshot");
     
-    std::string json_snapshot = snapshot_gen.generate_json_snapshot(&brain, &curiosity, ctx);
+    std::string json_snapshot = snapshot_gen.generate_json_snapshot(&brain, nullptr, &curiosity, ctx);
     
     std::cout << "\nJSON Snapshot:\n";
     std::cout << "─────────────────────────────────────────\n";

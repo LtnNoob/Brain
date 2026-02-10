@@ -24,11 +24,12 @@ RelevanceMap RelevanceMap::compute(
     if (!model) return map;
 
     const Vec10& e = embeddings.get_relation_embedding(rel_type);
-    const Vec10& c = embeddings.get_context_embedding(context);
 
     auto all_ids = ltm.get_all_concept_ids();
     for (ConceptId cid : all_ids) {
         if (cid == source) continue;  // Skip self
+        // BUG-C1 FIX: Use target-specific context embedding so scores differ per target
+        const Vec10& c = embeddings.get_context_embedding(context + "_target_" + std::to_string(cid));
         double score = model->predict(e, c);
         map.scores_[cid] = score;
     }

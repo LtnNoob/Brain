@@ -297,11 +297,22 @@ double CognitiveDynamics::compute_recency_factor(
     ConceptId cid,
     uint64_t current_tick
 ) const {
-    // Simple recency based on focus access time
-    // For now, return 0.5 as placeholder (proper implementation needs access tracking)
-    (void)cid;
-    (void)current_tick;
-    return 0.5;
+    // BUG-H1 FIX: Use focus tracking data for recency if available.
+    // Exponential decay based on ticks since last access.
+    // Note: recency_weight defaults to 0.0 because focus tracking is
+    // per-context but this method has no context parameter.
+    // When proper per-concept access tracking is added, re-enable.
+    for (const auto& [ctx, focus_set] : focus_sets_) {
+        for (const auto& entry : focus_set) {
+            if (entry.concept_id == cid && current_tick > 0) {
+                uint64_t ticks_since = (current_tick > entry.last_accessed_tick)
+                    ? (current_tick - entry.last_accessed_tick) : 0;
+                // Exponential decay with half-life of ~10 ticks
+                return std::exp(-0.07 * static_cast<double>(ticks_since));
+            }
+        }
+    }
+    return 0.0;
 }
 
 double CognitiveDynamics::compute_query_boost(
@@ -363,7 +374,12 @@ SalienceScore CognitiveDynamics::compute_salience(
     // Compute individual factors
     score.activation_contrib = compute_activation_factor(cid, context, stm);
     score.trust_contrib = compute_trust_factor(cid, ltm);
-    score.connectivity_contrib = 0.0;  // Will be set in batch
+    // BUG-H2 FIX: Compute connectivity also in single-concept calls
+    {
+        size_t count = ltm.get_relation_count(cid);
+        size_t max_conn = std::max(size_t(1), count);
+        score.connectivity_contrib = compute_connectivity_factor(cid, ltm, max_conn);
+    }
     score.recency_contrib = compute_recency_factor(cid, current_tick);
     score.query_boost = 0.0;
     

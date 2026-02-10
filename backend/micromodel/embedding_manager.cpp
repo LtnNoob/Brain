@@ -90,7 +90,8 @@ Vec10 EmbeddingManager::make_context_embedding(const std::string& name) const {
     for (size_t i = 0; i < EMBED_DIM; ++i) {
         // Mix hash with index for variety
         size_t mixed = hash ^ (i * 2654435761u);
-        // Map to [-0.1, 0.1]
+        // NOTE: Range is actually [-0.1, +0.0999] (asymmetric). Not fixed to preserve
+        // deterministic embedding compatibility with persisted models. See FIX_PLAN_ROUND3 Bug #4.
         double val = static_cast<double>(mixed % 10000) / 50000.0 - 0.1;
         emb[i] = val;
     }

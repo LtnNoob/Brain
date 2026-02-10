@@ -50,6 +50,10 @@ test_lock_hierarchy: tests/test_lock_hierarchy.cpp backend/concurrent/lock_hiera
 SCHEDULER_SRCS = \
 	$(BACKEND)/streams/stream_scheduler.cpp
 
+MONITOR_SRCS = \
+	$(BACKEND)/streams/stream_monitor.cpp \
+	$(BACKEND)/streams/stream_monitor_cli.cpp
+
 # Stream categories test (Phase 5.2)
 test_stream_categories: tests/test_stream_categories.cpp $(STREAM_SRCS) $(SCHEDULER_SRCS)
 	$(CXX) $(CXXFLAGS) -DHAS_FULL_BACKEND -I$(BACKEND) -o test_stream_categories \
@@ -85,7 +89,18 @@ test_checkpoint: tests/test_checkpoint.cpp $(CHECKPOINT_SRCS)
 		tests/test_checkpoint.cpp $(CHECKPOINT_SRCS)
 	./test_checkpoint
 
-clean:
-	rm -f test_streams test_streams_tsan test_lock_hierarchy test_stream_categories brain19_checkpoint test_checkpoint
+# ─── Phase 5.3: Stream Monitor ──────────────────────────────────────────────
 
-.PHONY: test_streams test_streams_lite test_streams_tsan test_lock_hierarchy test_stream_categories brain19_checkpoint test_checkpoint clean
+brain19_monitor: $(BACKEND)/brain19_monitor.cpp $(STREAM_SRCS) $(SCHEDULER_SRCS) $(MONITOR_SRCS)
+	$(CXX) $(CXXFLAGS) -DHAS_FULL_BACKEND -I$(BACKEND) -o brain19_monitor \
+		$(BACKEND)/brain19_monitor.cpp $(STREAM_SRCS) $(SCHEDULER_SRCS) $(MONITOR_SRCS)
+
+test_stream_monitor: tests/test_stream_monitor.cpp $(STREAM_SRCS) $(SCHEDULER_SRCS) $(MONITOR_SRCS)
+	$(CXX) $(CXXFLAGS) -DHAS_FULL_BACKEND -I$(BACKEND) -o test_stream_monitor \
+		tests/test_stream_monitor.cpp $(STREAM_SRCS) $(SCHEDULER_SRCS) $(MONITOR_SRCS)
+	./test_stream_monitor
+
+clean:
+	rm -f test_streams test_streams_tsan test_lock_hierarchy test_stream_categories brain19_checkpoint test_checkpoint brain19_monitor test_stream_monitor
+
+.PHONY: test_streams test_streams_lite test_streams_tsan test_lock_hierarchy test_stream_categories brain19_checkpoint test_checkpoint brain19_monitor test_stream_monitor clean

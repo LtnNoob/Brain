@@ -32,6 +32,7 @@ namespace {
 int tests_run = 0;
 int tests_passed = 0;
 int tests_failed = 0;
+int tests_skipped = 0;
 
 struct TestResult {
     std::string name;
@@ -53,6 +54,13 @@ void report(const std::string& name, bool passed, const std::string& msg = "") {
         std::cout << "\n";
     }
     results.push_back({name, passed, msg});
+}
+
+void skip(const std::string& name, const std::string& reason = "") {
+    tests_skipped++;
+    std::cout << "  ⏭️  " << name;
+    if (!reason.empty()) std::cout << " — " << reason;
+    std::cout << "\n";
 }
 
 #define TEST(name) void test_##name(); \
@@ -393,22 +401,22 @@ void test_orchestrator_auto_scaling() {
 
 // Standalone queue-only tests when full backend isn't available
 void test_stream_lifecycle() {
-    report("Stream lifecycle (needs full backend)", false, "SKIPPED — compile with -DHAS_FULL_BACKEND");
+    skip("Stream lifecycle (needs full backend)", "compile with -DHAS_FULL_BACKEND");
 }
 void test_multi_stream_concurrent() {
-    report("Multi-stream concurrent (needs full backend)", false, "SKIPPED");
+    skip("Multi-stream concurrent (needs full backend)");
 }
 void test_graceful_shutdown_under_load() {
-    report("Shutdown under load (needs full backend)", false, "SKIPPED");
+    skip("Shutdown under load (needs full backend)");
 }
 void test_health_monitoring() {
-    report("Health monitoring (needs full backend)", false, "SKIPPED");
+    skip("Health monitoring (needs full backend)");
 }
 void test_backoff_behavior() {
-    report("Backoff behavior (needs full backend)", false, "SKIPPED");
+    skip("Backoff behavior (needs full backend)");
 }
 void test_orchestrator_auto_scaling() {
-    report("Auto-scaling (needs full backend)", false, "SKIPPED");
+    skip("Auto-scaling (needs full backend)");
 }
 #endif
 
@@ -441,6 +449,7 @@ int main() {
 
     std::cout << "\n=====================================\n";
     std::cout << "Results: " << tests_passed << "/" << tests_run << " passed";
+    if (tests_skipped > 0) std::cout << " (" << tests_skipped << " skipped)";
     if (tests_failed > 0) std::cout << " (" << tests_failed << " failed)";
     std::cout << "\n\n";
 

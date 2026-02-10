@@ -48,7 +48,7 @@ public:
     std::vector<ConceptId> get_concepts_by_status(EpistemicStatus status) const;
     std::vector<ConceptId> get_active_concepts() const;
     
-    RelationId add_relation(ConceptId source, ConceptId target, RelationType type, double weight = 1.0);
+    std::optional<RelationId> add_relation(ConceptId source, ConceptId target, RelationType type, double weight = 1.0);
     std::optional<RelationInfo> get_relation(RelationId id) const;
     std::vector<RelationInfo> get_outgoing_relations(ConceptId source) const;
     std::vector<RelationInfo> get_incoming_relations(ConceptId target) const;

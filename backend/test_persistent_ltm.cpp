@@ -35,12 +35,12 @@ int main() {
         
         // Add some relations
         for (int i = 1; i <= 500; ++i) {
-            RelationId rid = ltm.add_relation(
+            auto rid = ltm.add_relation(
                 i, i + 1,
                 static_cast<RelationType>(i % 10),
                 0.5 + (i % 5) * 0.1
             );
-            assert(rid > 0);
+            assert(rid.has_value());
         }
         
         // Remove a few relations

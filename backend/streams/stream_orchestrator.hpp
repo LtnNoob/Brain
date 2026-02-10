@@ -120,6 +120,7 @@ private:
     // Monitor
     std::thread monitor_thread_;
     std::atomic<bool> monitor_running_{false};
+    mutable std::mutex alert_mtx_;
     AlertCallback alert_cb_;
 
     mutable OrchestratorMetrics metrics_;

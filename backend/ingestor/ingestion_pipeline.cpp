@@ -263,12 +263,12 @@ IngestionResult IngestionPipeline::commit_approved() {
                 }
 
                 if (!already_exists) {
-                    RelationId rid = ltm_.add_relation(
+                    auto rid = ltm_.add_relation(
                         src_it->second, tgt_it->second,
                         rel.relation_type, rel.confidence);
-                    if (rid != 0) {
+                    if (rid.has_value()) {
                         result.relations_stored++;
-                        result.stored_relation_ids.push_back(rid);
+                        result.stored_relation_ids.push_back(*rid);
                     }
                 }
             }

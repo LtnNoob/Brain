@@ -179,7 +179,7 @@ public:
 private:
     // Internal: access by capacity (for append before record_count is incremented)
     RecordT* record_at(size_t index) {
-        if (index >= header()->capacity) {
+        if (index >= header()->capacity || index > header()->record_count) {
             throw std::out_of_range("PersistentStore: internal index out of range");
         }
         char* base = static_cast<char*>(mapped_) + sizeof(StoreHeader);

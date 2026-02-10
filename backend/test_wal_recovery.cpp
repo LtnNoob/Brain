@@ -34,8 +34,8 @@ int main() {
         
         // Add 50 relations
         for (int i = 1; i <= 50; ++i) {
-            RelationId rid = ltm.add_relation(i, i + 1, RelationType::IS_A, 0.9);
-            assert(rid > 0);
+            auto rid = ltm.add_relation(i, i + 1, RelationType::IS_A, 0.9);
+            assert(rid.has_value());
         }
         
         assert(ltm.concept_count() == 100);

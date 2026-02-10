@@ -72,7 +72,18 @@ VerifyResult CheckpointRestore::verify(const std::string& checkpoint_dir) {
         return result;
     }
     
-    auto manifest = load_manifest(checkpoint_dir);
+    CheckpointManifest manifest;
+    try {
+        manifest = load_manifest(checkpoint_dir);
+    } catch (...) {
+        result.failures.push_back("manifest.json: failed to parse");
+        return result;
+    }
+    
+    if (manifest.components.empty()) {
+        result.failures.push_back("manifest.json: no components listed (corrupt or empty)");
+        return result;
+    }
     
     for (auto& comp : manifest.components) {
         result.files_checked++;

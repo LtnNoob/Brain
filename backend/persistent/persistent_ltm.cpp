@@ -227,10 +227,10 @@ std::vector<ConceptId> PersistentLTM::get_active_concepts() const {
     return get_concepts_by_status(EpistemicStatus::ACTIVE);
 }
 
-RelationId PersistentLTM::add_relation(
+std::optional<RelationId> PersistentLTM::add_relation(
     ConceptId source, ConceptId target, RelationType type, double weight
 ) {
-    if (!exists(source) || !exists(target)) return 0;
+    if (!exists(source) || !exists(target)) return std::nullopt;
     
     RelationId id = relations_->next_id();
     relations_->set_next_id(id + 1);

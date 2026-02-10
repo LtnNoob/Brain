@@ -181,6 +181,7 @@ std::vector<StreamHealth> StreamOrchestrator::health_check() const {
 }
 
 void StreamOrchestrator::set_alert_callback(AlertCallback cb) {
+    std::lock_guard lock(alert_mtx_);
     alert_cb_ = std::move(cb);
 }
 
@@ -210,6 +211,7 @@ void StreamOrchestrator::monitor_loop() {
         auto health = health_check();
 
         for (auto& h : health) {
+            std::lock_guard lock(alert_mtx_);
             if (h.stalled && alert_cb_) {
                 alert_cb_("Stream " + std::to_string(h.id) + " is stalled!");
             }

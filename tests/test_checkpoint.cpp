@@ -354,6 +354,84 @@ TEST(sha256_correctness) {
     ASSERT(empty_hash == "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855");
 }
 
+// ─── Test 10: Corrupt manifest JSON ──────────────────────────────────────────
+
+TEST(corrupt_manifest_json) {
+    setup_test_dir();
+    
+    std::string ltm_dir = test_dir + "/ltm_data";
+    auto ltm = make_test_ltm(ltm_dir);
+    
+    CheckpointManager::Options opts;
+    opts.base_dir = test_dir + "/checkpoints";
+    opts.tag = "test";
+    CheckpointManager mgr(opts);
+    
+    auto path = mgr.save(ltm.get(), nullptr, nullptr, nullptr, nullptr, nullptr);
+    ASSERT(!path.empty());
+    
+    // Corrupt the manifest.json
+    {
+        std::ofstream f(path + "/manifest.json", std::ios::trunc);
+        f << "{ this is not valid json !!!";
+    }
+    
+    auto vr = CheckpointRestore::verify(path);
+    ASSERT(!vr.valid);
+    
+    cleanup_test_dir();
+}
+
+// ─── Test 11: Truncated manifest (empty file) ───────────────────────────────
+
+TEST(truncated_manifest) {
+    setup_test_dir();
+    
+    std::string ltm_dir = test_dir + "/ltm_data";
+    auto ltm = make_test_ltm(ltm_dir);
+    
+    CheckpointManager::Options opts;
+    opts.base_dir = test_dir + "/checkpoints";
+    opts.tag = "test";
+    CheckpointManager mgr(opts);
+    
+    auto path = mgr.save(ltm.get(), nullptr, nullptr, nullptr, nullptr, nullptr);
+    ASSERT(!path.empty());
+    
+    // Truncate manifest to empty
+    { std::ofstream f(path + "/manifest.json", std::ios::trunc); }
+    
+    auto vr = CheckpointRestore::verify(path);
+    ASSERT(!vr.valid);
+    
+    cleanup_test_dir();
+}
+
+// ─── Test 12: Missing manifest file ─────────────────────────────────────────
+
+TEST(missing_manifest) {
+    setup_test_dir();
+    
+    std::string ltm_dir = test_dir + "/ltm_data";
+    auto ltm = make_test_ltm(ltm_dir);
+    
+    CheckpointManager::Options opts;
+    opts.base_dir = test_dir + "/checkpoints";
+    opts.tag = "test";
+    CheckpointManager mgr(opts);
+    
+    auto path = mgr.save(ltm.get(), nullptr, nullptr, nullptr, nullptr, nullptr);
+    ASSERT(!path.empty());
+    
+    // Delete manifest
+    fs::remove(path + "/manifest.json");
+    
+    auto vr = CheckpointRestore::verify(path);
+    ASSERT(!vr.valid);
+    
+    cleanup_test_dir();
+}
+
 // ─── Main ────────────────────────────────────────────────────────────────────
 
 int main() {

@@ -40,7 +40,14 @@ test_streams_tsan: tests/test_streams.cpp $(STREAM_SRCS)
 		tests/test_streams.cpp $(STREAM_SRCS)
 	./test_streams_tsan
 
-clean:
-	rm -f test_streams test_streams_tsan
 
-.PHONY: test_streams test_streams_lite test_streams_tsan clean
+# Lock hierarchy test (standalone, no backend deps)
+test_lock_hierarchy: tests/test_lock_hierarchy.cpp backend/concurrent/lock_hierarchy.hpp backend/concurrent/deadlock_detector.hpp
+	$(CXX) -std=c++20 -Wall -Wextra -g -O0 -pthread -DBRAIN19_DEBUG \
+		-o test_lock_hierarchy tests/test_lock_hierarchy.cpp
+	./test_lock_hierarchy
+
+clean:
+	rm -f test_streams test_streams_tsan test_lock_hierarchy
+
+.PHONY: test_streams test_streams_lite test_streams_tsan test_lock_hierarchy clean

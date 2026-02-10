@@ -44,21 +44,21 @@ public:
     bool initialize(const OllamaConfig& config);
     
     // Check if Ollama is available
-    bool is_available();
+    bool is_available() const;
     
     // Get list of available models
-    std::vector<std::string> list_models();
+    std::vector<std::string> list_models() const;
     
     // Chat completion (single turn)
     OllamaResponse generate(
         const std::string& prompt,
         const std::vector<OllamaMessage>& context = {}
-    );
+    ) const;
     
     // Chat completion (multi-turn)
     OllamaResponse chat(
         const std::vector<OllamaMessage>& messages
-    );
+    ) const;
     
     // Get current config
     const OllamaConfig& get_config() const { return config_; }
@@ -68,13 +68,13 @@ public:
     
 private:
     // HTTP request helper
-    std::string http_post(
+        std::string http_post(
         const std::string& endpoint,
         const std::string& json_body
-    );
+    ) const;
     
     // Parse JSON response
-    OllamaResponse parse_response(const std::string& json);
+    OllamaResponse parse_response(const std::string& json) const;
     
     OllamaConfig config_;
     bool initialized_;

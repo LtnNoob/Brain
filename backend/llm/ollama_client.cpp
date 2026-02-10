@@ -39,7 +39,7 @@ bool OllamaClient::initialize(const OllamaConfig& config) {
     return true;
 }
 
-bool OllamaClient::is_available() {
+bool OllamaClient::is_available() const {
     try {
         std::string response = http_post("/api/tags", "{}");
         return !response.empty();
@@ -48,7 +48,7 @@ bool OllamaClient::is_available() {
     }
 }
 
-std::vector<std::string> OllamaClient::list_models() {
+std::vector<std::string> OllamaClient::list_models() const {
     std::vector<std::string> models;
     
     try {
@@ -72,7 +72,7 @@ std::vector<std::string> OllamaClient::list_models() {
 OllamaResponse OllamaClient::generate(
     const std::string& prompt,
     const std::vector<OllamaMessage>& context
-) {
+) const {
     // Build messages array
     std::vector<OllamaMessage> messages = context;
     messages.push_back({"user", prompt});
@@ -82,7 +82,7 @@ OllamaResponse OllamaClient::generate(
 
 OllamaResponse OllamaClient::chat(
     const std::vector<OllamaMessage>& messages
-) {
+) const {
     OllamaResponse response;
     
     if (!initialized_) {
@@ -127,7 +127,7 @@ OllamaResponse OllamaClient::chat(
 std::string OllamaClient::http_post(
     const std::string& endpoint,
     const std::string& json_body
-) {
+) const {
     CURL* curl = curl_easy_init();
     std::string response;
     
@@ -166,7 +166,7 @@ std::string OllamaClient::http_post(
     return response;
 }
 
-OllamaResponse OllamaClient::parse_response(const std::string& json_str) {
+OllamaResponse OllamaClient::parse_response(const std::string& json_str) const {
     OllamaResponse response;
     
     try {

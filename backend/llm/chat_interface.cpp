@@ -1,6 +1,7 @@
 #include "chat_interface.hpp"
 #include <sstream>
 #include <algorithm>
+#include <iostream>
 
 namespace brain19 {
 

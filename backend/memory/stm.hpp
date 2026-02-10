@@ -52,6 +52,7 @@ public:
     void set_relation_decay_rate(double rate);
     void set_relation_inactive_threshold(double threshold);
     void set_relation_removal_threshold(double threshold);
+    void set_concept_removal_threshold(double threshold);
     
     // Debug introspection (NOT for operational logic)
     size_t debug_active_concept_count(ContextId context_id) const;
@@ -71,6 +72,7 @@ private:
     double relation_decay_rate_;
     double relation_inactive_threshold_;  // ε
     double relation_removal_threshold_;   // ε₂
+    double concept_removal_threshold_;    // ε₃ (defaults to relation_removal_threshold_)
     
     double clamp_activation(double value) const;
     ActivationLevel classify_level(double activation) const;

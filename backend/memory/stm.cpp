@@ -11,6 +11,7 @@ ShortTermMemory::ShortTermMemory()
     , relation_decay_rate_(0.25)
     , relation_inactive_threshold_(0.1)   // ε
     , relation_removal_threshold_(0.01)   // ε₂
+    , concept_removal_threshold_(0.01)    // ε₃ (same default as relation)
 {
 }
 
@@ -205,7 +206,7 @@ void ShortTermMemory::decay_all(ContextId context_id, double time_delta_seconds)
     
     // Remove concepts that decayed below removal threshold
     for (auto it = ctx_it->second.concepts.begin(); it != ctx_it->second.concepts.end(); ) {
-        if (it->second.activation < relation_removal_threshold_) {
+        if (it->second.activation < concept_removal_threshold_) {
             it = ctx_it->second.concepts.erase(it);
         } else {
             ++it;
@@ -246,6 +247,10 @@ void ShortTermMemory::set_relation_inactive_threshold(double threshold) {
 
 void ShortTermMemory::set_relation_removal_threshold(double threshold) {
     relation_removal_threshold_ = clamp_activation(threshold);
+}
+
+void ShortTermMemory::set_concept_removal_threshold(double threshold) {
+    concept_removal_threshold_ = clamp_activation(threshold);
 }
 
 size_t ShortTermMemory::debug_active_concept_count(ContextId context_id) const {

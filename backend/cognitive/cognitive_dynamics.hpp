@@ -7,6 +7,7 @@
 #include <unordered_set>
 #include <unordered_map>
 #include <algorithm>
+#include <atomic>
 
 namespace brain19 {
 
@@ -215,14 +216,22 @@ public:
     // =========================================================================
     
     struct Stats {
-        size_t total_spreads;
-        size_t total_salience_computations;
-        size_t total_focus_updates;
-        size_t total_path_searches;
-        SpreadingStats last_spread;
+        std::atomic<uint64_t> total_spreads{0};
+        std::atomic<uint64_t> total_salience_computations{0};
+        std::atomic<uint64_t> total_focus_updates{0};
+        std::atomic<uint64_t> total_path_searches{0};
+        SpreadingStats last_spread;  // THREAD-SAFETY: protected by single-writer assumption
     };
     
-    Stats get_stats() const { return stats_; }
+    Stats get_stats() const {
+        Stats copy;
+        copy.total_spreads.store(stats_.total_spreads.load(std::memory_order_relaxed));
+        copy.total_salience_computations.store(stats_.total_salience_computations.load(std::memory_order_relaxed));
+        copy.total_focus_updates.store(stats_.total_focus_updates.load(std::memory_order_relaxed));
+        copy.total_path_searches.store(stats_.total_path_searches.load(std::memory_order_relaxed));
+        copy.last_spread = stats_.last_spread;
+        return copy;
+    }
     void reset_stats();
     
 private:

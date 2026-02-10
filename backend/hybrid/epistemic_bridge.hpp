@@ -12,20 +12,17 @@ namespace brain19 {
 // =============================================================================
 // EPISTEMIC ASSESSMENT
 // =============================================================================
-//
-// Result of evaluating a KAN training outcome epistemically.
-// Maps mathematical fit quality to epistemic trust and type.
-//
+
 struct EpistemicAssessment {
     EpistemicMetadata metadata;
     double mse;
     bool converged;
     size_t iterations_used;
-    double convergence_speed;  // iterations / max_iterations (lower = faster)
+    double convergence_speed;
     std::string explanation;
-    bool is_interpretable;     // KAN approximated a known function form
+    bool is_interpretable;
+    DataQuality data_quality;  // H2: track data source
 
-    // NO default constructor
     EpistemicAssessment() = delete;
 
     EpistemicAssessment(
@@ -35,7 +32,8 @@ struct EpistemicAssessment {
         size_t iters,
         double conv_speed,
         std::string expl,
-        bool interpretable
+        bool interpretable,
+        DataQuality quality = DataQuality::SYNTHETIC_CANONICAL
     ) : metadata(meta)
       , mse(mse_val)
       , converged(conv)
@@ -43,6 +41,7 @@ struct EpistemicAssessment {
       , convergence_speed(conv_speed)
       , explanation(std::move(expl))
       , is_interpretable(interpretable)
+      , data_quality(quality)
     {}
 };
 
@@ -50,70 +49,75 @@ struct EpistemicAssessment {
 // EPISTEMIC BRIDGE
 // =============================================================================
 //
-// Bridges KAN training results to epistemic metadata.
-// Maps mathematical fit quality to trust scores and epistemic types.
-//
 // MAPPING:
 //   MSE < 0.01        → THEORY candidate  (Trust 0.7-0.9)
 //   MSE < 0.1         → HYPOTHESIS        (Trust 0.4-0.6)
 //   MSE >= 0.1        → SPECULATION       (Trust 0.1-0.3)
 //   Not converged     → INVALIDATED       (Trust 0.05)
 //
-// MODIFIERS:
-//   Fast convergence   → +0.1 trust bonus
-//   Interpretable form → +0.05 trust bonus
+// H2 MODIFIERS:
+//   Synthetic data     → max trust 0.6 (hard cap)
+//   EXTRACTED data     → 1.0x multiplier
+//   SYNTHETIC          → 0.6x multiplier
+//   Trivial convergence (<10 epochs) → novelty penalty
+//   Trust > 0.5 requires ≥ 50 data points
 //
 class EpistemicBridge {
 public:
     struct Config {
         double theory_mse_threshold = 0.01;
         double hypothesis_mse_threshold = 0.1;
-        double fast_convergence_ratio = 0.3;   // < 30% of max_iterations = fast
+        double fast_convergence_ratio = 0.3;
         double convergence_trust_bonus = 0.1;
         double interpretability_trust_bonus = 0.05;
+        // H2: Trust-inflation caps
+        double synthetic_trust_cap = 0.6;
+        double synthetic_multiplier = 0.6;
+        double extracted_multiplier = 1.0;
+        size_t trivial_convergence_epochs = 10;
+        double trivial_convergence_penalty = 0.15;
+        size_t min_data_points_for_high_trust = 50;
     };
 
     EpistemicBridge() : EpistemicBridge(Config{}) {}
     explicit EpistemicBridge(Config config);
 
-    // Assess a KAN training result epistemically
+    // H2: Updated assess with data quality and data point count
     EpistemicAssessment assess(
         const FunctionHypothesis& hypothesis,
         const KanTrainingResult& training_result,
-        const KanTrainingConfig& training_config
+        const KanTrainingConfig& training_config,
+        DataQuality data_quality = DataQuality::SYNTHETIC_CANONICAL,
+        size_t num_data_points = 0
     ) const;
 
-    // Check if a trained KAN approximates a known function form
-    // (linear, quadratic, etc.) by analyzing B-spline coefficients
     bool check_interpretability(const KANModule& module) const;
-
     const Config& get_config() const { return config_; }
 
 private:
     Config config_;
 
-    // Compute trust score from MSE and modifiers
     double compute_trust(
         double mse,
         bool converged,
         double convergence_speed,
-        bool interpretable
+        bool interpretable,
+        DataQuality data_quality,
+        size_t iterations_used,
+        size_t num_data_points
     ) const;
 
-    // Determine epistemic type from MSE
     EpistemicType determine_type(double mse, bool converged) const;
-
-    // Determine epistemic status
     EpistemicStatus determine_status(bool converged) const;
 
-    // Build explanation string
     std::string build_explanation(
         double mse,
         bool converged,
         double convergence_speed,
         bool interpretable,
         EpistemicType type,
-        double trust
+        double trust,
+        DataQuality data_quality
     ) const;
 };
 

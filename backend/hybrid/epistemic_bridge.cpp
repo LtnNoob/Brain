@@ -12,18 +12,18 @@ EpistemicBridge::EpistemicBridge(Config config)
 EpistemicAssessment EpistemicBridge::assess(
     const FunctionHypothesis& hypothesis,
     const KanTrainingResult& training_result,
-    const KanTrainingConfig& training_config
+    const KanTrainingConfig& training_config,
+    DataQuality data_quality,
+    size_t num_data_points
 ) const {
     double mse = training_result.final_loss;
     bool converged = training_result.converged;
     size_t iters = training_result.iterations_run;
 
-    // Convergence speed: fraction of max iterations used (lower = faster)
     double convergence_speed = (training_config.max_iterations > 0)
         ? static_cast<double>(iters) / static_cast<double>(training_config.max_iterations)
         : 1.0;
 
-    // Check interpretability if we have a valid module
     bool interpretable = false;
     if (hypothesis.module) {
         interpretable = check_interpretability(*hypothesis.module);
@@ -31,17 +31,18 @@ EpistemicAssessment EpistemicBridge::assess(
 
     EpistemicType type = determine_type(mse, converged);
     EpistemicStatus status = determine_status(converged);
-    double trust = compute_trust(mse, converged, convergence_speed, interpretable);
+    double trust = compute_trust(mse, converged, convergence_speed, interpretable,
+                                  data_quality, iters, num_data_points);
 
     std::string explanation = build_explanation(
-        mse, converged, convergence_speed, interpretable, type, trust
+        mse, converged, convergence_speed, interpretable, type, trust, data_quality
     );
 
     EpistemicMetadata metadata(type, status, trust);
 
     return EpistemicAssessment(
         metadata, mse, converged, iters, convergence_speed,
-        std::move(explanation), interpretable
+        std::move(explanation), interpretable, data_quality
     );
 }
 
@@ -49,25 +50,24 @@ double EpistemicBridge::compute_trust(
     double mse,
     bool converged,
     double convergence_speed,
-    bool interpretable
+    bool interpretable,
+    DataQuality data_quality,
+    size_t iterations_used,
+    size_t num_data_points
 ) const {
     if (!converged) {
-        return 0.05;  // INVALIDATED — minimal trust
+        return 0.05;
     }
 
     double base_trust;
     if (mse < config_.theory_mse_threshold) {
-        // THEORY range: 0.7 - 0.9
-        // Better MSE → higher trust within range
         double mse_ratio = mse / config_.theory_mse_threshold;
         base_trust = 0.9 - 0.2 * mse_ratio;
     } else if (mse < config_.hypothesis_mse_threshold) {
-        // HYPOTHESIS range: 0.4 - 0.6
         double mse_ratio = (mse - config_.theory_mse_threshold) 
                          / (config_.hypothesis_mse_threshold - config_.theory_mse_threshold);
         base_trust = 0.6 - 0.2 * mse_ratio;
     } else {
-        // SPECULATION range: 0.1 - 0.3
         double mse_capped = std::min(mse, 1.0);
         double mse_ratio = (mse_capped - config_.hypothesis_mse_threshold)
                          / (1.0 - config_.hypothesis_mse_threshold);
@@ -83,13 +83,38 @@ double EpistemicBridge::compute_trust(
         trust += config_.interpretability_trust_bonus;
     }
 
+    // ==========================================================
+    // H2: TRUST-INFLATION CAPS
+    // ==========================================================
+
+    // H2: Data source multiplier
+    double source_multiplier = (data_quality == DataQuality::EXTRACTED)
+        ? config_.extracted_multiplier
+        : config_.synthetic_multiplier;
+    trust *= source_multiplier;
+
+    // H2: Hard cap for synthetic data
+    if (data_quality != DataQuality::EXTRACTED) {
+        trust = std::min(trust, config_.synthetic_trust_cap);
+    }
+
+    // H2: Novelty penalty — trivial convergence means the problem was too easy
+    if (iterations_used < config_.trivial_convergence_epochs) {
+        trust -= config_.trivial_convergence_penalty;
+    }
+
+    // H2: Minimum data points for high trust
+    if (num_data_points > 0 && num_data_points < config_.min_data_points_for_high_trust) {
+        trust = std::min(trust, 0.5);
+    }
+
     // Clamp to [0.0, 1.0]
     return std::max(0.0, std::min(1.0, trust));
 }
 
 EpistemicType EpistemicBridge::determine_type(double mse, bool converged) const {
     if (!converged) {
-        return EpistemicType::SPECULATION;  // Will be INVALIDATED by status
+        return EpistemicType::SPECULATION;
     }
     if (mse < config_.theory_mse_threshold) {
         return EpistemicType::THEORY;
@@ -108,8 +133,6 @@ EpistemicStatus EpistemicBridge::determine_status(bool converged) const {
 }
 
 bool EpistemicBridge::check_interpretability(const KANModule& module) const {
-    // Simple heuristic: If the KAN has a single layer with 1→1 topology,
-    // check if the B-spline coefficients form a near-linear or near-quadratic pattern.
     if (module.num_layers() != 1) return false;
     if (module.input_dim() != 1 || module.output_dim() != 1) return false;
 
@@ -119,13 +142,11 @@ bool EpistemicBridge::check_interpretability(const KANModule& module) const {
 
     if (coefs.size() < 3) return false;
 
-    // Check linearity: differences between consecutive coefficients should be ~constant
     std::vector<double> diffs;
     for (size_t i = 1; i < coefs.size(); ++i) {
         diffs.push_back(coefs[i] - coefs[i - 1]);
     }
 
-    // Compute variance of diffs
     double mean = 0.0;
     for (double d : diffs) mean += d;
     mean /= static_cast<double>(diffs.size());
@@ -137,7 +158,6 @@ bool EpistemicBridge::check_interpretability(const KANModule& module) const {
     }
     variance /= static_cast<double>(diffs.size());
 
-    // Low variance in diffs → approximately linear
     return variance < 0.01;
 }
 
@@ -147,7 +167,8 @@ std::string EpistemicBridge::build_explanation(
     double convergence_speed,
     bool interpretable,
     EpistemicType type,
-    double trust
+    double trust,
+    DataQuality data_quality
 ) const {
     std::ostringstream oss;
     oss << "KAN Validation: ";
@@ -166,6 +187,12 @@ std::string EpistemicBridge::build_explanation(
     }
     if (interpretable) {
         oss << " [INTERPRETABLE]";
+    }
+
+    // H2: Show data quality impact
+    oss << " [Data: " << data_quality_to_string(data_quality) << "]";
+    if (data_quality != DataQuality::EXTRACTED) {
+        oss << " [TRUST CAPPED at " << config_.synthetic_trust_cap << "]";
     }
 
     return oss.str();

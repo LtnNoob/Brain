@@ -14,15 +14,11 @@ ValidationResult KanValidator::validate(const HypothesisProposal& proposal) cons
     auto translation = translator_.translate(proposal);
 
     if (!translation.translatable || !translation.problem.has_value()) {
-        // Not quantifiable — return low-trust SPECULATION
         EpistemicAssessment not_quant_assessment(
             EpistemicMetadata(EpistemicType::SPECULATION, EpistemicStatus::ACTIVE, 0.1),
-            1.0,    // high MSE (no fit)
-            false,  // not converged
-            0,      // no iterations
-            1.0,    // worst convergence speed
+            1.0, false, 0, 1.0,
             "Not quantifiable: " + translation.explanation,
-            false   // not interpretable
+            false
         );
 
         return ValidationResult(
@@ -76,8 +72,12 @@ ValidationResult KanValidator::validate(const HypothesisProposal& proposal) cons
         training_result.final_loss
     );
 
-    // Step 5: Epistemic assessment
-    auto assessment = bridge_.assess(func_hyp, training_result, train_config);
+    // Step 5: Epistemic assessment — H2: pass data quality and data point count
+    auto assessment = bridge_.assess(
+        func_hyp, training_result, train_config,
+        problem.data_quality,
+        problem.training_data.size()
+    );
 
     bool validated = assessment.converged && 
                      assessment.metadata.type != EpistemicType::SPECULATION;

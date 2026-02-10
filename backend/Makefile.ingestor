@@ -1,0 +1,46 @@
+# Brain19 Knowledge Ingestor Build
+# Phase 1: Knowledge Input Mechanism
+
+CXX = g++
+CXXFLAGS = -std=c++20 -Wall -Wextra -Wpedantic -O2 -I. -DNDEBUG
+LDFLAGS =
+
+# Source files (all in ingestor/)
+INGESTOR_SOURCES = \
+	ingestor/text_chunker.cpp \
+	ingestor/entity_extractor.cpp \
+	ingestor/relation_extractor.cpp \
+	ingestor/trust_tagger.cpp \
+	ingestor/proposal_queue.cpp \
+	ingestor/knowledge_ingestor.cpp \
+	ingestor/ingestion_pipeline.cpp
+
+TEST_SOURCE = ingestor/test_ingestor.cpp
+
+# LTM compiled into ingestor dir to avoid permission issues
+LTM_OBJ = ingestor/long_term_memory.o
+
+INGESTOR_OBJECTS = $(INGESTOR_SOURCES:.cpp=.o)
+TEST_OBJ = $(TEST_SOURCE:.cpp=.o)
+ALL_OBJECTS = $(INGESTOR_OBJECTS) $(TEST_OBJ) $(LTM_OBJ)
+TARGET = ingestor/test_ingestor
+
+.PHONY: all clean run
+
+all: $(TARGET)
+
+# Compile LTM source into ingestor directory
+$(LTM_OBJ): ltm/long_term_memory.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+$(TARGET): $(INGESTOR_OBJECTS) $(TEST_OBJ) $(LTM_OBJ)
+	$(CXX) $(CXXFLAGS) $(ALL_OBJECTS) -o $(TARGET) $(LDFLAGS)
+
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+clean:
+	rm -f $(INGESTOR_OBJECTS) $(TEST_OBJ) $(LTM_OBJ) $(TARGET)
+
+run: $(TARGET)
+	./$(TARGET)

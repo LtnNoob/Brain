@@ -1,0 +1,45 @@
+# Brain19 Bilinear Micro-Model Build
+# Phase 2: Per-Concept Learned Models
+
+CXX = g++
+CXXFLAGS = -std=c++20 -Wall -Wextra -Wpedantic -O2 -I. -DNDEBUG
+LDFLAGS =
+
+# Source files (all in micromodel/)
+MICROMODEL_SOURCES = \
+	micromodel/micro_model.cpp \
+	micromodel/micro_model_registry.cpp \
+	micromodel/embedding_manager.cpp \
+	micromodel/micro_trainer.cpp \
+	micromodel/relevance_map.cpp \
+	micromodel/persistence.cpp
+
+TEST_SOURCE = micromodel/test_micromodel.cpp
+
+# LTM compiled into micromodel dir to avoid permission issues
+LTM_OBJ = micromodel/long_term_memory.o
+
+MICROMODEL_OBJECTS = $(MICROMODEL_SOURCES:.cpp=.o)
+TEST_OBJ = $(TEST_SOURCE:.cpp=.o)
+ALL_OBJECTS = $(MICROMODEL_OBJECTS) $(TEST_OBJ) $(LTM_OBJ)
+TARGET = micromodel/test_micromodel
+
+.PHONY: all clean run
+
+all: $(TARGET)
+
+# Compile LTM source into micromodel directory
+$(LTM_OBJ): ltm/long_term_memory.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+$(TARGET): $(MICROMODEL_OBJECTS) $(TEST_OBJ) $(LTM_OBJ)
+	$(CXX) $(CXXFLAGS) $(ALL_OBJECTS) -o $(TARGET) $(LDFLAGS)
+
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+clean:
+	rm -f $(MICROMODEL_OBJECTS) $(TEST_OBJ) $(LTM_OBJ) $(TARGET)
+
+run: $(TARGET)
+	./$(TARGET)

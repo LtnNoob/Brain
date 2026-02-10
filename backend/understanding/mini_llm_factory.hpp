@@ -33,6 +33,7 @@ namespace brain19 {
 //   → Dieses LLM ist Experte für Katzen/Säugetiere
 //   → Bei Fragen zu Katzen wird dieses LLM bevorzugt
 //
+// TODO: Not yet implemented — planned for KAN-LLM Hybrid Layer
 class MiniLLMFactory {
 public:
     explicit MiniLLMFactory(const OllamaConfig& base_config = OllamaConfig());
@@ -104,6 +105,7 @@ private:
 // - Wird bevorzugt für Fragen in seinem Bereich
 // - Bleibt READ-ONLY bzgl. LTM
 //
+// TODO: Not yet implemented — planned for KAN-LLM Hybrid Layer
 class SpecializedMiniLLM : public MiniLLM {
 public:
     SpecializedMiniLLM(

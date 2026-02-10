@@ -3,11 +3,10 @@
 #include "../memory/active_relation.hpp"
 #include <cstdint>
 #include <string>
+#include "../common/types.hpp"
 
 namespace brain19 {
 
-using ConceptId = uint64_t;
-using RelationId = uint64_t;
 
 // =============================================================================
 // PERSISTENT RELATION

@@ -3,11 +3,10 @@
 #include <cstdint>
 #include <vector>
 #include <string>
+#include "../common/types.hpp"
 
 namespace brain19 {
 
-using ContextId = uint64_t;
-using ConceptId = uint64_t;
 
 // Types of curiosity signals
 enum class TriggerType {

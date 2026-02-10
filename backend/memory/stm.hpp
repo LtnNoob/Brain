@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../common/types.hpp"
+
 #include "activation_level.hpp"
 #include "stm_entry.hpp"
 #include "active_relation.hpp"
@@ -8,7 +10,6 @@
 
 namespace brain19 {
 
-using ContextId = uint64_t;
 
 // Short-Term Memory: Purely mechanical activation layer
 // INVARIANT: STM never stores knowledge, only activation states

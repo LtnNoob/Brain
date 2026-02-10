@@ -8,10 +8,10 @@
 #include <unordered_map>
 #include <vector>
 #include <memory>
+#include "../common/types.hpp"
 
 namespace brain19 {
 
-using ConceptId = uint64_t;
 
 // ConceptInfo: Knowledge item with MANDATORY epistemic metadata
 //

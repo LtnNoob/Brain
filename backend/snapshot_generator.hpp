@@ -1,13 +1,14 @@
 #pragma once
 
+#include "common/types.hpp"
+
 #include <string>
 #include <sstream>
 #include <memory>
-#include <cstdint>
+#include "common/types.hpp"
 
 namespace brain19 {
 
-using ContextId = uint64_t;
 
 // Forward declarations
 class BrainController;

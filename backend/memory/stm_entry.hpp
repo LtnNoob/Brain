@@ -3,10 +3,10 @@
 #include "activation_level.hpp"
 #include <cstdint>
 #include <chrono>
+#include "../common/types.hpp"
 
 namespace brain19 {
 
-using ConceptId = uint64_t;
 
 // STM entry for an activated concept
 // INVARIANT: STM stores ONLY activation, never knowledge content

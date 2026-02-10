@@ -2,10 +2,10 @@
 
 #include <cstdint>
 #include <chrono>
+#include "../common/types.hpp"
 
 namespace brain19 {
 
-using ConceptId = uint64_t;
 
 // Relation types (must match LTM definition)
 enum class RelationType {

@@ -1,0 +1,1373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brain19 — Complete Technical Documentation</title>
+<style>
+  :root { --bg:#0d1117; --surface:#161b22; --border:#30363d; --text:#e6edf3; --muted:#8b949e;
+          --accent:#58a6ff; --green:#3fb950; --yellow:#d29922; --red:#f85149; --code-bg:#1c2128; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
+         background:var(--bg); color:var(--text); line-height:1.6; padding:2rem; max-width:1200px; margin:0 auto; }
+  h1 { font-size:2rem; border-bottom:1px solid var(--border); padding-bottom:.5rem; margin-bottom:1.5rem; }
+  h2 { color:var(--accent); font-size:1.4rem; margin:2rem 0 .8rem; border-bottom:1px solid var(--border); padding-bottom:.3rem; }
+  h3 { color:var(--green); font-size:1.1rem; margin:1.2rem 0 .4rem; }
+  h4 { color:var(--yellow); font-size:.95rem; margin:.8rem 0 .2rem; }
+  p,li { margin-bottom:.4rem; }
+  ul { padding-left:1.5rem; }
+  code { background:var(--code-bg); padding:.1rem .3rem; border-radius:3px; font-size:.85em; color:var(--accent); }
+  pre { background:var(--code-bg); border:1px solid var(--border); border-radius:6px; padding:.8rem; overflow-x:auto; margin:.4rem 0 .8rem; }
+  pre code { background:none; padding:0; color:var(--text); }
+  section { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:1.2rem; margin-bottom:1.2rem; }
+  table { width:100%; border-collapse:collapse; margin:.4rem 0 .8rem; font-size:.9em; }
+  th,td { text-align:left; padding:.3rem .6rem; border-bottom:1px solid var(--border); }
+  th { color:var(--muted); font-weight:600; font-size:.8em; text-transform:uppercase; }
+  .tag { display:inline-block; padding:.05rem .4rem; border-radius:10px; font-size:.75em; font-weight:600; margin-right:.2rem; }
+  .tag-ro { background:#3fb95033; color:var(--green); }
+  .tag-rw { background:#d2992233; color:var(--yellow); }
+  .tag-core { background:#58a6ff33; color:var(--accent); }
+  .tag-ext { background:#f8514933; color:var(--red); }
+  .weak { background:#f8514915; border-left:3px solid var(--red); padding:.5rem .8rem; margin:.3rem 0; border-radius:0 4px 4px 0; font-size:.9em; }
+  .note { background:#58a6ff15; border-left:3px solid var(--accent); padding:.5rem .8rem; margin:.3rem 0; border-radius:0 4px 4px 0; font-size:.9em; }
+  .invariant { background:#3fb95015; border-left:3px solid var(--green); padding:.5rem .8rem; margin:.3rem 0; border-radius:0 4px 4px 0; font-size:.9em; }
+  nav { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:.8rem 1.2rem; margin-bottom:1.2rem; }
+  nav a { color:var(--accent); text-decoration:none; margin-right:.6rem; font-size:.9em; }
+  nav a:hover { text-decoration:underline; }
+  .grid { display:grid; grid-template-columns:1fr 1fr; gap:.5rem; }
+  @media (max-width:768px) { .grid { grid-template-columns:1fr; } }
+  .stat { text-align:center; padding:.5rem; background:var(--code-bg); border-radius:4px; }
+  .stat-num { font-size:1.5rem; font-weight:700; color:var(--accent); }
+  .stat-label { font-size:.75rem; color:var(--muted); text-transform:uppercase; }
+  details { margin:.3rem 0; }
+  summary { cursor:pointer; color:var(--accent); font-weight:600; }
+  summary:hover { text-decoration:underline; }
+</style>
+</head>
+<body>
+<h1>🧠 Brain19 — Complete Technical Documentation</h1>
+<p>Auto-generated module-by-module documentation. Generated: 2026-02-11</p>
+
+
+<div class="grid" style="grid-template-columns:repeat(4,1fr); margin-bottom:1.2rem;">
+  <div class="stat"><div class="stat-num">21</div><div class="stat-label">Modules</div></div>
+  <div class="stat"><div class="stat-num">136</div><div class="stat-label">Source Files</div></div>
+  <div class="stat"><div class="stat-num">26,286</div><div class="stat-label">Lines of Code</div></div>
+  <div class="stat"><div class="stat-num">231</div><div class="stat-label">Classes/Structs</div></div>
+</div>
+
+<nav><strong>Modules:</strong> 
+<a href="#main">main</a>
+<a href="#common">common</a>
+<a href="#epistemic">epistemic</a>
+<a href="#ltm">ltm</a>
+<a href="#memory">memory</a>
+<a href="#micromodel">micromodel</a>
+<a href="#kan">kan</a>
+<a href="#adapter">adapter</a>
+<a href="#cognitive">cognitive</a>
+<a href="#curiosity">curiosity</a>
+<a href="#understanding">understanding</a>
+<a href="#hybrid">hybrid</a>
+<a href="#ingestor">ingestor</a>
+<a href="#importers">importers</a>
+<a href="#bootstrap">bootstrap</a>
+<a href="#llm">llm</a>
+<a href="#persistent">persistent</a>
+<a href="#concurrent">concurrent</a>
+<a href="#streams">streams</a>
+<a href="#core">core</a>
+<a href="#evolution">evolution</a>
+</nav>
+
+<section>
+<h2>Architecture Overview</h2>
+<pre><code>┌─────────────────────────────────────────────────────────────────┐
+│                    Brain19App (REPL + CLI)                       │
+│                         main.cpp                                │
+├─────────────────────────────────────────────────────────────────┤
+│                   SystemOrchestrator                            │
+│    (15 subsystems, lifecycle, ask/ingest/checkpoint)            │
+├──────────┬──────────┬──────────┬──────────┬─────────────────────┤
+│ LTM      │ STM      │ Cognitive│ Under-   │ Hybrid              │
+│ (know-   │ (activa- │ Dynamics │ standing │ (KAN Validator,     │
+│  ledge)  │  tion)   │ (spread, │ Layer    │  Epistemic Bridge,  │
+│          │          │  focus)  │ (MiniLLM)│  Refinement Loop)   │
+├──────────┼──────────┼──────────┼──────────┼─────────────────────┤
+│ MicroModel Registry │ KAN Modules        │ Ingestion Pipeline   │
+│ (per-concept learn) │ (B-spline approx)  │ (text→concepts)      │
+├──────────┴──────────┴──────────┴──────────┴─────────────────────┤
+│ Persistence (WAL, Checkpoints)  │  Streams (parallel thinking)  │
+│ Concurrent (SharedLTM/STM/...)  │  Bootstrap (foundation seed)  │
+└─────────────────────────────────┴───────────────────────────────┘</code></pre>
+
+<h3>Key Architectural Invariants</h3>
+<div class="invariant"><strong>Epistemic Enforcement:</strong> No default-constructible EpistemicMetadata. Every concept MUST have explicit type + trust. Knowledge is NEVER deleted, only INVALIDATED.</div>
+<div class="invariant"><strong>READ-ONLY Boundaries:</strong> CognitiveDynamics, UnderstandingLayer, MiniLLMs — all READ-ONLY on LTM. Only SystemOrchestrator + IngestionPipeline write to LTM.</div>
+<div class="invariant"><strong>HYPOTHESIS Enforcement:</strong> All MiniLLM outputs are HYPOTHESIS. No automatic FACT promotion. EpistemicBridge maps KAN training results to trust scores.</div>
+<div class="invariant"><strong>Bounded Values:</strong> Activation ∈ [0,1], Trust ∈ [0,1], Salience ∈ [0,1], Weight ∈ [0,1]. All clamped.</div>
+</section>
+
+
+<section id="main">
+<h2>Module: main.cpp</h2>
+<table>
+  <tr><th>Property</th><th>Value</th></tr>
+  <tr><td>Files</td><td>1</td></tr>
+  <tr><td>Lines</td><td>93</td></tr>
+  <tr><td>Responsibility</td><td>Application entry point — CLI parsing, mode selection</td></tr>
+  <tr><td>Authority</td><td><strong>Top-level</strong></td></tr>
+  <tr><td>Classes/Structs</td><td>0</td></tr>
+</table>
+
+<h3>Files</h3>
+<ul>
+<li><code>main.cpp</code></li>
+</ul>
+
+<h3>Key Functions</h3>
+<details><summary>Show functions</summary><ul>
+<li><code>print_usage()</code></li>
+<li><code>directory()</code></li>
+<li><code>host()</code></li>
+<li><code>model()</code></li>
+<li><code>streams()</code></li>
+<li><code>main()</code></li>
+<li><code>app()</code></li>
+</ul></details>
+</section>
+
+<section id="common">
+<h2>Module: common/types</h2>
+<table>
+  <tr><th>Property</th><th>Value</th></tr>
+  <tr><td>Files</td><td>1</td></tr>
+  <tr><td>Lines</td><td>11</td></tr>
+  <tr><td>Responsibility</td><td>Core type aliases (ConceptId, ContextId, RelationId)</td></tr>
+  <tr><td>Authority</td><td><strong>Foundation</strong></td></tr>
+  <tr><td>Classes/Structs</td><td>0</td></tr>
+</table>
+
+<h3>Files</h3>
+<ul>
+<li><code>common/types.hpp</code></li>
+</ul>
+
+</section>
+
+<section id="epistemic">
+<h2>Module: epistemic/epistemic_metadata</h2>
+<table>
+  <tr><th>Property</th><th>Value</th></tr>
+  <tr><td>Files</td><td>1</td></tr>
+  <tr><td>Lines</td><td>145</td></tr>
+  <tr><td>Responsibility</td><td>Epistemic type system — EpistemicType, EpistemicStatus, EpistemicMetadata with compile-time enforcement</td></tr>
+  <tr><td>Authority</td><td><strong>Core invariant</strong></td></tr>
+  <tr><td>Classes/Structs</td><td>3</td></tr>
+</table>
+
+<h3>Files</h3>
+<ul>
+<li><code>epistemic/epistemic_metadata.hpp</code></li>
+</ul>
+
+<h3>Classes & Structs</h3><ul>
+<li><code>EpistemicType</code></li>
+<li><code>EpistemicStatus</code></li>
+<li><code>EpistemicMetadata</code></li>
+</ul>
+<h3>Key Functions</h3>
+<details><summary>Show functions</summary><ul>
+<li><code>knowledge()</code></li>
+<li><code>incorrect()</code></li>
+<li><code>INVARIANTS()</code></li>
+<li><code>construction()</code></li>
+<li><code>EpistemicMetadata()</code></li>
+<li><code>type()</code></li>
+<li><code>validation()</code></li>
+<li><code>constraint()</code></li>
+<li><code>assert()</code></li>
+<li><code>operators()</code></li>
+<li><code>allowed()</code></li>
+<li><code>helper()</code></li>
+<li><code>is_valid()</code></li>
+<li><code>helpers()</code></li>
+<li><code>is_active()</code></li>
+<li><code>is_invalidated()</code></li>
+<li><code>is_superseded()</code></li>
+<li><code>is_contextual()</code></li>
+<li><code>create_fact_metadata()</code></li>
+<li><code>create_hypothesis_metadata()</code></li>
+<li><code>create_invalidated_metadata()</code></li>
+<li><code>epistemic_type_to_string()</code></li>
+<li><code>epistemic_status_to_string()</code></li>
+</ul></details>
+</section>
+
+<section id="ltm">
+<h2>Module: ltm/ — Long-Term Memory</h2>
+<table>
+  <tr><th>Property</th><th>Value</th></tr>
+  <tr><td>Files</td><td>3</td></tr>
+  <tr><td>Lines</td><td>500</td></tr>
+  <tr><td>Responsibility</td><td>Persistent knowledge storage — ConceptInfo, RelationInfo, concept/relation CRUD with epistemic enforcement</td></tr>
+  <tr><td>Authority</td><td><strong>Knowledge authority</strong></td></tr>
+  <tr><td>Classes/Structs</td><td>4</td></tr>
+</table>
+
+<h3>Files</h3>
+<ul>
+<li><code>ltm/long_term_memory.hpp</code></li><li><code>ltm/relation.hpp</code></li><li><code>ltm/long_term_memory.cpp</code></li>
+</ul>
+
+<h3>Classes & Structs</h3><ul>
+<li><code>ConceptInfo</code></li>
+<li><code>LongTermMemory</code></li>
+<li><code>RelationInfo</code></li>
+<li><code>new</code></li>
+</ul>
+<h3>Key Functions</h3>
+<details><summary>Show functions</summary><ul>
+<li><code>ConceptInfo()</code></li>
+<li><code>id()</code></li>
+<li><code>LongTermMemory()</code></li>
+<li><code>store_concept()</code></li>
+<li><code>concept()</code></li>
+<li><code>retrieve_concept()</code></li>
+<li><code>exists()</code></li>
+<li><code>metadata()</code></li>
+<li><code>update_epistemic_metadata()</code></li>
+<li><code>knowledge()</code></li>
+<li><code>low()</code></li>
+<li><code>invalidate_concept()</code></li>
+<li><code>get_concepts_by_type()</code></li>
+<li><code>get_concepts_by_status()</code></li>
+<li><code>active()</code></li>
+<li><code>get_active_concepts()</code></li>
+<li><code>MANAGEMENT()</code></li>
+<li><code>entities()</code></li>
+<li><code>add_relation()</code></li>
+<li><code>get_relation()</code></li>
+<li><code>get_outgoing_relations()</code></li>
+<li><code>get_incoming_relations()</code></li>
+<li><code>get_relations_between()</code></li>
+<li><code>remove_relation()</code></li>
+<li><code>get_relation_count()</code></li>
+</ul></details>
+</section>
+
+<section id="memory">
+<h2>Module: memory/ — Short-Term Memory</h2>
+<table>
+  <tr><th>Property</th><th>Value</th></tr>
+  <tr><td>Files</td><td>7</td></tr>
+  <tr><td>Lines</td><td>745</td></tr>
+  <tr><td>Responsibility</td><td>Activation-based working memory — STM (contexts, decay, export/import), BrainController (minimal orchestration)</td></tr>
+  <tr><td>Authority</td><td><strong>Activation authority</strong></td></tr>
+  <tr><td>Classes/Structs</td><td>9</td></tr>
+</table>
+
+<h3>Files</h3>
+<ul>
+<li><code>memory/activation_level.hpp</code></li><li><code>memory/active_relation.hpp</code></li><li><code>memory/stm_entry.hpp</code></li><li><code>memory/stm.hpp</code></li><li><code>memory/stm.cpp</code></li><li><code>memory/brain_controller.hpp</code></li><li><code>memory/brain_controller.cpp</code></li>
+</ul>
+
+<h3>Classes & Structs</h3><ul>
+<li><code>ActivationLevel</code></li>
+<li><code>ActivationClass</code></li>
+<li><code>RelationType</code></li>
+<li><code>ActiveRelation</code></li>
+<li><code>STMEntry</code></li>
+<li><code>ShortTermMemory</code></li>
+<li><code>Context</code></li>
+<li><code>BrainController</code></li>
+<li><code>ThinkingState</code></li>
+</ul>
+<h3>Key Functions</h3>
+<details><summary>Show functions</summary><ul>
+<li><code>level()</code></li>
+<li><code>slower()</code></li>
+<li><code>faster()</code></li>
+<li><code>types()</code></li>
+<li><code>source()</code></li>
+<li><code>concept_id()</code></li>
+<li><code>ShortTermMemory()</code></li>
+<li><code>create_context()</code></li>
+<li><code>destroy_context()</code></li>
+<li><code>clear_context()</code></li>
+<li><code>activation()</code></li>
+<li><code>activate_concept()</code></li>
+<li><code>activate_relation()</code></li>
+<li><code>boost_concept()</code></li>
+<li><code>boost_relation()</code></li>
+<li><code>get_concept_activation()</code></li>
+<li><code>get_relation_activation()</code></li>
+<li><code>get_concept_level()</code></li>
+<li><code>get_active_concepts()</code></li>
+<li><code>get_active_relations()</code></li>
+<li><code>decay()</code></li>
+<li><code>decay_all()</code></li>
+<li><code>set_core_decay_rate()</code></li>
+<li><code>set_contextual_decay_rate()</code></li>
+<li><code>set_relation_decay_rate()</code></li>
+</ul></details>
+</section>
+
+<section id="micromodel">
+<h2>Module: micromodel/ — MicroModel System</h2>
+<table>
+  <tr><th>Property</th><th>Value</th></tr>
+  <tr><td>Files</td><td>13</td></tr>
+  <tr><td>Lines</td><td>2,456</td></tr>
+  <tr><td>Responsibility</td><td>Per-concept bilinear models (predict, train, serialize) — Registry, EmbeddingManager, MicroTrainer, RelevanceMap, binary Persistence</td></tr>
+  <tr><td>Authority</td><td><strong>Learning authority</strong></td></tr>
+  <tr><td>Classes/Structs</td><td>12</td></tr>
+</table>
+
+<h3>Files</h3>
+<ul>
+<li><code>micromodel/embedding_manager.hpp</code></li><li><code>micromodel/micro_model.hpp</code></li><li><code>micromodel/micro_model_registry.hpp</code></li><li><code>micromodel/micro_trainer.hpp</code></li><li><code>micromodel/persistence.hpp</code></li><li><code>micromodel/relevance_map.hpp</code></li><li><code>micromodel/embedding_manager.cpp</code></li><li><code>micromodel/micro_model.cpp</code></li><li><code>micromodel/micro_model_registry.cpp</code></li><li><code>micromodel/micro_trainer.cpp</code></li><li><code>micromodel/persistence.cpp</code></li><li><code>micromodel/relevance_map.cpp</code></li><li><code>micromodel/test_micromodel.cpp</code></li>
+</ul>
+
+<h3>Classes & Structs</h3><ul>
+<li><code>EmbeddingManager</code></li>
+<li><code>MicroTrainingConfig</code></li>
+<li><code>TrainingSample</code></li>
+<li><code>MicroTrainingResult</code></li>
+<li><code>TrainingState</code></li>
+<li><code>MicroModel</code></li>
+<li><code>MicroModelRegistry</code></li>
+<li><code>TrainerConfig</code></li>
+<li><code>TrainerStats</code></li>
+<li><code>MicroTrainer</code></li>
+<li><code>OverlayMode</code></li>
+<li><code>RelevanceMap</code></li>
+</ul>
+<h3>Key Functions</h3>
+<details><summary>Show functions</summary><ul>
+<li><code>types()</code></li>
+<li><code>contexts()</code></li>
+<li><code>character()</code></li>
+<li><code>EmbeddingManager()</code></li>
+<li><code>embeddings()</code></li>
+<li><code>get_relation_embedding()</code></li>
+<li><code>get_context_embedding()</code></li>
+<li><code>caching()</code></li>
+<li><code>make_context_embedding()</code></li>
+<li><code>make_target_embedding()</code></li>
+<li><code>query_context()</code></li>
+<li><code>recall_context()</code></li>
+<li><code>creative_context()</code></li>
+<li><code>analytical_context()</code></li>
+<li><code>has_context()</code></li>
+<li><code>get_context_names()</code></li>
+<li><code>relation_embeddings()</code></li>
+<li><code>relation_embeddings_mut()</code></li>
+<li><code>context_embeddings()</code></li>
+<li><code>context_embeddings_mut()</code></li>
+<li><code>init_relation_embeddings()</code></li>
+<li><code>embedding()</code></li>
+<li><code>models()</code></li>
+<li><code>KG()</code></li>
+<li><code>gradients()</code></li>
+</ul></details>
+</section>
+
+<section id="kan">
+<h2>Module: kan/ — Kolmogorov-Arnold Network</h2>
+<table>
+  <tr><th>Property</th><th>Value</th></tr>
+  <tr><td>Files</td><td>7</td></tr>
+  <tr><td>Lines</td><td>563</td></tr>
+  <tr><td>Responsibility</td><td>B-spline univariate functions (KANNode), layer grids (KANLayer), multi-layer modules (KANModule) with training — FunctionHypothesis wrapper</td></tr>
+  <tr><td>Authority</td><td><strong>Function approximation</strong></td></tr>
+  <tr><td>Classes/Structs</td><td>7</td></tr>
+</table>
+
+<h3>Files</h3>
+<ul>
+<li><code>kan/function_hypothesis.hpp</code></li><li><code>kan/kan_layer.hpp</code></li><li><code>kan/kan_module.hpp</code></li><li><code>kan/kan_node.hpp</code></li><li><code>kan/kan_layer.cpp</code></li><li><code>kan/kan_module.cpp</code></li><li><code>kan/kan_node.cpp</code></li>
+</ul>
+
+<h3>Classes & Structs</h3><ul>
+<li><code>KANModule</code></li>
+<li><code>FunctionHypothesis</code></li>
+<li><code>KANLayer</code></li>
+<li><code>DataPoint</code></li>
+<li><code>KanTrainingConfig</code></li>
+<li><code>KanTrainingResult</code></li>
+<li><code>KANNode</code></li>
+</ul>
+<h3>Key Functions</h3>
+<details><summary>Show functions</summary><ul>
+<li><code>FunctionHypothesis()</code></li>
+<li><code>input_dim()</code></li>
+<li><code>is_valid()</code></li>
+<li><code>edge()</code></li>
+<li><code>KANLayer()</code></li>
+<li><code>evaluate()</code></li>
+<li><code>node()</code></li>
+<li><code>access()</code></li>
+<li><code>get_nodes()</code></li>
+<li><code>get_nodes_mutable()</code></li>
+<li><code>output_dim()</code></li>
+<li><code>num_nodes()</code></li>
+<li><code>inputs()</code></li>
+<li><code>outputs()</code></li>
+<li><code>elements()</code></li>
+<li><code>KANModule()</code></li>
+<li><code>constructor()</code></li>
+<li><code>function()</code></li>
+<li><code>train()</code></li>
+<li><code>compute_mse()</code></li>
+<li><code>num_layers()</code></li>
+<li><code>topology()</code></li>
+<li><code>layers()</code></li>
+<li><code>layer()</code></li>
+<li><code>layer_mutable()</code></li>
+</ul></details>
+</section>
+
+<section id="adapter">
+<h2>Module: adapter/kan_adapter</h2>
+<table>
+  <tr><th>Property</th><th>Value</th></tr>
+  <tr><td>Files</td><td>2</td></tr>
+  <tr><td>Lines</td><td>161</td></tr>
+  <tr><td>Responsibility</td><td>Clean interface between BrainController and KAN — module lifecycle, train, evaluate</td></tr>
+  <tr><td>Authority</td><td><strong>KAN bridge</strong></td></tr>
+  <tr><td>Classes/Structs</td><td>6</td></tr>
+</table>
+
+<h3>Files</h3>
+<ul>
+<li><code>adapter/kan_adapter.hpp</code></li><li><code>adapter/kan_adapter.cpp</code></li>
+</ul>
+
+<h3>Classes & Structs</h3><ul>
+<li><code>KANModule</code></li>
+<li><code>FunctionHypothesis</code></li>
+<li><code>DataPoint</code></li>
+<li><code>KanTrainingConfig</code></li>
+<li><code>KANAdapter</code></li>
+<li><code>KANModuleEntry</code></li>
+</ul>
+<h3>Key Functions</h3>
+<details><summary>Show functions</summary><ul>
+<li><code>KANAdapter()</code></li>
+<li><code>module()</code></li>
+<li><code>create_kan_module()</code></li>
+<li><code>create_kan_module_multilayer()</code></li>
+<li><code>FunctionHypothesis()</code></li>
+<li><code>train_kan_module()</code></li>
+<li><code>evaluate_kan_module()</code></li>
+<li><code>destroy_kan_module()</code></li>
+<li><code>has_module()</code></li>
+<li><code>get_topology()</code></li>
+<li><code>next_module_id_()</code></li>
+</ul></details>
+</section>
+
+<section id="cognitive">
+<h2>Module: cognitive/ — Cognitive Dynamics</h2>
+<table>
+  <tr><th>Property</th><th>Value</th></tr>
+  <tr><td>Files</td><td>3</td></tr>
+  <tr><td>Lines</td><td>1,580</td></tr>
+  <tr><td>Responsibility</td><td>Spreading Activation (trust-weighted, depth-limited), Salience Computation, Focus Management (Miller's 7±2), Thought Path Ranking (beam search)</td></tr>
+  <tr><td>Authority</td><td><strong>Cognitive processing — READ-ONLY on LTM</strong></td></tr>
+  <tr><td>Classes/Structs</td><td>12</td></tr>
+</table>
+
+<h3>Files</h3>
+<ul>
+<li><code>cognitive/cognitive_config.hpp</code></li><li><code>cognitive/cognitive_dynamics.hpp</code></li><li><code>cognitive/cognitive_dynamics.cpp</code></li>
+</ul>
+
+<h3>Classes & Structs</h3><ul>
+<li><code>ActivationSpreaderConfig</code></li>
+<li><code>FocusManagerConfig</code></li>
+<li><code>SalienceComputerConfig</code></li>
+<li><code>ThoughtPathConfig</code></li>
+<li><code>CognitiveDynamicsConfig</code></li>
+<li><code>ActivationEntry</code></li>
+<li><code>FocusEntry</code></li>
+<li><code>SalienceScore</code></li>
+<li><code>ThoughtPathNode</code></li>
+<li><code>ThoughtPath</code></li>
+<li><code>SpreadingStats</code></li>
+<li><code>CognitiveDynamics</code></li>
+</ul>
+<h3>Key Functions</h3>
+<details><summary>Show functions</summary><ul>
+<li><code>Zustände()</code></li>
+<li><code>Aktivierungen()</code></li>
+<li><code>berechnen()</code></li>
+<li><code>verwalten()</code></li>
+<li><code>priorisieren()</code></li>
+<li><code>Activation()</code></li>
+<li><code>depth()</code></li>
+<li><code>value()</code></li>
+<li><code>is_valid()</code></li>
+<li><code>set()</code></li>
+<li><code>score()</code></li>
+<li><code>connectivity()</code></li>
+<li><code>threshold()</code></li>
+<li><code>track()</code></li>
+<li><code>concept_id()</code></li>
+<li><code>sorting()</code></li>
+<li><code>SalienceScore()</code></li>
+<li><code>here()</code></li>
+<li><code>total_score()</code></li>
+<li><code>length()</code></li>
+<li><code>empty()</code></li>
+<li><code>concepts_activated()</code></li>
+<li><code>reset()</code></li>
+<li><code>Computation()</code></li>
+<li><code>Management()</code></li>
+</ul></details>
+</section>
+
+<section id="curiosity">
+<h2>Module: curiosity/ — Curiosity Engine</h2>
+<table>
+  <tr><th>Property</th><th>Value</th></tr>
+  <tr><td>Files</td><td>3</td></tr>
+  <tr><td>Lines</td><td>170</td></tr>
+  <tr><td>Responsibility</td><td>Pure signal generator — observes system state, emits CuriosityTriggers (shallow relations, low exploration)</td></tr>
+  <tr><td>Authority</td><td><strong>Signal generation only</strong></td></tr>
+  <tr><td>Classes/Structs</td><td>5</td></tr>
+</table>
+
+<h3>Files</h3>
+<ul>
+<li><code>curiosity/curiosity_engine.hpp</code></li><li><code>curiosity/curiosity_trigger.hpp</code></li><li><code>curiosity/curiosity_engine.cpp</code></li>
+</ul>
+
+<h3>Classes & Structs</h3><ul>
+<li><code>ShortTermMemory</code></li>
+<li><code>SystemObservation</code></li>
+<li><code>CuriosityEngine</code></li>
+<li><code>TriggerType</code></li>
+<li><code>CuriosityTrigger</code></li>
+</ul>
+<h3>Key Functions</h3>
+<details><summary>Show functions</summary><ul>
+<li><code>snapshot()</code></li>
+<li><code>context_id()</code></li>
+<li><code>CuriosityEngine()</code></li>
+<li><code>state()</code></li>
+<li><code>observe_and_generate_triggers()</code></li>
+<li><code>thresholds()</code></li>
+<li><code>set_shallow_relation_threshold()</code></li>
+<li><code>set_low_exploration_threshold()</code></li>
+<li><code>helpers()</code></li>
+<li><code>detect_shallow_relations()</code></li>
+<li><code>detect_low_exploration()</code></li>
+<li><code>type()</code></li>
+<li><code>shallow_relation_ratio_()</code></li>
+<li><code>trigger()</code></li>
+</ul></details>
+</section>
+
+<section id="understanding">
+<h2>Module: understanding/ — Understanding Layer</h2>
+<table>
+  <tr><th>Property</th><th>Value</th></tr>
+  <tr><td>Files</td><td>8</td></tr>
+  <tr><td>Lines</td><td>1,706</td></tr>
+  <tr><td>Responsibility</td><td>MiniLLM abstract interface (extract_meaning, generate_hypotheses, detect_analogies, detect_contradictions) + StubMiniLLM + OllamaMiniLLM + UnderstandingLayer + MiniLLMFactory — ALL outputs HYPOTHESIS</td></tr>
+  <tr><td>Authority</td><td><strong>Semantic analysis — READ-ONLY on LTM</strong></td></tr>
+  <tr><td>Classes/Structs</td><td>14</td></tr>
+</table>
+
+<h3>Files</h3>
+<ul>
+<li><code>understanding/mini_llm.hpp</code></li><li><code>understanding/mini_llm_factory.hpp</code></li><li><code>understanding/ollama_mini_llm.hpp</code></li><li><code>understanding/understanding_layer.hpp</code></li><li><code>understanding/understanding_proposals.hpp</code></li><li><code>understanding/mini_llm.cpp</code></li><li><code>understanding/ollama_mini_llm.cpp</code></li><li><code>understanding/understanding_layer.cpp</code></li>
+</ul>
+
+<h3>Classes & Structs</h3><ul>
+<li><code>MiniLLM</code></li>
+<li><code>StubMiniLLM</code></li>
+<li><code>MiniLLMFactory</code></li>
+<li><code>SpecializedMiniLLM</code></li>
+<li><code>OllamaMiniLLM</code></li>
+<li><code>UnderstandingLayerConfig</code></li>
+<li><code>UnderstandingLayer</code></li>
+<li><code>UnderstandingResult</code></li>
+<li><code>Statistics</code></li>
+<li><code>MeaningProposal</code></li>
+<li><code>HypothesisProposal</code></li>
+<li><code>SuggestedEpistemic</code></li>
+<li><code>AnalogyProposal</code></li>
+<li><code>ContradictionProposal</code></li>
+</ul>
+<h3>Key Functions</h3>
+<details><summary>Show functions</summary><ul>
+<li><code>get_model_id()</code></li>
+<li><code>EXTRACTION()</code></li>
+<li><code>STM()</code></li>
+<li><code>proposals()</code></li>
+<li><code>extract_meaning()</code></li>
+<li><code>GENERATION()</code></li>
+<li><code>concepts()</code></li>
+<li><code>generate_hypotheses()</code></li>
+<li><code>DETECTION()</code></li>
+<li><code>sets()</code></li>
+<li><code>detect_analogies()</code></li>
+<li><code>contradictions()</code></li>
+<li><code>detect_contradictions()</code></li>
+<li><code>StubMiniLLM()</code></li>
+<li><code>proposal_counter_()</code></li>
+<li><code>Kontext()</code></li>
+<li><code>MiniLLMFactory()</code></li>
+<li><code>concept()</code></li>
+<li><code>create_specialized_mini_llm()</code></li>
+<li><code>create_relation_expert_mini_llm()</code></li>
+<li><code>create_epistemic_expert_mini_llm()</code></li>
+<li><code>get_created_count()</code></li>
+<li><code>build_specialization_prompt()</code></li>
+<li><code>context()</code></li>
+<li><code>extract_knowledge_context()</code></li>
+</ul></details>
+</section>
+
+<section id="hybrid">
+<h2>Module: hybrid/ — KAN-LLM Hybrid</h2>
+<table>
+  <tr><th>Property</th><th>Value</th></tr>
+  <tr><td>Files</td><td>10</td></tr>
+  <tr><td>Lines</td><td>2,072</td></tr>
+  <tr><td>Responsibility</td><td>HypothesisTranslator (NLP→KAN training problem), EpistemicBridge (MSE→Trust mapping), KanValidator (end-to-end validation), DomainManager (domain-specific KAN config), RefinementLoop (bidirectional LLM↔KAN dialog)</td></tr>
+  <tr><td>Authority</td><td><strong>Validation pipeline</strong></td></tr>
+  <tr><td>Classes/Structs</td><td>21</td></tr>
+</table>
+
+<h3>Files</h3>
+<ul>
+<li><code>hybrid/domain_manager.hpp</code></li><li><code>hybrid/epistemic_bridge.hpp</code></li><li><code>hybrid/hypothesis_translator.hpp</code></li><li><code>hybrid/kan_validator.hpp</code></li><li><code>hybrid/refinement_loop.hpp</code></li><li><code>hybrid/domain_manager.cpp</code></li><li><code>hybrid/epistemic_bridge.cpp</code></li><li><code>hybrid/hypothesis_translator.cpp</code></li><li><code>hybrid/kan_validator.cpp</code></li><li><code>hybrid/refinement_loop.cpp</code></li>
+</ul>
+
+<h3>Classes & Structs</h3><ul>
+<li><code>DomainType</code></li>
+<li><code>DomainTypeHash</code></li>
+<li><code>DomainInfo</code></li>
+<li><code>CrossDomainInsight</code></li>
+<li><code>DomainManager</code></li>
+<li><code>EpistemicAssessment</code></li>
+<li><code>EpistemicBridge</code></li>
+<li><code>RelationshipPattern</code></li>
+<li><code>DataQuality</code></li>
+<li><code>PatternDetectionResult</code></li>
+<li><code>NumericHints</code></li>
+<li><code>KanTrainingProblem</code></li>
+<li><code>TranslationResult</code></li>
+<li><code>HypothesisTranslator</code></li>
+<li><code>ValidationResult</code></li>
+<li><code>KanValidator</code></li>
+<li><code>RefinementIteration</code></li>
+<li><code>RefinementResult</code></li>
+<li><code>RefinementLoop</code></li>
+<li><code>PatternScore</code></li>
+<li><code>KeywordGroup</code></li>
+</ul>
+<h3>Key Functions</h3>
+<details><summary>Show functions</summary><ul>
+<li><code>domain_to_string()</code></li>
+<li><code>DomainType()</code></li>
+<li><code>DomainInfo()</code></li>
+<li><code>type()</code></li>
+<li><code>default_knots()</code></li>
+<li><code>default_hidden()</code></li>
+<li><code>CrossDomainInsight()</code></li>
+<li><code>domain_a()</code></li>
+<li><code>distance()</code></li>
+<li><code>DomainManager()</code></li>
+<li><code>detect_domain()</code></li>
+<li><code>cluster_by_domain()</code></li>
+<li><code>info()</code></li>
+<li><code>get_domain_info()</code></li>
+<li><code>get_domain_validator_config()</code></li>
+<li><code>find_cross_domain_insights()</code></li>
+<li><code>get_active_domains()</code></li>
+<li><code>has_domain()</code></li>
+<li><code>get_config()</code></li>
+<li><code>classify_relations()</code></li>
+<li><code>EpistemicAssessment()</code></li>
+<li><code>metadata()</code></li>
+<li><code>candidate()</code></li>
+<li><code>convergence()</code></li>
+<li><code>EpistemicBridge()</code></li>
+</ul></details>
+</section>
+
+<section id="ingestor">
+<h2>Module: ingestor/ — Ingestion Pipeline</h2>
+<table>
+  <tr><th>Property</th><th>Value</th></tr>
+  <tr><td>Files</td><td>15</td></tr>
+  <tr><td>Lines</td><td>3,848</td></tr>
+  <tr><td>Responsibility</td><td>Complete ingestion: TextChunker → EntityExtractor → RelationExtractor → TrustTagger → ProposalQueue → LTM. Supports JSON/CSV/plaintext. ADDITIVE only.</td></tr>
+  <tr><td>Authority</td><td><strong>Ingestion authority</strong></td></tr>
+  <tr><td>Classes/Structs</td><td>25</td></tr>
+</table>
+
+<h3>Files</h3>
+<ul>
+<li><code>ingestor/text_chunker.hpp</code></li><li><code>ingestor/entity_extractor.hpp</code></li><li><code>ingestor/relation_extractor.hpp</code></li><li><code>ingestor/trust_tagger.hpp</code></li><li><code>ingestor/proposal_queue.hpp</code></li><li><code>ingestor/knowledge_ingestor.hpp</code></li><li><code>ingestor/ingestion_pipeline.hpp</code></li><li><code>ingestor/entity_extractor.cpp</code></li><li><code>ingestor/ingestion_pipeline.cpp</code></li><li><code>ingestor/knowledge_ingestor.cpp</code></li><li><code>ingestor/proposal_queue.cpp</code></li><li><code>ingestor/relation_extractor.cpp</code></li><li><code>ingestor/test_ingestor.cpp</code></li><li><code>ingestor/text_chunker.cpp</code></li><li><code>ingestor/trust_tagger.cpp</code></li>
+</ul>
+
+<h3>Classes & Structs</h3><ul>
+<li><code>TextChunk</code></li>
+<li><code>TextChunker</code></li>
+<li><code>ExtractedEntity</code></li>
+<li><code>EntityExtractor</code></li>
+<li><code>ExtractedRelation</code></li>
+<li><code>RelationExtractor</code></li>
+<li><code>RelationPattern</code></li>
+<li><code>TrustCategory</code></li>
+<li><code>TrustAssignment</code></li>
+<li><code>TrustTagger</code></li>
+<li><code>TrustRange</code></li>
+<li><code>ProposalStatus</code></li>
+<li><code>IngestProposal</code></li>
+<li><code>ReviewDecision</code></li>
+<li><code>QueueStats</code></li>
+<li><code>ProposalQueue</code></li>
+<li><code>StructuredConcept</code></li>
+<li><code>StructuredRelation</code></li>
+<li><code>StructuredInput</code></li>
+<li><code>ParseResult</code></li>
+<li><code>KnowledgeIngestor</code></li>
+<li><code>IngestionResult</code></li>
+<li><code>IngestionPipeline</code></li>
+<li><code>CommitResult</code></li>
+<li><code>KeywordRelation</code></li>
+</ul>
+<h3>Key Functions</h3>
+<details><summary>Show functions</summary><ul>
+<li><code>TextChunk()</code></li>
+<li><code>start_offset()</code></li>
+<li><code>text()</code></li>
+<li><code>detection()</code></li>
+<li><code>size()</code></li>
+<li><code>chunks()</code></li>
+<li><code>config_()</code></li>
+<li><code>TextChunker()</code></li>
+<li><code>chunk_text()</code></li>
+<li><code>first()</code></li>
+<li><code>split_sentences()</code></li>
+<li><code>get_config()</code></li>
+<li><code>is_sentence_end()</code></li>
+<li><code>trim()</code></li>
+<li><code>ExtractedEntity()</code></li>
+<li><code>frequency()</code></li>
+<li><code>label()</code></li>
+<li><code>strategies()</code></li>
+<li><code>phrases()</code></li>
+<li><code>words()</code></li>
+<li><code>EntityExtractor()</code></li>
+<li><code>extract_from_chunk()</code></li>
+<li><code>extract_from_chunks()</code></li>
+<li><code>extract_from_text()</code></li>
+<li><code>SuggestedConcept()</code></li>
+</ul></details>
+</section>
+
+<section id="importers">
+<h2>Module: importers/ — External Importers</h2>
+<table>
+  <tr><th>Property</th><th>Value</th></tr>
+  <tr><td>Files</td><td>7</td></tr>
+  <tr><td>Lines</td><td>1,003</td></tr>
+  <tr><td>Responsibility</td><td>WikipediaImporter, ScholarImporter, HttpClient — external knowledge sources → KnowledgeProposal</td></tr>
+  <tr><td>Authority</td><td><strong>External data bridge</strong></td></tr>
+  <tr><td>Classes/Structs</td><td>12</td></tr>
+</table>
+
+<h3>Files</h3>
+<ul>
+<li><code>importers/http_client.hpp</code></li><li><code>importers/knowledge_proposal.hpp</code></li><li><code>importers/scholar_importer.hpp</code></li><li><code>importers/wikipedia_importer.hpp</code></li><li><code>importers/http_client.cpp</code></li><li><code>importers/scholar_importer.cpp</code></li><li><code>importers/wikipedia_importer.cpp</code></li>
+</ul>
+
+<h3>Classes & Structs</h3><ul>
+<li><code>HttpClient</code></li>
+<li><code>HttpResponse</code></li>
+<li><code>SourceType</code></li>
+<li><code>SuggestedEpistemicType</code></li>
+<li><code>SuggestedConcept</code></li>
+<li><code>SuggestedRelation</code></li>
+<li><code>KnowledgeProposal</code></li>
+<li><code>is</code></li>
+<li><code>PaperSection</code></li>
+<li><code>ScholarImporter</code></li>
+<li><code>WikipediaImporter</code></li>
+<li><code>curl_slist</code></li>
+</ul>
+<h3>Key Functions</h3>
+<details><summary>Show functions</summary><ul>
+<li><code>http_get()</code></li>
+<li><code>url_encode()</code></li>
+<li><code>type()</code></li>
+<li><code>SuggestedConcept()</code></li>
+<li><code>label()</code></li>
+<li><code>source_label()</code></li>
+<li><code>allowed()</code></li>
+<li><code>review()</code></li>
+<li><code>metadata()</code></li>
+<li><code>KnowledgeProposal()</code></li>
+<li><code>proposal_id()</code></li>
+<li><code>ScholarImporter()</code></li>
+<li><code>DOI()</code></li>
+<li><code>import_paper_by_doi()</code></li>
+<li><code>import_paper_by_doi_online()</code></li>
+<li><code>search_papers()</code></li>
+<li><code>import_paper_from_url()</code></li>
+<li><code>text()</code></li>
+<li><code>parse_paper_text()</code></li>
+<li><code>extract_abstract()</code></li>
+<li><code>extract_conclusion()</code></li>
+<li><code>extract_research_concepts()</code></li>
+<li><code>extract_claims()</code></li>
+<li><code>extract_methods()</code></li>
+<li><code>extract_citations()</code></li>
+</ul></details>
+</section>
+
+<section id="bootstrap">
+<h2>Module: bootstrap/ — Foundation Bootstrap</h2>
+<table>
+  <tr><th>Property</th><th>Value</th></tr>
+  <tr><td>Files</td><td>6</td></tr>
+  <tr><td>Lines</td><td>1,116</td></tr>
+  <tr><td>Responsibility</td><td>FoundationConcepts (4-tier seeding: ontology→categories→relations→science, ~233 concepts), BootstrapInterface (guided onboarding), ContextAccumulator (domain coverage tracking)</td></tr>
+  <tr><td>Authority</td><td><strong>Bootstrap authority</strong></td></tr>
+  <tr><td>Classes/Structs</td><td>8</td></tr>
+</table>
+
+<h3>Files</h3>
+<ul>
+<li><code>bootstrap/bootstrap_interface.hpp</code></li><li><code>bootstrap/context_accumulator.hpp</code></li><li><code>bootstrap/foundation_concepts.hpp</code></li><li><code>bootstrap/bootstrap_interface.cpp</code></li><li><code>bootstrap/context_accumulator.cpp</code></li><li><code>bootstrap/foundation_concepts.cpp</code></li>
+</ul>
+
+<h3>Classes & Structs</h3><ul>
+<li><code>BootstrapProposal</code></li>
+<li><code>BootstrapInterface</code></li>
+<li><code>ContextAccumulator</code></li>
+<li><code>DomainStats</code></li>
+<li><code>FoundationConcepts</code></li>
+<li><code>ConceptSeed</code></li>
+<li><code>RelationSeed</code></li>
+<li><code>or</code></li>
+</ul>
+<h3>Key Functions</h3>
+<details><summary>Show functions</summary><ul>
+<li><code>knowledge()</code></li>
+<li><code>BootstrapInterface()</code></li>
+<li><code>initialize_foundation()</code></li>
+<li><code>is_foundation_loaded()</code></li>
+<li><code>process_text()</code></li>
+<li><code>accept_proposal()</code></li>
+<li><code>reject_proposal()</code></li>
+<li><code>known_concepts()</code></li>
+<li><code>pending_proposals()</code></li>
+<li><code>next()</code></li>
+<li><code>suggest_next_topics()</code></li>
+<li><code>accumulator()</code></li>
+<li><code>names()</code></li>
+<li><code>rebuild_label_index()</code></li>
+<li><code>find_similar()</code></li>
+<li><code>extract_candidate_entities()</code></li>
+<li><code>generate_description()</code></li>
+<li><code>is_known()</code></li>
+<li><code>referenced()</code></li>
+<li><code>domains()</code></li>
+<li><code>record_concept()</code></li>
+<li><code>processed()</code></li>
+<li><code>record_text_processed()</code></li>
+<li><code>get_domain_stats()</code></li>
+<li><code>find_knowledge_gaps()</code></li>
+</ul></details>
+</section>
+
+<section id="llm">
+<h2>Module: llm/ — LLM Integration</h2>
+<table>
+  <tr><th>Property</th><th>Value</th></tr>
+  <tr><td>Files</td><td>4</td></tr>
+  <tr><td>Lines</td><td>840</td></tr>
+  <tr><td>Responsibility</td><td>OllamaClient (HTTP REST to Ollama), ChatInterface (LLM-powered verbalization of LTM knowledge, epistemic metadata in prompts) — LLM is a TOOL, not an agent</td></tr>
+  <tr><td>Authority</td><td><strong>Verbalization tool</strong></td></tr>
+  <tr><td>Classes/Structs</td><td>7</td></tr>
+</table>
+
+<h3>Files</h3>
+<ul>
+<li><code>llm/chat_interface.hpp</code></li><li><code>llm/ollama_client.hpp</code></li><li><code>llm/chat_interface.cpp</code></li><li><code>llm/ollama_client.cpp</code></li>
+</ul>
+
+<h3>Classes & Structs</h3><ul>
+<li><code>ChatResponse</code></li>
+<li><code>ChatInterface</code></li>
+<li><code>OllamaConfig</code></li>
+<li><code>OllamaMessage</code></li>
+<li><code>OllamaResponse</code></li>
+<li><code>OllamaClient</code></li>
+<li><code>curl_slist</code></li>
+</ul>
+<h3>Key Functions</h3>
+<details><summary>Show functions</summary><ul>
+<li><code>ChatInterface()</code></li>
+<li><code>initialize()</code></li>
+<li><code>is_llm_available()</code></li>
+<li><code>question()</code></li>
+<li><code>ask()</code></li>
+<li><code>context()</code></li>
+<li><code>ask_with_context()</code></li>
+<li><code>list_knowledge()</code></li>
+<li><code>concept()</code></li>
+<li><code>explain_concept()</code></li>
+<li><code>concepts()</code></li>
+<li><code>compare()</code></li>
+<li><code>get_summary()</code></li>
+<li><code>build_epistemic_context()</code></li>
+<li><code>build_system_prompt()</code></li>
+<li><code>find_relevant_concepts()</code></li>
+<li><code>OllamaClient()</code></li>
+<li><code>is_available()</code></li>
+<li><code>list_models()</code></li>
+<li><code>completion()</code></li>
+<li><code>generate()</code></li>
+<li><code>chat()</code></li>
+<li><code>get_config()</code></li>
+<li><code>set_model()</code></li>
+<li><code>http_post()</code></li>
+</ul></details>
+</section>
+
+<section id="persistent">
+<h2>Module: persistent/ — Persistence Layer</h2>
+<table>
+  <tr><th>Property</th><th>Value</th></tr>
+  <tr><td>Files</td><td>14</td></tr>
+  <tr><td>Lines</td><td>3,227</td></tr>
+  <tr><td>Responsibility</td><td>WAL (Write-Ahead Log), PersistentLTM (disk storage), CheckpointManager/Restore, STMSnapshot, StringPool — binary formats with checksums</td></tr>
+  <tr><td>Authority</td><td><strong>Persistence authority</strong></td></tr>
+  <tr><td>Classes/Structs</td><td>35</td></tr>
+</table>
+
+<h3>Files</h3>
+<ul>
+<li><code>persistent/checkpoint_manager.hpp</code></li><li><code>persistent/checkpoint_restore.hpp</code></li><li><code>persistent/persistent_ltm.hpp</code></li><li><code>persistent/persistent_records.hpp</code></li><li><code>persistent/persistent_store.hpp</code></li><li><code>persistent/stm_snapshot.hpp</code></li><li><code>persistent/stm_snapshot_data.hpp</code></li><li><code>persistent/string_pool.hpp</code></li><li><code>persistent/wal.hpp</code></li><li><code>persistent/checkpoint_manager.cpp</code></li><li><code>persistent/checkpoint_restore.cpp</code></li><li><code>persistent/persistent_ltm.cpp</code></li><li><code>persistent/stm_snapshot.cpp</code></li><li><code>persistent/wal.cpp</code></li>
+</ul>
+
+<h3>Classes & Structs</h3><ul>
+<li><code>SHA256</code></li>
+<li><code>ComponentHash</code></li>
+<li><code>CheckpointManifest</code></li>
+<li><code>CognitiveState</code></li>
+<li><code>CheckpointConfig</code></li>
+<li><code>CheckpointManager</code></li>
+<li><code>Options</code></li>
+<li><code>Component</code></li>
+<li><code>RestoreResult</code></li>
+<li><code>DiffResult</code></li>
+<li><code>VerifyResult</code></li>
+<li><code>CheckpointRestore</code></li>
+<li><code>ListEntry</code></li>
+<li><code>PersistentLTM</code></li>
+<li><code>StoreHeader</code></li>
+<li><code>PersistentConceptRecord</code></li>
+<li><code>PersistentRelationRecord</code></li>
+<li><code>StringPoolHeader</code></li>
+<li><code>PersistentStore</code></li>
+<li><code>stat</code></li>
+<li><code>STMSnapshotManager</code></li>
+<li><code>SnapshotConcept</code></li>
+<li><code>SnapshotRelation</code></li>
+<li><code>SnapshotContext</code></li>
+<li><code>STMSnapshotData</code></li>
+<li><code>StringPool</code></li>
+<li><code>WALOpType</code></li>
+<li><code>WALStoreConceptPayload</code></li>
+<li><code>WALAddRelationPayload</code></li>
+<li><code>WALRemoveRelationPayload</code></li>
+<li><code>WALInvalidateConceptPayload</code></li>
+<li><code>WALUpdateMetadataPayload</code></li>
+<li><code>WALWriter</code></li>
+<li><code>WALRecovery</code></li>
+<li><code>iovec</code></li>
+</ul>
+<h3>Key Functions</h3>
+<details><summary>Show functions</summary><ul>
+<li><code>renames()</code></li>
+<li><code>hash_file()</code></li>
+<li><code>hash_bytes()</code></li>
+<li><code>init()</code></li>
+<li><code>update()</code></li>
+<li><code>finalize()</code></li>
+<li><code>transform()</code></li>
+<li><code>to_json()</code></li>
+<li><code>from_json()</code></li>
+<li><code>State()</code></li>
+<li><code>CheckpointManager()</code></li>
+<li><code>save()</code></li>
+<li><code>rotate()</code></li>
+<li><code>time()</code></li>
+<li><code>list_checkpoints()</code></li>
+<li><code>options()</code></li>
+<li><code>write_ltm()</code></li>
+<li><code>write_stm()</code></li>
+<li><code>write_micromodels()</code></li>
+<li><code>write_kan_modules()</code></li>
+<li><code>write_cognitive()</code></li>
+<li><code>write_config()</code></li>
+<li><code>make_timestamp_dirname()</code></li>
+<li><code>now_iso8601()</code></li>
+<li><code>now_epoch_ms()</code></li>
+</ul></details>
+</section>
+
+<section id="concurrent">
+<h2>Module: concurrent/ — Thread Safety</h2>
+<table>
+  <tr><th>Property</th><th>Value</th></tr>
+  <tr><td>Files</td><td>6</td></tr>
+  <tr><td>Lines</td><td>841</td></tr>
+  <tr><td>Responsibility</td><td>SharedLTM, SharedSTM, SharedRegistry, SharedEmbeddings — reader-writer lock wrappers. DeadlockDetector, LockHierarchy — debug tooling</td></tr>
+  <tr><td>Authority</td><td><strong>Concurrency safety</strong></td></tr>
+  <tr><td>Classes/Structs</td><td>13</td></tr>
+</table>
+
+<h3>Files</h3>
+<ul>
+<li><code>concurrent/deadlock_detector.hpp</code></li><li><code>concurrent/lock_hierarchy.hpp</code></li><li><code>concurrent/shared_embeddings.hpp</code></li><li><code>concurrent/shared_ltm.hpp</code></li><li><code>concurrent/shared_registry.hpp</code></li><li><code>concurrent/shared_stm.hpp</code></li>
+</ul>
+
+<h3>Classes & Structs</h3><ul>
+<li><code>LockEvent</code></li>
+<li><code>DeadlockDetector</code></li>
+<li><code>ThreadIdHash</code></li>
+<li><code>LockLevel</code></li>
+<li><code>HierarchicalMutex</code></li>
+<li><code>HierarchicalUniqueLock</code></li>
+<li><code>HierarchicalSharedLock</code></li>
+<li><code>SharedEmbeddings</code></li>
+<li><code>SharedLTM</code></li>
+<li><code>SharedRegistry</code></li>
+<li><code>ModelGuard</code></li>
+<li><code>SharedSTM</code></li>
+<li><code>ContextMutexRef</code></li>
+</ul>
+<h3>Key Functions</h3>
+<details><summary>Show functions</summary><ul>
+<li><code>instance()</code></li>
+<li><code>on_acquire()</code></li>
+<li><code>lk()</code></li>
+<li><code>on_release()</code></li>
+<li><code>on_wait()</code></li>
+<li><code>on_wait_done()</code></li>
+<li><code>has_cycle()</code></li>
+<li><code>thread()</code></li>
+<li><code>log()</code></li>
+<li><code>get_log()</code></li>
+<li><code>clear()</code></li>
+<li><code>log_size()</code></li>
+<li><code>DeadlockDetector()</code></li>
+<li><code>dfs_cycle()</code></li>
+<li><code>lock_level_name()</code></li>
+<li><code>levels()</code></li>
+<li><code>level()</code></li>
+<li><code>check_hierarchy()</code></li>
+<li><code>release_hierarchy()</code></li>
+<li><code>state()</code></li>
+<li><code>reset_hierarchy()</code></li>
+<li><code>held_lock_levels()</code></li>
+<li><code>HierarchicalMutex()</code></li>
+<li><code>level_()</code></li>
+<li><code>lock()</code></li>
+</ul></details>
+</section>
+
+<section id="streams">
+<h2>Module: streams/ — Thinking Streams</h2>
+<table>
+  <tr><th>Property</th><th>Value</th></tr>
+  <tr><td>Files</td><td>13</td></tr>
+  <tr><td>Lines</td><td>2,335</td></tr>
+  <tr><td>Responsibility</td><td>ThinkStream (autonomous thinking thread with work queue), StreamOrchestrator (lifecycle, health monitoring), StreamScheduler (category-based: Perception/Reasoning/Memory/Creative with budgets), StreamMonitor (latency histograms, alerts), MPMCQueue (lock-free Vyukov queue)</td></tr>
+  <tr><td>Authority</td><td><strong>Parallel thinking</strong></td></tr>
+  <tr><td>Classes/Structs</td><td>32</td></tr>
+</table>
+
+<h3>Files</h3>
+<ul>
+<li><code>streams/lock_free_queue.hpp</code></li><li><code>streams/stream_categories.hpp</code></li><li><code>streams/stream_config.hpp</code></li><li><code>streams/stream_monitor.hpp</code></li><li><code>streams/stream_monitor_cli.hpp</code></li><li><code>streams/stream_orchestrator.hpp</code></li><li><code>streams/stream_scheduler.hpp</code></li><li><code>streams/think_stream.hpp</code></li><li><code>streams/stream_monitor.cpp</code></li><li><code>streams/stream_monitor_cli.cpp</code></li><li><code>streams/stream_orchestrator.cpp</code></li><li><code>streams/stream_scheduler.cpp</code></li><li><code>streams/think_stream.cpp</code></li>
+</ul>
+
+<h3>Classes & Structs</h3><ul>
+<li><code>MPMCQueue</code></li>
+<li><code>alignas</code></li>
+<li><code>SPSCQueue</code></li>
+<li><code>StreamCategory</code></li>
+<li><code>CategoryBudget</code></li>
+<li><code>CategorizedStreamInfo</code></li>
+<li><code>Subsystem</code></li>
+<li><code>BackoffStrategy</code></li>
+<li><code>StreamConfig</code></li>
+<li><code>LatencyHistogram</code></li>
+<li><code>AlertLevel</code></li>
+<li><code>AlertType</code></li>
+<li><code>Alert</code></li>
+<li><code>AlertThresholds</code></li>
+<li><code>StreamSnapshot</code></li>
+<li><code>CategorySnapshot</code></li>
+<li><code>GlobalSnapshot</code></li>
+<li><code>HistoryEntry</code></li>
+<li><code>StreamMonitor</code></li>
+<li><code>PrevStreamData</code></li>
+<li><code>StreamMonitorCLI</code></li>
+<li><code>StreamHealth</code></li>
+<li><code>OrchestratorMetrics</code></li>
+<li><code>StreamOrchestrator</code></li>
+<li><code>SystemLoad</code></li>
+<li><code>CategoryStats</code></li>
+<li><code>SchedulerConfig</code></li>
+<li><code>StreamScheduler</code></li>
+<li><code>StreamState</code></li>
+<li><code>ThinkTask</code></li>
+<li><code>Type</code></li>
+<li><code>ThinkStream</code></li>
+</ul>
+<h3>Key Functions</h3>
+<details><summary>Show functions</summary><ul>
+<li><code>MPMCQueue()</code></li>
+<li><code>capacity_()</code></li>
+<li><code>try_push()</code></li>
+<li><code>try_pop()</code></li>
+<li><code>capacity()</code></li>
+<li><code>empty()</code></li>
+<li><code>size()</code></li>
+<li><code>size_approx()</code></li>
+<li><code>alignas()</code></li>
+<li><code>next_pow2()</code></li>
+<li><code>SPSCQueue()</code></li>
+<li><code>CATEGORIES()</code></li>
+<li><code>ThinkStream()</code></li>
+<li><code>category_name()</code></li>
+<li><code>category_priority()</code></li>
+<li><code>category_subsystems()</code></li>
+<li><code>category_tick_interval()</code></li>
+<li><code>category_budget()</code></li>
+<li><code>make_category_config()</code></li>
+<li><code>backoff()</code></li>
+<li><code>has_subsystem()</code></li>
+<li><code>hardware_concurrency()</code></li>
+<li><code>yielding()</code></li>
+<li><code>sleeping()</code></li>
+<li><code>duration()</code></li>
+</ul></details>
+</section>
+
+<section id="core">
+<h2>Module: core/ — System Orchestrator</h2>
+<table>
+  <tr><th>Property</th><th>Value</th></tr>
+  <tr><td>Files</td><td>6</td></tr>
+  <tr><td>Lines</td><td>1,664</td></tr>
+  <tr><td>Responsibility</td><td>SystemOrchestrator (15-subsystem initialization, ask/ingest/checkpoint, periodic maintenance), Brain19App (REPL + CLI dispatch), ThinkingPipeline (multi-step thinking cycles with spreading→salience→curiosity→understanding→KAN validation)</td></tr>
+  <tr><td>Authority</td><td><strong>System authority</strong></td></tr>
+  <tr><td>Classes/Structs</td><td>4</td></tr>
+</table>
+
+<h3>Files</h3>
+<ul>
+<li><code>core/system_orchestrator.hpp</code></li><li><code>core/system_orchestrator.cpp</code></li><li><code>core/brain19_app.hpp</code></li><li><code>core/brain19_app.cpp</code></li><li><code>core/thinking_pipeline.hpp</code></li><li><code>core/thinking_pipeline.cpp</code></li>
+</ul>
+
+<h3>Classes & Structs</h3><ul>
+<li><code>SystemOrchestrator</code></li>
+<li><code>Brain19App</code></li>
+<li><code>ThinkingResult</code></li>
+<li><code>ThinkingPipeline</code></li>
+</ul>
+<h3>Key Functions</h3>
+<details><summary>Show functions</summary><ul>
+<li><code>SystemOrchestrator()</code></li>
+<li><code>initialize()</code></li>
+<li><code>shutdown()</code></li>
+<li><code>is_running()</code></li>
+<li><code>ask()</code></li>
+<li><code>ingest_text()</code></li>
+<li><code>ingest_wikipedia()</code></li>
+<li><code>create_checkpoint()</code></li>
+<li><code>restore_checkpoint()</code></li>
+<li><code>get_status()</code></li>
+<li><code>get_stream_status()</code></li>
+<li><code>concept_count()</code></li>
+<li><code>relation_count()</code></li>
+<li><code>get_all_concept_ids()</code></li>
+<li><code>get_concept()</code></li>
+<li><code>get_outgoing_relations()</code></li>
+<li><code>run_thinking_cycle()</code></li>
+<li><code>run_periodic_maintenance()</code></li>
+<li><code>Access()</code></li>
+<li><code>brain_controller()</code></li>
+<li><code>cognitive_dynamics()</code></li>
+<li><code>chat_interface()</code></li>
+<li><code>ingestion_pipeline()</code></li>
+<li><code>got()</code></li>
+<li><code>access()</code></li>
+</ul></details>
+</section>
+
+<section id="evolution">
+<h2>Module: evolution/ — Knowledge Evolution</h2>
+<table>
+  <tr><th>Property</th><th>Value</th></tr>
+  <tr><td>Files</td><td>6</td></tr>
+  <tr><td>Lines</td><td>1,210</td></tr>
+  <tr><td>Responsibility</td><td>PatternDiscovery (repeated patterns in KG), EpistemicPromotion (HYPOTHESIS→THEORY promotion based on evidence), ConceptProposer (new concept suggestions from patterns)</td></tr>
+  <tr><td>Authority</td><td><strong>Knowledge evolution</strong></td></tr>
+  <tr><td>Classes/Structs</td><td>8</td></tr>
+</table>
+
+<h3>Files</h3>
+<ul>
+<li><code>evolution/concept_proposal.hpp</code></li><li><code>evolution/epistemic_promotion.hpp</code></li><li><code>evolution/pattern_discovery.hpp</code></li><li><code>evolution/concept_proposal.cpp</code></li><li><code>evolution/epistemic_promotion.cpp</code></li><li><code>evolution/pattern_discovery.cpp</code></li>
+</ul>
+
+<h3>Classes & Structs</h3><ul>
+<li><code>ConceptProposal</code></li>
+<li><code>ConceptProposer</code></li>
+<li><code>EpistemicPromotion</code></li>
+<li><code>PromotionCandidate</code></li>
+<li><code>MaintenanceResult</code></li>
+<li><code>DiscoveredPattern</code></li>
+<li><code>PatternDiscovery</code></li>
+<li><code>AdjacencyGraph</code></li>
+</ul>
+<h3>Key Functions</h3>
+<details><summary>Show functions</summary><ul>
+<li><code>triggers()</code></li>
+<li><code>anomalies()</code></li>
+<li><code>ConceptProposal()</code></li>
+<li><code>label()</code></li>
+<li><code>ConceptProposer()</code></li>
+<li><code>from_curiosity()</code></li>
+<li><code>from_relevance_anomalies()</code></li>
+<li><code>from_analogies()</code></li>
+<li><code>rank_proposals()</code></li>
+<li><code>concept_exists_similar()</code></li>
+<li><code>compute_quality_score()</code></li>
+<li><code>review()</code></li>
+<li><code>EpistemicPromotion()</code></li>
+<li><code>evaluate_all()</code></li>
+<li><code>evaluate()</code></li>
+<li><code>promotion()</code></li>
+<li><code>promote()</code></li>
+<li><code>demote()</code></li>
+<li><code>confirm_as_fact()</code></li>
+<li><code>maintenance()</code></li>
+<li><code>run_maintenance()</code></li>
+<li><code>relations()</code></li>
+<li><code>count_supporting_relations()</code></li>
+<li><code>count_supporting_from_type()</code></li>
+<li><code>has_contradictions()</code></li>
+</ul></details>
+</section>
+
+<section>
+<h2>Module Dependency Graph</h2>
+<pre><code>main.cpp
+  └─ core/brain19_app
+       └─ core/system_orchestrator
+            ├─ ltm/long_term_memory ← epistemic/epistemic_metadata ← common/types
+            ├─ memory/stm + brain_controller
+            ├─ micromodel/ (registry, embeddings, trainer, relevance_map, persistence)
+            ├─ kan/ (node → layer → module) ← adapter/kan_adapter
+            ├─ cognitive/cognitive_dynamics (reads LTM + writes STM)
+            ├─ curiosity/curiosity_engine (reads STM)
+            ├─ understanding/ (mini_llm → ollama_mini_llm → understanding_layer)
+            ├─ hybrid/ (hypothesis_translator → kan_validator → epistemic_bridge → refinement_loop, domain_manager)
+            ├─ ingestor/ (text_chunker → entity_extractor → relation_extractor → trust_tagger → proposal_queue → ingestion_pipeline)
+            ├─ importers/ (wikipedia, scholar → http_client)
+            ├─ bootstrap/ (foundation_concepts, bootstrap_interface, context_accumulator)
+            ├─ llm/ (ollama_client → chat_interface)
+            ├─ persistent/ (wal, persistent_ltm, checkpoint_manager, checkpoint_restore, stm_snapshot)
+            ├─ concurrent/ (shared_ltm, shared_stm, shared_registry, shared_embeddings)
+            ├─ streams/ (think_stream → stream_orchestrator → stream_scheduler → stream_monitor)
+            └─ evolution/ (pattern_discovery, epistemic_promotion, concept_proposal)
+</code></pre>
+</section>
+
+<section>
+<h2>Data Flow: Ask a Question</h2>
+<pre><code>User: "What is gravity?"
+  │
+  ├─ SystemOrchestrator::ask(question)
+  │    ├─ ThinkingPipeline::run_cycle(seed_concepts)
+  │    │    ├─ CognitiveDynamics::spread_activation(seeds)     → STM activated
+  │    │    ├─ CognitiveDynamics::get_top_k_salient()          → salient concepts
+  │    │    ├─ CognitiveDynamics::find_best_paths()            → thought paths
+  │    │    ├─ CuriosityEngine::observe_and_generate_triggers() → curiosity signals
+  │    │    ├─ UnderstandingLayer::perform_understanding_cycle() → proposals (HYPOTHESIS)
+  │    │    └─ KanValidator::validate(hypothesis)               → ValidationResult + Trust
+  │    │
+  │    └─ ChatInterface::ask_with_context(question, ltm, salient, paths)
+  │         ├─ Build epistemic context (concept labels + trust + relations)
+  │         ├─ OllamaClient::chat(messages)                    → LLM verbalization
+  │         └─ ChatResponse { answer, epistemic_note, referenced_concepts }
+  │
+  └─ Display answer with epistemic metadata
+</code></pre>
+</section>
+
+<section>
+<h2>Data Flow: Ingest Knowledge</h2>
+<pre><code>Input: "Einstein developed the theory of general relativity in 1915."
+  │
+  ├─ IngestionPipeline::ingest_text(text, auto_approve)
+  │    ├─ TextChunker::chunk_text()              → TextChunk[]
+  │    ├─ EntityExtractor::extract_from_chunks()  → ExtractedEntity[] ("Einstein", "general relativity")
+  │    ├─ RelationExtractor::extract_relations()  → ExtractedRelation[] (Einstein → relativity: CAUSES)
+  │    ├─ TrustTagger::suggest_from_text()        → TrustAssignment (THEORY, trust=0.90)
+  │    ├─ ProposalQueue::add_proposal()           → IngestProposal (PENDING)
+  │    ├─ [auto_approve or human review]
+  │    ├─ LTM::store_concept()                    → ConceptId (with EpistemicMetadata)
+  │    ├─ LTM::add_relation()                     → RelationId
+  │    └─ MicroModelRegistry::ensure_models_for()  → new MicroModels created
+  │
+  └─ IngestionResult { concepts_stored, relations_stored }
+</code></pre>
+</section>
+
+<section>
+<h2>Key Design Decisions</h2>
+<ul>
+<li><strong>No default EpistemicMetadata:</strong> <code>EpistemicMetadata() = delete</code> — forces explicit epistemic decisions at every knowledge creation point</li>
+<li><strong>Knowledge never deleted:</strong> INVALIDATED status with trust &lt; 0.2 preserves epistemic history</li>
+<li><strong>MicroModel per concept:</strong> Each concept has its own 430-parameter bilinear model (W·c+b, 10D) for personalized relevance scoring</li>
+<li><strong>KAN for function learning:</strong> B-spline basis functions (Cox-de Boor recursion) enable smooth univariate approximation without fixed activation functions</li>
+<li><strong>Bidirectional LLM↔KAN refinement:</strong> Hypotheses from LLM → KAN training → residual feedback → refined hypothesis</li>
+<li><strong>Epistemic Bridge:</strong> Maps KAN training metrics (MSE, convergence) to trust scores: MSE&lt;0.01→THEORY, MSE&lt;0.1→HYPOTHESIS, else→SPECULATION</li>
+<li><strong>Parallel thinking streams:</strong> Category-based (Perception/Reasoning/Memory/Creative) with priority scheduling and anti-starvation</li>
+<li><strong>Lock-free work queues:</strong> Vyukov bounded MPMC queue for stream task distribution</li>
+<li><strong>WAL + Checkpoints:</strong> Write-ahead log for durability, periodic checkpoints for fast recovery</li>
+<li><strong>Foundation seeding:</strong> 4-tier bootstrap (~233 concepts, ~144 relations) provides ontological scaffold for new knowledge</li>
+</ul>
+</section>
+
+<section>
+<h2>Known Weak Points & Gaps</h2>
+<div class="weak"><strong>⚠️ MiniLLM→LTM validation loop not wired:</strong> Proposals from UnderstandingLayer go through KanValidator but the SystemOrchestrator doesn't yet write validated results back to LTM (~50 lines missing)</div>
+<div class="weak"><strong>⚠️ MicroModels learn topology not semantics:</strong> Training is one-shot from graph structure. No incremental learning from query feedback.</div>
+<div class="weak"><strong>⚠️ InteractionLayer doesn't exist:</strong> MicroModels don't communicate with each other. Only passive RelevanceMap aggregation, no Hopfield-like activation propagation between models.</div>
+<div class="weak"><strong>⚠️ EMBED_DIM = 10 too small:</strong> Stability analysis recommends 16D minimum. Current 10D limits representational capacity.</div>
+<div class="weak"><strong>⚠️ No weight normalization:</strong> System unstable at node degree &gt;5 without normalization of inter-model weights.</div>
+<div class="weak"><strong>⚠️ No SIGINT handler in main():</strong> Ctrl+C in command mode skips shutdown() and final checkpoint.</div>
+<div class="weak"><strong>⚠️ Ollama dependency:</strong> ChatInterface and OllamaMiniLLM require external Ollama server. No fallback for offline operation beyond StubMiniLLM.</div>
+<div class="weak"><strong>⚠️ No symmetry enforcement:</strong> W_ij inter-model weights (future InteractionLayer) must be symmetric for convergence guarantee.</div>
+</section>
+
+</body></html>

@@ -311,8 +311,29 @@ ChatResponse SystemOrchestrator::ask(const std::string& question) {
         }
     }
 
+    // Run thinking cycle and pass results to ChatInterface
     if (!seeds.empty()) {
-        run_thinking_cycle(seeds);
+        auto thinking_result = run_thinking_cycle(seeds);
+
+        // Collect salient concept IDs
+        std::vector<ConceptId> salient_ids;
+        for (const auto& s : thinking_result.top_salient) {
+            salient_ids.push_back(s.concept_id);
+        }
+
+        // Build thought path summaries
+        std::vector<std::string> path_summaries;
+        for (const auto& path : thinking_result.best_paths) {
+            std::string summary;
+            for (size_t i = 0; i < path.nodes.size(); ++i) {
+                if (i > 0) summary += " → ";
+                auto info = ltm_->retrieve_concept(path.nodes[i].concept_id);
+                summary += info ? info->label : ("?" + std::to_string(path.nodes[i].concept_id));
+            }
+            path_summaries.push_back(summary);
+        }
+
+        return chat_->ask_with_context(question, *ltm_, salient_ids, path_summaries);
     }
 
     return chat_->ask(question, *ltm_);
@@ -329,9 +350,9 @@ IngestionResult SystemOrchestrator::ingest_text(const std::string& text, bool au
     }
 
     auto result = ingestion_->ingest_text(text, "", auto_approve);
-    if (result.success) {
-        // Ensure micromodels for new concepts
-        registry_->ensure_models_for(*ltm_);
+    if (result.success && !result.stored_concept_ids.empty()) {
+        // Ensure micromodels only for newly stored concepts
+        registry_->ensure_models_for(result.stored_concept_ids);
     }
     return result;
 }
@@ -354,8 +375,8 @@ IngestionResult SystemOrchestrator::ingest_wikipedia(const std::string& url) {
 
     // Ingest the extracted text
     auto result = ingestion_->ingest_text(proposal->extracted_text, url, true);
-    if (result.success) {
-        registry_->ensure_models_for(*ltm_);
+    if (result.success && !result.stored_concept_ids.empty()) {
+        registry_->ensure_models_for(result.stored_concept_ids);
     }
     return result;
 }
@@ -454,11 +475,7 @@ size_t SystemOrchestrator::concept_count() const {
 
 size_t SystemOrchestrator::relation_count() const {
     if (!ltm_) return 0;
-    size_t count = 0;
-    for (auto cid : ltm_->get_all_concept_ids()) {
-        count += ltm_->get_outgoing_relations(cid).size();
-    }
-    return count;
+    return ltm_->total_relation_count();
 }
 
 // ─── Thinking ────────────────────────────────────────────────────────────────

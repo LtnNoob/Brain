@@ -43,6 +43,14 @@ public:
         const std::string& question,
         const LongTermMemory& ltm
     );
+
+    // Ask with thinking context (salient concepts from ThinkingPipeline)
+    ChatResponse ask_with_context(
+        const std::string& question,
+        const LongTermMemory& ltm,
+        const std::vector<ConceptId>& salient_concepts,
+        const std::vector<std::string>& thought_paths_summary = {}
+    );
     
     // List all knowledge of specific type
     std::string list_knowledge(

@@ -47,4 +47,14 @@ size_t MicroModelRegistry::ensure_models_for(const LongTermMemory& ltm) {
     return created;
 }
 
+size_t MicroModelRegistry::ensure_models_for(const std::vector<ConceptId>& concept_ids) {
+    size_t created = 0;
+    for (ConceptId cid : concept_ids) {
+        if (create_model(cid)) {
+            ++created;
+        }
+    }
+    return created;
+}
+
 } // namespace brain19

@@ -185,6 +185,98 @@ ChatResponse ChatInterface::ask(
     return response;
 }
 
+ChatResponse ChatInterface::ask_with_context(
+    const std::string& question,
+    const LongTermMemory& ltm,
+    const std::vector<ConceptId>& salient_concepts,
+    const std::vector<std::string>& thought_paths_summary
+) {
+    ChatResponse response;
+    response.used_llm = false;
+    response.contains_speculation = false;
+
+    // Gather concepts from thinking context
+    std::vector<ConceptInfo> relevant;
+    for (auto cid : salient_concepts) {
+        auto info_opt = ltm.retrieve_concept(cid);
+        if (info_opt.has_value()) {
+            relevant.push_back(info_opt.value());
+            response.referenced_concepts.push_back(cid);
+            if (info_opt->epistemic.type == EpistemicType::SPECULATION ||
+                info_opt->epistemic.type == EpistemicType::HYPOTHESIS) {
+                response.contains_speculation = true;
+            }
+        }
+    }
+
+    // Also add any keyword-matched concepts not already included
+    auto keyword_matches = find_relevant_concepts(question, ltm);
+    for (const auto& info : keyword_matches) {
+        bool already = false;
+        for (const auto& r : relevant) {
+            if (r.id == info.id) { already = true; break; }
+        }
+        if (!already) {
+            relevant.push_back(info);
+            response.referenced_concepts.push_back(info.id);
+        }
+    }
+
+    // If no LLM, use simple fallback
+    if (!llm_available_) {
+        if (relevant.empty()) {
+            response.answer = "Ich habe kein Wissen darüber in meiner LTM.\n";
+        } else {
+            std::ostringstream ans;
+            ans << "Basierend auf meinem Denken (" << salient_concepts.size() << " aktivierte Konzepte):\n\n";
+            for (const auto& info : relevant) {
+                ans << "**" << info.label << "** (" << epistemic_type_to_string(info.epistemic.type);
+                ans << ", Trust: " << (info.epistemic.trust * 100.0) << "%)\n";
+                ans << info.definition << "\n\n";
+            }
+            if (!thought_paths_summary.empty()) {
+                ans << "Gedankenpfade:\n";
+                for (const auto& p : thought_paths_summary) {
+                    ans << "  • " << p << "\n";
+                }
+            }
+            response.answer = ans.str();
+        }
+        return response;
+    }
+
+    // Use LLM with thinking context
+    auto start = std::chrono::high_resolution_clock::now();
+    try {
+        std::string context = build_epistemic_context(relevant);
+        if (!thought_paths_summary.empty()) {
+            context += "\nTHOUGHT PATHS (from cognitive dynamics):\n";
+            for (const auto& p : thought_paths_summary) {
+                context += "  - " + p + "\n";
+            }
+        }
+
+        std::vector<OllamaMessage> messages;
+        messages.push_back({"system", build_system_prompt()});
+        messages.push_back({"user", context + "\n\nFrage: " + question});
+
+        auto llm_resp = ollama_->chat(messages);
+        auto end = std::chrono::high_resolution_clock::now();
+        response.llm_time_ms = std::chrono::duration<double, std::milli>(end - start).count();
+
+        if (llm_resp.success) {
+            response.answer = llm_resp.content;
+            response.used_llm = true;
+        } else {
+            response.answer = "LLM Error: " + llm_resp.error_message;
+        }
+    } catch (const std::exception& e) {
+        response.answer = std::string("Exception: ") + e.what();
+    }
+
+    return response;
+}
+
 std::string ChatInterface::explain_concept(
     ConceptId id,
     const LongTermMemory& ltm

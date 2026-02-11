@@ -40,6 +40,9 @@ public:
     // Returns number of newly created models.
     size_t ensure_models_for(const LongTermMemory& ltm);
 
+    // Create models only for specific concept IDs (efficient after ingest)
+    size_t ensure_models_for(const std::vector<ConceptId>& concept_ids);
+
     // Total model count
     size_t size() const { return models_.size(); }
 

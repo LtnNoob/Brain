@@ -140,6 +140,7 @@ RelationId LongTermMemory::add_relation(
     // Update indices
     outgoing_relations_[source].push_back(id);
     incoming_relations_[target].push_back(id);
+    ++total_relations_;
 
     return id;
 }
@@ -215,6 +216,7 @@ bool LongTermMemory::remove_relation(RelationId id) {
 
     // Remove relation itself
     relations_.erase(it);
+    --total_relations_;
 
     return true;
 }

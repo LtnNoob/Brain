@@ -1,1997 +1,331 @@
 {
-  "source": "training-data:chemistry-v1",
+  "source": "training-data:science_chemistry-v1",
   "concepts": [
-    {
-      "label": "Atom",
-      "definition": "The smallest unit of a chemical element that retains its chemical properties",
-      "trust_category": "FACT",
-      "trust_value": 0.99,
-      "tags": ["atomic", "fundamental", "structure"]
-    },
-    {
-      "label": "Molecule",
-      "definition": "A group of atoms bonded together, representing the smallest fundamental unit of a chemical compound",
-      "trust_category": "FACT",
-      "trust_value": 0.99,
-      "tags": ["molecular", "bonding", "compound"]
-    },
-    {
-      "label": "Element",
-      "definition": "A pure substance consisting of only one type of atom",
-      "trust_category": "FACT",
-      "trust_value": 0.99,
-      "tags": ["periodic-table", "pure", "atomic"]
-    },
-    {
-      "label": "Compound",
-      "definition": "A substance formed when two or more elements are chemically bonded together",
-      "trust_category": "FACT",
-      "trust_value": 0.99,
-      "tags": ["chemical-bonding", "composition", "pure"]
-    },
-    {
-      "label": "Chemical Reaction",
-      "definition": "A process in which one or more substances are converted into different substances",
-      "trust_category": "FACT",
-      "trust_value": 0.99,
-      "tags": ["reaction", "transformation", "process"]
-    },
-    {
-      "label": "Catalyst",
-      "definition": "A substance that increases the rate of a chemical reaction without being consumed",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["reaction", "kinetics", "acceleration"]
-    },
-    {
-      "label": "pH",
-      "definition": "A scale used to specify the acidity or basicity of an aqueous solution",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["acid-base", "scale", "measurement"]
-    },
-    {
-      "label": "Acid",
-      "definition": "A substance that donates hydrogen ions (H+) in aqueous solution",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["acid-base", "proton-donor", "aqueous"]
-    },
-    {
-      "label": "Base",
-      "definition": "A substance that accepts hydrogen ions (H+) or donates hydroxide ions (OH-) in aqueous solution",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["acid-base", "proton-acceptor", "aqueous"]
-    },
-    {
-      "label": "Oxidation",
-      "definition": "A chemical process in which a substance loses electrons or increases in oxidation state",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["redox", "electron-loss", "oxidation-state"]
-    },
-    {
-      "label": "Reduction",
-      "definition": "A chemical process in which a substance gains electrons or decreases in oxidation state",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["redox", "electron-gain", "oxidation-state"]
-    },
-    {
-      "label": "Ion",
-      "definition": "An atom or molecule that has gained or lost one or more electrons, giving it a net electric charge",
-      "trust_category": "FACT",
-      "trust_value": 0.99,
-      "tags": ["charged", "electron-transfer", "electrolyte"]
-    },
-    {
-      "label": "Cation",
-      "definition": "A positively charged ion",
-      "trust_category": "FACT",
-      "trust_value": 0.99,
-      "tags": ["ion", "positive", "electron-loss"]
-    },
-    {
-      "label": "Anion",
-      "definition": "A negatively charged ion",
-      "trust_category": "FACT",
-      "trust_value": 0.99,
-      "tags": ["ion", "negative", "electron-gain"]
-    },
-    {
-      "label": "Ionic Bond",
-      "definition": "A chemical bond formed by the electrostatic attraction between oppositely charged ions",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["bonding", "electrostatic", "ionic"]
-    },
-    {
-      "label": "Covalent Bond",
-      "definition": "A chemical bond formed by the sharing of electron pairs between atoms",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["bonding", "electron-sharing", "molecular"]
-    },
-    {
-      "label": "Metallic Bond",
-      "definition": "A chemical bond formed by the delocalization of electrons in a 'sea' around metal cations",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["bonding", "delocalized", "metallic"]
-    },
-    {
-      "label": "Hydrogen Bond",
-      "definition": "A weak attractive force between a hydrogen atom and an electronegative atom",
-      "trust_category": "FACT",
-      "trust_value": 0.97,
-      "tags": ["intermolecular", "hydrogen", "weak-force"]
-    },
-    {
-      "label": "Van der Waals Forces",
-      "definition": "Weak intermolecular forces arising from induced dipoles and London dispersion forces",
-      "trust_category": "FACT",
-      "trust_value": 0.97,
-      "tags": ["intermolecular", "weak-force", "dispersion"]
-    },
-    {
-      "label": "Electronegativity",
-      "definition": "The ability of an atom to attract electrons in a chemical bond",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["atomic-property", "electron-attraction", "bonding"]
-    },
-    {
-      "label": "Polarity",
-      "definition": "The distribution of electric charge in a molecule resulting in partial positive and negative regions",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["molecular-property", "charge-distribution", "dipole"]
-    },
-    {
-      "label": "Dipole",
-      "definition": "A molecule or chemical group having two poles with opposite electric charges",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["polarity", "charge-separation", "molecular"]
-    },
-    {
-      "label": "Solubility",
-      "definition": "The ability of a substance to dissolve in a solvent to form a homogeneous solution",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["solution", "dissolution", "property"]
-    },
-    {
-      "label": "Solution",
-      "definition": "A homogeneous mixture of two or more substances",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["mixture", "homogeneous", "dissolution"]
-    },
-    {
-      "label": "Solvent",
-      "definition": "The substance in which another substance (solute) is dissolved to form a solution",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["solution", "dissolution", "major-component"]
-    },
-    {
-      "label": "Solute",
-      "definition": "The substance that is dissolved in a solvent to form a solution",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["solution", "dissolved", "minor-component"]
-    },
-    {
-      "label": "Concentration",
-      "definition": "The amount of solute present in a given amount of solution or solvent",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["solution", "amount", "quantitative"]
-    },
-    {
-      "label": "Molarity",
-      "definition": "The number of moles of solute per liter of solution",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["concentration", "moles", "volume"]
-    },
-    {
-      "label": "Mole",
-      "definition": "A unit of measurement equal to 6.022 × 10²³ particles (Avogadro's number)",
-      "trust_category": "FACT",
-      "trust_value": 0.99,
-      "tags": ["unit", "avogadro", "quantity"]
-    },
-    {
-      "label": "Avogadro's Number",
-      "definition": "The number of particles in one mole of a substance, approximately 6.022 × 10²³",
-      "trust_category": "FACT",
-      "trust_value": 0.99,
-      "tags": ["constant", "mole", "particles"]
-    },
-    {
-      "label": "Atomic Mass",
-      "definition": "The mass of an atom expressed in atomic mass units",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["atomic", "mass", "unit"]
-    },
-    {
-      "label": "Molecular Weight",
-      "definition": "The sum of the atomic weights of all atoms in a molecule",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["molecular", "mass", "calculation"]
-    },
-    {
-      "label": "Stoichiometry",
-      "definition": "The calculation of quantities in chemical reactions based on balanced chemical equations",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["calculation", "reaction", "quantitative"]
-    },
-    {
-      "label": "Chemical Equation",
-      "definition": "A symbolic representation of a chemical reaction showing reactants and products",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["reaction", "representation", "symbolic"]
-    },
-    {
-      "label": "Reactant",
-      "definition": "A substance that participates in a chemical reaction and is consumed to form products",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["reaction", "input", "consumption"]
-    },
-    {
-      "label": "Product",
-      "definition": "A substance that is formed as a result of a chemical reaction",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["reaction", "output", "formation"]
-    },
-    {
-      "label": "Equilibrium",
-      "definition": "A state in which the rates of forward and reverse reactions are equal",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["balance", "dynamic", "rates"]
-    },
-    {
-      "label": "Le Chatelier's Principle",
-      "definition": "When a system at equilibrium is disturbed, it shifts to counteract the disturbance",
-      "trust_category": "THEORY",
-      "trust_value": 0.96,
-      "tags": ["equilibrium", "response", "disturbance"]
-    },
-    {
-      "label": "Activation Energy",
-      "definition": "The minimum energy required for a chemical reaction to occur",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["energy", "reaction", "barrier"]
-    },
-    {
-      "label": "Enthalpy",
-      "definition": "A measure of the total heat content of a thermodynamic system",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["thermodynamics", "heat", "energy"]
-    },
-    {
-      "label": "Entropy",
-      "definition": "A measure of the disorder or randomness in a system",
-      "trust_category": "FACT",
-      "trust_value": 0.97,
-      "tags": ["thermodynamics", "disorder", "probability"]
-    },
-    {
-      "label": "Gibbs Free Energy",
-      "definition": "A thermodynamic quantity that determines the spontaneity of a process",
-      "trust_category": "FACT",
-      "trust_value": 0.97,
-      "tags": ["thermodynamics", "spontaneity", "energy"]
-    },
-    {
-      "label": "Endothermic Reaction",
-      "definition": "A chemical reaction that absorbs heat from the surroundings",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["thermodynamics", "heat-absorption", "energy"]
-    },
-    {
-      "label": "Exothermic Reaction",
-      "definition": "A chemical reaction that releases heat to the surroundings",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["thermodynamics", "heat-release", "energy"]
-    },
-    {
-      "label": "Periodic Table",
-      "definition": "A tabular arrangement of chemical elements organized by atomic number and recurring properties",
-      "trust_category": "FACT",
-      "trust_value": 0.99,
-      "tags": ["organization", "elements", "properties"]
-    },
-    {
-      "label": "Atomic Number",
-      "definition": "The number of protons in the nucleus of an atom",
-      "trust_category": "FACT",
-      "trust_value": 0.99,
-      "tags": ["atomic", "protons", "identification"]
-    },
-    {
-      "label": "Mass Number",
-      "definition": "The total number of protons and neutrons in an atomic nucleus",
-      "trust_category": "FACT",
-      "trust_value": 0.99,
-      "tags": ["atomic", "nucleons", "mass"]
-    },
-    {
-      "label": "Isotope",
-      "definition": "Atoms of the same element with different numbers of neutrons",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["atomic", "neutron-variation", "same-element"]
-    },
-    {
-      "label": "Electron Configuration",
-      "definition": "The distribution of electrons in atomic or molecular orbitals",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["atomic", "electrons", "orbitals"]
-    },
-    {
-      "label": "Orbital",
-      "definition": "A mathematical function describing the wave-like behavior of an electron in an atom",
-      "trust_category": "FACT",
-      "trust_value": 0.97,
-      "tags": ["quantum", "electron", "probability"]
-    },
-    {
-      "label": "Valence Electrons",
-      "definition": "Electrons in the outermost shell of an atom that participate in chemical bonding",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["bonding", "outermost", "reactive"]
-    },
-    {
-      "label": "Octet Rule",
-      "definition": "Atoms tend to form bonds to achieve eight electrons in their valence shell",
-      "trust_category": "THEORY",
-      "trust_value": 0.92,
-      "tags": ["bonding", "stability", "eight-electrons"]
-    },
-    {
-      "label": "Lewis Structure",
-      "definition": "A diagram showing the bonding between atoms and lone pairs in a molecule",
-      "trust_category": "FACT",
-      "trust_value": 0.97,
-      "tags": ["representation", "bonding", "electrons"]
-    },
-    {
-      "label": "VSEPR Theory",
-      "definition": "Valence Shell Electron Pair Repulsion theory predicts molecular geometry",
-      "trust_category": "THEORY",
-      "trust_value": 0.95,
-      "tags": ["geometry", "repulsion", "prediction"]
-    },
-    {
-      "label": "Hybridization",
-      "definition": "The concept of mixing atomic orbitals to form new hybrid orbitals",
-      "trust_category": "THEORY",
-      "trust_value": 0.94,
-      "tags": ["orbital", "mixing", "bonding"]
-    },
-    {
-      "label": "Resonance",
-      "definition": "The existence of multiple valid Lewis structures for a molecule",
-      "trust_category": "THEORY",
-      "trust_value": 0.93,
-      "tags": ["bonding", "delocalization", "multiple-structures"]
-    },
-    {
-      "label": "Formal Charge",
-      "definition": "A theoretical charge assigned to an atom in a molecule assuming equal electron sharing",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["theoretical", "charge", "electron-distribution"]
-    },
-    {
-      "label": "Oxidation State",
-      "definition": "The hypothetical charge of an atom if all bonds were completely ionic",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["charge", "hypothetical", "ionic"]
-    },
-    {
-      "label": "Redox Reaction",
-      "definition": "A chemical reaction involving the transfer of electrons between species",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["electron-transfer", "oxidation", "reduction"]
-    },
-    {
-      "label": "Half-Reaction",
-      "definition": "Either the oxidation or reduction component of a redox reaction",
-      "trust_category": "FACT",
-      "trust_value": 0.97,
-      "tags": ["redox", "component", "electron-transfer"]
-    },
-    {
-      "label": "Electrochemistry",
-      "definition": "The study of chemical processes that cause electrons to move",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["electron-movement", "electrical", "chemical"]
-    },
-    {
-      "label": "Galvanic Cell",
-      "definition": "An electrochemical cell that generates electrical energy from spontaneous redox reactions",
-      "trust_category": "FACT",
-      "trust_value": 0.97,
-      "tags": ["electrochemical", "spontaneous", "energy-generation"]
-    },
-    {
-      "label": "Electrolytic Cell",
-      "definition": "An electrochemical cell that uses electrical energy to drive non-spontaneous reactions",
-      "trust_category": "FACT",
-      "trust_value": 0.97,
-      "tags": ["electrochemical", "non-spontaneous", "energy-input"]
-    },
-    {
-      "label": "Electrode",
-      "definition": "A conductor through which electricity enters or leaves an electrolyte",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["conductor", "electrolyte", "electrical"]
-    },
-    {
-      "label": "Anode",
-      "definition": "The electrode where oxidation occurs in an electrochemical cell",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["electrode", "oxidation", "electron-loss"]
-    },
-    {
-      "label": "Cathode",
-      "definition": "The electrode where reduction occurs in an electrochemical cell",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["electrode", "reduction", "electron-gain"]
-    },
-    {
-      "label": "Electrolyte",
-      "definition": "A substance that conducts electricity through the movement of ions",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["conductor", "ions", "electrical"]
-    },
-    {
-      "label": "Standard Electrode Potential",
-      "definition": "The potential of an electrode under standard conditions relative to the standard hydrogen electrode",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["potential", "standard", "reference"]
-    },
-    {
-      "label": "Nernst Equation",
-      "definition": "An equation relating the electrode potential to the concentrations of reactants and products",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["equation", "potential", "concentration"]
-    },
-    {
-      "label": "Faraday's Law",
-      "definition": "The amount of substance produced at an electrode is proportional to the quantity of electricity",
-      "trust_category": "FACT",
-      "trust_value": 0.97,
-      "tags": ["electrolysis", "quantitative", "electricity"]
-    },
-    {
-      "label": "Phase",
-      "definition": "A distinct physical state of matter with uniform properties throughout",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["state", "uniform", "physical"]
-    },
-    {
-      "label": "Phase Transition",
-      "definition": "The change of a substance from one phase to another",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["change", "phase", "transformation"]
-    },
-    {
-      "label": "Melting Point",
-      "definition": "The temperature at which a solid changes to a liquid",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["temperature", "solid-liquid", "transition"]
-    },
-    {
-      "label": "Boiling Point",
-      "definition": "The temperature at which a liquid changes to a gas",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["temperature", "liquid-gas", "transition"]
-    },
-    {
-      "label": "Vapor Pressure",
-      "definition": "The pressure exerted by vapor molecules above a liquid surface",
-      "trust_category": "FACT",
-      "trust_value": 0.97,
-      "tags": ["pressure", "vapor", "equilibrium"]
-    },
-    {
-      "label": "Colligative Properties",
-      "definition": "Properties that depend on the number of solute particles, not their identity",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["properties", "concentration", "particles"]
-    },
-    {
-      "label": "Osmotic Pressure",
-      "definition": "The pressure needed to stop the flow of solvent across a semipermeable membrane",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["pressure", "osmosis", "membrane"]
-    },
-    {
-      "label": "Osmosis",
-      "definition": "The movement of solvent through a semipermeable membrane toward higher solute concentration",
-      "trust_category": "FACT",
-      "trust_value": 0.97,
-      "tags": ["diffusion", "membrane", "concentration"]
-    },
-    {
-      "label": "Diffusion",
-      "definition": "The movement of particles from high to low concentration",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["movement", "concentration-gradient", "spontaneous"]
-    },
-    {
-      "label": "Effusion",
-      "definition": "The escape of gas molecules through a small opening",
-      "trust_category": "FACT",
-      "trust_value": 0.97,
-      "tags": ["gas", "escape", "kinetic"]
-    },
-    {
-      "label": "Graham's Law",
-      "definition": "The rate of effusion of gases is inversely proportional to the square root of their molar masses",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["effusion", "rate", "molar-mass"]
-    },
-    {
-      "label": "Ideal Gas Law",
-      "definition": "A mathematical relationship between pressure, volume, temperature, and amount of gas (PV = nRT)",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["gas", "equation", "ideal"]
-    },
-    {
-      "label": "Real Gas",
-      "definition": "A gas whose behavior deviates from the ideal gas law due to intermolecular forces",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["gas", "non-ideal", "intermolecular"]
-    },
-    {
-      "label": "Van der Waals Equation",
-      "definition": "An equation of state that accounts for the non-ideal behavior of real gases",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["gas", "real", "correction"]
-    },
-    {
-      "label": "Critical Point",
-      "definition": "The temperature and pressure above which liquid and gas phases are indistinguishable",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["phase", "critical", "boundary"]
-    },
-    {
-      "label": "Triple Point",
-      "definition": "The temperature and pressure at which all three phases of a substance coexist",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["phase", "coexistence", "equilibrium"]
-    },
-    {
-      "label": "Phase Diagram",
-      "definition": "A graph showing the phases of a substance under different conditions of temperature and pressure",
-      "trust_category": "FACT",
-      "trust_value": 0.97,
-      "tags": ["diagram", "phase", "conditions"]
-    },
-    {
-      "label": "Sublimation",
-      "definition": "The direct transition from solid to gas phase without passing through liquid",
-      "trust_category": "FACT",
-      "trust_value": 0.97,
-      "tags": ["phase-transition", "solid-gas", "direct"]
-    },
-    {
-      "label": "Deposition",
-      "definition": "The direct transition from gas to solid phase without passing through liquid",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["phase-transition", "gas-solid", "direct"]
-    },
-    {
-      "label": "Crystal Lattice",
-      "definition": "The regular arrangement of atoms, ions, or molecules in a crystalline solid",
-      "trust_category": "FACT",
-      "trust_value": 0.97,
-      "tags": ["solid", "arrangement", "crystalline"]
-    },
-    {
-      "label": "Unit Cell",
-      "definition": "The smallest repeating unit in a crystal lattice",
-      "trust_category": "FACT",
-      "trust_value": 0.97,
-      "tags": ["crystal", "repeating", "basic-unit"]
-    },
-    {
-      "label": "Allotrope",
-      "definition": "Different structural forms of the same element",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["element", "structure", "variation"]
-    },
-    {
-      "label": "Isomer",
-      "definition": "Compounds with the same molecular formula but different structural arrangements",
-      "trust_category": "FACT",
-      "trust_value": 0.97,
-      "tags": ["same-formula", "different-structure", "variation"]
-    },
-    {
-      "label": "Structural Isomer",
-      "definition": "Isomers with different connectivity of atoms",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["isomer", "connectivity", "structure"]
-    },
-    {
-      "label": "Stereoisomer",
-      "definition": "Isomers with the same connectivity but different spatial arrangement",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["isomer", "spatial", "arrangement"]
-    },
-    {
-      "label": "Enantiomer",
-      "definition": "Stereoisomers that are non-superimposable mirror images of each other",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["stereoisomer", "mirror-image", "chirality"]
-    },
-    {
-      "label": "Chirality",
-      "definition": "The property of a molecule having non-superimposable mirror images",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["asymmetry", "handedness", "stereochemistry"]
-    },
-    {
-      "label": "Optical Activity",
-      "definition": "The ability of a chiral compound to rotate plane-polarized light",
-      "trust_category": "FACT",
-      "trust_value": 0.94,
-      "tags": ["chirality", "light-rotation", "polarization"]
-    },
-    {
-      "label": "Functional Group",
-      "definition": "A specific arrangement of atoms that gives characteristic properties to organic compounds",
-      "trust_category": "FACT",
-      "trust_value": 0.97,
-      "tags": ["organic", "characteristic", "reactive"]
-    },
-    {
-      "label": "Hydrocarbon",
-      "definition": "A compound consisting entirely of hydrogen and carbon atoms",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["organic", "hydrogen", "carbon"]
-    },
-    {
-      "label": "Alkane",
-      "definition": "A saturated hydrocarbon with only single bonds between carbon atoms",
-      "trust_category": "FACT",
-      "trust_value": 0.97,
-      "tags": ["hydrocarbon", "saturated", "single-bonds"]
-    },
-    {
-      "label": "Alkene",
-      "definition": "An unsaturated hydrocarbon containing at least one carbon-carbon double bond",
-      "trust_category": "FACT",
-      "trust_value": 0.97,
-      "tags": ["hydrocarbon", "unsaturated", "double-bond"]
-    },
-    {
-      "label": "Alkyne",
-      "definition": "An unsaturated hydrocarbon containing at least one carbon-carbon triple bond",
-      "trust_category": "FACT",
-      "trust_value": 0.97,
-      "tags": ["hydrocarbon", "unsaturated", "triple-bond"]
-    },
-    {
-      "label": "Aromatic Compound",
-      "definition": "A cyclic compound with delocalized π electrons following Hückel's rule",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["cyclic", "delocalized", "aromatic"]
-    },
-    {
-      "label": "Benzene",
-      "definition": "The simplest aromatic hydrocarbon with the formula C₆H₆",
-      "trust_category": "FACT",
-      "trust_value": 0.97,
-      "tags": ["aromatic", "ring", "six-carbon"]
-    },
-    {
-      "label": "Alcohol",
-      "definition": "An organic compound containing a hydroxyl (-OH) functional group",
-      "trust_category": "FACT",
-      "trust_value": 0.97,
-      "tags": ["organic", "hydroxyl", "functional-group"]
-    },
-    {
-      "label": "Aldehyde",
-      "definition": "An organic compound containing a carbonyl group bonded to hydrogen",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["organic", "carbonyl", "hydrogen"]
-    },
-    {
-      "label": "Ketone",
-      "definition": "An organic compound containing a carbonyl group bonded to two carbon atoms",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["organic", "carbonyl", "carbon"]
-    },
-    {
-      "label": "Carboxylic Acid",
-      "definition": "An organic compound containing a carboxyl (-COOH) functional group",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["organic", "carboxyl", "acidic"]
-    },
-    {
-      "label": "Ester",
-      "definition": "An organic compound formed by the reaction of a carboxylic acid and an alcohol",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["organic", "acid-alcohol", "linkage"]
-    },
-    {
-      "label": "Amine",
-      "definition": "An organic compound derived from ammonia with one or more hydrogen atoms replaced by alkyl groups",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["organic", "nitrogen", "ammonia-derivative"]
-    },
-    {
-      "label": "Amide",
-      "definition": "An organic compound containing a carbonyl group linked to a nitrogen atom",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["organic", "carbonyl", "nitrogen"]
-    },
-    {
-      "label": "Ether",
-      "definition": "An organic compound in which two hydrocarbon groups are linked by an oxygen atom",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["organic", "oxygen-bridge", "linkage"]
-    },
-    {
-      "label": "Polymer",
-      "definition": "A large molecule composed of repeated subunits called monomers",
-      "trust_category": "FACT",
-      "trust_value": 0.97,
-      "tags": ["macromolecule", "repeating", "monomers"]
-    },
-    {
-      "label": "Monomer",
-      "definition": "A small molecule that can be bonded to other identical molecules to form a polymer",
-      "trust_category": "FACT",
-      "trust_value": 0.97,
-      "tags": ["small-molecule", "building-block", "repeating"]
-    },
-    {
-      "label": "Polymerization",
-      "definition": "The process of combining monomers to form polymers",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["process", "monomer-combination", "synthesis"]
-    },
-    {
-      "label": "Addition Polymerization",
-      "definition": "Polymerization where monomers add together without eliminating small molecules",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["polymerization", "addition", "no-elimination"]
-    },
-    {
-      "label": "Condensation Polymerization",
-      "definition": "Polymerization involving the elimination of small molecules like water",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["polymerization", "elimination", "small-molecules"]
-    },
-    {
-      "label": "Nucleophile",
-      "definition": "A chemical species that donates an electron pair to form a chemical bond",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["electron-donor", "nucleophilic", "bond-formation"]
-    },
-    {
-      "label": "Electrophile",
-      "definition": "A chemical species that accepts an electron pair to form a chemical bond",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["electron-acceptor", "electrophilic", "bond-formation"]
-    },
-    {
-      "label": "Substitution Reaction",
-      "definition": "A reaction where one functional group is replaced by another",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["replacement", "functional-group", "mechanism"]
-    },
-    {
-      "label": "Addition Reaction",
-      "definition": "A reaction where atoms or groups are added to a molecule without removing other atoms",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["addition", "no-elimination", "mechanism"]
-    },
-    {
-      "label": "Elimination Reaction",
-      "definition": "A reaction where atoms or groups are removed from a molecule",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["removal", "elimination", "mechanism"]
-    },
-    {
-      "label": "Oxidation Number",
-      "definition": "The formal charge assigned to an atom in a compound based on electronegativity",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["formal-charge", "electronegativity", "assignment"]
-    },
-    {
-      "label": "Buffer",
-      "definition": "A solution that resists changes in pH when small amounts of acid or base are added",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["pH-resistance", "acid-base", "equilibrium"]
-    },
-    {
-      "label": "Henderson-Hasselbalch Equation",
-      "definition": "An equation relating pH to the ratio of conjugate base to acid concentrations",
-      "trust_category": "FACT",
-      "trust_value": 0.94,
-      "tags": ["pH", "buffer", "equation"]
-    },
-    {
-      "label": "Conjugate Acid-Base Pair",
-      "definition": "Two species that differ by the transfer of a single proton",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["acid-base", "proton-transfer", "pair"]
-    },
-    {
-      "label": "Brønsted-Lowry Acid",
-      "definition": "A proton donor in acid-base reactions",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["proton-donor", "acid", "theory"]
-    },
-    {
-      "label": "Brønsted-Lowry Base",
-      "definition": "A proton acceptor in acid-base reactions",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["proton-acceptor", "base", "theory"]
-    },
-    {
-      "label": "Lewis Acid",
-      "definition": "An electron pair acceptor",
-      "trust_category": "FACT",
-      "trust_value": 0.94,
-      "tags": ["electron-acceptor", "acid", "theory"]
-    },
-    {
-      "label": "Lewis Base",
-      "definition": "An electron pair donor",
-      "trust_category": "FACT",
-      "trust_value": 0.94,
-      "tags": ["electron-donor", "base", "theory"]
-    },
-    {
-      "label": "Amphoteric",
-      "definition": "A substance that can act as both an acid and a base",
-      "trust_category": "FACT",
-      "trust_value": 0.94,
-      "tags": ["dual-nature", "acid-base", "versatile"]
-    },
-    {
-      "label": "Titration",
-      "definition": "A technique used to determine the concentration of a solution by reaction with a standard solution",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["analytical", "concentration", "standard"]
-    },
-    {
-      "label": "Equivalence Point",
-      "definition": "The point in a titration where stoichiometrically equivalent amounts of reactants have been mixed",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["titration", "stoichiometric", "equivalence"]
-    },
-    {
-      "label": "End Point",
-      "definition": "The point in a titration where the indicator changes, approximating the equivalence point",
-      "trust_category": "FACT",
-      "trust_value": 0.94,
-      "tags": ["titration", "indicator", "observable"]
-    },
-    {
-      "label": "Indicator",
-      "definition": "A substance that changes color at or near the equivalence point of a titration",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["color-change", "visual", "titration"]
-    },
-    {
-      "label": "Solubility Product",
-      "definition": "The equilibrium constant for the dissolution of a sparingly soluble ionic compound",
-      "trust_category": "FACT",
-      "trust_value": 0.94,
-      "tags": ["equilibrium", "dissolution", "ionic"]
-    },
-    {
-      "label": "Common Ion Effect",
-      "definition": "The reduction in solubility of an ionic compound due to the presence of a common ion",
-      "trust_category": "FACT",
-      "trust_value": 0.93,
-      "tags": ["solubility", "common-ion", "reduction"]
-    },
-    {
-      "label": "Precipitation",
-      "definition": "The formation of an insoluble solid from a solution",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["solid-formation", "insoluble", "separation"]
-    },
-    {
-      "label": "Complex Ion",
-      "definition": "A charged species consisting of a central metal ion bonded to ligands",
-      "trust_category": "FACT",
-      "trust_value": 0.94,
-      "tags": ["metal-center", "ligands", "coordination"]
-    },
-    {
-      "label": "Ligand",
-      "definition": "A molecule or ion that forms coordinate bonds with a central metal atom",
-      "trust_category": "FACT",
-      "trust_value": 0.94,
-      "tags": ["bonding", "coordinate", "donor"]
-    },
-    {
-      "label": "Coordination Number",
-      "definition": "The number of coordinate bonds formed by the central metal ion in a complex",
-      "trust_category": "FACT",
-      "trust_value": 0.93,
-      "tags": ["coordination", "bonds", "number"]
-    },
-    {
-      "label": "Crystal Field Theory",
-      "definition": "A theory describing the electronic structure of transition metal complexes",
-      "trust_category": "THEORY",
-      "trust_value": 0.89,
-      "tags": ["electronic-structure", "transition-metals", "theory"]
-    },
-    {
-      "label": "d-Orbital Splitting",
-      "definition": "The energy difference between d-orbitals in transition metal complexes due to ligand field effects",
-      "trust_category": "THEORY",
-      "trust_value": 0.87,
-      "tags": ["d-orbitals", "energy-difference", "ligand-field"]
-    },
-    {
-      "label": "Transition Metal",
-      "definition": "An element whose atom has a partially filled d subshell or can form cations with partially filled d subshells",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["d-electrons", "variable-oxidation", "metallic"]
-    },
-    {
-      "label": "Lanthanide",
-      "definition": "Any of the 15 elements from lanthanum to lutetium in the periodic table",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["f-block", "rare-earth", "series"]
-    },
-    {
-      "label": "Actinide",
-      "definition": "Any of the 15 elements from actinium to lawrencium in the periodic table",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["f-block", "radioactive", "series"]
-    },
-    {
-      "label": "Noble Gas",
-      "definition": "Elements in group 18 of the periodic table with complete valence shells",
-      "trust_category": "FACT",
-      "trust_value": 0.97,
-      "tags": ["group-18", "inert", "complete-shell"]
-    },
-    {
-      "label": "Halogen",
-      "definition": "Elements in group 17 of the periodic table with seven valence electrons",
-      "trust_category": "FACT",
-      "trust_value": 0.97,
-      "tags": ["group-17", "seven-electrons", "reactive"]
-    },
-    {
-      "label": "Alkali Metal",
-      "definition": "Elements in group 1 of the periodic table with one valence electron",
-      "trust_category": "FACT",
-      "trust_value": 0.97,
-      "tags": ["group-1", "one-electron", "highly-reactive"]
-    },
-    {
-      "label": "Alkaline Earth Metal",
-      "definition": "Elements in group 2 of the periodic table with two valence electrons",
-      "trust_category": "FACT",
-      "trust_value": 0.97,
-      "tags": ["group-2", "two-electrons", "reactive"]
-    },
-    {
-      "label": "Metalloid",
-      "definition": "Elements with properties intermediate between metals and nonmetals",
-      "trust_category": "FACT",
-      "trust_value": 0.94,
-      "tags": ["intermediate", "semi-conducting", "borderline"]
-    },
-    {
-      "label": "Alloy",
-      "definition": "A mixture of two or more elements, at least one of which is a metal",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["mixture", "metallic", "properties"]
-    },
-    {
-      "label": "Interstitial Compound",
-      "definition": "A compound formed when small atoms occupy the interstices in a metal lattice",
-      "trust_category": "FACT",
-      "trust_value": 0.92,
-      "tags": ["metal-lattice", "small-atoms", "interstices"]
-    },
-    {
-      "label": "Nonstoichiometric Compound",
-      "definition": "A compound that does not have a fixed ratio of elements",
-      "trust_category": "FACT",
-      "trust_value": 0.90,
-      "tags": ["variable-composition", "non-fixed", "defects"]
-    },
-    {
-      "label": "Defect Structure",
-      "definition": "Imperfections in crystal lattices that affect material properties",
-      "trust_category": "FACT",
-      "trust_value": 0.91,
-      "tags": ["imperfections", "crystal", "properties"]
-    },
-    {
-      "label": "Superconductor",
-      "definition": "A material that conducts electricity with zero electrical resistance below a critical temperature",
-      "trust_category": "FACT",
-      "trust_value": 0.94,
-      "tags": ["zero-resistance", "critical-temperature", "quantum"]
-    },
-    {
-      "label": "Semiconductor",
-      "definition": "A material with electrical conductivity between that of conductors and insulators",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["intermediate-conductivity", "band-gap", "electronic"]
-    },
-    {
-      "label": "Band Theory",
-      "definition": "A theory explaining the electronic properties of solids through energy bands",
-      "trust_category": "THEORY",
-      "trust_value": 0.91,
-      "tags": ["electronic-structure", "energy-bands", "solids"]
-    },
-    {
-      "label": "Valence Band",
-      "definition": "The highest energy band that is completely filled with electrons at absolute zero",
-      "trust_category": "FACT",
-      "trust_value": 0.92,
-      "tags": ["filled-band", "electrons", "energy"]
-    },
-    {
-      "label": "Conduction Band",
-      "definition": "The lowest energy band that is empty at absolute zero",
-      "trust_category": "FACT",
-      "trust_value": 0.92,
-      "tags": ["empty-band", "conductivity", "energy"]
-    },
-    {
-      "label": "Band Gap",
-      "definition": "The energy difference between the valence and conduction bands",
-      "trust_category": "FACT",
-      "trust_value": 0.92,
-      "tags": ["energy-difference", "bands", "electronic"]
-    },
-    {
-      "label": "Doping",
-      "definition": "The introduction of impurities into a pure semiconductor to modify its properties",
-      "trust_category": "FACT",
-      "trust_value": 0.93,
-      "tags": ["impurities", "modification", "semiconductor"]
-    },
-    {
-      "label": "p-Type Semiconductor",
-      "definition": "A semiconductor doped with electron-accepting impurities",
-      "trust_category": "FACT",
-      "trust_value": 0.91,
-      "tags": ["electron-accepting", "holes", "positive"]
-    },
-    {
-      "label": "n-Type Semiconductor",
-      "definition": "A semiconductor doped with electron-donating impurities",
-      "trust_category": "FACT",
-      "trust_value": 0.91,
-      "tags": ["electron-donating", "electrons", "negative"]
-    },
-    {
-      "label": "p-n Junction",
-      "definition": "The boundary between p-type and n-type semiconductor materials",
-      "trust_category": "FACT",
-      "trust_value": 0.90,
-      "tags": ["boundary", "junction", "diode"]
-    }
+    {"label": "Atom", "definition": "The smallest unit of matter that retains the properties of an element", "trust_category": "FACT", "trust_value": 0.99, "tags": ["structure", "fundamental", "matter"]},
+    {"label": "Element", "definition": "A pure substance consisting of only one type of atom", "trust_category": "FACT", "trust_value": 0.99, "tags": ["fundamental", "pure substance", "atomic"]},
+    {"label": "Periodic Table", "definition": "A table organizing all known elements by atomic number and chemical properties", "trust_category": "FACT", "trust_value": 0.99, "tags": ["organization", "elements", "properties"]},
+    {"label": "Atomic Number", "definition": "The number of protons in an atom's nucleus", "trust_category": "FACT", "trust_value": 0.99, "tags": ["atomic structure", "protons", "identification"]},
+    {"label": "Atomic Mass", "definition": "The average mass of atoms of an element, measured in atomic mass units", "trust_category": "FACT", "trust_value": 0.98, "tags": ["atomic structure", "mass", "measurement"]},
+    {"label": "Proton", "definition": "A positively charged subatomic particle found in the nucleus", "trust_category": "FACT", "trust_value": 0.99, "tags": ["subatomic", "positive charge", "nucleus"]},
+    {"label": "Neutron", "definition": "A neutral subatomic particle found in the nucleus", "trust_category": "FACT", "trust_value": 0.99, "tags": ["subatomic", "neutral", "nucleus"]},
+    {"label": "Electron", "definition": "A negatively charged subatomic particle orbiting the nucleus", "trust_category": "FACT", "trust_value": 0.99, "tags": ["subatomic", "negative charge", "orbitals"]},
+    {"label": "Nucleus", "definition": "The dense central core of an atom containing protons and neutrons", "trust_category": "FACT", "trust_value": 0.99, "tags": ["atomic structure", "central", "dense"]},
+    {"label": "Electron Shell", "definition": "The regions around the nucleus where electrons are likely to be found", "trust_category": "FACT", "trust_value": 0.98, "tags": ["electron configuration", "energy levels", "orbitals"]},
+    {"label": "Valence Electrons", "definition": "The electrons in the outermost shell of an atom", "trust_category": "FACT", "trust_value": 0.98, "tags": ["bonding", "outer shell", "reactivity"]},
+    {"label": "Ion", "definition": "An atom or molecule that has gained or lost electrons, giving it a net charge", "trust_category": "FACT", "trust_value": 0.98, "tags": ["charge", "electron transfer", "ionic"]},
+    {"label": "Cation", "definition": "A positively charged ion formed by losing electrons", "trust_category": "FACT", "trust_value": 0.98, "tags": ["positive ion", "electron loss", "metals"]},
+    {"label": "Anion", "definition": "A negatively charged ion formed by gaining electrons", "trust_category": "FACT", "trust_value": 0.98, "tags": ["negative ion", "electron gain", "nonmetals"]},
+    {"label": "Isotope", "definition": "Atoms of the same element with different numbers of neutrons", "trust_category": "FACT", "trust_value": 0.98, "tags": ["atomic variants", "neutron difference", "same element"]},
+    {"label": "Chemical Bond", "definition": "The attractive force that holds atoms together in molecules or compounds", "trust_category": "FACT", "trust_value": 0.98, "tags": ["bonding", "attractive force", "molecules"]},
+    {"label": "Ionic Bond", "definition": "A chemical bond formed by the transfer of electrons between atoms", "trust_category": "FACT", "trust_value": 0.98, "tags": ["electron transfer", "metals", "nonmetals"]},
+    {"label": "Covalent Bond", "definition": "A chemical bond formed by sharing electrons between atoms", "trust_category": "FACT", "trust_value": 0.98, "tags": ["electron sharing", "nonmetals", "molecules"]},
+    {"label": "Metallic Bond", "definition": "A chemical bond where electrons move freely among metal atoms", "trust_category": "FACT", "trust_value": 0.97, "tags": ["metals", "electron sea", "conductivity"]},
+    {"label": "Hydrogen Bond", "definition": "A weak intermolecular force between hydrogen and electronegative atoms", "trust_category": "FACT", "trust_value": 0.97, "tags": ["intermolecular", "hydrogen", "weak force"]},
+    {"label": "Van der Waals Forces", "definition": "Weak intermolecular forces including dipole-dipole and London dispersion forces", "trust_category": "FACT", "trust_value": 0.96, "tags": ["intermolecular", "weak forces", "molecular attraction"]},
+    {"label": "Molecule", "definition": "A group of atoms bonded together, representing the smallest unit of a compound", "trust_category": "FACT", "trust_value": 0.98, "tags": ["bonded atoms", "compound unit", "structure"]},
+    {"label": "Compound", "definition": "A substance composed of two or more different elements chemically bonded", "trust_category": "FACT", "trust_value": 0.98, "tags": ["multiple elements", "chemical bonds", "pure substance"]},
+    {"label": "Mixture", "definition": "A combination of two or more substances that are not chemically bonded", "trust_category": "FACT", "trust_value": 0.98, "tags": ["physical combination", "separable", "multiple substances"]},
+    {"label": "Solution", "definition": "A homogeneous mixture where one substance is dissolved in another", "trust_category": "FACT", "trust_value": 0.98, "tags": ["homogeneous", "dissolved", "solvent"]},
+    {"label": "Solvent", "definition": "The substance that dissolves the solute in a solution", "trust_category": "FACT", "trust_value": 0.98, "tags": ["dissolving medium", "major component", "solution"]},
+    {"label": "Solute", "definition": "The substance that is dissolved in a solvent", "trust_category": "FACT", "trust_value": 0.98, "tags": ["dissolved substance", "minor component", "solution"]},
+    {"label": "Concentration", "definition": "The amount of solute present in a given amount of solution", "trust_category": "FACT", "trust_value": 0.98, "tags": ["amount", "ratio", "solution composition"]},
+    {"label": "Molarity", "definition": "The number of moles of solute per liter of solution", "trust_category": "FACT", "trust_value": 0.98, "tags": ["concentration", "moles", "volume"]},
+    {"label": "Mole", "definition": "A unit of measurement equal to 6.022 × 10²³ particles", "trust_category": "FACT", "trust_value": 0.99, "tags": ["unit", "Avogadro's number", "particles"]},
+    {"label": "Avogadro's Number", "definition": "The number of particles in one mole: 6.022 × 10²³", "trust_category": "FACT", "trust_value": 0.99, "tags": ["fundamental constant", "particles per mole", "counting"]},
+    {"label": "Molar Mass", "definition": "The mass of one mole of a substance, expressed in grams per mole", "trust_category": "FACT", "trust_value": 0.98, "tags": ["mass per mole", "grams", "molecular weight"]},
+    {"label": "Chemical Equation", "definition": "A symbolic representation of a chemical reaction showing reactants and products", "trust_category": "FACT", "trust_value": 0.98, "tags": ["symbolic", "reaction", "balanced"]},
+    {"label": "Reactant", "definition": "A substance that undergoes change in a chemical reaction", "trust_category": "FACT", "trust_value": 0.98, "tags": ["starting material", "consumed", "reaction"]},
+    {"label": "Product", "definition": "A substance formed as a result of a chemical reaction", "trust_category": "FACT", "trust_value": 0.98, "tags": ["end result", "formed", "reaction"]},
+    {"label": "Chemical Reaction", "definition": "A process where substances are transformed into different substances", "trust_category": "FACT", "trust_value": 0.98, "tags": ["transformation", "process", "chemical change"]},
+    {"label": "Synthesis Reaction", "definition": "A reaction where two or more simple substances combine to form a complex substance", "trust_category": "FACT", "trust_value": 0.97, "tags": ["combination", "formation", "A + B → AB"]},
+    {"label": "Decomposition Reaction", "definition": "A reaction where a complex substance breaks down into simpler substances", "trust_category": "FACT", "trust_value": 0.97, "tags": ["breakdown", "separation", "AB → A + B"]},
+    {"label": "Single Displacement", "definition": "A reaction where one element replaces another in a compound", "trust_category": "FACT", "trust_value": 0.97, "tags": ["replacement", "element exchange", "A + BC → AC + B"]},
+    {"label": "Double Displacement", "definition": "A reaction where two compounds exchange ions to form new compounds", "trust_category": "FACT", "trust_value": 0.97, "tags": ["ion exchange", "metathesis", "AB + CD → AD + CB"]},
+    {"label": "Combustion Reaction", "definition": "A reaction where a substance combines with oxygen, often producing heat and light", "trust_category": "FACT", "trust_value": 0.97, "tags": ["oxygen", "burning", "energy release"]},
+    {"label": "Oxidation", "definition": "A process where a substance loses electrons or gains oxygen", "trust_category": "FACT", "trust_value": 0.97, "tags": ["electron loss", "oxygen gain", "redox"]},
+    {"label": "Reduction", "definition": "A process where a substance gains electrons or loses oxygen", "trust_category": "FACT", "trust_value": 0.97, "tags": ["electron gain", "oxygen loss", "redox"]},
+    {"label": "Redox Reaction", "definition": "A reaction involving both oxidation and reduction processes", "trust_category": "FACT", "trust_value": 0.97, "tags": ["electron transfer", "oxidation-reduction", "coupled"]},
+    {"label": "Catalyst", "definition": "A substance that increases the rate of reaction without being consumed", "trust_category": "FACT", "trust_value": 0.98, "tags": ["rate increase", "not consumed", "activation energy"]},
+    {"label": "Activation Energy", "definition": "The minimum energy required for a chemical reaction to occur", "trust_category": "FACT", "trust_value": 0.97, "tags": ["minimum energy", "reaction barrier", "kinetics"]},
+    {"label": "Reaction Rate", "definition": "The speed at which reactants are converted to products in a chemical reaction", "trust_category": "FACT", "trust_value": 0.97, "tags": ["speed", "kinetics", "rate of change"]},
+    {"label": "Chemical Equilibrium", "definition": "The state where forward and reverse reaction rates are equal", "trust_category": "FACT", "trust_value": 0.97, "tags": ["balance", "equal rates", "dynamic"]},
+    {"label": "Le Chatelier's Principle", "definition": "When a system at equilibrium is disturbed, it shifts to counteract the disturbance", "trust_category": "FACT", "trust_value": 0.96, "tags": ["equilibrium", "disturbance", "shift"]},
+    {"label": "Acid", "definition": "A substance that donates protons (H⁺) or accepts electrons", "trust_category": "FACT", "trust_value": 0.98, "tags": ["proton donor", "pH below 7", "sour taste"]},
+    {"label": "Base", "definition": "A substance that accepts protons (H⁺) or donates electrons", "trust_category": "FACT", "trust_value": 0.98, "tags": ["proton acceptor", "pH above 7", "bitter taste"]},
+    {"label": "pH", "definition": "A scale measuring the acidity or basicity of a solution from 0 to 14", "trust_category": "FACT", "trust_value": 0.98, "tags": ["acidity scale", "0-14", "logarithmic"]},
+    {"label": "Neutralization", "definition": "A reaction between an acid and base to form water and a salt", "trust_category": "FACT", "trust_value": 0.97, "tags": ["acid-base", "water formation", "salt"]},
+    {"label": "Salt", "definition": "An ionic compound formed from the neutralization of an acid and base", "trust_category": "FACT", "trust_value": 0.97, "tags": ["ionic compound", "neutralization product", "electrolyte"]},
+    {"label": "Buffer", "definition": "A solution that resists changes in pH when small amounts of acid or base are added", "trust_category": "FACT", "trust_value": 0.96, "tags": ["pH resistance", "weak acid-base", "stability"]},
+    {"label": "Electronegativity", "definition": "The tendency of an atom to attract electrons in a chemical bond", "trust_category": "FACT", "trust_value": 0.97, "tags": ["electron attraction", "bonding", "Pauling scale"]},
+    {"label": "Polarity", "definition": "The unequal distribution of electrons in a molecule, creating partial charges", "trust_category": "FACT", "trust_value": 0.97, "tags": ["unequal distribution", "partial charges", "dipole"]},
+    {"label": "Dipole", "definition": "A molecule with a positive end and a negative end due to unequal charge distribution", "trust_category": "FACT", "trust_value": 0.96, "tags": ["charge separation", "positive end", "negative end"]},
+    {"label": "Electrochemistry", "definition": "The study of chemical reactions that produce or consume electricity", "trust_category": "FACT", "trust_value": 0.97, "tags": ["electricity", "chemical reactions", "electron transfer"]},
+    {"label": "Galvanic Cell", "definition": "An electrochemical cell that generates electricity from spontaneous redox reactions", "trust_category": "FACT", "trust_value": 0.96, "tags": ["electricity generation", "spontaneous", "redox"]},
+    {"label": "Electrolytic Cell", "definition": "An electrochemical cell that uses electricity to drive non-spontaneous reactions", "trust_category": "FACT", "trust_value": 0.96, "tags": ["electricity consumption", "non-spontaneous", "electrolysis"]},
+    {"label": "Anode", "definition": "The electrode where oxidation occurs in an electrochemical cell", "trust_category": "FACT", "trust_value": 0.97, "tags": ["oxidation", "electrode", "electron source"]},
+    {"label": "Cathode", "definition": "The electrode where reduction occurs in an electrochemical cell", "trust_category": "FACT", "trust_value": 0.97, "tags": ["reduction", "electrode", "electron sink"]},
+    {"label": "Thermodynamics", "definition": "The study of energy changes in chemical reactions and processes", "trust_category": "FACT", "trust_value": 0.97, "tags": ["energy changes", "heat", "spontaneity"]},
+    {"label": "Enthalpy", "definition": "The total heat content of a system at constant pressure", "trust_category": "FACT", "trust_value": 0.96, "tags": ["heat content", "constant pressure", "state function"]},
+    {"label": "Entropy", "definition": "A measure of the disorder or randomness in a system", "trust_category": "FACT", "trust_value": 0.96, "tags": ["disorder", "randomness", "spontaneity"]},
+    {"label": "Gibbs Free Energy", "definition": "The energy available to do work in a system at constant temperature and pressure", "trust_category": "FACT", "trust_value": 0.95, "tags": ["available energy", "spontaneity", "work"]},
+    {"label": "Endothermic Reaction", "definition": "A reaction that absorbs heat from the surroundings", "trust_category": "FACT", "trust_value": 0.97, "tags": ["heat absorption", "positive enthalpy", "cooling"]},
+    {"label": "Exothermic Reaction", "definition": "A reaction that releases heat to the surroundings", "trust_category": "FACT", "trust_value": 0.97, "tags": ["heat release", "negative enthalpy", "warming"]},
+    {"label": "Phase", "definition": "A distinct and homogeneous form of matter separated by phase boundaries", "trust_category": "FACT", "trust_value": 0.97, "tags": ["state of matter", "homogeneous", "boundaries"]},
+    {"label": "Phase Transition", "definition": "The change of a substance from one phase to another", "trust_category": "FACT", "trust_value": 0.97, "tags": ["phase change", "state change", "energy"]},
+    {"label": "Melting Point", "definition": "The temperature at which a solid becomes a liquid at standard pressure", "trust_category": "FACT", "trust_value": 0.98, "tags": ["solid to liquid", "temperature", "physical property"]},
+    {"label": "Boiling Point", "definition": "The temperature at which a liquid becomes a gas at standard pressure", "trust_category": "FACT", "trust_value": 0.98, "tags": ["liquid to gas", "temperature", "physical property"]},
+    {"label": "Sublimation", "definition": "The direct transition from solid to gas without passing through liquid phase", "trust_category": "FACT", "trust_value": 0.96, "tags": ["solid to gas", "direct transition", "phase change"]},
+    {"label": "Vapor Pressure", "definition": "The pressure exerted by vapor molecules above a liquid in equilibrium", "trust_category": "FACT", "trust_value": 0.96, "tags": ["vapor", "pressure", "equilibrium"]},
+    {"label": "Organic Chemistry", "definition": "The study of carbon-containing compounds and their properties", "trust_category": "FACT", "trust_value": 0.98, "tags": ["carbon compounds", "biochemistry", "life"]},
+    {"label": "Carbon", "definition": "A nonmetallic element that forms the backbone of organic molecules", "trust_category": "FACT", "trust_value": 0.99, "tags": ["element", "organic backbone", "four bonds"]},
+    {"label": "Hydrocarbon", "definition": "An organic compound containing only carbon and hydrogen atoms", "trust_category": "FACT", "trust_value": 0.97, "tags": ["carbon", "hydrogen", "organic"]},
+    {"label": "Alkane", "definition": "A saturated hydrocarbon with single bonds between carbon atoms", "trust_category": "FACT", "trust_value": 0.97, "tags": ["saturated", "single bonds", "CnH2n+2"]},
+    {"label": "Alkene", "definition": "An unsaturated hydrocarbon with at least one double bond between carbon atoms", "trust_category": "FACT", "trust_value": 0.97, "tags": ["unsaturated", "double bond", "CnH2n"]},
+    {"label": "Alkyne", "definition": "An unsaturated hydrocarbon with at least one triple bond between carbon atoms", "trust_category": "FACT", "trust_value": 0.97, "tags": ["unsaturated", "triple bond", "CnH2n-2"]},
+    {"label": "Aromatic Compound", "definition": "A cyclic organic compound with delocalized electrons, often containing benzene rings", "trust_category": "FACT", "trust_value": 0.96, "tags": ["cyclic", "delocalized", "benzene"]},
+    {"label": "Benzene", "definition": "A six-membered aromatic ring with alternating double bonds", "trust_category": "FACT", "trust_value": 0.97, "tags": ["aromatic", "six-membered", "C6H6"]},
+    {"label": "Functional Group", "definition": "A specific group of atoms that determines the chemical properties of organic molecules", "trust_category": "FACT", "trust_value": 0.97, "tags": ["specific atoms", "chemical properties", "reactive sites"]},
+    {"label": "Alcohol", "definition": "An organic compound containing a hydroxyl (-OH) functional group", "trust_category": "FACT", "trust_value": 0.97, "tags": ["hydroxyl", "-OH", "polar"]},
+    {"label": "Aldehyde", "definition": "An organic compound with a carbonyl group (-CHO) at the end of a carbon chain", "trust_category": "FACT", "trust_value": 0.96, "tags": ["carbonyl", "-CHO", "terminal"]},
+    {"label": "Ketone", "definition": "An organic compound with a carbonyl group (C=O) within a carbon chain", "trust_category": "FACT", "trust_value": 0.96, "tags": ["carbonyl", "C=O", "internal"]},
+    {"label": "Carboxylic Acid", "definition": "An organic compound containing a carboxyl group (-COOH)", "trust_category": "FACT", "trust_value": 0.97, "tags": ["carboxyl", "-COOH", "acidic"]},
+    {"label": "Ester", "definition": "An organic compound formed by the reaction of a carboxylic acid and an alcohol", "trust_category": "FACT", "trust_value": 0.96, "tags": ["acid + alcohol", "-COO-", "pleasant smell"]},
+    {"label": "Amine", "definition": "An organic compound derived from ammonia by replacement with alkyl or aryl groups", "trust_category": "FACT", "trust_value": 0.96, "tags": ["ammonia derivative", "-NH2", "basic"]},
+    {"label": "Amide", "definition": "An organic compound containing a carbonyl group linked to a nitrogen atom", "trust_category": "FACT", "trust_value": 0.95, "tags": ["carbonyl-nitrogen", "-CONH-", "proteins"]},
+    {"label": "Isomer", "definition": "Compounds with the same molecular formula but different structural arrangements", "trust_category": "FACT", "trust_value": 0.97, "tags": ["same formula", "different structure", "variations"]},
+    {"label": "Structural Isomer", "definition": "Isomers with different connectivity between atoms", "trust_category": "FACT", "trust_value": 0.96, "tags": ["different connectivity", "constitutional", "bonding"]},
+    {"label": "Stereoisomer", "definition": "Isomers with the same connectivity but different spatial arrangements", "trust_category": "FACT", "trust_value": 0.95, "tags": ["same connectivity", "spatial arrangement", "3D"]},
+    {"label": "Enantiomer", "definition": "Stereoisomers that are non-superimposable mirror images of each other", "trust_category": "FACT", "trust_value": 0.95, "tags": ["mirror images", "non-superimposable", "chirality"]},
+    {"label": "Chirality", "definition": "The property of a molecule that is not superimposable on its mirror image", "trust_category": "FACT", "trust_value": 0.95, "tags": ["handedness", "mirror image", "optical activity"]},
+    {"label": "Polymer", "definition": "A large molecule made up of repeating structural units called monomers", "trust_category": "FACT", "trust_value": 0.97, "tags": ["large molecule", "repeating units", "monomers"]},
+    {"label": "Monomer", "definition": "A small molecule that can be bonded to other identical molecules to form a polymer", "trust_category": "FACT", "trust_value": 0.97, "tags": ["small molecule", "building block", "polymerization"]},
+    {"label": "Polymerization", "definition": "The process of combining monomers to form polymers", "trust_category": "FACT", "trust_value": 0.96, "tags": ["monomer combination", "chain formation", "reaction"]},
+    {"label": "Addition Polymerization", "definition": "Polymerization where monomers add to growing chains without losing atoms", "trust_category": "FACT", "trust_value": 0.95, "tags": ["addition", "no atom loss", "chain growth"]},
+    {"label": "Condensation Polymerization", "definition": "Polymerization where monomers combine with loss of small molecules", "trust_category": "FACT", "trust_value": 0.95, "tags": ["condensation", "molecule loss", "step growth"]},
+    {"label": "Protein", "definition": "Large biological polymers made of amino acid monomers", "trust_category": "FACT", "trust_value": 0.98, "tags": ["biological polymer", "amino acids", "life"]},
+    {"label": "Amino Acid", "definition": "Organic molecules containing both amino and carboxyl functional groups", "trust_category": "FACT", "trust_value": 0.97, "tags": ["amino group", "carboxyl group", "protein building"]},
+    {"label": "Peptide Bond", "definition": "A covalent bond linking amino acids in protein chains", "trust_category": "FACT", "trust_value": 0.96, "tags": ["amino acid link", "covalent", "protein structure"]},
+    {"label": "DNA", "definition": "Deoxyribonucleic acid, the molecule that stores genetic information", "trust_category": "FACT", "trust_value": 0.98, "tags": ["genetic information", "double helix", "nucleotides"]},
+    {"label": "RNA", "definition": "Ribonucleic acid, involved in protein synthesis and gene expression", "trust_category": "FACT", "trust_value": 0.98, "tags": ["protein synthesis", "single strand", "nucleotides"]},
+    {"label": "Nucleotide", "definition": "The building blocks of DNA and RNA, consisting of base, sugar, and phosphate", "trust_category": "FACT", "trust_value": 0.97, "tags": ["DNA building block", "base-sugar-phosphate", "genetic"]},
+    {"label": "Carbohydrate", "definition": "Organic compounds consisting of carbon, hydrogen, and oxygen, often in a 1:2:1 ratio", "trust_category": "FACT", "trust_value": 0.97, "tags": ["CHO compounds", "energy source", "sugars"]},
+    {"label": "Glucose", "definition": "A simple sugar (monosaccharide) that is the primary energy source for cells", "trust_category": "FACT", "trust_value": 0.98, "tags": ["simple sugar", "energy source", "C6H12O6"]},
+    {"label": "Lipid", "definition": "Biological molecules that are largely nonpolar and include fats, oils, and waxes", "trust_category": "FACT", "trust_value": 0.97, "tags": ["nonpolar", "fats", "energy storage"]},
+    {"label": "Fatty Acid", "definition": "Long hydrocarbon chains with a carboxyl group, components of many lipids", "trust_category": "FACT", "trust_value": 0.96, "tags": ["hydrocarbon chain", "carboxyl group", "lipid component"]},
+    {"label": "Enzyme", "definition": "Biological catalysts that speed up biochemical reactions", "trust_category": "FACT", "trust_value": 0.98, "tags": ["biological catalyst", "protein", "reaction speed"]},
+    {"label": "Active Site", "definition": "The specific region of an enzyme where substrate molecules bind and react", "trust_category": "FACT", "trust_value": 0.96, "tags": ["enzyme region", "substrate binding", "specificity"]},
+    {"label": "Substrate", "definition": "The reactant molecule that binds to an enzyme's active site", "trust_category": "FACT", "trust_value": 0.96, "tags": ["reactant", "enzyme binding", "specific"]},
+    {"label": "Metabolism", "definition": "The sum of all chemical reactions occurring in a living organism", "trust_category": "FACT", "trust_value": 0.97, "tags": ["all reactions", "living organism", "energy"]},
+    {"label": "Anabolism", "definition": "The set of metabolic pathways that build complex molecules from simpler ones", "trust_category": "FACT", "trust_value": 0.95, "tags": ["building up", "synthesis", "energy consumption"]},
+    {"label": "Catabolism", "definition": "The set of metabolic pathways that break down complex molecules into simpler ones", "trust_category": "FACT", "trust_value": 0.95, "tags": ["breaking down", "decomposition", "energy release"]},
+    {"label": "ATP", "definition": "Adenosine triphosphate, the primary energy currency of cells", "trust_category": "FACT", "trust_value": 0.98, "tags": ["energy currency", "adenosine", "three phosphates"]},
+    {"label": "Photosynthesis", "definition": "The process by which plants convert light energy into chemical energy", "trust_category": "FACT", "trust_value": 0.98, "tags": ["light to chemical", "plants", "glucose production"]},
+    {"label": "Cellular Respiration", "definition": "The process by which cells break down glucose to produce ATP", "trust_category": "FACT", "trust_value": 0.98, "tags": ["glucose breakdown", "ATP production", "energy release"]},
+    {"label": "Oxidation State", "definition": "The hypothetical charge an atom would have if all bonding electrons were assigned to the more electronegative atom", "trust_category": "FACT", "trust_value": 0.95, "tags": ["hypothetical charge", "electron assignment", "redox"]},
+    {"label": "Formal Charge", "definition": "The charge assigned to an atom in a molecule assuming equal sharing of bonding electrons", "trust_category": "FACT", "trust_value": 0.94, "tags": ["equal sharing", "electron distribution", "Lewis structures"]},
+    {"label": "Lewis Structure", "definition": "A diagram showing the bonding between atoms and lone electron pairs in a molecule", "trust_category": "FACT", "trust_value": 0.96, "tags": ["bonding diagram", "electron pairs", "structure"]},
+    {"label": "VSEPR Theory", "definition": "A model predicting molecular geometry based on electron pair repulsion", "trust_category": "THEORY", "trust_value": 0.94, "tags": ["molecular geometry", "electron repulsion", "shape prediction"]},
+    {"label": "Hybridization", "definition": "The concept of mixing atomic orbitals to form new hybrid orbitals for bonding", "trust_category": "THEORY", "trust_value": 0.92, "tags": ["orbital mixing", "bonding theory", "molecular shapes"]},
+    {"label": "Molecular Orbital Theory", "definition": "A theory describing chemical bonding using quantum mechanics and molecular orbitals", "trust_category": "THEORY", "trust_value": 0.90, "tags": ["quantum mechanics", "molecular orbitals", "bonding theory"]},
+    {"label": "Crystal Lattice", "definition": "The regular, repeating arrangement of atoms, ions, or molecules in a crystalline solid", "trust_category": "FACT", "trust_value": 0.96, "tags": ["regular arrangement", "crystalline", "solid structure"]},
+    {"label": "Unit Cell", "definition": "The smallest repeating unit in a crystal lattice", "trust_category": "FACT", "trust_value": 0.95, "tags": ["smallest unit", "repeating", "crystal structure"]},
+    {"label": "Ionic Crystal", "definition": "A crystal structure held together by ionic bonds between cations and anions", "trust_category": "FACT", "trust_value": 0.96, "tags": ["ionic bonds", "cations", "anions"]},
+    {"label": "Covalent Crystal", "definition": "A crystal structure where atoms are connected by covalent bonds throughout the structure", "trust_category": "FACT", "trust_value": 0.95, "tags": ["covalent bonds", "network solid", "strong"]},
+    {"label": "Metallic Crystal", "definition": "A crystal structure of metal atoms held together by metallic bonding", "trust_category": "FACT", "trust_value": 0.95, "tags": ["metal atoms", "metallic bonding", "electron sea"]},
+    {"label": "Molecular Crystal", "definition": "A crystal structure held together by intermolecular forces between molecules", "trust_category": "FACT", "trust_value": 0.94, "tags": ["molecules", "intermolecular forces", "weak bonding"]},
+    {"label": "Allotropy", "definition": "The existence of an element in two or more different forms in the same physical state", "trust_category": "FACT", "trust_value": 0.95, "tags": ["different forms", "same element", "same state"]},
+    {"label": "Diamond", "definition": "A form of carbon with each carbon atom bonded to four others in a tetrahedral structure", "trust_category": "FACT", "trust_value": 0.98, "tags": ["carbon allotrope", "tetrahedral", "hardest natural"]},
+    {"label": "Graphite", "definition": "A form of carbon with layered structure and delocalized electrons", "trust_category": "FACT", "trust_value": 0.97, "tags": ["carbon allotrope", "layered", "conductive"]},
+    {"label": "Fullerene", "definition": "Hollow carbon molecules with cage-like structures, including buckyballs", "trust_category": "FACT", "trust_value": 0.95, "tags": ["carbon cage", "hollow", "buckyballs"]},
+    {"label": "Graphene", "definition": "A single layer of carbon atoms arranged in a hexagonal lattice", "trust_category": "FACT", "trust_value": 0.96, "tags": ["single layer", "hexagonal lattice", "2D carbon"]},
+    {"label": "Nanotechnology", "definition": "The manipulation of matter at the molecular and atomic scale", "trust_category": "FACT", "trust_value": 0.95, "tags": ["molecular scale", "atomic manipulation", "nanoscale"]},
+    {"label": "Quantum Dots", "definition": "Semiconductor nanoparticles with size-dependent optical properties", "trust_category": "FACT", "trust_value": 0.93, "tags": ["semiconductor", "nanoparticles", "optical properties"]},
+    {"label": "Surface Chemistry", "definition": "The study of chemical processes that occur at surfaces and interfaces", "trust_category": "FACT", "trust_value": 0.94, "tags": ["surfaces", "interfaces", "boundary processes"]},
+    {"label": "Adsorption", "definition": "The adhesion of atoms, ions, or molecules from a gas, liquid, or dissolved solid to a surface", "trust_category": "FACT", "trust_value": 0.95, "tags": ["surface adhesion", "gas/liquid/solid", "accumulation"]},
+    {"label": "Desorption", "definition": "The process by which adsorbed molecules are released from a surface", "trust_category": "FACT", "trust_value": 0.94, "tags": ["surface release", "opposite of adsorption", "molecular detachment"]},
+    {"label": "Catalytic Converter", "definition": "A device that uses catalysts to reduce harmful emissions from vehicle exhaust", "trust_category": "FACT", "trust_value": 0.96, "tags": ["pollution control", "automotive", "emission reduction"]},
+    {"label": "Green Chemistry", "definition": "The design of chemical products and processes to reduce environmental impact", "trust_category": "FACT", "trust_value": 0.94, "tags": ["environmental", "sustainable", "pollution prevention"]},
+    {"label": "Renewable Energy", "definition": "Energy from sources that are naturally replenished, such as solar and wind", "trust_category": "FACT", "trust_value": 0.95, "tags": ["naturally replenished", "sustainable", "clean energy"]},
+    {"label": "Fuel Cell", "definition": "A device that converts chemical energy into electrical energy through electrochemical reactions", "trust_category": "FACT", "trust_value": 0.95, "tags": ["chemical to electrical", "electrochemical", "clean energy"]},
+    {"label": "Battery", "definition": "A device that stores chemical energy and converts it to electrical energy", "trust_category": "FACT", "trust_value": 0.97, "tags": ["energy storage", "chemical to electrical", "portable power"]},
+    {"label": "Semiconductor", "definition": "A material with electrical conductivity between that of conductor and insulator", "trust_category": "FACT", "trust_value": 0.96, "tags": ["intermediate conductivity", "electronics", "silicon"]},
+    {"label": "Superconductor", "definition": "A material that can conduct electricity with zero resistance below a critical temperature", "trust_category": "FACT", "trust_value": 0.95, "tags": ["zero resistance", "critical temperature", "magnetic levitation"]},
+    {"label": "Liquid Crystal", "definition": "A state of matter with properties between conventional liquids and crystals", "trust_category": "FACT", "trust_value": 0.94, "tags": ["intermediate state", "ordered liquid", "displays"]},
+    {"label": "Smart Material", "definition": "Materials that can change their properties in response to external stimuli", "trust_category": "FACT", "trust_value": 0.92, "tags": ["responsive", "external stimuli", "property change"]},
+    {"label": "Biomaterial", "definition": "Materials designed to interact with biological systems for medical purposes", "trust_category": "FACT", "trust_value": 0.94, "tags": ["biological interaction", "medical", "biocompatible"]},
+    {"label": "Composite Material", "definition": "Materials made from two or more constituent materials with different properties", "trust_category": "FACT", "trust_value": 0.95, "tags": ["multiple materials", "combined properties", "reinforcement"]},
+    {"label": "Pharmaceutical Chemistry", "definition": "The study of drugs and their interaction with biological systems", "trust_category": "FACT", "trust_value": 0.95, "tags": ["drug study", "biological interaction", "medicine"]},
+    {"label": "Drug Discovery", "definition": "The process of identifying and developing new therapeutic compounds", "trust_category": "FACT", "trust_value": 0.93, "tags": ["therapeutic compounds", "development", "research"]},
+    {"label": "Pharmacokinetics", "definition": "The study of how the body processes drugs through absorption, distribution, metabolism, and excretion", "trust_category": "FACT", "trust_value": 0.94, "tags": ["drug processing", "ADME", "body response"]},
+    {"label": "Pharmacodynamics", "definition": "The study of how drugs affect the body and their mechanism of action", "trust_category": "FACT", "trust_value": 0.94, "tags": ["drug effects", "mechanism of action", "body response"]},
+    {"label": "Chemical Kinetics", "definition": "The study of reaction rates and the factors that affect them", "trust_category": "FACT", "trust_value": 0.96, "tags": ["reaction rates", "rate factors", "time dependence"]},
+    {"label": "Rate Constant", "definition": "A proportionality constant in the rate equation relating reaction rate to reactant concentrations", "trust_category": "FACT", "trust_value": 0.95, "tags": ["proportionality constant", "rate equation", "temperature dependent"]},
+    {"label": "Half-Life", "definition": "The time required for half of a reactant to be consumed in a chemical reaction", "trust_category": "FACT", "trust_value": 0.96, "tags": ["time to half consumption", "decay", "kinetics"]},
+    {"label": "Arrhenius Equation", "definition": "An equation relating the rate constant to temperature and activation energy", "trust_category": "FACT", "trust_value": 0.94, "tags": ["rate-temperature relation", "activation energy", "exponential"]},
+    {"label": "Spectroscopy", "definition": "The study of the interaction between matter and electromagnetic radiation", "trust_category": "FACT", "trust_value": 0.96, "tags": ["matter-radiation interaction", "analysis technique", "molecular identification"]},
+    {"label": "Mass Spectrometry", "definition": "An analytical technique that measures the mass-to-charge ratio of ions", "trust_category": "FACT", "trust_value": 0.95, "tags": ["mass-to-charge ratio", "analytical", "molecular weight"]},
+    {"label": "NMR Spectroscopy", "definition": "A technique that exploits magnetic properties of atomic nuclei to determine molecular structure", "trust_category": "FACT", "trust_value": 0.94, "tags": ["magnetic nuclei", "molecular structure", "non-destructive"]},
+    {"label": "IR Spectroscopy", "definition": "A technique that measures absorption of infrared radiation to identify functional groups", "trust_category": "FACT", "trust_value": 0.95, "tags": ["infrared absorption", "functional groups", "molecular vibrations"]},
+    {"label": "UV-Vis Spectroscopy", "definition": "A technique measuring absorption of ultraviolet and visible light by molecules", "trust_category": "FACT", "trust_value": 0.95, "tags": ["UV-visible light", "electronic transitions", "concentration analysis"]},
+    {"label": "Chromatography", "definition": "A technique for separating mixtures based on differential movement through a stationary phase", "trust_category": "FACT", "trust_value": 0.96, "tags": ["separation technique", "stationary phase", "mobile phase"]},
+    {"label": "Gas Chromatography", "definition": "A chromatography technique using a gas mobile phase to separate volatile compounds", "trust_category": "FACT", "trust_value": 0.95, "tags": ["gas mobile phase", "volatile compounds", "separation"]},
+    {"label": "Liquid Chromatography", "definition": "A chromatography technique using a liquid mobile phase to separate compounds", "trust_category": "FACT", "trust_value": 0.95, "tags": ["liquid mobile phase", "compound separation", "versatile"]},
+    {"label": "X-ray Crystallography", "definition": "A technique using X-ray diffraction to determine atomic structure of crystals", "trust_category": "FACT", "trust_value": 0.95, "tags": ["X-ray diffraction", "atomic structure", "crystals"]},
+    {"label": "Electrochemical Analysis", "definition": "Analytical methods based on electrical properties of solutions", "trust_category": "FACT", "trust_value": 0.93, "tags": ["electrical properties", "solution analysis", "electrodes"]},
+    {"label": "Titration", "definition": "A quantitative analytical technique to determine concentration by neutralization", "trust_category": "FACT", "trust_value": 0.96, "tags": ["quantitative analysis", "concentration determination", "neutralization"]},
+    {"label": "Indicator", "definition": "A substance that changes color to signal the endpoint of a titration", "trust_category": "FACT", "trust_value": 0.95, "tags": ["color change", "endpoint detection", "pH sensitive"]},
+    {"label": "Standard Solution", "definition": "A solution of accurately known concentration used in analytical chemistry", "trust_category": "FACT", "trust_value": 0.96, "tags": ["known concentration", "analytical reference", "quantitative"]},
+    {"label": "Gravimetric Analysis", "definition": "A quantitative method based on measuring the mass of a pure compound", "trust_category": "FACT", "trust_value": 0.94, "tags": ["mass measurement", "quantitative", "precipitation"]},
+    {"label": "Stoichiometry", "definition": "The calculation of quantities in chemical reactions based on balanced equations", "trust_category": "FACT", "trust_value": 0.97, "tags": ["quantity calculation", "balanced equations", "mole ratios"]},
+    {"label": "Limiting Reagent", "definition": "The reactant that is completely consumed first, limiting the amount of product formed", "trust_category": "FACT", "trust_value": 0.96, "tags": ["first consumed", "product limitation", "reaction completion"]},
+    {"label": "Theoretical Yield", "definition": "The maximum amount of product that can be formed from given amounts of reactants", "trust_category": "FACT", "trust_value": 0.95, "tags": ["maximum product", "calculated yield", "ideal conditions"]},
+    {"label": "Actual Yield", "definition": "The amount of product actually obtained from a chemical reaction", "trust_category": "FACT", "trust_value": 0.96, "tags": ["actual product", "experimental result", "real conditions"]},
+    {"label": "Percent Yield", "definition": "The ratio of actual yield to theoretical yield, expressed as a percentage", "trust_category": "FACT", "trust_value": 0.95, "tags": ["efficiency measure", "actual/theoretical ratio", "percentage"]},
+    {"label": "Chemical Formula", "definition": "A representation of a compound showing the types and numbers of atoms present", "trust_category": "FACT", "trust_value": 0.98, "tags": ["atom representation", "composition", "molecular formula"]},
+    {"label": "Empirical Formula", "definition": "The simplest whole-number ratio of atoms in a compound", "trust_category": "FACT", "trust_value": 0.96, "tags": ["simplest ratio", "whole numbers", "composition"]},
+    {"label": "Molecular Formula", "definition": "The actual number of atoms of each element in a molecule", "trust_category": "FACT", "trust_value": 0.96, "tags": ["actual numbers", "molecular composition", "exact formula"]},
+    {"label": "Structural Formula", "definition": "A representation showing how atoms are connected in a molecule", "trust_category": "FACT", "trust_value": 0.95, "tags": ["atom connections", "bonding pattern", "molecular structure"]}
   ],
   "relations": [
-    {
-      "source_label": "Atom",
-      "target_label": "Element",
-      "relation_type": "composed-of",
-      "weight": 0.98
-    },
-    {
-      "source_label": "Molecule",
-      "target_label": "Atom",
-      "relation_type": "composed-of",
-      "weight": 0.98
-    },
-    {
-      "source_label": "Compound",
-      "target_label": "Molecule",
-      "relation_type": "composed-of",
-      "weight": 0.96
-    },
-    {
-      "source_label": "Chemical Reaction",
-      "target_label": "Reactant",
-      "relation_type": "consumes",
-      "weight": 0.97
-    },
-    {
-      "source_label": "Chemical Reaction",
-      "target_label": "Product",
-      "relation_type": "produces",
-      "weight": 0.97
-    },
-    {
-      "source_label": "Catalyst",
-      "target_label": "Chemical Reaction",
-      "relation_type": "accelerates",
-      "weight": 0.96
-    },
-    {
-      "source_label": "Catalyst",
-      "target_label": "Activation Energy",
-      "relation_type": "lowers",
-      "weight": 0.95
-    },
-    {
-      "source_label": "Acid",
-      "target_label": "pH",
-      "relation_type": "lowers",
-      "weight": 0.96
-    },
-    {
-      "source_label": "Base",
-      "target_label": "pH",
-      "relation_type": "raises",
-      "weight": 0.96
-    },
-    {
-      "source_label": "Oxidation",
-      "target_label": "Reduction",
-      "relation_type": "coupled-with",
-      "weight": 0.98
-    },
-    {
-      "source_label": "Redox Reaction",
-      "target_label": "Oxidation",
-      "relation_type": "includes",
-      "weight": 0.97
-    },
-    {
-      "source_label": "Redox Reaction",
-      "target_label": "Reduction",
-      "relation_type": "includes",
-      "weight": 0.97
-    },
-    {
-      "source_label": "Cation",
-      "target_label": "Ion",
-      "relation_type": "type-of",
-      "weight": 0.98
-    },
-    {
-      "source_label": "Anion",
-      "target_label": "Ion",
-      "relation_type": "type-of",
-      "weight": 0.98
-    },
-    {
-      "source_label": "Ionic Bond",
-      "target_label": "Cation",
-      "relation_type": "involves",
-      "weight": 0.96
-    },
-    {
-      "source_label": "Ionic Bond",
-      "target_label": "Anion",
-      "relation_type": "involves",
-      "weight": 0.96
-    },
-    {
-      "source_label": "Covalent Bond",
-      "target_label": "Atom",
-      "relation_type": "connects",
-      "weight": 0.97
-    },
-    {
-      "source_label": "Hydrogen Bond",
-      "target_label": "Electronegativity",
-      "relation_type": "depends-on",
-      "weight": 0.94
-    },
-    {
-      "source_label": "Van der Waals Forces",
-      "target_label": "Intermolecular Forces",
-      "relation_type": "type-of",
-      "weight": 0.95
-    },
-    {
-      "source_label": "Polarity",
-      "target_label": "Electronegativity",
-      "relation_type": "caused-by",
-      "weight": 0.95
-    },
-    {
-      "source_label": "Dipole",
-      "target_label": "Polarity",
-      "relation_type": "result-of",
-      "weight": 0.96
-    },
-    {
-      "source_label": "Solubility",
-      "target_label": "Polarity",
-      "relation_type": "depends-on",
-      "weight": 0.92
-    },
-    {
-      "source_label": "Solution",
-      "target_label": "Solvent",
-      "relation_type": "contains",
-      "weight": 0.97
-    },
-    {
-      "source_label": "Solution",
-      "target_label": "Solute",
-      "relation_type": "contains",
-      "weight": 0.97
-    },
-    {
-      "source_label": "Concentration",
-      "target_label": "Solution",
-      "relation_type": "describes",
-      "weight": 0.96
-    },
-    {
-      "source_label": "Molarity",
-      "target_label": "Concentration",
-      "relation_type": "type-of",
-      "weight": 0.97
-    },
-    {
-      "source_label": "Molarity",
-      "target_label": "Mole",
-      "relation_type": "uses",
-      "weight": 0.96
-    },
-    {
-      "source_label": "Mole",
-      "target_label": "Avogadro's Number",
-      "relation_type": "defined-by",
-      "weight": 0.98
-    },
-    {
-      "source_label": "Molecular Weight",
-      "target_label": "Atomic Mass",
-      "relation_type": "sum-of",
-      "weight": 0.97
-    },
-    {
-      "source_label": "Stoichiometry",
-      "target_label": "Chemical Equation",
-      "relation_type": "based-on",
-      "weight": 0.96
-    },
-    {
-      "source_label": "Chemical Equation",
-      "target_label": "Chemical Reaction",
-      "relation_type": "represents",
-      "weight": 0.98
-    },
-    {
-      "source_label": "Le Chatelier's Principle",
-      "target_label": "Equilibrium",
-      "relation_type": "describes",
-      "weight": 0.95
-    },
-    {
-      "source_label": "Activation Energy",
-      "target_label": "Chemical Reaction",
-      "relation_type": "barrier-for",
-      "weight": 0.95
-    },
-    {
-      "source_label": "Enthalpy",
-      "target_label": "Endothermic Reaction",
-      "relation_type": "positive-in",
-      "weight": 0.94
-    },
-    {
-      "source_label": "Enthalpy",
-      "target_label": "Exothermic Reaction",
-      "relation_type": "negative-in",
-      "weight": 0.94
-    },
-    {
-      "source_label": "Gibbs Free Energy",
-      "target_label": "Enthalpy",
-      "relation_type": "related-to",
-      "weight": 0.93
-    },
-    {
-      "source_label": "Gibbs Free Energy",
-      "target_label": "Entropy",
-      "relation_type": "related-to",
-      "weight": 0.93
-    },
-    {
-      "source_label": "Periodic Table",
-      "target_label": "Element",
-      "relation_type": "organizes",
-      "weight": 0.98
-    },
-    {
-      "source_label": "Periodic Table",
-      "target_label": "Atomic Number",
-      "relation_type": "ordered-by",
-      "weight": 0.97
-    },
-    {
-      "source_label": "Atomic Number",
-      "target_label": "Proton",
-      "relation_type": "number-of",
-      "weight": 0.98
-    },
-    {
-      "source_label": "Mass Number",
-      "target_label": "Proton",
-      "relation_type": "includes",
-      "weight": 0.96
-    },
-    {
-      "source_label": "Mass Number",
-      "target_label": "Neutron",
-      "relation_type": "includes",
-      "weight": 0.96
-    },
-    {
-      "source_label": "Isotope",
-      "target_label": "Element",
-      "relation_type": "variation-of",
-      "weight": 0.95
-    },
-    {
-      "source_label": "Isotope",
-      "target_label": "Neutron",
-      "relation_type": "differs-in",
-      "weight": 0.94
-    },
-    {
-      "source_label": "Electron Configuration",
-      "target_label": "Orbital",
-      "relation_type": "describes",
-      "weight": 0.96
-    },
-    {
-      "source_label": "Valence Electrons",
-      "target_label": "Chemical Bonding",
-      "relation_type": "involved-in",
-      "weight": 0.97
-    },
-    {
-      "source_label": "Octet Rule",
-      "target_label": "Valence Electrons",
-      "relation_type": "governs",
-      "weight": 0.94
-    },
-    {
-      "source_label": "Lewis Structure",
-      "target_label": "Valence Electrons",
-      "relation_type": "shows",
-      "weight": 0.96
-    },
-    {
-      "source_label": "VSEPR Theory",
-      "target_label": "Molecular Geometry",
-      "relation_type": "predicts",
-      "weight": 0.95
-    },
-    {
-      "source_label": "Hybridization",
-      "target_label": "Orbital",
-      "relation_type": "mixes",
-      "weight": 0.94
-    },
-    {
-      "source_label": "Resonance",
-      "target_label": "Lewis Structure",
-      "relation_type": "multiple",
-      "weight": 0.93
-    },
-    {
-      "source_label": "Formal Charge",
-      "target_label": "Lewis Structure",
-      "relation_type": "calculated-from",
-      "weight": 0.94
-    },
-    {
-      "source_label": "Oxidation State",
-      "target_label": "Redox Reaction",
-      "relation_type": "changes-in",
-      "weight": 0.95
-    },
-    {
-      "source_label": "Half-Reaction",
-      "target_label": "Redox Reaction",
-      "relation_type": "part-of",
-      "weight": 0.96
-    },
-    {
-      "source_label": "Electrochemistry",
-      "target_label": "Redox Reaction",
-      "relation_type": "studies",
-      "weight": 0.95
-    },
-    {
-      "source_label": "Galvanic Cell",
-      "target_label": "Electrochemistry",
-      "relation_type": "application-of",
-      "weight": 0.94
-    },
-    {
-      "source_label": "Electrolytic Cell",
-      "target_label": "Electrochemistry",
-      "relation_type": "application-of",
-      "weight": 0.94
-    },
-    {
-      "source_label": "Anode",
-      "target_label": "Oxidation",
-      "relation_type": "site-of",
-      "weight": 0.97
-    },
-    {
-      "source_label": "Cathode",
-      "target_label": "Reduction",
-      "relation_type": "site-of",
-      "weight": 0.97
-    },
-    {
-      "source_label": "Electrode",
-      "target_label": "Electrolyte",
-      "relation_type": "interfaces-with",
-      "weight": 0.93
-    },
-    {
-      "source_label": "Standard Electrode Potential",
-      "target_label": "Electrode",
-      "relation_type": "property-of",
-      "weight": 0.95
-    },
-    {
-      "source_label": "Nernst Equation",
-      "target_label": "Standard Electrode Potential",
-      "relation_type": "modifies",
-      "weight": 0.92
-    },
-    {
-      "source_label": "Faraday's Law",
-      "target_label": "Electrolysis",
-      "relation_type": "governs",
-      "weight": 0.94
-    },
-    {
-      "source_label": "Phase Transition",
-      "target_label": "Phase",
-      "relation_type": "changes",
-      "weight": 0.97
-    },
-    {
-      "source_label": "Melting Point",
-      "target_label": "Phase Transition",
-      "relation_type": "type-of",
-      "weight": 0.95
-    },
-    {
-      "source_label": "Boiling Point",
-      "target_label": "Phase Transition",
-      "relation_type": "type-of",
-      "weight": 0.95
-    },
-    {
-      "source_label": "Vapor Pressure",
-      "target_label": "Boiling Point",
-      "relation_type": "determines",
-      "weight": 0.93
-    },
-    {
-      "source_label": "Colligative Properties",
-      "target_label": "Solution",
-      "relation_type": "properties-of",
-      "weight": 0.94
-    },
-    {
-      "source_label": "Osmotic Pressure",
-      "target_label": "Colligative Properties",
-      "relation_type": "type-of",
-      "weight": 0.95
-    },
-    {
-      "source_label": "Osmosis",
-      "target_label": "Osmotic Pressure",
-      "relation_type": "creates",
-      "weight": 0.94
-    },
-    {
-      "source_label": "Diffusion",
-      "target_label": "Concentration",
-      "relation_type": "equalizes",
-      "weight": 0.93
-    },
-    {
-      "source_label": "Effusion",
-      "target_label": "Graham's Law",
-      "relation_type": "governed-by",
-      "weight": 0.95
-    },
-    {
-      "source_label": "Ideal Gas Law",
-      "target_label": "Pressure",
-      "relation_type": "relates",
-      "weight": 0.96
-    },
-    {
-      "source_label": "Real Gas",
-      "target_label": "Van der Waals Equation",
-      "relation_type": "described-by",
-      "weight": 0.94
-    },
-    {
-      "source_label": "Critical Point",
-      "target_label": "Phase Diagram",
-      "relation_type": "point-on",
-      "weight": 0.94
-    },
-    {
-      "source_label": "Triple Point",
-      "target_label": "Phase Diagram",
-      "relation_type": "point-on",
-      "weight": 0.94
-    },
-    {
-      "source_label": "Sublimation",
-      "target_label": "Phase Transition",
-      "relation_type": "type-of",
-      "weight": 0.95
-    },
-    {
-      "source_label": "Deposition",
-      "target_label": "Phase Transition",
-      "relation_type": "type-of",
-      "weight": 0.94
-    },
-    {
-      "source_label": "Crystal Lattice",
-      "target_label": "Unit Cell",
-      "relation_type": "composed-of",
-      "weight": 0.96
-    },
-    {
-      "source_label": "Allotrope",
-      "target_label": "Element",
-      "relation_type": "form-of",
-      "weight": 0.94
-    },
-    {
-      "source_label": "Structural Isomer",
-      "target_label": "Isomer",
-      "relation_type": "type-of",
-      "weight": 0.96
-    },
-    {
-      "source_label": "Stereoisomer",
-      "target_label": "Isomer",
-      "relation_type": "type-of",
-      "weight": 0.95
-    },
-    {
-      "source_label": "Enantiomer",
-      "target_label": "Stereoisomer",
-      "relation_type": "type-of",
-      "weight": 0.95
-    },
-    {
-      "source_label": "Enantiomer",
-      "target_label": "Chirality",
-      "relation_type": "exhibits",
-      "weight": 0.95
-    },
-    {
-      "source_label": "Optical Activity",
-      "target_label": "Chirality",
-      "relation_type": "result-of",
-      "weight": 0.94
-    },
-    {
-      "source_label": "Hydrocarbon",
-      "target_label": "Functional Group",
-      "relation_type": "lacks",
-      "weight": 0.85
-    },
-    {
-      "source_label": "Alkane",
-      "target_label": "Hydrocarbon",
-      "relation_type": "type-of",
-      "weight": 0.96
-    },
-    {
-      "source_label": "Alkene",
-      "target_label": "Hydrocarbon",
-      "relation_type": "type-of",
-      "weight": 0.96
-    },
-    {
-      "source_label": "Alkyne",
-      "target_label": "Hydrocarbon",
-      "relation_type": "type-of",
-      "weight": 0.96
-    },
-    {
-      "source_label": "Aromatic Compound",
-      "target_label": "Benzene",
-      "relation_type": "includes",
-      "weight": 0.94
-    },
-    {
-      "source_label": "Alcohol",
-      "target_label": "Functional Group",
-      "relation_type": "contains",
-      "weight": 0.96
-    },
-    {
-      "source_label": "Aldehyde",
-      "target_label": "Functional Group",
-      "relation_type": "contains",
-      "weight": 0.96
-    },
-    {
-      "source_label": "Ketone",
-      "target_label": "Functional Group",
-      "relation_type": "contains",
-      "weight": 0.96
-    },
-    {
-      "source_label": "Carboxylic Acid",
-      "target_label": "Functional Group",
-      "relation_type": "contains",
-      "weight": 0.96
-    },
-    {
-      "source_label": "Ester",
-      "target_label": "Carboxylic Acid",
-      "relation_type": "derived-from",
-      "weight": 0.93
-    },
-    {
-      "source_label": "Ester",
-      "target_label": "Alcohol",
-      "relation_type": "derived-from",
-      "weight": 0.93
-    },
-    {
-      "source_label": "Amine",
-      "target_label": "Functional Group",
-      "relation_type": "contains",
-      "weight": 0.95
-    },
-    {
-      "source_label": "Amide",
-      "target_label": "Functional Group",
-      "relation_type": "contains",
-      "weight": 0.95
-    },
-    {
-      "source_label": "Ether",
-      "target_label": "Functional Group",
-      "relation_type": "contains",
-      "weight": 0.95
-    },
-    {
-      "source_label": "Polymer",
-      "target_label": "Monomer",
-      "relation_type": "composed-of",
-      "weight": 0.97
-    },
-    {
-      "source_label": "Polymerization",
-      "target_label": "Polymer",
-      "relation_type": "creates",
-      "weight": 0.96
-    },
-    {
-      "source_label": "Addition Polymerization",
-      "target_label": "Polymerization",
-      "relation_type": "type-of",
-      "weight": 0.95
-    },
-    {
-      "source_label": "Condensation Polymerization",
-      "target_label": "Polymerization",
-      "relation_type": "type-of",
-      "weight": 0.95
-    },
-    {
-      "source_label": "Nucleophile",
-      "target_label": "Electrophile",
-      "relation_type": "attacks",
-      "weight": 0.94
-    },
-    {
-      "source_label": "Substitution Reaction",
-      "target_label": "Nucleophile",
-      "relation_type": "involves",
-      "weight": 0.92
-    },
-    {
-      "source_label": "Addition Reaction",
-      "target_label": "Alkene",
-      "relation_type": "occurs-with",
-      "weight": 0.93
-    },
-    {
-      "source_label": "Elimination Reaction",
-      "target_label": "Alkene",
-      "relation_type": "produces",
-      "weight": 0.91
-    },
-    {
-      "source_label": "Buffer",
-      "target_label": "Henderson-Hasselbalch Equation",
-      "relation_type": "described-by",
-      "weight": 0.93
-    },
-    {
-      "source_label": "Conjugate Acid-Base Pair",
-      "target_label": "Buffer",
-      "relation_type": "forms",
-      "weight": 0.94
-    },
-    {
-      "source_label": "Brønsted-Lowry Acid",
-      "target_label": "Acid",
-      "relation_type": "definition-of",
-      "weight": 0.95
-    },
-    {
-      "source_label": "Brønsted-Lowry Base",
-      "target_label": "Base",
-      "relation_type": "definition-of",
-      "weight": 0.95
-    },
-    {
-      "source_label": "Lewis Acid",
-      "target_label": "Lewis Base",
-      "relation_type": "complementary-to",
-      "weight": 0.93
-    },
-    {
-      "source_label": "Titration",
-      "target_label": "Equivalence Point",
-      "relation_type": "determines",
-      "weight": 0.95
-    },
-    {
-      "source_label": "End Point",
-      "target_label": "Indicator",
-      "relation_type": "detected-by",
-      "weight": 0.94
-    },
-    {
-      "source_label": "Solubility Product",
-      "target_label": "Precipitation",
-      "relation_type": "determines",
-      "weight": 0.93
-    },
-    {
-      "source_label": "Common Ion Effect",
-      "target_label": "Solubility Product",
-      "relation_type": "affects",
-      "weight": 0.91
-    },
-    {
-      "source_label": "Complex Ion",
-      "target_label": "Ligand",
-      "relation_type": "contains",
-      "weight": 0.95
-    },
-    {
-      "source_label": "Coordination Number",
-      "target_label": "Complex Ion",
-      "relation_type": "describes",
-      "weight": 0.93
-    },
-    {
-      "source_label": "Crystal Field Theory",
-      "target_label": "Complex Ion",
-      "relation_type": "explains",
-      "weight": 0.91
-    },
-    {
-      "source_label": "d-Orbital Splitting",
-      "target_label": "Crystal Field Theory",
-      "relation_type": "result-of",
-      "weight": 0.89
-    },
-    {
-      "source_label": "Transition Metal",
-      "target_label": "Complex Ion",
-      "relation_type": "forms",
-      "weight": 0.93
-    },
-    {
-      "source_label": "Lanthanide",
-      "target_label": "Transition Metal",
-      "relation_type": "similar-to",
-      "weight": 0.80
-    },
-    {
-      "source_label": "Actinide",
-      "target_label": "Lanthanide",
-      "relation_type": "similar-to",
-      "weight": 0.85
-    },
-    {
-      "source_label": "Noble Gas",
-      "target_label": "Octet Rule",
-      "relation_type": "satisfies",
-      "weight": 0.94
-    },
-    {
-      "source_label": "Halogen",
-      "target_label": "Noble Gas",
-      "relation_type": "becomes-like",
-      "weight": 0.88
-    },
-    {
-      "source_label": "Alkali Metal",
-      "target_label": "Noble Gas",
-      "relation_type": "becomes-like",
-      "weight": 0.88
-    },
-    {
-      "source_label": "Alkaline Earth Metal",
-      "target_label": "Noble Gas",
-      "relation_type": "becomes-like",
-      "weight": 0.88
-    },
-    {
-      "source_label": "Alloy",
-      "target_label": "Metal",
-      "relation_type": "contains",
-      "weight": 0.95
-    },
-    {
-      "source_label": "Semiconductor",
-      "target_label": "Band Gap",
-      "relation_type": "characterized-by",
-      "weight": 0.93
-    },
-    {
-      "source_label": "Band Theory",
-      "target_label": "Semiconductor",
-      "relation_type": "explains",
-      "weight": 0.92
-    },
-    {
-      "source_label": "Valence Band",
-      "target_label": "Conduction Band",
-      "relation_type": "separated-from",
-      "weight": 0.91
-    },
-    {
-      "source_label": "Band Gap",
-      "target_label": "Valence Band",
-      "relation_type": "between",
-      "weight": 0.91
-    },
-    {
-      "source_label": "Band Gap",
-      "target_label": "Conduction Band",
-      "relation_type": "between",
-      "weight": 0.91
-    },
-    {
-      "source_label": "Doping",
-      "target_label": "Semiconductor",
-      "relation_type": "modifies",
-      "weight": 0.93
-    },
-    {
-      "source_label": "p-Type Semiconductor",
-      "target_label": "Doping",
-      "relation_type": "result-of",
-      "weight": 0.91
-    },
-    {
-      "source_label": "n-Type Semiconductor",
-      "target_label": "Doping",
-      "relation_type": "result-of",
-      "weight": 0.91
-    },
-    {
-      "source_label": "p-n Junction",
-      "target_label": "p-Type Semiconductor",
-      "relation_type": "contains",
-      "weight": 0.89
-    },
-    {
-      "source_label": "p-n Junction",
-      "target_label": "n-Type Semiconductor",
-      "relation_type": "contains",
-      "weight": 0.89
-    }
+    {"source_label": "Atom", "target_label": "Element", "relation_type": "part-of", "weight": 0.95},
+    {"source_label": "Proton", "target_label": "Nucleus", "relation_type": "part-of", "weight": 0.95},
+    {"source_label": "Neutron", "target_label": "Nucleus", "relation_type": "part-of", "weight": 0.95},
+    {"source_label": "Nucleus", "target_label": "Atom", "relation_type": "part-of", "weight": 0.95},
+    {"source_label": "Electron", "target_label": "Electron Shell", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "Valence Electrons", "target_label": "Chemical Bond", "relation_type": "requires", "weight": 0.9},
+    {"source_label": "Atomic Number", "target_label": "Proton", "relation_type": "requires", "weight": 0.95},
+    {"source_label": "Ion", "target_label": "Electron", "relation_type": "requires", "weight": 0.9},
+    {"source_label": "Cation", "target_label": "Electron", "relation_type": "related-to", "weight": 0.85},
+    {"source_label": "Anion", "target_label": "Electron", "relation_type": "related-to", "weight": 0.85},
+    {"source_label": "Isotope", "target_label": "Neutron", "relation_type": "requires", "weight": 0.9},
+    {"source_label": "Ionic Bond", "target_label": "Ion", "relation_type": "requires", "weight": 0.95},
+    {"source_label": "Ionic Bond", "target_label": "Cation", "relation_type": "requires", "weight": 0.9},
+    {"source_label": "Ionic Bond", "target_label": "Anion", "relation_type": "requires", "weight": 0.9},
+    {"source_label": "Covalent Bond", "target_label": "Electron", "relation_type": "requires", "weight": 0.9},
+    {"source_label": "Metallic Bond", "target_label": "Electron", "relation_type": "requires", "weight": 0.85},
+    {"source_label": "Hydrogen Bond", "target_label": "Electronegativity", "relation_type": "requires", "weight": 0.85},
+    {"source_label": "Molecule", "target_label": "Chemical Bond", "relation_type": "requires", "weight": 0.95},
+    {"source_label": "Compound", "target_label": "Element", "relation_type": "requires", "weight": 0.9},
+    {"source_label": "Solution", "target_label": "Solvent", "relation_type": "requires", "weight": 0.95},
+    {"source_label": "Solution", "target_label": "Solute", "relation_type": "requires", "weight": 0.95},
+    {"source_label": "Molarity", "target_label": "Mole", "relation_type": "requires", "weight": 0.9},
+    {"source_label": "Mole", "target_label": "Avogadro's Number", "relation_type": "requires", "weight": 0.95},
+    {"source_label": "Chemical Reaction", "target_label": "Reactant", "relation_type": "requires", "weight": 0.95},
+    {"source_label": "Chemical Reaction", "target_label": "Product", "relation_type": "requires", "weight": 0.95},
+    {"source_label": "Chemical Equation", "target_label": "Reactant", "relation_type": "requires", "weight": 0.9},
+    {"source_label": "Chemical Equation", "target_label": "Product", "relation_type": "requires", "weight": 0.9},
+    {"source_label": "Synthesis Reaction", "target_label": "Chemical Reaction", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "Decomposition Reaction", "target_label": "Chemical Reaction", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "Single Displacement", "target_label": "Chemical Reaction", "relation_type": "part-of", "weight": 0.85},
+    {"source_label": "Double Displacement", "target_label": "Chemical Reaction", "relation_type": "part-of", "weight": 0.85},
+    {"source_label": "Combustion Reaction", "target_label": "Oxidation", "relation_type": "requires", "weight": 0.9},
+    {"source_label": "Oxidation", "target_label": "Electron", "relation_type": "requires", "weight": 0.9},
+    {"source_label": "Reduction", "target_label": "Electron", "relation_type": "requires", "weight": 0.9},
+    {"source_label": "Redox Reaction", "target_label": "Oxidation", "relation_type": "requires", "weight": 0.95},
+    {"source_label": "Redox Reaction", "target_label": "Reduction", "relation_type": "requires", "weight": 0.95},
+    {"source_label": "Catalyst", "target_label": "Activation Energy", "relation_type": "related-to", "weight": 0.9},
+    {"source_label": "Catalyst", "target_label": "Reaction Rate", "relation_type": "causes", "weight": 0.9},
+    {"source_label": "Chemical Equilibrium", "target_label": "Reaction Rate", "relation_type": "requires", "weight": 0.85},
+    {"source_label": "Le Chatelier's Principle", "target_label": "Chemical Equilibrium", "relation_type": "requires", "weight": 0.9},
+    {"source_label": "Acid", "target_label": "Proton", "relation_type": "related-to", "weight": 0.9},
+    {"source_label": "Base", "target_label": "Proton", "relation_type": "related-to", "weight": 0.9},
+    {"source_label": "Neutralization", "target_label": "Acid", "relation_type": "requires", "weight": 0.9},
+    {"source_label": "Neutralization", "target_label": "Base", "relation_type": "requires", "weight": 0.9},
+    {"source_label": "Neutralization", "target_label": "Salt", "relation_type": "causes", "weight": 0.9},
+    {"source_label": "Buffer", "target_label": "pH", "relation_type": "related-to", "weight": 0.85},
+    {"source_label": "Polarity", "target_label": "Electronegativity", "relation_type": "requires", "weight": 0.9},
+    {"source_label": "Dipole", "target_label": "Polarity", "relation_type": "requires", "weight": 0.9},
+    {"source_label": "Galvanic Cell", "target_label": "Redox Reaction", "relation_type": "requires", "weight": 0.9},
+    {"source_label": "Electrolytic Cell", "target_label": "Redox Reaction", "relation_type": "requires", "weight": 0.9},
+    {"source_label": "Anode", "target_label": "Oxidation", "relation_type": "related-to", "weight": 0.9},
+    {"source_label": "Cathode", "target_label": "Reduction", "relation_type": "related-to", "weight": 0.9},
+    {"source_label": "Endothermic Reaction", "target_label": "Enthalpy", "relation_type": "related-to", "weight": 0.85},
+    {"source_label": "Exothermic Reaction", "target_label": "Enthalpy", "relation_type": "related-to", "weight": 0.85},
+    {"source_label": "Gibbs Free Energy", "target_label": "Enthalpy", "relation_type": "requires", "weight": 0.85},
+    {"source_label": "Gibbs Free Energy", "target_label": "Entropy", "relation_type": "requires", "weight": 0.85},
+    {"source_label": "Phase Transition", "target_label": "Phase", "relation_type": "requires", "weight": 0.9},
+    {"source_label": "Melting Point", "target_label": "Phase Transition", "relation_type": "related-to", "weight": 0.85},
+    {"source_label": "Boiling Point", "target_label": "Phase Transition", "relation_type": "related-to", "weight": 0.85},
+    {"source_label": "Sublimation", "target_label": "Phase Transition", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "Organic Chemistry", "target_label": "Carbon", "relation_type": "requires", "weight": 0.95},
+    {"source_label": "Hydrocarbon", "target_label": "Carbon", "relation_type": "requires", "weight": 0.95},
+    {"source_label": "Alkane", "target_label": "Hydrocarbon", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "Alkene", "target_label": "Hydrocarbon", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "Alkyne", "target_label": "Hydrocarbon", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "Aromatic Compound", "target_label": "Benzene", "relation_type": "related-to", "weight": 0.85},
+    {"source_label": "Functional Group", "target_label": "Organic Chemistry", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "Alcohol", "target_label": "Functional Group", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "Aldehyde", "target_label": "Functional Group", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "Ketone", "target_label": "Functional Group", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "Carboxylic Acid", "target_label": "Functional Group", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "Ester", "target_label": "Carboxylic Acid", "relation_type": "related-to", "weight": 0.85},
+    {"source_label": "Ester", "target_label": "Alcohol", "relation_type": "related-to", "weight": 0.85},
+    {"source_label": "Amine", "target_label": "Functional Group", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "Amide", "target_label": "Functional Group", "relation_type": "part-of", "weight": 0.85},
+    {"source_label": "Structural Isomer", "target_label": "Isomer", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "Stereoisomer", "target_label": "Isomer", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "Enantiomer", "target_label": "Stereoisomer", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "Enantiomer", "target_label": "Chirality", "relation_type": "requires", "weight": 0.9},
+    {"source_label": "Polymer", "target_label": "Monomer", "relation_type": "requires", "weight": 0.95},
+    {"source_label": "Polymerization", "target_label": "Monomer", "relation_type": "requires", "weight": 0.95},
+    {"source_label": "Polymerization", "target_label": "Polymer", "relation_type": "causes", "weight": 0.95},
+    {"source_label": "Addition Polymerization", "target_label": "Polymerization", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "Condensation Polymerization", "target_label": "Polymerization", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "Protein", "target_label": "Amino Acid", "relation_type": "requires", "weight": 0.95},
+    {"source_label": "Peptide Bond", "target_label": "Amino Acid", "relation_type": "requires", "weight": 0.9},
+    {"source_label": "DNA", "target_label": "Nucleotide", "relation_type": "requires", "weight": 0.95},
+    {"source_label": "RNA", "target_label": "Nucleotide", "relation_type": "requires", "weight": 0.95},
+    {"source_label": "Glucose", "target_label": "Carbohydrate", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "Fatty Acid", "target_label": "Lipid", "relation_type": "part-of", "weight": 0.85},
+    {"source_label": "Enzyme", "target_label": "Protein", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "Enzyme", "target_label": "Catalyst", "relation_type": "related-to", "weight": 0.9},
+    {"source_label": "Active Site", "target_label": "Enzyme", "relation_type": "part-of", "weight": 0.95},
+    {"source_label": "Substrate", "target_label": "Active Site", "relation_type": "related-to", "weight": 0.9},
+    {"source_label": "Anabolism", "target_label": "Metabolism", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "Catabolism", "target_label": "Metabolism", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "ATP", "target_label": "Cellular Respiration", "relation_type": "related-to", "weight": 0.9},
+    {"source_label": "Photosynthesis", "target_label": "Glucose", "relation_type": "causes", "weight": 0.85},
+    {"source_label": "Cellular Respiration", "target_label": "Glucose", "relation_type": "requires", "weight": 0.9},
+    {"source_label": "Lewis Structure", "target_label": "Chemical Bond", "relation_type": "related-to", "weight": 0.85},
+    {"source_label": "VSEPR Theory", "target_label": "Electron", "relation_type": "requires", "weight": 0.85},
+    {"source_label": "Hybridization", "target_label": "Chemical Bond", "relation_type": "related-to", "weight": 0.8},
+    {"source_label": "Crystal Lattice", "target_label": "Unit Cell", "relation_type": "requires", "weight": 0.9},
+    {"source_label": "Ionic Crystal", "target_label": "Ionic Bond", "relation_type": "requires", "weight": 0.9},
+    {"source_label": "Covalent Crystal", "target_label": "Covalent Bond", "relation_type": "requires", "weight": 0.9},
+    {"source_label": "Metallic Crystal", "target_label": "Metallic Bond", "relation_type": "requires", "weight": 0.9},
+    {"source_label": "Diamond", "target_label": "Allotropy", "relation_type": "part-of", "weight": 0.85},
+    {"source_label": "Graphite", "target_label": "Allotropy", "relation_type": "part-of", "weight": 0.85},
+    {"source_label": "Fullerene", "target_label": "Allotropy", "relation_type": "part-of", "weight": 0.85},
+    {"source_label": "Graphene", "target_label": "Allotropy", "relation_type": "part-of", "weight": 0.85},
+    {"source_label": "Diamond", "target_label": "Carbon", "relation_type": "requires", "weight": 0.95},
+    {"source_label": "Graphite", "target_label": "Carbon", "relation_type": "requires", "weight": 0.95},
+    {"source_label": "Quantum Dots", "target_label": "Nanotechnology", "relation_type": "part-of", "weight": 0.85},
+    {"source_label": "Adsorption", "target_label": "Surface Chemistry", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "Desorption", "target_label": "Adsorption", "relation_type": "opposite-of", "weight": 0.9},
+    {"source_label": "Catalytic Converter", "target_label": "Catalyst", "relation_type": "requires", "weight": 0.85},
+    {"source_label": "Fuel Cell", "target_label": "Electrochemistry", "relation_type": "part-of", "weight": 0.85},
+    {"source_label": "Battery", "target_label": "Electrochemistry", "relation_type": "part-of", "weight": 0.85},
+    {"source_label": "Pharmaceutical Chemistry", "target_label": "Drug Discovery", "relation_type": "related-to", "weight": 0.9},
+    {"source_label": "Pharmacokinetics", "target_label": "Drug Discovery", "relation_type": "related-to", "weight": 0.85},
+    {"source_label": "Pharmacodynamics", "target_label": "Drug Discovery", "relation_type": "related-to", "weight": 0.85},
+    {"source_label": "Rate Constant", "target_label": "Chemical Kinetics", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "Half-Life", "target_label": "Chemical Kinetics", "relation_type": "part-of", "weight": 0.85},
+    {"source_label": "Arrhenius Equation", "target_label": "Rate Constant", "relation_type": "related-to", "weight": 0.85},
+    {"source_label": "Arrhenius Equation", "target_label": "Activation Energy", "relation_type": "requires", "weight": 0.85},
+    {"source_label": "Mass Spectrometry", "target_label": "Spectroscopy", "relation_type": "part-of", "weight": 0.85},
+    {"source_label": "NMR Spectroscopy", "target_label": "Spectroscopy", "relation_type": "part-of", "weight": 0.85},
+    {"source_label": "IR Spectroscopy", "target_label": "Spectroscopy", "relation_type": "part-of", "weight": 0.85},
+    {"source_label": "UV-Vis Spectroscopy", "target_label": "Spectroscopy", "relation_type": "part-of", "weight": 0.85},
+    {"source_label": "Gas Chromatography", "target_label": "Chromatography", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "Liquid Chromatography", "target_label": "Chromatography", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "Titration", "target_label": "Indicator", "relation_type": "requires", "weight": 0.85},
+    {"source_label": "Titration", "target_label": "Standard Solution", "relation_type": "requires", "weight": 0.85},
+    {"source_label": "Limiting Reagent", "target_label": "Stoichiometry", "relation_type": "part-of", "weight": 0.85},
+    {"source_label": "Theoretical Yield", "target_label": "Stoichiometry", "relation_type": "part-of", "weight": 0.85},
+    {"source_label": "Percent Yield", "target_label": "Theoretical Yield", "relation_type": "requires", "weight": 0.9},
+    {"source_label": "Percent Yield", "target_label": "Actual Yield", "relation_type": "requires", "weight": 0.9},
+    {"source_label": "Empirical Formula", "target_label": "Chemical Formula", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "Molecular Formula", "target_label": "Chemical Formula", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "Structural Formula", "target_label": "Chemical Formula", "relation_type": "part-of", "weight": 0.85}
   ]
 }

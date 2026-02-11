@@ -147,6 +147,9 @@ public:
     // Get all concept IDs
     std::vector<ConceptId> get_all_concept_ids() const;
 
+    // Get total relation count (cached, O(1))
+    size_t total_relation_count() const { return total_relations_; }
+
 private:
     std::unordered_map<ConceptId, ConceptInfo> concepts_;
     ConceptId next_concept_id_;
@@ -156,6 +159,7 @@ private:
     std::unordered_map<ConceptId, std::vector<RelationId>> outgoing_relations_;
     std::unordered_map<ConceptId, std::vector<RelationId>> incoming_relations_;
     RelationId next_relation_id_ = 1;
+    size_t total_relations_ = 0;  // cached count
 };
 
 } // namespace brain19

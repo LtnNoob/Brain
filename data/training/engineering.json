@@ -1,0 +1,439 @@
+{
+  "source": "training-data:engineering-v1",
+  "concepts": [
+    {
+      "label": "Ohm's Law",
+      "definition": "A fundamental law in electrical engineering stating that the current through a conductor between two points is directly proportional to the voltage across the two points, expressed as V = I × R",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["electrical", "circuit_analysis", "fundamental_law"]
+    },
+    {
+      "label": "Kirchhoff's Laws",
+      "definition": "Two fundamental laws in circuit analysis: Kirchhoff's Current Law (KCL) and Kirchhoff's Voltage Law (KVL), governing the conservation of charge and energy in electrical circuits",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["electrical", "circuit_analysis", "conservation_laws"]
+    },
+    {
+      "label": "Capacitor",
+      "definition": "A passive electronic component that stores electrical energy in an electric field, characterized by its capacitance measured in farads",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["electrical", "energy_storage", "passive_component"]
+    },
+    {
+      "label": "Inductor",
+      "definition": "A passive electronic component that stores energy in a magnetic field when electric current flows through it, characterized by its inductance measured in henries",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["electrical", "magnetic_field", "passive_component"]
+    },
+    {
+      "label": "Diode",
+      "definition": "A semiconductor device that allows current to flow in only one direction, commonly used for rectification and voltage regulation",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["electrical", "semiconductor", "rectification"]
+    },
+    {
+      "label": "Amplifier",
+      "definition": "An electronic device that increases the power of a signal by taking energy from a power supply and controlling the output to match the input signal but with larger amplitude",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["electrical", "signal_processing", "power_control"]
+    },
+    {
+      "label": "Oscillator",
+      "definition": "An electronic circuit that produces a repetitive, oscillating electronic signal, often a sine wave or square wave, without any input signal",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["electrical", "signal_generation", "frequency"]
+    },
+    {
+      "label": "Filter",
+      "definition": "A circuit or device that removes unwanted components or features from a signal, typically categorized as low-pass, high-pass, band-pass, or band-stop filters",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["electrical", "signal_processing", "frequency_response"]
+    },
+    {
+      "label": "Impedance",
+      "definition": "The measure of opposition that a circuit presents to a current when a voltage is applied, combining resistance and reactance in AC circuits",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["electrical", "ac_circuits", "complex_resistance"]
+    },
+    {
+      "label": "AC/DC",
+      "definition": "Alternating Current (AC) and Direct Current (DC) are the two fundamental types of electrical current, differing in direction of electron flow and voltage characteristics",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["electrical", "current_types", "power_systems"]
+    },
+    {
+      "label": "Torque",
+      "definition": "A measure of the rotational force applied to an object, calculated as the product of force and the perpendicular distance from the axis of rotation",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["mechanical", "rotational_mechanics", "force"]
+    },
+    {
+      "label": "Gear",
+      "definition": "A rotating machine part having cut teeth that mesh with another toothed part to transmit torque and change speed or direction of rotation",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["mechanical", "power_transmission", "machine_element"]
+    },
+    {
+      "label": "Bearing",
+      "definition": "A machine element that constrains relative motion to only the desired motion and reduces friction between moving parts",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["mechanical", "friction_reduction", "machine_element"]
+    },
+    {
+      "label": "Spring",
+      "definition": "A resilient device that can be pressed or pulled but returns to its former shape when released, storing mechanical energy",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["mechanical", "energy_storage", "elasticity"]
+    },
+    {
+      "label": "Damper",
+      "definition": "A device that absorbs kinetic energy and dissipates it, typically used to reduce mechanical oscillations and vibrations",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["mechanical", "vibration_control", "energy_dissipation"]
+    },
+    {
+      "label": "Stress",
+      "definition": "The internal force per unit area within materials that arises from externally applied forces, measured in pascals (Pa)",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["mechanical", "material_properties", "force_analysis"]
+    },
+    {
+      "label": "Strain",
+      "definition": "The deformation of a material in response to applied stress, expressed as the ratio of change in dimension to the original dimension",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["mechanical", "deformation", "material_response"]
+    },
+    {
+      "label": "Fatigue",
+      "definition": "The weakening of a material caused by repeatedly applied loads, leading to progressive crack growth and eventual failure",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["mechanical", "failure_analysis", "cyclic_loading"]
+    },
+    {
+      "label": "Thermal Expansion",
+      "definition": "The tendency of matter to change its shape, area, volume, and density in response to a change in temperature",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["thermal", "material_behavior", "temperature_effects"]
+    },
+    {
+      "label": "Tensile Strength",
+      "definition": "The maximum stress that a material can withstand while being stretched or pulled before breaking",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["materials", "mechanical_properties", "strength"]
+    },
+    {
+      "label": "Hardness",
+      "definition": "A measure of the resistance of a material to localized plastic deformation induced by either mechanical indentation or abrasion",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["materials", "surface_properties", "deformation_resistance"]
+    },
+    {
+      "label": "Ductility",
+      "definition": "The ability of a material to undergo significant plastic deformation before rupture, often measured by elongation or area reduction",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["materials", "plasticity", "deformation_capacity"]
+    },
+    {
+      "label": "Brittleness",
+      "definition": "The tendency of a material to fracture with little or no plastic deformation when subjected to stress",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["materials", "fracture_behavior", "mechanical_properties"]
+    },
+    {
+      "label": "Young's Modulus",
+      "definition": "A measure of the stiffness of a solid material, defined as the ratio of stress to strain in the linear elastic region",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["materials", "elasticity", "mechanical_properties"]
+    },
+    {
+      "label": "Poisson Ratio",
+      "definition": "The ratio of transverse strain to axial strain when a material is loaded axially, indicating how much a material contracts laterally when stretched",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["materials", "elasticity", "strain_relationship"]
+    },
+    {
+      "label": "Creep",
+      "definition": "The tendency of a solid material to move slowly or deform permanently under the influence of persistent mechanical stresses",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["materials", "time_dependent_deformation", "high_temperature"]
+    },
+    {
+      "label": "Heat Engine",
+      "definition": "A system that converts heat into mechanical work by taking in energy from a hot reservoir and rejecting waste heat to a cold reservoir",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["thermodynamics", "energy_conversion", "cycles"]
+    },
+    {
+      "label": "Carnot Cycle",
+      "definition": "A theoretical thermodynamic cycle that provides an upper limit on the efficiency that any classical thermodynamic engine can achieve",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["thermodynamics", "efficiency", "ideal_cycle"]
+    },
+    {
+      "label": "Refrigeration Cycle",
+      "definition": "A thermodynamic cycle that removes heat from a low-temperature reservoir and rejects it to a high-temperature reservoir using work input",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["thermodynamics", "heat_pump", "cooling"]
+    },
+    {
+      "label": "Heat Exchanger",
+      "definition": "A device used to transfer heat between two or more fluids at different temperatures without mixing them",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["thermal", "heat_transfer", "fluid_systems"]
+    },
+    {
+      "label": "Conduction",
+      "definition": "The transfer of heat through a material without any movement of the material itself, occurring through molecular vibrations and free electron motion",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["thermal", "heat_transfer", "molecular_motion"]
+    },
+    {
+      "label": "Convection",
+      "definition": "Heat transfer through the movement of fluids (liquids or gases), involving both conduction and fluid motion",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["thermal", "heat_transfer", "fluid_motion"]
+    },
+    {
+      "label": "Radiation",
+      "definition": "Heat transfer through electromagnetic waves without requiring a medium, can occur through vacuum",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["thermal", "heat_transfer", "electromagnetic"]
+    },
+    {
+      "label": "Servo Motor",
+      "definition": "A rotary or linear actuator that allows for precise control of angular or linear position, velocity, and acceleration",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["control_systems", "actuator", "precision_control"]
+    },
+    {
+      "label": "Actuator",
+      "definition": "A component of a machine that is responsible for moving and controlling a mechanism or system",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["control_systems", "motion_control", "automation"]
+    },
+    {
+      "label": "Sensor",
+      "definition": "A device that detects and responds to some type of input from the physical environment and converts it into an electrical signal",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["control_systems", "measurement", "transducer"]
+    },
+    {
+      "label": "ADC",
+      "definition": "Analog-to-Digital Converter, a device that converts continuous analog signals into discrete digital numbers",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["control_systems", "signal_conversion", "digital_processing"]
+    },
+    {
+      "label": "DAC",
+      "definition": "Digital-to-Analog Converter, a device that converts digital signals into analog signals",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["control_systems", "signal_conversion", "analog_output"]
+    },
+    {
+      "label": "PWM",
+      "definition": "Pulse Width Modulation, a method of reducing the average power delivered by an electrical signal by switching between ON and OFF states",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["control_systems", "power_control", "modulation"]
+    },
+    {
+      "label": "PLC",
+      "definition": "Programmable Logic Controller, an industrial digital computer designed for control of manufacturing processes and automation",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["control_systems", "automation", "industrial_control"]
+    },
+    {
+      "label": "SCADA",
+      "definition": "Supervisory Control And Data Acquisition, a control system architecture that uses computers, networked data communications and graphical user interfaces for high-level process supervisory management",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["control_systems", "monitoring", "industrial_automation"]
+    },
+    {
+      "label": "Transformer",
+      "definition": "A passive electrical device that transfers electrical energy from one or more circuits to another through electromagnetic induction",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["electrical", "power_systems", "electromagnetic_induction"]
+    },
+    {
+      "label": "Motor",
+      "definition": "An electrical machine that converts electrical energy into mechanical energy through the interaction of magnetic fields and current-carrying conductors",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["electrical", "energy_conversion", "rotating_machinery"]
+    },
+    {
+      "label": "Generator",
+      "definition": "A device that converts mechanical energy into electrical energy through electromagnetic induction",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["electrical", "energy_conversion", "power_generation"]
+    },
+    {
+      "label": "Pump",
+      "definition": "A device that moves fluids by mechanical action, typically converting rotational kinetic energy to hydrodynamic energy",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["mechanical", "fluid_systems", "energy_transfer"]
+    },
+    {
+      "label": "Valve",
+      "definition": "A device that regulates, directs or controls the flow of a fluid by opening, closing, or partially obstructing various passageways",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["mechanical", "fluid_control", "flow_regulation"]
+    },
+    {
+      "label": "Feedback Control",
+      "definition": "A control method that uses information about the output of a system to automatically adjust the input to maintain desired performance",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["control_systems", "closed_loop", "automatic_control"]
+    },
+    {
+      "label": "PID Controller",
+      "definition": "A control loop mechanism employing feedback that uses Proportional, Integral, and Derivative terms to minimize error between a setpoint and measured process variable",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["control_systems", "feedback", "process_control"]
+    },
+    {
+      "label": "Efficiency",
+      "definition": "The ratio of useful output power to input power, expressed as a percentage, indicating how well energy is converted from one form to another",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["energy", "performance", "optimization"]
+    },
+    {
+      "label": "Power Factor",
+      "definition": "The ratio of real power flowing to the load to the apparent power in the circuit, indicating the efficiency of power usage in AC circuits",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["electrical", "power_systems", "energy_efficiency"]
+    }
+  ],
+  "relations": [
+    {"source": "Ohm's Law", "target": "Impedance", "type": "extends_to", "description": "Ohm's Law extends to impedance in AC circuits"},
+    {"source": "Kirchhoff's Laws", "target": "Ohm's Law", "type": "complements", "description": "Kirchhoff's Laws work together with Ohm's Law for circuit analysis"},
+    {"source": "Capacitor", "target": "Impedance", "type": "contributes_to", "description": "Capacitors contribute to circuit impedance"},
+    {"source": "Inductor", "target": "Impedance", "type": "contributes_to", "description": "Inductors contribute to circuit impedance"},
+    {"source": "Diode", "target": "AC/DC", "type": "enables", "description": "Diodes enable AC to DC conversion (rectification)"},
+    {"source": "Amplifier", "target": "Filter", "type": "often_combined_with", "description": "Amplifiers are often combined with filters in signal processing"},
+    {"source": "Oscillator", "target": "Filter", "type": "requires", "description": "Oscillators often require filters for frequency shaping"},
+    {"source": "Transformer", "target": "AC/DC", "type": "operates_with", "description": "Transformers work with AC systems"},
+    {"source": "Motor", "target": "Generator", "type": "reverse_of", "description": "Motors and generators are reverse operations"},
+    {"source": "Servo Motor", "target": "Motor", "type": "specialized_type_of", "description": "Servo motors are specialized types of motors"},
+    {"source": "Torque", "target": "Motor", "type": "produced_by", "description": "Motors produce torque"},
+    {"source": "Gear", "target": "Torque", "type": "modifies", "description": "Gears modify torque transmission"},
+    {"source": "Bearing", "target": "Gear", "type": "supports", "description": "Bearings support rotating gears"},
+    {"source": "Spring", "target": "Damper", "type": "works_with", "description": "Springs often work with dampers in vibration control"},
+    {"source": "Stress", "target": "Strain", "type": "causes", "description": "Stress causes strain in materials"},
+    {"source": "Young's Modulus", "target": "Stress", "type": "relates_to", "description": "Young's Modulus relates stress to strain"},
+    {"source": "Young's Modulus", "target": "Strain", "type": "relates_to", "description": "Young's Modulus is the ratio of stress to strain"},
+    {"source": "Poisson Ratio", "target": "Strain", "type": "describes", "description": "Poisson Ratio describes the relationship between axial and lateral strain"},
+    {"source": "Fatigue", "target": "Stress", "type": "caused_by", "description": "Fatigue is caused by repeated stress cycles"},
+    {"source": "Tensile Strength", "target": "Stress", "type": "maximum_of", "description": "Tensile strength is the maximum stress before failure"},
+    {"source": "Hardness", "target": "Ductility", "type": "inversely_related", "description": "Hardness is generally inversely related to ductility"},
+    {"source": "Ductility", "target": "Brittleness", "type": "opposite_of", "description": "Ductility is the opposite of brittleness"},
+    {"source": "Creep", "target": "Thermal Expansion", "type": "enhanced_by", "description": "Creep is often enhanced at elevated temperatures"},
+    {"source": "Heat Engine", "target": "Carnot Cycle", "type": "limited_by", "description": "Heat engines are limited by Carnot cycle efficiency"},
+    {"source": "Refrigeration Cycle", "target": "Heat Engine", "type": "reverse_of", "description": "Refrigeration cycles are reverse heat engines"},
+    {"source": "Heat Exchanger", "target": "Conduction", "type": "utilizes", "description": "Heat exchangers utilize conduction for heat transfer"},
+    {"source": "Heat Exchanger", "target": "Convection", "type": "utilizes", "description": "Heat exchangers utilize convection for heat transfer"},
+    {"source": "Conduction", "target": "Convection", "type": "combined_with", "description": "Conduction and convection often occur together"},
+    {"source": "Radiation", "target": "Conduction", "type": "independent_of", "description": "Radiation heat transfer is independent of conduction"},
+    {"source": "Thermal Expansion", "target": "Conduction", "type": "affects", "description": "Thermal expansion affects heat conduction paths"},
+    {"source": "Actuator", "target": "Servo Motor", "type": "includes", "description": "Servo motors are types of actuators"},
+    {"source": "Sensor", "target": "ADC", "type": "connects_to", "description": "Analog sensors connect to ADC for digital processing"},
+    {"source": "ADC", "target": "DAC", "type": "complement", "description": "ADC and DAC are complementary conversion devices"},
+    {"source": "PWM", "target": "DAC", "type": "alternative_to", "description": "PWM can be an alternative to DAC for analog output"},
+    {"source": "PLC", "target": "SCADA", "type": "connects_to", "description": "PLCs often connect to SCADA systems"},
+    {"source": "PLC", "target": "PWM", "type": "generates", "description": "PLCs can generate PWM signals"},
+    {"source": "Feedback Control", "target": "Sensor", "type": "requires", "description": "Feedback control requires sensors for measurement"},
+    {"source": "PID Controller", "target": "Feedback Control", "type": "implements", "description": "PID controllers implement feedback control"},
+    {"source": "Servo Motor", "target": "Feedback Control", "type": "uses", "description": "Servo motors use feedback control for precision"},
+    {"source": "Pump", "target": "Motor", "type": "driven_by", "description": "Pumps are typically driven by motors"},
+    {"source": "Valve", "target": "Actuator", "type": "operated_by", "description": "Valves are operated by actuators"},
+    {"source": "Efficiency", "target": "Heat Engine", "type": "measures", "description": "Efficiency measures heat engine performance"},
+    {"source": "Power Factor", "target": "AC/DC", "type": "relevant_to", "description": "Power factor is relevant to AC power systems"},
+    {"source": "Resonance", "target": "Oscillator", "type": "principle_of", "description": "Resonance is a key principle in oscillator design"},
+    {"source": "Spring", "target": "Resonance", "type": "exhibits", "description": "Spring-mass systems exhibit resonance"},
+    {"source": "Damper", "target": "Resonance", "type": "controls", "description": "Dampers control resonance in mechanical systems"},
+    {"source": "Filter", "target": "Resonance", "type": "uses", "description": "Filters use resonance principles for frequency selection"},
+    {"source": "Impedance", "target": "Resonance", "type": "varies_with", "description": "Circuit impedance varies with frequency near resonance"},
+    {"source": "Capacitor", "target": "Filter", "type": "component_of", "description": "Capacitors are key components of filters"},
+    {"source": "Inductor", "target": "Filter", "type": "component_of", "description": "Inductors are key components of filters"},
+    {"source": "Amplifier", "target": "PWM", "type": "controlled_by", "description": "Amplifiers can be controlled by PWM signals"},
+    {"source": "Transformer", "target": "Efficiency", "type": "characterized_by", "description": "Transformers are characterized by their efficiency"},
+    {"source": "Generator", "target": "Efficiency", "type": "measured_by", "description": "Generators are measured by their efficiency"},
+    {"source": "Motor", "target": "Efficiency", "type": "rated_by", "description": "Motors are rated by their efficiency"},
+    {"source": "Heat Exchanger", "target": "Efficiency", "type": "designed_for", "description": "Heat exchangers are designed for thermal efficiency"},
+    {"source": "Gear", "target": "Efficiency", "type": "affects", "description": "Gear systems affect mechanical efficiency"},
+    {"source": "Bearing", "target": "Efficiency", "type": "improves", "description": "Good bearings improve mechanical efficiency"},
+    {"source": "Valve", "target": "Pump", "type": "controls", "description": "Valves control pump flow"},
+    {"source": "PLC", "target": "Valve", "type": "controls", "description": "PLCs control valve positions"},
+    {"source": "SCADA", "target": "Pump", "type": "monitors", "description": "SCADA systems monitor pump operation"},
+    {"source": "Sensor", "target": "Pump", "type": "monitors", "description": "Sensors monitor pump parameters"},
+    {"source": "PID Controller", "target": "Valve", "type": "controls", "description": "PID controllers control valve positions"},
+    {"source": "ADC", "target": "PLC", "type": "inputs_to", "description": "ADC outputs feed into PLC inputs"},
+    {"source": "DAC", "target": "PLC", "type": "outputs_from", "description": "PLCs use DACs for analog outputs"},
+    {"source": "Stress", "target": "Fatigue", "type": "causes", "description": "Repeated stress causes fatigue failure"},
+    {"source": "Creep", "target": "Stress", "type": "time_dependent", "description": "Creep is time-dependent deformation under stress"},
+    {"source": "Thermal Expansion", "target": "Stress", "type": "induces", "description": "Thermal expansion can induce thermal stress"},
+    {"source": "Young's Modulus", "target": "Ductility", "type": "related_to", "description": "Young's Modulus is related to material ductility"},
+    {"source": "Hardness", "target": "Tensile Strength", "type": "correlates_with", "description": "Hardness often correlates with tensile strength"},
+    {"source": "Brittleness", "target": "Fatigue", "type": "promotes", "description": "Brittleness promotes fatigue crack propagation"},
+    {"source": "Conduction", "target": "Thermal Expansion", "type": "enables", "description": "Heat conduction enables thermal expansion"},
+    {"source": "Convection", "target": "Heat Exchanger", "type": "mechanism_in", "description": "Convection is a heat transfer mechanism in heat exchangers"},
+    {"source": "Radiation", "target": "Heat Engine", "type": "heat_loss_in", "description": "Radiation is a heat loss mechanism in heat engines"},
+    {"source": "Carnot Cycle", "target": "Efficiency", "type": "defines_maximum", "description": "Carnot cycle defines maximum theoretical efficiency"},
+    {"source": "Refrigeration Cycle", "target": "Heat Exchanger", "type": "uses", "description": "Refrigeration cycles use heat exchangers"},
+    {"source": "Power Factor", "target": "Efficiency", "type": "affects", "description": "Power factor affects electrical system efficiency"},
+    {"source": "Transformer", "target": "Power Factor", "type": "affects", "description": "Transformer design affects power factor"},
+    {"source": "Motor", "target": "Power Factor", "type": "affects", "description": "Motor operation affects power factor"},
+    {"source": "Capacitor", "target": "Power Factor", "type": "corrects", "description": "Capacitors are used for power factor correction"},
+    {"source": "Resonance", "target": "Vibration", "type": "causes", "description": "Resonance can cause excessive vibration"},
+    {"source": "Spring", "target": "Vibration", "type": "element_in", "description": "Springs are elements in vibrational systems"},
+    {"source": "Damper", "target": "Vibration", "type": "reduces", "description": "Dampers reduce vibration amplitude"}
+  ]
+}

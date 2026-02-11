@@ -1,0 +1,432 @@
+{
+  "source": "training-data:linguistics-arts-v1",
+  "concepts": [
+    {
+      "label": "Phoneme",
+      "definition": "The smallest unit of sound in a language that can distinguish meaning between words",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["linguistics", "phonology", "sound"]
+    },
+    {
+      "label": "Morpheme",
+      "definition": "The smallest meaningful unit of language that cannot be divided into smaller meaningful parts",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["linguistics", "morphology", "meaning"]
+    },
+    {
+      "label": "Syntax",
+      "definition": "The set of rules that govern how words combine to form phrases and sentences",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["linguistics", "grammar", "structure"]
+    },
+    {
+      "label": "Semantics",
+      "definition": "The study of meaning in language, including word meanings and sentence meanings",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["linguistics", "meaning", "interpretation"]
+    },
+    {
+      "label": "Pragmatics",
+      "definition": "The study of how context influences the interpretation of meaning in language use",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["linguistics", "context", "communication"]
+    },
+    {
+      "label": "Grammar",
+      "definition": "The system of rules that govern the structure and use of a language",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["linguistics", "rules", "structure"]
+    },
+    {
+      "label": "Dialect",
+      "definition": "A regional or social variety of a language with distinct pronunciation, vocabulary, and grammar",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["linguistics", "variation", "regional"]
+    },
+    {
+      "label": "Pidgin",
+      "definition": "A simplified language that develops as a means of communication between groups with different native languages",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["linguistics", "contact", "simplified"]
+    },
+    {
+      "label": "Creole",
+      "definition": "A stable natural language that develops from a pidgin when it becomes a native language of a community",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["linguistics", "contact", "nativization"]
+    },
+    {
+      "label": "Language Family",
+      "definition": "A group of languages that descended from a common ancestral language",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["linguistics", "historical", "genealogy"]
+    },
+    {
+      "label": "Proto-Language",
+      "definition": "A reconstructed common ancestor language from which related languages descended",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["linguistics", "historical", "reconstruction"]
+    },
+    {
+      "label": "Etymology",
+      "definition": "The study of the origin and historical development of words and their meanings",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["linguistics", "historical", "word-origin"]
+    },
+    {
+      "label": "Phonology",
+      "definition": "The study of the sound system of languages and how sounds function within particular languages",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["linguistics", "sound", "system"]
+    },
+    {
+      "label": "Lexicon",
+      "definition": "The vocabulary of a language or the mental dictionary of words in a speaker's mind",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["linguistics", "vocabulary", "mental"]
+    },
+    {
+      "label": "Narrative",
+      "definition": "A spoken or written account of connected events in order; a story",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["literature", "story", "sequence"]
+    },
+    {
+      "label": "Metaphor",
+      "definition": "A figure of speech that compares two unlike things by stating one is the other",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["literature", "figurative", "comparison"]
+    },
+    {
+      "label": "Allegory",
+      "definition": "A story with a hidden meaning, typically moral or political, told through symbolic figures and actions",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["literature", "symbolic", "hidden-meaning"]
+    },
+    {
+      "label": "Irony",
+      "definition": "A literary device where there is a contrast between expectation and reality, often for humorous effect",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["literature", "contrast", "expectation"]
+    },
+    {
+      "label": "Genre",
+      "definition": "A category of artistic composition characterized by particular style, form, or content",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["literature", "category", "classification"]
+    },
+    {
+      "label": "Plot",
+      "definition": "The sequence of events that make up a story, including exposition, rising action, climax, and resolution",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["literature", "structure", "events"]
+    },
+    {
+      "label": "Character",
+      "definition": "A person or being in a narrative work who drives the story through their actions and dialogue",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["literature", "person", "narrative"]
+    },
+    {
+      "label": "Theme",
+      "definition": "The central idea or underlying meaning of a literary work",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["literature", "meaning", "central-idea"]
+    },
+    {
+      "label": "Symbol",
+      "definition": "An object or action that represents something beyond its literal meaning",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["literature", "representation", "meaning"]
+    },
+    {
+      "label": "Prose",
+      "definition": "Written or spoken language in its ordinary form, without metrical structure",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["literature", "ordinary", "non-metrical"]
+    },
+    {
+      "label": "Poetry",
+      "definition": "Literary work in which expression of feelings and ideas is given intensity by particular attention to diction, rhythm, and imagery",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["literature", "rhythm", "imagery"]
+    },
+    {
+      "label": "Rhetoric",
+      "definition": "The art of effective or persuasive speaking or writing, using figures of speech and compositional techniques",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["literature", "persuasion", "composition"]
+    },
+    {
+      "label": "Melody",
+      "definition": "A sequence of musical notes that is musically satisfying and forms the main tune",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["music", "sequence", "tune"]
+    },
+    {
+      "label": "Harmony",
+      "definition": "The combination of different musical notes played or sung simultaneously to create chords",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["music", "combination", "chords"]
+    },
+    {
+      "label": "Rhythm",
+      "definition": "The pattern of beats or time intervals in music that creates the temporal structure",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["music", "pattern", "time"]
+    },
+    {
+      "label": "Tempo",
+      "definition": "The speed at which a piece of music is played or sung",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["music", "speed", "pace"]
+    },
+    {
+      "label": "Pitch",
+      "definition": "The perceived frequency of a sound, determining how high or low a musical note sounds",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["music", "frequency", "height"]
+    },
+    {
+      "label": "Timbre",
+      "definition": "The characteristic quality of a musical sound that distinguishes different instruments or voices",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["music", "quality", "characteristic"]
+    },
+    {
+      "label": "Scale",
+      "definition": "A series of musical notes ordered by pitch, forming the basis for melodies and harmonies",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["music", "series", "ordered"]
+    },
+    {
+      "label": "Chord",
+      "definition": "A group of three or more different notes played simultaneously to create harmony",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["music", "group", "simultaneous"]
+    },
+    {
+      "label": "Key",
+      "definition": "The tonal center of a piece of music, determined by a specific scale and its associated chords",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["music", "tonal", "center"]
+    },
+    {
+      "label": "Counterpoint",
+      "definition": "The art of combining two or more melodic lines in such a way that they establish a harmonic relationship",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["music", "combination", "melodic"]
+    },
+    {
+      "label": "Sonata",
+      "definition": "A musical composition typically for a solo instrument or solo instrument with piano accompaniment",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["music", "composition", "solo"]
+    },
+    {
+      "label": "Composition",
+      "definition": "The arrangement of visual elements in artwork to create a balanced and unified whole",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["art", "arrangement", "visual"]
+    },
+    {
+      "label": "Perspective",
+      "definition": "A technique used to represent three-dimensional objects on a two-dimensional surface",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["art", "technique", "dimension"]
+    },
+    {
+      "label": "Color Theory",
+      "definition": "The science and art of using color, including how colors mix and their visual effects",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["art", "color", "visual-effects"]
+    },
+    {
+      "label": "Medium",
+      "definition": "The material or technique used by an artist to create artwork",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["art", "material", "technique"]
+    },
+    {
+      "label": "Abstract Art",
+      "definition": "Art that does not represent recognizable objects but uses color, form, and line to create composition",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["art", "non-representational", "form"]
+    },
+    {
+      "label": "Realism",
+      "definition": "An artistic movement that depicts subjects as they appear in real life without idealization",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["art", "movement", "real-life"]
+    },
+    {
+      "label": "Impressionism",
+      "definition": "An art movement characterized by visible brush strokes and emphasis on light and its changing qualities",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["art", "movement", "light"]
+    },
+    {
+      "label": "Renaissance",
+      "definition": "A cultural movement that marked the transition from medieval to modern Europe, emphasizing humanism and classical learning",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["art", "cultural", "humanism"]
+    },
+    {
+      "label": "Baroque",
+      "definition": "An artistic style characterized by dramatic use of light and shadow, emotional intensity, and ornate decoration",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["art", "style", "dramatic"]
+    },
+    {
+      "label": "Modernism",
+      "definition": "A movement in art and literature that rejected traditional forms in favor of innovation and experimentation",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["art", "movement", "innovation"]
+    },
+    {
+      "label": "Intonation",
+      "definition": "The variation in pitch while speaking, which conveys meaning and emotion in language",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["linguistics", "pitch", "emotion"]
+    },
+    {
+      "label": "Symbolism",
+      "definition": "A literary and artistic movement that used symbolic images and indirect suggestion to express ideas and emotions",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["literature", "art", "symbolic"]
+    },
+    {
+      "label": "Cadence",
+      "definition": "A rhythmic sequence or flow of sounds in language or music that creates closure or resolution",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["music", "literature", "rhythm"]
+    }
+  ],
+  "relations": [
+    {"source": "Phoneme", "relation": "is_component_of", "target": "Phonology"},
+    {"source": "Morpheme", "relation": "is_studied_by", "target": "Semantics"},
+    {"source": "Syntax", "relation": "is_part_of", "target": "Grammar"},
+    {"source": "Semantics", "relation": "relates_to", "target": "Pragmatics"},
+    {"source": "Pragmatics", "relation": "influences", "target": "Semantics"},
+    {"source": "Grammar", "relation": "includes", "target": "Syntax"},
+    {"source": "Dialect", "relation": "varies_from", "target": "Grammar"},
+    {"source": "Pidgin", "relation": "develops_into", "target": "Creole"},
+    {"source": "Creole", "relation": "evolved_from", "target": "Pidgin"},
+    {"source": "Language Family", "relation": "derived_from", "target": "Proto-Language"},
+    {"source": "Proto-Language", "relation": "ancestor_of", "target": "Language Family"},
+    {"source": "Etymology", "relation": "studies", "target": "Lexicon"},
+    {"source": "Phonology", "relation": "studies", "target": "Phoneme"},
+    {"source": "Lexicon", "relation": "contains", "target": "Morpheme"},
+    {"source": "Narrative", "relation": "contains", "target": "Plot"},
+    {"source": "Metaphor", "relation": "is_type_of", "target": "Symbol"},
+    {"source": "Allegory", "relation": "uses", "target": "Symbol"},
+    {"source": "Irony", "relation": "creates", "target": "Theme"},
+    {"source": "Genre", "relation": "categorizes", "target": "Narrative"},
+    {"source": "Plot", "relation": "develops", "target": "Character"},
+    {"source": "Character", "relation": "drives", "target": "Plot"},
+    {"source": "Theme", "relation": "expressed_through", "target": "Symbol"},
+    {"source": "Symbol", "relation": "appears_in", "target": "Allegory"},
+    {"source": "Prose", "relation": "contrasts_with", "target": "Poetry"},
+    {"source": "Poetry", "relation": "uses", "target": "Rhythm"},
+    {"source": "Rhetoric", "relation": "appears_in", "target": "Prose"},
+    {"source": "Melody", "relation": "composed_of", "target": "Pitch"},
+    {"source": "Harmony", "relation": "created_by", "target": "Chord"},
+    {"source": "Rhythm", "relation": "relates_to", "target": "Tempo"},
+    {"source": "Tempo", "relation": "affects", "target": "Rhythm"},
+    {"source": "Pitch", "relation": "determines", "target": "Melody"},
+    {"source": "Timbre", "relation": "distinguishes", "target": "Pitch"},
+    {"source": "Scale", "relation": "determines", "target": "Key"},
+    {"source": "Chord", "relation": "based_on", "target": "Scale"},
+    {"source": "Key", "relation": "established_by", "target": "Scale"},
+    {"source": "Counterpoint", "relation": "combines", "target": "Melody"},
+    {"source": "Sonata", "relation": "uses", "target": "Key"},
+    {"source": "Composition", "relation": "uses", "target": "Perspective"},
+    {"source": "Perspective", "relation": "creates", "target": "Composition"},
+    {"source": "Color Theory", "relation": "guides", "target": "Composition"},
+    {"source": "Medium", "relation": "determines", "target": "Composition"},
+    {"source": "Abstract Art", "relation": "emphasizes", "target": "Color Theory"},
+    {"source": "Realism", "relation": "contrasts_with", "target": "Abstract Art"},
+    {"source": "Impressionism", "relation": "uses", "target": "Color Theory"},
+    {"source": "Renaissance", "relation": "influenced", "target": "Perspective"},
+    {"source": "Baroque", "relation": "succeeded", "target": "Renaissance"},
+    {"source": "Modernism", "relation": "rejected", "target": "Realism"},
+    {"source": "Intonation", "relation": "relates_to", "target": "Phonology"},
+    {"source": "Symbolism", "relation": "influenced", "target": "Modernism"},
+    {"source": "Cadence", "relation": "appears_in", "target": "Poetry"},
+    {"source": "Narrative", "relation": "expresses", "target": "Theme"},
+    {"source": "Metaphor", "relation": "enhances", "target": "Poetry"},
+    {"source": "Allegory", "relation": "conveys", "target": "Theme"},
+    {"source": "Irony", "relation": "used_in", "target": "Rhetoric"},
+    {"source": "Genre", "relation": "includes", "target": "Poetry"},
+    {"source": "Character", "relation": "embodies", "target": "Theme"},
+    {"source": "Symbol", "relation": "enriches", "target": "Narrative"},
+    {"source": "Prose", "relation": "employs", "target": "Rhetoric"},
+    {"source": "Poetry", "relation": "incorporates", "target": "Cadence"},
+    {"source": "Rhythm", "relation": "shared_with", "target": "Poetry"},
+    {"source": "Melody", "relation": "follows", "target": "Scale"},
+    {"source": "Harmony", "relation": "supports", "target": "Melody"},
+    {"source": "Tempo", "relation": "measured_in", "target": "Rhythm"},
+    {"source": "Pitch", "relation": "organized_by", "target": "Scale"},
+    {"source": "Timbre", "relation": "varies_by", "target": "Medium"},
+    {"source": "Chord", "relation": "creates", "target": "Harmony"},
+    {"source": "Key", "relation": "governs", "target": "Harmony"},
+    {"source": "Counterpoint", "relation": "requires", "target": "Harmony"},
+    {"source": "Sonata", "relation": "structured_by", "target": "Counterpoint"},
+    {"source": "Perspective", "relation": "developed_during", "target": "Renaissance"},
+    {"source": "Color Theory", "relation": "explored_by", "target": "Impressionism"},
+    {"source": "Medium", "relation": "experimented_with", "target": "Modernism"},
+    {"source": "Abstract Art", "relation": "part_of", "target": "Modernism"},
+    {"source": "Realism", "relation": "preceded", "target": "Impressionism"},
+    {"source": "Baroque", "relation": "emphasized", "target": "Composition"}
+  ]
+}

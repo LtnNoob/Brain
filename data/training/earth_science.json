@@ -1,0 +1,807 @@
+{
+  "source": "training-data:earth-science-v1",
+  "concepts": [
+    {
+      "label": "Tectonic Plates",
+      "definition": "Large sections of the Earth's lithosphere that move and interact at their boundaries, causing earthquakes, volcanic activity, and mountain formation.",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["geology", "plate_tectonics", "earth_structure"]
+    },
+    {
+      "label": "Earthquake",
+      "definition": "Sudden release of energy in the Earth's crust that creates seismic waves, typically caused by movement along fault lines.",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["geology", "seismic", "natural_hazards"]
+    },
+    {
+      "label": "Volcano",
+      "definition": "Opening in the Earth's surface through which molten rock, gas, and debris can erupt from the interior.",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["geology", "volcanism", "natural_hazards"]
+    },
+    {
+      "label": "Magma",
+      "definition": "Molten rock material beneath the Earth's surface that can crystallize to form igneous rocks or erupt as lava.",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["geology", "volcanism", "rock_formation"]
+    },
+    {
+      "label": "Sedimentary Rock",
+      "definition": "Rock formed from the accumulation and lithification of sediment, organic matter, or chemical precipitates.",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["geology", "rock_types", "sedimentology"]
+    },
+    {
+      "label": "Igneous Rock",
+      "definition": "Rock formed through the cooling and solidification of magma or lava.",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["geology", "rock_types", "volcanism"]
+    },
+    {
+      "label": "Metamorphic Rock",
+      "definition": "Rock formed by the transformation of existing rock through heat, pressure, and chemical processes without melting.",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["geology", "rock_types", "metamorphism"]
+    },
+    {
+      "label": "Mineral",
+      "definition": "Naturally occurring inorganic solid with a defined chemical composition and crystal structure.",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["geology", "mineralogy", "crystallography"]
+    },
+    {
+      "label": "Fossil",
+      "definition": "Preserved remains or traces of ancient organisms found in sedimentary rocks.",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["geology", "paleontology", "evolutionary_history"]
+    },
+    {
+      "label": "Geological Time Scale",
+      "definition": "System of chronological dating that describes the timing and relationships of events in Earth's history.",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["geology", "chronology", "earth_history"]
+    },
+    {
+      "label": "Continental Drift",
+      "definition": "Theory that continents move across the Earth's surface over geological time scales.",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["geology", "plate_tectonics", "earth_history"]
+    },
+    {
+      "label": "Pangaea",
+      "definition": "Supercontinent that existed during the late Paleozoic and early Mesozoic eras, approximately 335-175 million years ago.",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["geology", "paleogeography", "earth_history"]
+    },
+    {
+      "label": "Atmosphere",
+      "definition": "Layer of gases surrounding Earth, held in place by gravity and essential for weather and climate.",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["meteorology", "atmospheric_science", "climate"]
+    },
+    {
+      "label": "Weather",
+      "definition": "Short-term atmospheric conditions including temperature, humidity, precipitation, and wind.",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["meteorology", "atmospheric_conditions", "daily_variations"]
+    },
+    {
+      "label": "Climate",
+      "definition": "Long-term average weather patterns in a particular region over extended periods.",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["meteorology", "climatology", "long_term_patterns"]
+    },
+    {
+      "label": "Hurricane",
+      "definition": "Intense tropical cyclone with sustained winds exceeding 74 mph, characterized by a well-defined eye and spiral structure.",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["meteorology", "extreme_weather", "tropical_systems"]
+    },
+    {
+      "label": "Tornado",
+      "definition": "Violently rotating column of air extending from a thunderstorm to the ground.",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["meteorology", "extreme_weather", "severe_storms"]
+    },
+    {
+      "label": "Jet Stream",
+      "definition": "Fast-moving ribbons of air in the upper atmosphere that influence weather patterns across continents.",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["meteorology", "atmospheric_circulation", "upper_atmosphere"]
+    },
+    {
+      "label": "Pressure System",
+      "definition": "Areas of high or low atmospheric pressure that drive wind patterns and weather changes.",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["meteorology", "atmospheric_pressure", "weather_systems"]
+    },
+    {
+      "label": "Cloud",
+      "definition": "Visible collection of water droplets or ice crystals suspended in the atmosphere.",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["meteorology", "atmospheric_phenomena", "water_cycle"]
+    },
+    {
+      "label": "Precipitation",
+      "definition": "Water released from clouds in the form of rain, snow, sleet, or hail.",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["meteorology", "water_cycle", "atmospheric_phenomena"]
+    },
+    {
+      "label": "Thunder",
+      "definition": "Sound produced by the rapid expansion of air heated by lightning discharge.",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["meteorology", "atmospheric_phenomena", "electrical_discharge"]
+    },
+    {
+      "label": "Lightning",
+      "definition": "Electrical discharge that occurs during thunderstorms between clouds or between clouds and ground.",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["meteorology", "atmospheric_electricity", "severe_weather"]
+    },
+    {
+      "label": "Ocean Current",
+      "definition": "Continuous, directed movement of seawater driven by wind, density differences, and gravitational forces.",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["oceanography", "marine_circulation", "ocean_dynamics"]
+    },
+    {
+      "label": "Tide",
+      "definition": "Regular rise and fall of sea levels caused primarily by gravitational forces of the moon and sun.",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["oceanography", "gravitational_forces", "coastal_processes"]
+    },
+    {
+      "label": "Salinity",
+      "definition": "Concentration of dissolved salts in seawater, typically measured in parts per thousand.",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["oceanography", "water_chemistry", "marine_environment"]
+    },
+    {
+      "label": "Coral Reef",
+      "definition": "Underwater ecosystem built by coral polyps, typically found in warm, shallow marine waters.",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["oceanography", "marine_ecosystems", "biodiversity"]
+    },
+    {
+      "label": "Thermocline",
+      "definition": "Layer in the ocean where temperature changes rapidly with depth, separating warm surface waters from cold deep waters.",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["oceanography", "ocean_stratification", "temperature_gradient"]
+    },
+    {
+      "label": "Tsunami",
+      "definition": "Series of ocean waves caused by underwater earthquakes, volcanic eruptions, or landslides.",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["oceanography", "natural_hazards", "seismic_waves"]
+    },
+    {
+      "label": "Upwelling",
+      "definition": "Oceanographic phenomenon where deep, cold, nutrient-rich water rises to the surface.",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["oceanography", "marine_productivity", "nutrient_cycling"]
+    },
+    {
+      "label": "Greenhouse Effect",
+      "definition": "Process by which certain atmospheric gases trap heat from the sun, warming Earth's surface.",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["climate_science", "atmospheric_radiation", "global_warming"]
+    },
+    {
+      "label": "Ice Age",
+      "definition": "Period of long-term reduction in Earth's surface and atmospheric temperature, resulting in expansion of ice sheets.",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["climate_science", "paleoclimatology", "glaciation"]
+    },
+    {
+      "label": "Carbon Cycle",
+      "definition": "Biogeochemical cycle describing the exchange of carbon among Earth's atmosphere, oceans, biosphere, and geosphere.",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["climate_science", "biogeochemistry", "carbon_dynamics"]
+    },
+    {
+      "label": "Albedo",
+      "definition": "Measure of how much solar radiation is reflected by a surface, expressed as a percentage or decimal fraction.",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["climate_science", "radiation_budget", "surface_properties"]
+    },
+    {
+      "label": "Ocean Acidification",
+      "definition": "Decrease in ocean pH caused by absorption of atmospheric carbon dioxide, affecting marine ecosystems.",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["climate_science", "ocean_chemistry", "environmental_change"]
+    },
+    {
+      "label": "Sea Level Rise",
+      "definition": "Increase in global mean sea level due to thermal expansion of seawater and melting of land-based ice.",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["climate_science", "sea_level_change", "coastal_impacts"]
+    },
+    {
+      "label": "Permafrost",
+      "definition": "Ground that remains frozen for two or more consecutive years, primarily found in polar regions and high altitudes.",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["climate_science", "frozen_ground", "arctic_systems"]
+    },
+    {
+      "label": "Deforestation",
+      "definition": "Large-scale removal of forests, typically for agriculture, urban development, or logging.",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["climate_science", "land_use_change", "environmental_impact"]
+    },
+    {
+      "label": "Water Cycle",
+      "definition": "Continuous movement of water through Earth's atmosphere, land, and oceans via evaporation, condensation, and precipitation.",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["hydrology", "water_circulation", "atmospheric_processes"]
+    },
+    {
+      "label": "Aquifer",
+      "definition": "Underground layer of permeable rock or sediment that holds and transmits groundwater.",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["hydrology", "groundwater", "water_resources"]
+    },
+    {
+      "label": "Watershed",
+      "definition": "Area of land where all water drains to a common outlet, such as a river, lake, or ocean.",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["hydrology", "drainage_basin", "water_management"]
+    },
+    {
+      "label": "Glacier",
+      "definition": "Large mass of ice formed from compressed snow that moves slowly under its own weight.",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["hydrology", "ice_dynamics", "climate_indicators"]
+    },
+    {
+      "label": "Erosion",
+      "definition": "Process by which rock and soil are worn away and transported by natural forces like water, wind, and ice.",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["hydrology", "geomorphology", "surface_processes"]
+    },
+    {
+      "label": "Weathering",
+      "definition": "Chemical, physical, and biological processes that break down rocks and minerals at Earth's surface.",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["hydrology", "geomorphology", "rock_breakdown"]
+    },
+    {
+      "label": "Fault",
+      "definition": "Fracture in rock along which movement has occurred, often associated with earthquake activity.",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["geology", "structural_geology", "seismic_activity"]
+    },
+    {
+      "label": "Mantle",
+      "definition": "Layer of hot, dense rock between Earth's crust and core, responsible for plate tectonic movement.",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["geology", "earth_structure", "plate_tectonics"]
+    },
+    {
+      "label": "Convection",
+      "definition": "Heat transfer process involving the movement of fluids, driving plate tectonics and atmospheric circulation.",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["geology", "atmospheric_science", "heat_transfer"]
+    },
+    {
+      "label": "Evaporation",
+      "definition": "Process by which liquid water transforms into water vapor, primarily driven by solar energy.",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["hydrology", "water_cycle", "phase_transitions"]
+    },
+    {
+      "label": "Condensation",
+      "definition": "Process by which water vapor cools and transforms into liquid water droplets, forming clouds.",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["meteorology", "water_cycle", "cloud_formation"]
+    },
+    {
+      "label": "Sediment",
+      "definition": "Particles of rock, minerals, and organic matter transported and deposited by water, wind, or ice.",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["geology", "sedimentology", "surface_processes"]
+    }
+  ],
+  "relations": [
+    {
+      "from": "Tectonic Plates",
+      "to": "Earthquake",
+      "relation": "causes",
+      "strength": 0.95
+    },
+    {
+      "from": "Tectonic Plates",
+      "to": "Volcano",
+      "relation": "creates",
+      "strength": 0.90
+    },
+    {
+      "from": "Magma",
+      "to": "Igneous Rock",
+      "relation": "forms",
+      "strength": 0.98
+    },
+    {
+      "from": "Magma",
+      "to": "Volcano",
+      "relation": "erupts_from",
+      "strength": 0.95
+    },
+    {
+      "from": "Sediment",
+      "to": "Sedimentary Rock",
+      "relation": "compacts_into",
+      "strength": 0.95
+    },
+    {
+      "from": "Igneous Rock",
+      "to": "Metamorphic Rock",
+      "relation": "transforms_into",
+      "strength": 0.85
+    },
+    {
+      "from": "Sedimentary Rock",
+      "to": "Metamorphic Rock",
+      "relation": "transforms_into",
+      "strength": 0.85
+    },
+    {
+      "from": "Mineral",
+      "to": "Igneous Rock",
+      "relation": "composes",
+      "strength": 0.90
+    },
+    {
+      "from": "Mineral",
+      "to": "Metamorphic Rock",
+      "relation": "composes",
+      "strength": 0.90
+    },
+    {
+      "from": "Mineral",
+      "to": "Sedimentary Rock",
+      "relation": "composes",
+      "strength": 0.80
+    },
+    {
+      "from": "Fossil",
+      "to": "Sedimentary Rock",
+      "relation": "preserved_in",
+      "strength": 0.95
+    },
+    {
+      "from": "Fossil",
+      "to": "Geological Time Scale",
+      "relation": "provides_evidence_for",
+      "strength": 0.90
+    },
+    {
+      "from": "Continental Drift",
+      "to": "Tectonic Plates",
+      "relation": "explained_by",
+      "strength": 0.95
+    },
+    {
+      "from": "Pangaea",
+      "to": "Continental Drift",
+      "relation": "demonstrates",
+      "strength": 0.90
+    },
+    {
+      "from": "Atmosphere",
+      "to": "Weather",
+      "relation": "enables",
+      "strength": 0.98
+    },
+    {
+      "from": "Atmosphere",
+      "to": "Climate",
+      "relation": "influences",
+      "strength": 0.95
+    },
+    {
+      "from": "Weather",
+      "to": "Climate",
+      "relation": "contributes_to",
+      "strength": 0.85
+    },
+    {
+      "from": "Hurricane",
+      "to": "Weather",
+      "relation": "is_type_of",
+      "strength": 0.95
+    },
+    {
+      "from": "Tornado",
+      "to": "Weather",
+      "relation": "is_type_of",
+      "strength": 0.95
+    },
+    {
+      "from": "Jet Stream",
+      "to": "Weather",
+      "relation": "influences",
+      "strength": 0.90
+    },
+    {
+      "from": "Pressure System",
+      "to": "Weather",
+      "relation": "drives",
+      "strength": 0.95
+    },
+    {
+      "from": "Cloud",
+      "to": "Precipitation",
+      "relation": "produces",
+      "strength": 0.95
+    },
+    {
+      "from": "Lightning",
+      "to": "Thunder",
+      "relation": "causes",
+      "strength": 0.98
+    },
+    {
+      "from": "Ocean Current",
+      "to": "Climate",
+      "relation": "regulates",
+      "strength": 0.90
+    },
+    {
+      "from": "Tide",
+      "to": "Ocean Current",
+      "relation": "influences",
+      "strength": 0.70
+    },
+    {
+      "from": "Salinity",
+      "to": "Ocean Current",
+      "relation": "drives",
+      "strength": 0.85
+    },
+    {
+      "from": "Coral Reef",
+      "to": "Salinity",
+      "relation": "sensitive_to",
+      "strength": 0.80
+    },
+    {
+      "from": "Thermocline",
+      "to": "Ocean Current",
+      "relation": "affects",
+      "strength": 0.85
+    },
+    {
+      "from": "Earthquake",
+      "to": "Tsunami",
+      "relation": "triggers",
+      "strength": 0.85
+    },
+    {
+      "from": "Volcano",
+      "to": "Tsunami",
+      "relation": "can_cause",
+      "strength": 0.70
+    },
+    {
+      "from": "Upwelling",
+      "to": "Ocean Current",
+      "relation": "component_of",
+      "strength": 0.90
+    },
+    {
+      "from": "Greenhouse Effect",
+      "to": "Climate",
+      "relation": "regulates",
+      "strength": 0.95
+    },
+    {
+      "from": "Ice Age",
+      "to": "Climate",
+      "relation": "represents",
+      "strength": 0.95
+    },
+    {
+      "from": "Carbon Cycle",
+      "to": "Greenhouse Effect",
+      "relation": "influences",
+      "strength": 0.90
+    },
+    {
+      "from": "Carbon Cycle",
+      "to": "Climate",
+      "relation": "regulates",
+      "strength": 0.90
+    },
+    {
+      "from": "Albedo",
+      "to": "Climate",
+      "relation": "influences",
+      "strength": 0.85
+    },
+    {
+      "from": "Ocean Acidification",
+      "to": "Carbon Cycle",
+      "relation": "result_of",
+      "strength": 0.90
+    },
+    {
+      "from": "Sea Level Rise",
+      "to": "Greenhouse Effect",
+      "relation": "caused_by",
+      "strength": 0.85
+    },
+    {
+      "from": "Sea Level Rise",
+      "to": "Glacier",
+      "relation": "caused_by_melting",
+      "strength": 0.80
+    },
+    {
+      "from": "Permafrost",
+      "to": "Carbon Cycle",
+      "relation": "stores_carbon_for",
+      "strength": 0.85
+    },
+    {
+      "from": "Permafrost",
+      "to": "Climate",
+      "relation": "sensitive_to",
+      "strength": 0.90
+    },
+    {
+      "from": "Deforestation",
+      "to": "Carbon Cycle",
+      "relation": "disrupts",
+      "strength": 0.85
+    },
+    {
+      "from": "Deforestation",
+      "to": "Climate",
+      "relation": "affects",
+      "strength": 0.80
+    },
+    {
+      "from": "Water Cycle",
+      "to": "Precipitation",
+      "relation": "includes",
+      "strength": 0.95
+    },
+    {
+      "from": "Water Cycle",
+      "to": "Evaporation",
+      "relation": "includes",
+      "strength": 0.95
+    },
+    {
+      "from": "Water Cycle",
+      "to": "Condensation",
+      "relation": "includes",
+      "strength": 0.95
+    },
+    {
+      "from": "Aquifer",
+      "to": "Water Cycle",
+      "relation": "participates_in",
+      "strength": 0.80
+    },
+    {
+      "from": "Watershed",
+      "to": "Water Cycle",
+      "relation": "organizes",
+      "strength": 0.85
+    },
+    {
+      "from": "Glacier",
+      "to": "Water Cycle",
+      "relation": "stores_water_for",
+      "strength": 0.90
+    },
+    {
+      "from": "Erosion",
+      "to": "Sediment",
+      "relation": "produces",
+      "strength": 0.95
+    },
+    {
+      "from": "Weathering",
+      "to": "Erosion",
+      "relation": "precedes",
+      "strength": 0.90
+    },
+    {
+      "from": "Weathering",
+      "to": "Sediment",
+      "relation": "creates",
+      "strength": 0.85
+    },
+    {
+      "from": "Fault",
+      "to": "Earthquake",
+      "relation": "location_of",
+      "strength": 0.95
+    },
+    {
+      "from": "Mantle",
+      "to": "Tectonic Plates",
+      "relation": "moves",
+      "strength": 0.90
+    },
+    {
+      "from": "Mantle",
+      "to": "Magma",
+      "relation": "source_of",
+      "strength": 0.85
+    },
+    {
+      "from": "Convection",
+      "to": "Mantle",
+      "relation": "drives_movement_in",
+      "strength": 0.90
+    },
+    {
+      "from": "Convection",
+      "to": "Atmosphere",
+      "relation": "drives_circulation_in",
+      "strength": 0.85
+    },
+    {
+      "from": "Evaporation",
+      "to": "Cloud",
+      "relation": "leads_to_formation_of",
+      "strength": 0.90
+    },
+    {
+      "from": "Condensation",
+      "to": "Cloud",
+      "relation": "forms",
+      "strength": 0.95
+    },
+    {
+      "from": "Precipitation",
+      "to": "Watershed",
+      "relation": "collected_by",
+      "strength": 0.85
+    },
+    {
+      "from": "Ocean Current",
+      "to": "Upwelling",
+      "relation": "creates",
+      "strength": 0.80
+    },
+    {
+      "from": "Coral Reef",
+      "to": "Ocean Acidification",
+      "relation": "threatened_by",
+      "strength": 0.90
+    },
+    {
+      "from": "Jet Stream",
+      "to": "Hurricane",
+      "relation": "influences_path_of",
+      "strength": 0.75
+    },
+    {
+      "from": "Greenhouse Effect",
+      "to": "Sea Level Rise",
+      "relation": "contributes_to",
+      "strength": 0.85
+    },
+    {
+      "from": "Ice Age",
+      "to": "Sea Level Rise",
+      "relation": "opposite_of",
+      "strength": 0.80
+    },
+    {
+      "from": "Glacier",
+      "to": "Ice Age",
+      "relation": "evidence_of",
+      "strength": 0.85
+    },
+    {
+      "from": "Albedo",
+      "to": "Ice Age",
+      "relation": "feedback_mechanism_in",
+      "strength": 0.80
+    },
+    {
+      "from": "Thermocline",
+      "to": "Upwelling",
+      "relation": "disrupted_by",
+      "strength": 0.75
+    },
+    {
+      "from": "Continental Drift",
+      "to": "Pangaea",
+      "relation": "broke_apart",
+      "strength": 0.90
+    },
+    {
+      "from": "Geological Time Scale",
+      "to": "Ice Age",
+      "relation": "documents",
+      "strength": 0.85
+    },
+    {
+      "from": "Pressure System",
+      "to": "Hurricane",
+      "relation": "creates",
+      "strength": 0.80
+    },
+    {
+      "from": "Lightning",
+      "to": "Tornado",
+      "relation": "accompanies",
+      "strength": 0.70
+    },
+    {
+      "from": "Aquifer",
+      "to": "Watershed",
+      "relation": "underlies",
+      "strength": 0.75
+    },
+    {
+      "from": "Erosion",
+      "to": "Watershed",
+      "relation": "shapes",
+      "strength": 0.80
+    },
+    {
+      "from": "Deforestation",
+      "to": "Erosion",
+      "relation": "increases",
+      "strength": 0.85
+    }
+  ]
+}

@@ -1,0 +1,432 @@
+{
+  "source": "training-data:economics-social-v1",
+  "concepts": [
+    {
+      "label": "Supply",
+      "definition": "The quantity of goods or services that producers are willing and able to offer at various price levels during a specific time period.",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["microeconomics", "market-dynamics", "production"]
+    },
+    {
+      "label": "Demand",
+      "definition": "The quantity of goods or services that consumers are willing and able to purchase at various price levels during a specific time period.",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["microeconomics", "market-dynamics", "consumption"]
+    },
+    {
+      "label": "Equilibrium Price",
+      "definition": "The price at which the quantity demanded by consumers equals the quantity supplied by producers, resulting in market balance.",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["microeconomics", "market-equilibrium", "pricing"]
+    },
+    {
+      "label": "Elasticity",
+      "definition": "A measure of how responsive the quantity demanded or supplied of a good is to changes in price or other economic factors.",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["microeconomics", "price-sensitivity", "market-analysis"]
+    },
+    {
+      "label": "Marginal Cost",
+      "definition": "The additional cost incurred by producing one more unit of a good or service.",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["microeconomics", "production-costs", "optimization"]
+    },
+    {
+      "label": "Utility",
+      "definition": "The satisfaction or benefit that consumers derive from consuming goods or services.",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["microeconomics", "consumer-behavior", "satisfaction"]
+    },
+    {
+      "label": "Market Failure",
+      "definition": "A situation where the free market fails to allocate resources efficiently, often requiring government intervention.",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["microeconomics", "market-inefficiency", "government-intervention"]
+    },
+    {
+      "label": "Monopoly",
+      "definition": "A market structure where a single seller controls the entire supply of a product or service with no close substitutes.",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["microeconomics", "market-structure", "competition"]
+    },
+    {
+      "label": "Oligopoly",
+      "definition": "A market structure characterized by a small number of large firms that dominate the market and may engage in strategic behavior.",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["microeconomics", "market-structure", "strategic-behavior"]
+    },
+    {
+      "label": "GDP",
+      "definition": "Gross Domestic Product - the total monetary value of all finished goods and services produced within a country during a specific time period.",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["macroeconomics", "national-accounts", "economic-measurement"]
+    },
+    {
+      "label": "Inflation",
+      "definition": "The sustained increase in the general price level of goods and services in an economy over time, reducing purchasing power.",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["macroeconomics", "price-level", "monetary-policy"]
+    },
+    {
+      "label": "Unemployment",
+      "definition": "The condition where people who are able and willing to work cannot find employment, typically measured as a percentage of the labor force.",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["macroeconomics", "labor-market", "economic-indicators"]
+    },
+    {
+      "label": "Interest Rate",
+      "definition": "The cost of borrowing money or the return earned on lending money, usually expressed as a percentage per year.",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["macroeconomics", "monetary-policy", "finance"]
+    },
+    {
+      "label": "Fiscal Policy",
+      "definition": "Government policy regarding taxation, spending, and borrowing designed to influence economic activity and achieve macroeconomic objectives.",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["macroeconomics", "government-policy", "taxation"]
+    },
+    {
+      "label": "Monetary Policy",
+      "definition": "Central bank actions involving the management of interest rates and money supply to achieve macroeconomic objectives like price stability.",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["macroeconomics", "central-banking", "money-supply"]
+    },
+    {
+      "label": "Central Bank",
+      "definition": "A national institution responsible for monetary policy, regulating the banking system, and maintaining financial stability.",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["macroeconomics", "financial-institutions", "monetary-authority"]
+    },
+    {
+      "label": "Trade Balance",
+      "definition": "The difference between the value of a country's exports and imports of goods and services over a specific period.",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["macroeconomics", "international-trade", "balance-of-payments"]
+    },
+    {
+      "label": "Stock",
+      "definition": "A financial instrument representing ownership shares in a corporation, entitling the holder to a proportionate claim on assets and earnings.",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["finance", "equity", "investment"]
+    },
+    {
+      "label": "Bond",
+      "definition": "A debt security representing a loan made by an investor to a borrower, typically governments or corporations, with fixed interest payments.",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["finance", "debt", "fixed-income"]
+    },
+    {
+      "label": "Derivative",
+      "definition": "A financial contract whose value is derived from an underlying asset, such as stocks, bonds, commodities, or market indices.",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["finance", "complex-instruments", "risk-management"]
+    },
+    {
+      "label": "Portfolio",
+      "definition": "A collection of financial investments held by an individual or institution, designed to balance risk and return.",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["finance", "investment-strategy", "asset-allocation"]
+    },
+    {
+      "label": "Risk",
+      "definition": "The uncertainty regarding the outcome of an investment or financial decision, potentially resulting in loss or lower than expected returns.",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["finance", "uncertainty", "investment-analysis"]
+    },
+    {
+      "label": "Diversification",
+      "definition": "An investment strategy that spreads risk by allocating investments across various financial instruments, industries, or other categories.",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["finance", "risk-management", "portfolio-theory"]
+    },
+    {
+      "label": "Compound Interest",
+      "definition": "Interest calculated on the initial principal and accumulated interest from previous periods, resulting in exponential growth over time.",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["finance", "time-value-of-money", "growth"]
+    },
+    {
+      "label": "Social Structure",
+      "definition": "The organized pattern of social relationships and social institutions that together compose society and define social positions.",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["sociology", "social-organization", "institutions"]
+    },
+    {
+      "label": "Culture",
+      "definition": "The shared beliefs, values, customs, behaviors, and artifacts that members of a society use to cope with their world and each other.",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["sociology", "social-norms", "belief-systems"]
+    },
+    {
+      "label": "Socialization",
+      "definition": "The lifelong process through which people learn the attitudes, values, and behaviors appropriate for members of a particular culture.",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["sociology", "learning-process", "cultural-transmission"]
+    },
+    {
+      "label": "Stratification",
+      "definition": "The hierarchical arrangement of individuals and groups in society based on factors like wealth, power, education, and social status.",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["sociology", "inequality", "social-hierarchy"]
+    },
+    {
+      "label": "Social Mobility",
+      "definition": "The movement of individuals or groups between different social positions within a society's stratification system.",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["sociology", "class-movement", "opportunity"]
+    },
+    {
+      "label": "Deviance",
+      "definition": "Behavior that violates social norms and expectations, potentially leading to social sanctions or stigmatization.",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["sociology", "norm-violation", "social-control"]
+    },
+    {
+      "label": "Institution",
+      "definition": "Established patterns of behavior and relationships that serve important social functions and are recognized as fundamental parts of a culture.",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["sociology", "social-organization", "cultural-patterns"]
+    },
+    {
+      "label": "Conditioning",
+      "definition": "A learning process where behavior is modified through the association of stimuli with responses or consequences.",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["psychology", "learning", "behavioral-modification"]
+    },
+    {
+      "label": "Reinforcement",
+      "definition": "A consequence that increases the likelihood of a behavior being repeated, either through positive rewards or negative removal.",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["psychology", "operant-conditioning", "motivation"]
+    },
+    {
+      "label": "Cognitive Development",
+      "definition": "The progressive changes in mental abilities such as thinking, reasoning, and understanding that occur throughout the lifespan.",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["psychology", "mental-development", "cognition"]
+    },
+    {
+      "label": "Memory",
+      "definition": "The mental capacity to encode, store, retain, and retrieve information and experiences.",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["psychology", "cognition", "information-processing"]
+    },
+    {
+      "label": "Perception",
+      "definition": "The process by which sensory information is organized, interpreted, and consciously experienced to understand the environment.",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["psychology", "sensation", "interpretation"]
+    },
+    {
+      "label": "Motivation",
+      "definition": "The psychological processes that initiate, guide, and sustain goal-directed behavior and influence the intensity of effort.",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["psychology", "goal-seeking", "drive"]
+    },
+    {
+      "label": "Intelligence",
+      "definition": "The ability to learn, understand, reason, solve problems, and adapt effectively to environmental demands.",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["psychology", "cognitive-ability", "problem-solving"]
+    },
+    {
+      "label": "Personality",
+      "definition": "The relatively stable patterns of thoughts, emotions, and behaviors that distinguish individuals from one another.",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["psychology", "individual-differences", "traits"]
+    },
+    {
+      "label": "Consumer Behavior",
+      "definition": "The study of individuals, groups, or organizations and the processes they use to select, purchase, and dispose of products or services.",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["microeconomics", "psychology", "marketing"]
+    },
+    {
+      "label": "Economic Growth",
+      "definition": "The increase in the production of goods and services in an economy over time, typically measured by changes in GDP.",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["macroeconomics", "development", "productivity"]
+    },
+    {
+      "label": "Market Efficiency",
+      "definition": "The degree to which market prices reflect all available information and resources are allocated to their most valued uses.",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["finance", "information-theory", "resource-allocation"]
+    },
+    {
+      "label": "Social Capital",
+      "definition": "The networks of relationships among people in a society that enable it to function effectively through trust and reciprocity.",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["sociology", "networks", "trust"]
+    },
+    {
+      "label": "Behavioral Economics",
+      "definition": "The study of how psychological, emotional, cultural, and social factors affect economic decisions and market outcomes.",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["economics", "psychology", "decision-making"]
+    },
+    {
+      "label": "Game Theory",
+      "definition": "Mathematical framework for analyzing strategic interactions between rational decision-makers in competitive situations.",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["economics", "strategy", "mathematics"]
+    },
+    {
+      "label": "Human Capital",
+      "definition": "The economic value of skills, knowledge, experience, and attributes possessed by individuals that contribute to productivity.",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["economics", "education", "labor"]
+    },
+    {
+      "label": "Externality",
+      "definition": "A cost or benefit that affects third parties who did not choose to incur that cost or benefit from an economic transaction.",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["microeconomics", "market-failure", "social-costs"]
+    },
+    {
+      "label": "Recession",
+      "definition": "A significant decline in economic activity lasting more than a few months, typically characterized by falling GDP and rising unemployment.",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["macroeconomics", "business-cycle", "economic-downturn"]
+    },
+    {
+      "label": "Liquidity",
+      "definition": "The ease with which an asset can be converted into cash without significantly affecting its market price.",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["finance", "asset-conversion", "market-depth"]
+    },
+    {
+      "label": "Social Norm",
+      "definition": "Informal rules that govern behavior in groups and societies, specifying what is acceptable and unacceptable conduct.",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["sociology", "behavioral-rules", "compliance"]
+    }
+  ],
+  "relations": [
+    {"source": "Supply", "target": "Demand", "relation": "interacts_with", "strength": 0.95},
+    {"source": "Supply", "target": "Equilibrium Price", "relation": "determines", "strength": 0.90},
+    {"source": "Demand", "target": "Equilibrium Price", "relation": "determines", "strength": 0.90},
+    {"source": "Elasticity", "target": "Demand", "relation": "measures_responsiveness_of", "strength": 0.85},
+    {"source": "Elasticity", "target": "Supply", "relation": "measures_responsiveness_of", "strength": 0.85},
+    {"source": "Marginal Cost", "target": "Supply", "relation": "influences", "strength": 0.88},
+    {"source": "Utility", "target": "Demand", "relation": "drives", "strength": 0.92},
+    {"source": "Market Failure", "target": "Externality", "relation": "caused_by", "strength": 0.87},
+    {"source": "Monopoly", "target": "Market Failure", "relation": "can_cause", "strength": 0.80},
+    {"source": "Oligopoly", "target": "Game Theory", "relation": "analyzed_using", "strength": 0.85},
+    {"source": "GDP", "target": "Economic Growth", "relation": "measures", "strength": 0.95},
+    {"source": "Inflation", "target": "Monetary Policy", "relation": "controlled_by", "strength": 0.90},
+    {"source": "Unemployment", "target": "Fiscal Policy", "relation": "addressed_by", "strength": 0.82},
+    {"source": "Interest Rate", "target": "Monetary Policy", "relation": "tool_of", "strength": 0.95},
+    {"source": "Central Bank", "target": "Monetary Policy", "relation": "implements", "strength": 0.98},
+    {"source": "Central Bank", "target": "Interest Rate", "relation": "sets", "strength": 0.95},
+    {"source": "Trade Balance", "target": "GDP", "relation": "component_of", "strength": 0.75},
+    {"source": "Stock", "target": "Portfolio", "relation": "component_of", "strength": 0.85},
+    {"source": "Bond", "target": "Portfolio", "relation": "component_of", "strength": 0.85},
+    {"source": "Derivative", "target": "Risk", "relation": "manages", "strength": 0.80},
+    {"source": "Portfolio", "target": "Diversification", "relation": "achieves_through", "strength": 0.92},
+    {"source": "Diversification", "target": "Risk", "relation": "reduces", "strength": 0.88},
+    {"source": "Compound Interest", "target": "Investment", "relation": "principle_of", "strength": 0.85},
+    {"source": "Risk", "target": "Portfolio", "relation": "managed_through", "strength": 0.85},
+    {"source": "Market Efficiency", "target": "Stock", "relation": "affects_pricing_of", "strength": 0.82},
+    {"source": "Liquidity", "target": "Stock", "relation": "characteristic_of", "strength": 0.78},
+    {"source": "Social Structure", "target": "Institution", "relation": "composed_of", "strength": 0.90},
+    {"source": "Culture", "target": "Social Norm", "relation": "defines", "strength": 0.88},
+    {"source": "Socialization", "target": "Culture", "relation": "transmits", "strength": 0.92},
+    {"source": "Stratification", "target": "Social Mobility", "relation": "limits", "strength": 0.85},
+    {"source": "Social Mobility", "target": "Human Capital", "relation": "enhanced_by", "strength": 0.82},
+    {"source": "Deviance", "target": "Social Norm", "relation": "violates", "strength": 0.95},
+    {"source": "Institution", "target": "Social Structure", "relation": "supports", "strength": 0.88},
+    {"source": "Social Capital", "target": "Institution", "relation": "strengthens", "strength": 0.80},
+    {"source": "Conditioning", "target": "Reinforcement", "relation": "uses", "strength": 0.92},
+    {"source": "Reinforcement", "target": "Motivation", "relation": "influences", "strength": 0.85},
+    {"source": "Cognitive Development", "target": "Intelligence", "relation": "develops", "strength": 0.88},
+    {"source": "Memory", "target": "Cognitive Development", "relation": "supports", "strength": 0.82},
+    {"source": "Perception", "target": "Memory", "relation": "influences", "strength": 0.78},
+    {"source": "Motivation", "target": "Personality", "relation": "component_of", "strength": 0.75},
+    {"source": "Intelligence", "target": "Human Capital", "relation": "contributes_to", "strength": 0.85},
+    {"source": "Personality", "target": "Consumer Behavior", "relation": "influences", "strength": 0.80},
+    {"source": "Consumer Behavior", "target": "Demand", "relation": "determines", "strength": 0.88},
+    {"source": "Behavioral Economics", "target": "Consumer Behavior", "relation": "studies", "strength": 0.90},
+    {"source": "Behavioral Economics", "target": "Cognitive Bias", "relation": "incorporates", "strength": 0.85},
+    {"source": "Cognitive Bias", "target": "Market Efficiency", "relation": "challenges", "strength": 0.78},
+    {"source": "Game Theory", "target": "Behavioral Economics", "relation": "component_of", "strength": 0.75},
+    {"source": "Recession", "target": "Unemployment", "relation": "increases", "strength": 0.85},
+    {"source": "Recession", "target": "GDP", "relation": "decreases", "strength": 0.92},
+    {"source": "Fiscal Policy", "target": "Recession", "relation": "addresses", "strength": 0.80},
+    {"source": "Economic Growth", "target": "Human Capital", "relation": "driven_by", "strength": 0.82},
+    {"source": "Inflation", "target": "Interest Rate", "relation": "controlled_through", "strength": 0.88},
+    {"source": "Externality", "target": "Social Capital", "relation": "can_affect", "strength": 0.65},
+    {"source": "Culture", "target": "Consumer Behavior", "relation": "shapes", "strength": 0.80},
+    {"source": "Socialization", "target": "Conditioning", "relation": "involves", "strength": 0.78},
+    {"source": "Social Structure", "target": "Stratification", "relation": "creates", "strength": 0.90},
+    {"source": "Utility", "target": "Behavioral Economics", "relation": "concept_in", "strength": 0.82},
+    {"source": "Memory", "target": "Consumer Behavior", "relation": "influences", "strength": 0.70},
+    {"source": "Perception", "target": "Consumer Behavior", "relation": "affects", "strength": 0.75},
+    {"source": "Social Norm", "target": "Deviance", "relation": "defines", "strength": 0.88},
+    {"source": "Institution", "target": "Economic Growth", "relation": "facilitates", "strength": 0.75},
+    {"source": "Trade Balance", "target": "Economic Growth", "relation": "affects", "strength": 0.70},
+    {"source": "Compound Interest", "target": "Risk", "relation": "time_reduces", "strength": 0.65},
+    {"source": "Portfolio", "target": "Liquidity", "relation": "considers", "strength": 0.72},
+    {"source": "Market Failure", "target": "Fiscal Policy", "relation": "requires", "strength": 0.78},
+    {"source": "Monopoly", "target": "Consumer Behavior", "relation": "limits_choices", "strength": 0.70},
+    {"source": "Intelligence", "target": "Cognitive Development", "relation": "result_of", "strength": 0.85},
+    {"source": "Personality", "target": "Social Mobility", "relation": "influences", "strength": 0.68},
+    {"source": "Motivation", "target": "Economic Growth", "relation": "drives", "strength": 0.72},
+    {"source": "Social Capital", "target": "Economic Growth", "relation": "promotes", "strength": 0.75},
+    {"source": "Human Capital", "target": "Stratification", "relation": "affects", "strength": 0.80},
+    {"source": "Cognitive Bias", "target": "Risk", "relation": "affects_perception_of", "strength": 0.82},
+    {"source": "Game Theory", "target": "Market Efficiency", "relation": "explains_deviations_from", "strength": 0.70},
+    {"source": "Liquidity", "target": "Central Bank", "relation": "managed_by", "strength": 0.75},
+    {"source": "Externality", "target": "Institution", "relation": "addressed_by", "strength": 0.72}
+  ]
+}

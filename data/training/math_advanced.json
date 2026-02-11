@@ -1,914 +1,107 @@
 {
   "source": "training-data:math-advanced-v1",
   "concepts": [
-    {
-      "id": "euler_totient",
-      "name": "Euler Totient Function",
-      "domain": "number_theory",
-      "definition": "φ(n) counts the positive integers up to n that are relatively prime to n",
-      "formula": "φ(n) = n ∏(1 - 1/p) for all prime p dividing n",
-      "trust_category": "FACT",
-      "trust_value": 0.99
-    },
-    {
-      "id": "fermat_little_theorem",
-      "name": "Fermat's Little Theorem",
-      "domain": "number_theory",
-      "definition": "If p is prime and a is not divisible by p, then a^(p-1) ≡ 1 (mod p)",
-      "applications": ["cryptography", "primality_testing"],
-      "trust_category": "FACT",
-      "trust_value": 0.99
-    },
-    {
-      "id": "rsa_cryptosystem",
-      "name": "RSA Cryptosystem",
-      "domain": "number_theory",
-      "definition": "Public-key cryptosystem based on difficulty of factoring large integers",
-      "components": ["key_generation", "encryption", "decryption"],
-      "trust_category": "FACT",
-      "trust_value": 0.98
-    },
-    {
-      "id": "modular_inverse",
-      "name": "Modular Inverse",
-      "domain": "number_theory",
-      "definition": "Integer a has modular inverse b mod m if ab ≡ 1 (mod m)",
-      "computation": "extended_euclidean_algorithm",
-      "trust_category": "FACT",
-      "trust_value": 0.99
-    },
-    {
-      "id": "euclidean_gcd",
-      "name": "Greatest Common Divisor",
-      "domain": "number_theory",
-      "definition": "Largest positive integer that divides both a and b",
-      "algorithm": "euclidean_algorithm",
-      "trust_category": "FACT",
-      "trust_value": 0.99
-    },
-    {
-      "id": "fibonacci_sequence",
-      "name": "Fibonacci Sequence",
-      "domain": "number_theory",
-      "definition": "F(0)=0, F(1)=1, F(n)=F(n-1)+F(n-2) for n≥2",
-      "properties": ["golden_ratio_relation", "binet_formula"],
-      "trust_category": "FACT",
-      "trust_value": 0.99
-    },
-    {
-      "id": "catalan_numbers",
-      "name": "Catalan Numbers",
-      "domain": "number_theory",
-      "definition": "C_n = (1/(n+1)) * (2n choose n) = (2n)!/(n!(n+1)!)",
-      "applications": ["binary_trees", "parentheses_matching"],
-      "trust_category": "FACT",
-      "trust_value": 0.98
-    },
-    {
-      "id": "mersenne_prime",
-      "name": "Mersenne Prime",
-      "domain": "number_theory",
-      "definition": "Prime number of form 2^p - 1 where p is prime",
-      "examples": [3, 7, 31, 127, 8191],
-      "trust_category": "FACT",
-      "trust_value": 0.99
-    },
-    {
-      "id": "twin_primes",
-      "name": "Twin Primes",
-      "domain": "number_theory",
-      "definition": "Pair of primes that differ by 2, e.g., (3,5), (5,7), (11,13)",
-      "conjecture": "infinitely_many_twin_primes",
-      "trust_category": "FACT",
-      "trust_value": 0.99
-    },
-    {
-      "id": "chinese_remainder_theorem",
-      "name": "Chinese Remainder Theorem",
-      "domain": "number_theory",
-      "definition": "System of congruences with pairwise coprime moduli has unique solution",
-      "applications": ["cryptography", "distributed_computing"],
-      "trust_category": "FACT",
-      "trust_value": 0.99
-    },
-    {
-      "id": "group_theory",
-      "name": "Group",
-      "domain": "abstract_algebra",
-      "definition": "Set with associative binary operation, identity element, and inverses",
-      "axioms": ["closure", "associativity", "identity", "inverse"],
-      "trust_category": "FACT",
-      "trust_value": 0.99
-    },
-    {
-      "id": "ring_theory",
-      "name": "Ring",
-      "domain": "abstract_algebra",
-      "definition": "Algebraic structure with two binary operations (addition and multiplication)",
-      "properties": ["additive_group", "multiplicative_semigroup", "distributivity"],
-      "trust_category": "FACT",
-      "trust_value": 0.99
-    },
-    {
-      "id": "field_theory",
-      "name": "Field",
-      "domain": "abstract_algebra",
-      "definition": "Ring where every non-zero element has multiplicative inverse",
-      "examples": ["rationals", "reals", "complex", "finite_fields"],
-      "trust_category": "FACT",
-      "trust_value": 0.99
-    },
-    {
-      "id": "homomorphism",
-      "name": "Homomorphism",
-      "domain": "abstract_algebra",
-      "definition": "Structure-preserving map between algebraic structures",
-      "property": "f(a ∘ b) = f(a) ∘ f(b)",
-      "trust_category": "FACT",
-      "trust_value": 0.99
-    },
-    {
-      "id": "isomorphism",
-      "name": "Isomorphism",
-      "domain": "abstract_algebra",
-      "definition": "Bijective homomorphism that preserves structure completely",
-      "property": "bijective_structure_preserving",
-      "trust_category": "FACT",
-      "trust_value": 0.99
-    },
-    {
-      "id": "quotient_group",
-      "name": "Quotient Group",
-      "domain": "abstract_algebra",
-      "definition": "Group formed by partitioning group by normal subgroup",
-      "notation": "G/N where N is normal subgroup of G",
-      "trust_category": "FACT",
-      "trust_value": 0.98
-    },
-    {
-      "id": "galois_theory",
-      "name": "Galois Theory",
-      "domain": "abstract_algebra",
-      "definition": "Connection between field theory and group theory for polynomial equations",
-      "applications": ["solvability_by_radicals", "constructibility"],
-      "trust_category": "FACT",
-      "trust_value": 0.97
-    },
-    {
-      "id": "ideal_theory",
-      "name": "Ideal",
-      "domain": "abstract_algebra",
-      "definition": "Special subset of ring closed under ring multiplication and addition",
-      "types": ["principal_ideal", "maximal_ideal", "prime_ideal"],
-      "trust_category": "FACT",
-      "trust_value": 0.98
-    },
-    {
-      "id": "sylow_theorems",
-      "name": "Sylow Theorems",
-      "domain": "abstract_algebra",
-      "definition": "Theorems about existence and properties of p-subgroups in finite groups",
-      "applications": ["group_classification", "finite_group_structure"],
-      "trust_category": "FACT",
-      "trust_value": 0.98
-    },
-    {
-      "id": "fundamental_theorem_algebra",
-      "name": "Fundamental Theorem of Algebra",
-      "domain": "abstract_algebra",
-      "definition": "Every non-constant polynomial over complex numbers has at least one root",
-      "consequence": "polynomial_factorization_over_C",
-      "trust_category": "FACT",
-      "trust_value": 0.99
-    },
-    {
-      "id": "homeomorphism",
-      "name": "Homeomorphism",
-      "domain": "topology",
-      "definition": "Continuous bijection with continuous inverse between topological spaces",
-      "property": "topological_equivalence",
-      "trust_category": "FACT",
-      "trust_value": 0.99
-    },
-    {
-      "id": "compactness",
-      "name": "Compactness",
-      "domain": "topology",
-      "definition": "Topological property generalizing closed and bounded in Euclidean space",
-      "equivalent": "every_open_cover_has_finite_subcover",
-      "trust_category": "FACT",
-      "trust_value": 0.98
-    },
-    {
-      "id": "connectedness",
-      "name": "Connectedness",
-      "domain": "topology",
-      "definition": "Topological space that cannot be partitioned into disjoint non-empty open sets",
-      "variants": ["path_connected", "simply_connected"],
-      "trust_category": "FACT",
-      "trust_value": 0.98
-    },
-    {
-      "id": "metric_space",
-      "name": "Metric Space",
-      "domain": "topology",
-      "definition": "Set with distance function satisfying triangle inequality",
-      "axioms": ["non_negativity", "identity", "symmetry", "triangle_inequality"],
-      "trust_category": "FACT",
-      "trust_value": 0.99
-    },
-    {
-      "id": "hausdorff_space",
-      "name": "Hausdorff Space",
-      "domain": "topology",
-      "definition": "Topological space where distinct points have disjoint neighborhoods",
-      "property": "T2_separation_axiom",
-      "trust_category": "FACT",
-      "trust_value": 0.98
-    },
-    {
-      "id": "open_set",
-      "name": "Open Set",
-      "domain": "topology",
-      "definition": "Set where every point has neighborhood contained in the set",
-      "properties": ["arbitrary_unions", "finite_intersections"],
-      "trust_category": "FACT",
-      "trust_value": 0.99
-    },
-    {
-      "id": "closed_set",
-      "name": "Closed Set",
-      "domain": "topology",
-      "definition": "Set whose complement is open, or equivalently, contains all its limit points",
-      "properties": ["arbitrary_intersections", "finite_unions"],
-      "trust_category": "FACT",
-      "trust_value": 0.99
-    },
-    {
-      "id": "fundamental_group",
-      "name": "Fundamental Group",
-      "domain": "topology",
-      "definition": "Group of homotopy classes of loops based at a point",
-      "notation": "π₁(X, x₀)",
-      "trust_category": "FACT",
-      "trust_value": 0.98
-    },
-    {
-      "id": "homotopy",
-      "name": "Homotopy",
-      "domain": "topology",
-      "definition": "Continuous deformation between continuous maps",
-      "applications": ["fundamental_group", "algebraic_topology"],
-      "trust_category": "FACT",
-      "trust_value": 0.98
-    },
-    {
-      "id": "topological_invariant",
-      "name": "Topological Invariant",
-      "domain": "topology",
-      "definition": "Property preserved under homeomorphisms",
-      "examples": ["euler_characteristic", "genus", "connectedness"],
-      "trust_category": "FACT",
-      "trust_value": 0.99
-    },
-    {
-      "id": "linear_programming",
-      "name": "Linear Programming",
-      "domain": "optimization",
-      "definition": "Optimization of linear objective function subject to linear constraints",
-      "standard_form": "minimize c^T x subject to Ax = b, x ≥ 0",
-      "trust_category": "FACT",
-      "trust_value": 0.99
-    },
-    {
-      "id": "simplex_algorithm",
-      "name": "Simplex Algorithm",
-      "domain": "optimization",
-      "definition": "Method for solving linear programming problems by moving along polytope vertices",
-      "complexity": "exponential_worst_case_polynomial_average",
-      "trust_category": "FACT",
-      "trust_value": 0.98
-    },
-    {
-      "id": "convexity",
-      "name": "Convexity",
-      "domain": "optimization",
-      "definition": "Property where line segment between any two points lies entirely within set",
-      "importance": "local_optima_are_global",
-      "trust_category": "FACT",
-      "trust_value": 0.99
-    },
-    {
-      "id": "lagrange_multipliers",
-      "name": "Lagrange Multipliers",
-      "domain": "optimization",
-      "definition": "Method for finding extrema of function subject to equality constraints",
-      "condition": "∇f = λ∇g at optimum",
-      "trust_category": "FACT",
-      "trust_value": 0.99
-    },
-    {
-      "id": "kkt_conditions",
-      "name": "KKT Conditions",
-      "domain": "optimization",
-      "definition": "Necessary conditions for optimality in constrained optimization",
-      "components": ["stationarity", "primal_feasibility", "dual_feasibility", "complementary_slackness"],
-      "trust_category": "FACT",
-      "trust_value": 0.98
-    },
-    {
-      "id": "gradient_descent",
-      "name": "Gradient Descent",
-      "domain": "optimization",
-      "definition": "Iterative optimization algorithm using negative gradient direction",
-      "update_rule": "x_{k+1} = x_k - α∇f(x_k)",
-      "trust_category": "FACT",
-      "trust_value": 0.99
-    },
-    {
-      "id": "duality_theory",
-      "name": "Duality Theory",
-      "domain": "optimization",
-      "definition": "Relationship between primal and dual optimization problems",
-      "theorem": "strong_duality_under_constraint_qualification",
-      "trust_category": "FACT",
-      "trust_value": 0.98
-    },
-    {
-      "id": "dynamic_programming",
-      "name": "Dynamic Programming",
-      "domain": "optimization",
-      "definition": "Method solving complex problems by breaking into simpler subproblems",
-      "principle": "optimal_substructure_overlapping_subproblems",
-      "trust_category": "FACT",
-      "trust_value": 0.99
-    },
-    {
-      "id": "interior_point_methods",
-      "name": "Interior Point Methods",
-      "domain": "optimization",
-      "definition": "Algorithms solving optimization by moving through interior of feasible region",
-      "complexity": "polynomial_time_convergence",
-      "trust_category": "FACT",
-      "trust_value": 0.98
-    },
-    {
-      "id": "quadratic_programming",
-      "name": "Quadratic Programming",
-      "domain": "optimization",
-      "definition": "Optimization with quadratic objective and linear constraints",
-      "form": "minimize (1/2)x^T Q x + c^T x subject to Ax ≤ b",
-      "trust_category": "FACT",
-      "trust_value": 0.98
-    },
-    {
-      "id": "predicate_logic",
-      "name": "Predicate Logic",
-      "domain": "logic",
-      "definition": "Formal system with quantifiers, predicates, and logical connectives",
-      "quantifiers": ["universal", "existential"],
-      "trust_category": "FACT",
-      "trust_value": 0.99
-    },
-    {
-      "id": "propositional_logic",
-      "name": "Propositional Logic",
-      "domain": "logic",
-      "definition": "Logic of propositions connected by logical connectives",
-      "connectives": ["and", "or", "not", "implies", "iff"],
-      "trust_category": "FACT",
-      "trust_value": 0.99
-    },
-    {
-      "id": "godel_incompleteness",
-      "name": "Gödel's Incompleteness Theorems",
-      "domain": "logic",
-      "definition": "Fundamental limitations of formal systems in mathematics",
-      "theorem1": "consistent_system_has_undecidable_statements",
-      "theorem2": "system_cannot_prove_own_consistency",
-      "trust_category": "FACT",
-      "trust_value": 0.99
-    },
-    {
-      "id": "decidability",
-      "name": "Decidability",
-      "domain": "logic",
-      "definition": "Property of decision problems having algorithmic solution",
-      "examples": ["propositional_satisfiability", "linear_arithmetic"],
-      "trust_category": "FACT",
-      "trust_value": 0.99
-    },
-    {
-      "id": "halting_problem",
-      "name": "Halting Problem",
-      "domain": "logic",
-      "definition": "Undecidable problem of determining if program halts on given input",
-      "significance": "proves_limits_of_computation",
-      "trust_category": "FACT",
-      "trust_value": 0.99
-    },
-    {
-      "id": "church_turing_thesis",
-      "name": "Church-Turing Thesis",
-      "domain": "logic",
-      "definition": "Effectively calculable functions are exactly Turing-computable functions",
-      "equivalence": "lambda_calculus_turing_machines_recursive_functions",
-      "trust_category": "FACT",
-      "trust_value": 0.97
-    },
-    {
-      "id": "model_theory",
-      "name": "Model Theory",
-      "domain": "logic",
-      "definition": "Study of mathematical structures that satisfy formal theories",
-      "concepts": ["interpretation", "satisfaction", "completeness"],
-      "trust_category": "FACT",
-      "trust_value": 0.98
-    },
-    {
-      "id": "proof_theory",
-      "name": "Proof Theory",
-      "domain": "logic",
-      "definition": "Study of proofs as formal mathematical objects",
-      "methods": ["natural_deduction", "sequent_calculus"],
-      "trust_category": "FACT",
-      "trust_value": 0.98
-    },
-    {
-      "id": "modal_logic",
-      "name": "Modal Logic",
-      "domain": "logic",
-      "definition": "Extension of propositional logic with necessity and possibility operators",
-      "operators": ["necessity", "possibility"],
-      "trust_category": "FACT",
-      "trust_value": 0.98
-    },
-    {
-      "id": "computational_complexity",
-      "name": "Computational Complexity",
-      "domain": "logic",
-      "definition": "Study of resources required for solving computational problems",
-      "classes": ["P", "NP", "PSPACE", "EXPTIME"],
-      "trust_category": "FACT",
-      "trust_value": 0.99
-    }
+    {"label": "Taylor Series", "definition": "Infinite sum of terms calculated from values of a function's derivatives at a single point", "trust_category": "FACT", "trust_value": 0.99, "tags": ["analysis", "series"]},
+    {"label": "Fourier Transform", "definition": "Mathematical transform decomposing a function into its constituent frequencies", "trust_category": "FACT", "trust_value": 0.99, "tags": ["analysis", "transform"]},
+    {"label": "Differential Equation", "definition": "Equation relating a function with its derivatives", "trust_category": "FACT", "trust_value": 0.99, "tags": ["analysis", "equation"]},
+    {"label": "Laplace Transform", "definition": "Integral transform converting functions of time to functions of complex frequency", "trust_category": "FACT", "trust_value": 0.99, "tags": ["analysis", "transform"]},
+    {"label": "Convergence", "definition": "Property of a sequence or series approaching a finite limit", "trust_category": "FACT", "trust_value": 0.99, "tags": ["analysis", "limit"]},
+    {"label": "Continuity", "definition": "Property of a function with no abrupt changes, breaks, or jumps", "trust_category": "FACT", "trust_value": 0.99, "tags": ["analysis", "topology"]},
+    {"label": "Determinant", "definition": "Scalar value computed from a square matrix encoding certain properties", "trust_category": "FACT", "trust_value": 0.99, "tags": ["linear-algebra", "matrix"]},
+    {"label": "Rank", "definition": "Dimension of the vector space spanned by a matrix's columns or rows", "trust_category": "FACT", "trust_value": 0.99, "tags": ["linear-algebra", "matrix"]},
+    {"label": "Null Space", "definition": "Set of all vectors that a given matrix maps to the zero vector", "trust_category": "FACT", "trust_value": 0.99, "tags": ["linear-algebra", "vector-space"]},
+    {"label": "Basis", "definition": "Linearly independent set that spans a vector space", "trust_category": "FACT", "trust_value": 0.99, "tags": ["linear-algebra", "vector-space"]},
+    {"label": "Orthogonality", "definition": "Property of vectors being perpendicular, having zero dot product", "trust_category": "FACT", "trust_value": 0.99, "tags": ["linear-algebra", "geometry"]},
+    {"label": "SVD", "definition": "Singular Value Decomposition, factorization of a matrix into rotation and scaling", "trust_category": "FACT", "trust_value": 0.99, "tags": ["linear-algebra", "decomposition"]},
+    {"label": "Combinatorics", "definition": "Branch of mathematics concerning counting, arrangement, and combination of objects", "trust_category": "FACT", "trust_value": 0.99, "tags": ["discrete-math", "counting"]},
+    {"label": "Permutation", "definition": "Arrangement of objects in a specific order", "trust_category": "FACT", "trust_value": 0.99, "tags": ["discrete-math", "counting"]},
+    {"label": "Graph Theory", "definition": "Study of mathematical structures modeling pairwise relations between objects", "trust_category": "FACT", "trust_value": 0.99, "tags": ["discrete-math", "structure"]},
+    {"label": "Boolean Algebra", "definition": "Algebraic structure dealing with true/false values and logical operations", "trust_category": "FACT", "trust_value": 0.99, "tags": ["discrete-math", "logic"]},
+    {"label": "Modular Arithmetic", "definition": "System of arithmetic where numbers wrap around after reaching a certain value", "trust_category": "FACT", "trust_value": 0.99, "tags": ["number-theory", "arithmetic"]},
+    {"label": "Mean", "definition": "Average value of a set of numbers, sum divided by count", "trust_category": "FACT", "trust_value": 0.99, "tags": ["statistics", "central-tendency"]},
+    {"label": "Variance", "definition": "Measure of how far numbers spread from their average value", "trust_category": "FACT", "trust_value": 0.99, "tags": ["statistics", "dispersion"]},
+    {"label": "Standard Deviation", "definition": "Square root of variance, measure of amount of variation in a dataset", "trust_category": "FACT", "trust_value": 0.99, "tags": ["statistics", "dispersion"]},
+    {"label": "Normal Distribution", "definition": "Symmetric bell-shaped probability distribution defined by mean and standard deviation", "trust_category": "FACT", "trust_value": 0.99, "tags": ["statistics", "distribution"]},
+    {"label": "Regression", "definition": "Statistical method for modeling relationship between dependent and independent variables", "trust_category": "FACT", "trust_value": 0.99, "tags": ["statistics", "modeling"]},
+    {"label": "Correlation", "definition": "Statistical measure of the linear relationship between two variables", "trust_category": "FACT", "trust_value": 0.99, "tags": ["statistics", "relationship"]},
+    {"label": "Bayesian Inference", "definition": "Statistical method updating probability estimates as new evidence becomes available", "trust_category": "FACT", "trust_value": 0.99, "tags": ["statistics", "probability"]},
+    {"label": "Group", "definition": "Algebraic structure with a set and operation satisfying closure, associativity, identity, and inverse", "trust_category": "FACT", "trust_value": 0.99, "tags": ["abstract-algebra", "structure"]},
+    {"label": "Ring", "definition": "Algebraic structure with two operations satisfying ring axioms", "trust_category": "FACT", "trust_value": 0.99, "tags": ["abstract-algebra", "structure"]},
+    {"label": "Field", "definition": "Ring where every nonzero element has a multiplicative inverse", "trust_category": "FACT", "trust_value": 0.99, "tags": ["abstract-algebra", "structure"]},
+    {"label": "Homomorphism", "definition": "Structure-preserving map between two algebraic structures", "trust_category": "FACT", "trust_value": 0.99, "tags": ["abstract-algebra", "mapping"]},
+    {"label": "Isomorphism", "definition": "Bijective homomorphism, proving two structures are essentially the same", "trust_category": "FACT", "trust_value": 0.99, "tags": ["abstract-algebra", "mapping"]},
+    {"label": "Homeomorphism", "definition": "Continuous bijection with continuous inverse between topological spaces", "trust_category": "FACT", "trust_value": 0.99, "tags": ["topology", "mapping"]},
+    {"label": "Compactness", "definition": "Topological property generalizing closed and bounded subsets of Euclidean space", "trust_category": "FACT", "trust_value": 0.99, "tags": ["topology", "property"]},
+    {"label": "Metric Space", "definition": "Set together with a distance function satisfying certain axioms", "trust_category": "FACT", "trust_value": 0.99, "tags": ["topology", "space"]},
+    {"label": "Linear Programming", "definition": "Method for achieving best outcome in a mathematical model with linear constraints", "trust_category": "FACT", "trust_value": 0.99, "tags": ["optimization", "method"]},
+    {"label": "Convexity", "definition": "Property of a set or function where line segments between points stay within", "trust_category": "FACT", "trust_value": 0.99, "tags": ["optimization", "geometry"]},
+    {"label": "Lagrange Multiplier", "definition": "Method for finding extrema of functions subject to equality constraints", "trust_category": "FACT", "trust_value": 0.99, "tags": ["optimization", "calculus"]},
+    {"label": "Gradient Descent", "definition": "Iterative optimization algorithm moving in the direction of steepest descent", "trust_category": "FACT", "trust_value": 0.99, "tags": ["optimization", "algorithm"]},
+    {"label": "Predicate Logic", "definition": "Formal logic system using quantifiers and predicates to express statements", "trust_category": "FACT", "trust_value": 0.99, "tags": ["logic", "formal"]},
+    {"label": "Propositional Logic", "definition": "Branch of logic dealing with propositions and logical connectives", "trust_category": "FACT", "trust_value": 0.99, "tags": ["logic", "formal"]},
+    {"label": "Gödel Incompleteness", "definition": "Theorem proving that consistent formal systems cannot prove all truths about natural numbers", "trust_category": "FACT", "trust_value": 0.99, "tags": ["logic", "foundations"]},
+    {"label": "Decidability", "definition": "Property of a problem for which an algorithm exists that always terminates with correct answer", "trust_category": "FACT", "trust_value": 0.99, "tags": ["logic", "computability"]},
+    {"label": "Halting Problem", "definition": "Undecidable problem of determining whether a program will finish or run forever", "trust_category": "FACT", "trust_value": 0.99, "tags": ["logic", "computability"]},
+    {"label": "Euler Totient", "definition": "Function counting integers up to n that are coprime to n", "trust_category": "FACT", "trust_value": 0.99, "tags": ["number-theory", "function"]},
+    {"label": "Fibonacci Sequence", "definition": "Sequence where each number is the sum of the two preceding ones", "trust_category": "FACT", "trust_value": 0.99, "tags": ["number-theory", "sequence"]},
+    {"label": "Triangle", "definition": "Three-sided polygon, fundamental shape in Euclidean geometry", "trust_category": "FACT", "trust_value": 0.99, "tags": ["geometry", "shape"]},
+    {"label": "Circle", "definition": "Set of all points equidistant from a center point in a plane", "trust_category": "FACT", "trust_value": 0.99, "tags": ["geometry", "shape"]},
+    {"label": "Ellipse", "definition": "Closed curve where sum of distances from two foci is constant", "trust_category": "FACT", "trust_value": 0.99, "tags": ["geometry", "conic-section"]},
+    {"label": "Manifold", "definition": "Topological space locally resembling Euclidean space", "trust_category": "FACT", "trust_value": 0.99, "tags": ["topology", "geometry"]},
+    {"label": "Galois Theory", "definition": "Connection between field theory and group theory used to solve polynomial equations", "trust_category": "FACT", "trust_value": 0.99, "tags": ["abstract-algebra", "theory"]},
+    {"label": "Connectedness", "definition": "Topological property where a space cannot be divided into two disjoint open sets", "trust_category": "FACT", "trust_value": 0.99, "tags": ["topology", "property"]},
+    {"label": "Simplex Method", "definition": "Algorithm for solving linear programming problems by traversing vertices of a polytope", "trust_category": "FACT", "trust_value": 0.99, "tags": ["optimization", "algorithm"]}
   ],
   "relations": [
-    {
-      "from": "fermat_little_theorem",
-      "to": "rsa_cryptosystem",
-      "type": "foundation_for",
-      "description": "Fermat's Little Theorem is fundamental to RSA key generation and correctness"
-    },
-    {
-      "from": "euler_totient",
-      "to": "rsa_cryptosystem",
-      "type": "essential_component",
-      "description": "Euler's totient function determines RSA key sizes and security"
-    },
-    {
-      "from": "euclidean_gcd",
-      "to": "modular_inverse",
-      "type": "computation_method",
-      "description": "Extended Euclidean algorithm computes modular inverses"
-    },
-    {
-      "from": "modular_inverse",
-      "to": "rsa_cryptosystem",
-      "type": "required_for",
-      "description": "RSA decryption requires computing modular inverse of encryption exponent"
-    },
-    {
-      "from": "chinese_remainder_theorem",
-      "to": "rsa_cryptosystem",
-      "type": "optimization_technique",
-      "description": "CRT speeds up RSA decryption through parallel computation"
-    },
-    {
-      "from": "mersenne_prime",
-      "to": "rsa_cryptosystem",
-      "type": "potential_weakness",
-      "description": "Using Mersenne primes in RSA can create security vulnerabilities"
-    },
-    {
-      "from": "fibonacci_sequence",
-      "to": "catalan_numbers",
-      "type": "combinatorial_relationship",
-      "description": "Both sequences count important combinatorial objects"
-    },
-    {
-      "from": "group_theory",
-      "to": "ring_theory",
-      "type": "generalized_by",
-      "description": "Ring theory generalizes group theory by adding multiplication"
-    },
-    {
-      "from": "ring_theory",
-      "to": "field_theory",
-      "type": "specialized_by",
-      "description": "Field is special case of ring with multiplicative inverses"
-    },
-    {
-      "from": "homomorphism",
-      "to": "isomorphism",
-      "type": "specialized_by",
-      "description": "Isomorphism is bijective homomorphism"
-    },
-    {
-      "from": "group_theory",
-      "to": "quotient_group",
-      "type": "construction_method",
-      "description": "Quotient groups are constructed from groups and normal subgroups"
-    },
-    {
-      "from": "field_theory",
-      "to": "galois_theory",
-      "type": "foundation_for",
-      "description": "Galois theory studies field extensions and their automorphism groups"
-    },
-    {
-      "from": "ring_theory",
-      "to": "ideal_theory",
-      "type": "structural_component",
-      "description": "Ideals are fundamental structures within rings"
-    },
-    {
-      "from": "group_theory",
-      "to": "sylow_theorems",
-      "type": "classification_tool",
-      "description": "Sylow theorems classify subgroups in finite groups"
-    },
-    {
-      "from": "field_theory",
-      "to": "fundamental_theorem_algebra",
-      "type": "fundamental_result",
-      "description": "Fundamental Theorem characterizes complex field as algebraically closed"
-    },
-    {
-      "from": "galois_theory",
-      "to": "fundamental_theorem_algebra",
-      "type": "proof_method",
-      "description": "Galois theory provides elegant proof of Fundamental Theorem"
-    },
-    {
-      "from": "metric_space",
-      "to": "open_set",
-      "type": "defines",
-      "description": "Metric spaces naturally define topology through open balls"
-    },
-    {
-      "from": "open_set",
-      "to": "closed_set",
-      "type": "complement_relationship",
-      "description": "Closed sets are complements of open sets"
-    },
-    {
-      "from": "open_set",
-      "to": "compactness",
-      "type": "characterizes",
-      "description": "Compactness defined through open covers"
-    },
-    {
-      "from": "metric_space",
-      "to": "compactness",
-      "type": "specialization",
-      "description": "In metric spaces, compactness equivalent to complete and totally bounded"
-    },
-    {
-      "from": "connectedness",
-      "to": "fundamental_group",
-      "type": "algebraic_invariant",
-      "description": "Fundamental group measures connectedness algebraically"
-    },
-    {
-      "from": "homeomorphism",
-      "to": "topological_invariant",
-      "type": "preservation_property",
-      "description": "Homeomorphisms preserve all topological invariants"
-    },
-    {
-      "from": "fundamental_group",
-      "to": "homotopy",
-      "type": "defined_using",
-      "description": "Fundamental group defined as homotopy classes of loops"
-    },
-    {
-      "from": "hausdorff_space",
-      "to": "compactness",
-      "type": "nice_property",
-      "description": "Compact Hausdorff spaces have many desirable properties"
-    },
-    {
-      "from": "metric_space",
-      "to": "hausdorff_space",
-      "type": "implies",
-      "description": "Every metric space is Hausdorff"
-    },
-    {
-      "from": "connectedness",
-      "to": "topological_invariant",
-      "type": "is_example_of",
-      "description": "Connectedness is preserved under homeomorphisms"
-    },
-    {
-      "from": "linear_programming",
-      "to": "simplex_algorithm",
-      "type": "solved_by",
-      "description": "Simplex algorithm is primary method for solving linear programs"
-    },
-    {
-      "from": "convexity",
-      "to": "linear_programming",
-      "type": "fundamental_property",
-      "description": "Linear programming problems have convex feasible regions"
-    },
-    {
-      "from": "lagrange_multipliers",
-      "to": "kkt_conditions",
-      "type": "generalized_by",
-      "description": "KKT conditions extend Lagrange multipliers to inequality constraints"
-    },
-    {
-      "from": "convexity",
-      "to": "gradient_descent",
-      "type": "convergence_guarantee",
-      "description": "Convexity ensures gradient descent finds global optimum"
-    },
-    {
-      "from": "linear_programming",
-      "to": "duality_theory",
-      "type": "exemplifies",
-      "description": "Linear programming demonstrates strong duality clearly"
-    },
-    {
-      "from": "kkt_conditions",
-      "to": "interior_point_methods",
-      "type": "optimality_conditions",
-      "description": "Interior point methods solve systems satisfying KKT conditions"
-    },
-    {
-      "from": "dynamic_programming",
-      "to": "optimization",
-      "type": "algorithmic_paradigm",
-      "description": "Dynamic programming solves optimization with optimal substructure"
-    },
-    {
-      "from": "quadratic_programming",
-      "to": "linear_programming",
-      "type": "generalizes",
-      "description": "Quadratic programming extends linear programming to quadratic objectives"
-    },
-    {
-      "from": "convexity",
-      "to": "quadratic_programming",
-      "type": "tractability_condition",
-      "description": "Convex quadratic programs can be solved efficiently"
-    },
-    {
-      "from": "simplex_algorithm",
-      "to": "interior_point_methods",
-      "type": "alternative_to",
-      "description": "Interior point methods provide polynomial-time alternative to simplex"
-    },
-    {
-      "from": "propositional_logic",
-      "to": "predicate_logic",
-      "type": "extended_by",
-      "description": "Predicate logic extends propositional logic with quantifiers"
-    },
-    {
-      "from": "predicate_logic",
-      "to": "godel_incompleteness",
-      "type": "limitation_of",
-      "description": "Gödel's theorems show inherent limitations of predicate logic systems"
-    },
-    {
-      "from": "decidability",
-      "to": "halting_problem",
-      "type": "fundamental_example",
-      "description": "Halting problem is canonical undecidable problem"
-    },
-    {
-      "from": "church_turing_thesis",
-      "to": "halting_problem",
-      "type": "conceptual_foundation",
-      "description": "Church-Turing thesis makes halting problem meaningful"
-    },
-    {
-      "from": "godel_incompleteness",
-      "to": "decidability",
-      "type": "demonstrates",
-      "description": "Incompleteness theorems show some mathematical statements are undecidable"
-    },
-    {
-      "from": "predicate_logic",
-      "to": "model_theory",
-      "type": "semantic_study_of",
-      "description": "Model theory studies semantic interpretation of predicate logic"
-    },
-    {
-      "from": "predicate_logic",
-      "to": "proof_theory",
-      "type": "syntactic_study_of",
-      "description": "Proof theory studies syntactic aspects of predicate logic"
-    },
-    {
-      "from": "propositional_logic",
-      "to": "modal_logic",
-      "type": "extended_by",
-      "description": "Modal logic adds necessity/possibility operators to propositional logic"
-    },
-    {
-      "from": "decidability",
-      "to": "computational_complexity",
-      "type": "refined_by",
-      "description": "Complexity theory quantifies resources needed for decidable problems"
-    },
-    {
-      "from": "halting_problem",
-      "to": "computational_complexity",
-      "type": "motivates",
-      "description": "Undecidability motivates study of tractable computational problems"
-    },
-    {
-      "from": "rsa_cryptosystem",
-      "to": "computational_complexity",
-      "type": "security_based_on",
-      "description": "RSA security relies on computational complexity of factoring"
-    },
-    {
-      "from": "euler_totient",
-      "to": "group_theory",
-      "type": "counts_elements_of",
-      "description": "Euler's totient counts elements in multiplicative group mod n"
-    },
-    {
-      "from": "fermat_little_theorem",
-      "to": "group_theory",
-      "type": "special_case_of",
-      "description": "Fermat's theorem follows from Lagrange's theorem in group theory"
-    },
-    {
-      "from": "fibonacci_sequence",
-      "to": "linear_programming",
-      "type": "optimization_example",
-      "description": "Fibonacci search is optimization algorithm using Fibonacci ratios"
-    },
-    {
-      "from": "catalan_numbers",
-      "to": "dynamic_programming",
-      "type": "computed_via",
-      "description": "Catalan numbers efficiently computed using dynamic programming"
-    },
-    {
-      "from": "metric_space",
-      "to": "optimization",
-      "type": "provides_structure",
-      "description": "Metric spaces provide distance structure for optimization algorithms"
-    },
-    {
-      "from": "compactness",
-      "to": "optimization",
-      "type": "existence_guarantee",
-      "description": "Continuous functions on compact sets attain their extrema"
-    },
-    {
-      "from": "connectedness",
-      "to": "optimization",
-      "type": "path_existence",
-      "description": "Connected domains ensure continuity of optimization paths"
-    },
-    {
-      "from": "homeomorphism",
-      "to": "optimization",
-      "type": "problem_equivalence",
-      "description": "Homeomorphic domains have equivalent optimization landscapes"
-    },
-    {
-      "from": "galois_theory",
-      "to": "computational_complexity",
-      "type": "complexity_analysis",
-      "description": "Galois theory explains why general polynomials cannot be solved by radicals"
-    },
-    {
-      "from": "ideal_theory",
-      "to": "godel_incompleteness",
-      "type": "foundational_connection",
-      "description": "Ideal theory in logic relates to Gödel's construction methods"
-    },
-    {
-      "from": "twin_primes",
-      "to": "computational_complexity",
-      "type": "open_problem_complexity",
-      "description": "Twin prime conjecture represents deep computational complexity question"
-    },
-    {
-      "from": "mersenne_prime",
-      "to": "computational_complexity",
-      "type": "efficient_testing",
-      "description": "Mersenne numbers have efficient primality testing algorithms"
-    },
-    {
-      "from": "sylow_theorems",
-      "to": "computational_complexity",
-      "type": "algorithmic_group_theory",
-      "description": "Sylow theorems lead to algorithms for analyzing finite groups"
-    },
-    {
-      "from": "fundamental_theorem_algebra",
-      "to": "computational_complexity",
-      "type": "algorithmic_implications",
-      "description": "Fundamental theorem leads to polynomial root-finding algorithms"
-    },
-    {
-      "from": "hausdorff_space",
-      "to": "optimization",
-      "type": "uniqueness_of_limits",
-      "description": "Hausdorff property ensures uniqueness of optimization limits"
-    },
-    {
-      "from": "homotopy",
-      "to": "optimization",
-      "type": "continuous_deformation",
-      "description": "Homotopy methods continuously deform optimization problems"
-    },
-    {
-      "from": "duality_theory",
-      "to": "galois_theory",
-      "type": "mathematical_duality",
-      "description": "Both theories exemplify fundamental duality principles in mathematics"
-    },
-    {
-      "from": "interior_point_methods",
-      "to": "differential_geometry",
-      "type": "geometric_foundation",
-      "description": "Interior point methods use geometric properties of constraint surfaces"
-    },
-    {
-      "from": "modal_logic",
-      "to": "topology",
-      "type": "topological_semantics",
-      "description": "Modal logic can be interpreted using topological spaces"
-    },
-    {
-      "from": "model_theory",
-      "to": "algebraic_structures",
-      "type": "studies_models_of",
-      "description": "Model theory studies interpretations of algebraic theories"
-    },
-    {
-      "from": "proof_theory",
-      "to": "computational_complexity",
-      "type": "proof_complexity",
-      "description": "Proof theory analyzes computational complexity of generating proofs"
-    },
-    {
-      "from": "chinese_remainder_theorem",
-      "to": "ring_theory",
-      "type": "fundamental_result_in",
-      "description": "CRT is fundamental result about products of rings"
-    },
-    {
-      "from": "quotient_group",
-      "to": "homomorphism",
-      "type": "characterized_by",
-      "description": "Quotient groups naturally arise from group homomorphisms"
-    },
-    {
-      "from": "isomorphism",
-      "to": "topological_invariant",
-      "type": "preserves_all",
-      "description": "Isomorphisms in topology preserve all topological invariants"
-    },
-    {
-      "from": "gradient_descent",
-      "to": "differential_geometry",
-      "type": "geometric_interpretation",
-      "description": "Gradient descent follows steepest descent paths on manifolds"
-    },
-    {
-      "from": "lagrange_multipliers",
-      "to": "differential_geometry",
-      "type": "constrained_optimization_on_manifolds",
-      "description": "Lagrange multipliers naturally extend to optimization on manifolds"
-    },
-    {
-      "from": "fundamental_group",
-      "to": "group_theory",
-      "type": "algebraic_topology_application",
-      "description": "Fundamental groups are examples of groups arising from topology"
-    },
-    {
-      "from": "open_set",
-      "to": "measure_theory",
-      "type": "measurable_sets",
-      "description": "Open sets are fundamental examples of measurable sets"
-    },
-    {
-      "from": "closed_set",
-      "to": "functional_analysis",
-      "type": "complete_spaces",
-      "description": "Closed sets relate to completeness in functional analysis"
-    }
+    {"source_label": "Taylor Series", "target_label": "Convergence", "relation_type": "requires", "weight": 0.95},
+    {"source_label": "Fourier Transform", "target_label": "Laplace Transform", "relation_type": "related-to", "weight": 0.90},
+    {"source_label": "Fourier Transform", "target_label": "Differential Equation", "relation_type": "solves", "weight": 0.88},
+    {"source_label": "Laplace Transform", "target_label": "Differential Equation", "relation_type": "solves", "weight": 0.92},
+    {"source_label": "Convergence", "target_label": "Continuity", "relation_type": "related-to", "weight": 0.88},
+    {"source_label": "Determinant", "target_label": "Rank", "relation_type": "determines", "weight": 0.90},
+    {"source_label": "Null Space", "target_label": "Rank", "relation_type": "complementary-to", "weight": 0.92},
+    {"source_label": "Basis", "target_label": "Null Space", "relation_type": "spans", "weight": 0.88},
+    {"source_label": "Orthogonality", "target_label": "SVD", "relation_type": "used-in", "weight": 0.90},
+    {"source_label": "SVD", "target_label": "Rank", "relation_type": "reveals", "weight": 0.92},
+    {"source_label": "Combinatorics", "target_label": "Permutation", "relation_type": "includes", "weight": 0.95},
+    {"source_label": "Graph Theory", "target_label": "Combinatorics", "relation_type": "uses", "weight": 0.85},
+    {"source_label": "Boolean Algebra", "target_label": "Propositional Logic", "relation_type": "models", "weight": 0.92},
+    {"source_label": "Modular Arithmetic", "target_label": "Euler Totient", "relation_type": "uses", "weight": 0.90},
+    {"source_label": "Mean", "target_label": "Variance", "relation_type": "used-in", "weight": 0.95},
+    {"source_label": "Variance", "target_label": "Standard Deviation", "relation_type": "root-of", "weight": 0.98},
+    {"source_label": "Normal Distribution", "target_label": "Mean", "relation_type": "parameterized-by", "weight": 0.97},
+    {"source_label": "Normal Distribution", "target_label": "Standard Deviation", "relation_type": "parameterized-by", "weight": 0.97},
+    {"source_label": "Regression", "target_label": "Correlation", "relation_type": "related-to", "weight": 0.92},
+    {"source_label": "Bayesian Inference", "target_label": "Normal Distribution", "relation_type": "uses", "weight": 0.85},
+    {"source_label": "Group", "target_label": "Ring", "relation_type": "generalized-by", "weight": 0.90},
+    {"source_label": "Ring", "target_label": "Field", "relation_type": "generalized-by", "weight": 0.90},
+    {"source_label": "Homomorphism", "target_label": "Isomorphism", "relation_type": "generalized-by", "weight": 0.95},
+    {"source_label": "Homomorphism", "target_label": "Group", "relation_type": "maps-between", "weight": 0.92},
+    {"source_label": "Galois Theory", "target_label": "Group", "relation_type": "uses", "weight": 0.95},
+    {"source_label": "Galois Theory", "target_label": "Field", "relation_type": "uses", "weight": 0.95},
+    {"source_label": "Homeomorphism", "target_label": "Isomorphism", "relation_type": "analogous-to", "weight": 0.88},
+    {"source_label": "Compactness", "target_label": "Metric Space", "relation_type": "defined-in", "weight": 0.90},
+    {"source_label": "Connectedness", "target_label": "Metric Space", "relation_type": "defined-in", "weight": 0.90},
+    {"source_label": "Manifold", "target_label": "Metric Space", "relation_type": "type-of", "weight": 0.85},
+    {"source_label": "Manifold", "target_label": "Homeomorphism", "relation_type": "characterized-by", "weight": 0.88},
+    {"source_label": "Linear Programming", "target_label": "Simplex Method", "relation_type": "solved-by", "weight": 0.95},
+    {"source_label": "Linear Programming", "target_label": "Convexity", "relation_type": "requires", "weight": 0.90},
+    {"source_label": "Lagrange Multiplier", "target_label": "Gradient Descent", "relation_type": "related-to", "weight": 0.80},
+    {"source_label": "Gradient Descent", "target_label": "Convexity", "relation_type": "works-best-with", "weight": 0.88},
+    {"source_label": "Predicate Logic", "target_label": "Propositional Logic", "relation_type": "extends", "weight": 0.95},
+    {"source_label": "Gödel Incompleteness", "target_label": "Decidability", "relation_type": "limits", "weight": 0.92},
+    {"source_label": "Halting Problem", "target_label": "Decidability", "relation_type": "example-of-undecidable", "weight": 0.95},
+    {"source_label": "Fibonacci Sequence", "target_label": "Taylor Series", "relation_type": "related-to", "weight": 0.72},
+    {"source_label": "Circle", "target_label": "Ellipse", "relation_type": "special-case-of", "weight": 0.95},
+    {"source_label": "Triangle", "target_label": "Circle", "relation_type": "inscribed-in", "weight": 0.80},
+    {"source_label": "Ellipse", "target_label": "Manifold", "relation_type": "example-of", "weight": 0.78},
+    {"source_label": "Fourier Transform", "target_label": "Normal Distribution", "relation_type": "transforms", "weight": 0.82},
+    {"source_label": "SVD", "target_label": "Regression", "relation_type": "used-in", "weight": 0.85},
+    {"source_label": "Modular Arithmetic", "target_label": "Group", "relation_type": "forms", "weight": 0.90},
+    {"source_label": "Euler Totient", "target_label": "Group", "relation_type": "related-to", "weight": 0.85},
+    {"source_label": "Boolean Algebra", "target_label": "Ring", "relation_type": "type-of", "weight": 0.82},
+    {"source_label": "Continuity", "target_label": "Homeomorphism", "relation_type": "required-for", "weight": 0.92},
+    {"source_label": "Differential Equation", "target_label": "Taylor Series", "relation_type": "solved-by", "weight": 0.85},
+    {"source_label": "Gradient Descent", "target_label": "Differential Equation", "relation_type": "related-to", "weight": 0.78}
   ]
 }

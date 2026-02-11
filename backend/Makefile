@@ -2,7 +2,7 @@
 
 CXX = g++
 CXXFLAGS = -std=c++20 -Wall -Wextra -Wpedantic -O2 -I.
-LDFLAGS = -lcurl
+LDFLAGS = -lcurl -pthread
 
 # === Source Groups ===
 MEMORY_SOURCES = memory/stm.cpp memory/brain_controller.cpp
@@ -18,24 +18,40 @@ COGNITIVE_SOURCES = cognitive/cognitive_dynamics.cpp
 UNDERSTANDING_SOURCES = understanding/understanding_layer.cpp understanding/mini_llm.cpp \
                         understanding/ollama_mini_llm.cpp
 LLM_SOURCES = llm/chat_interface.cpp llm/ollama_client.cpp
-IMPORTER_SOURCES = importers/wikipedia_importer.cpp importers/scholar_importer.cpp
+IMPORTER_SOURCES = importers/wikipedia_importer.cpp importers/scholar_importer.cpp \
+                   importers/http_client.cpp
 INGESTOR_SOURCES = ingestor/entity_extractor.cpp ingestor/relation_extractor.cpp \
                    ingestor/text_chunker.cpp ingestor/trust_tagger.cpp \
                    ingestor/knowledge_ingestor.cpp ingestor/proposal_queue.cpp \
                    ingestor/ingestion_pipeline.cpp
-PERSISTENT_SOURCES = persistent/persistent_ltm.cpp persistent/wal.cpp persistent/stm_snapshot.cpp
+PERSISTENT_SOURCES = persistent/persistent_ltm.cpp persistent/wal.cpp \
+                     persistent/stm_snapshot.cpp persistent/checkpoint_manager.cpp \
+                     persistent/checkpoint_restore.cpp
+HYBRID_SOURCES = hybrid/kan_validator.cpp hybrid/domain_manager.cpp \
+                 hybrid/refinement_loop.cpp hybrid/epistemic_bridge.cpp \
+                 hybrid/hypothesis_translator.cpp
+EVOLUTION_SOURCES = evolution/pattern_discovery.cpp evolution/epistemic_promotion.cpp \
+                    evolution/concept_proposal.cpp
+BOOTSTRAP_SOURCES = bootstrap/foundation_concepts.cpp bootstrap/bootstrap_interface.cpp \
+                    bootstrap/context_accumulator.cpp
+STREAMS_SOURCES = streams/think_stream.cpp streams/stream_orchestrator.cpp \
+                  streams/stream_scheduler.cpp streams/stream_monitor.cpp
+CORE_APP_SOURCES = core/system_orchestrator.cpp core/brain19_app.cpp \
+                   core/thinking_pipeline.cpp
 
 # Core library (everything except mains)
 CORE_SOURCES = $(MEMORY_SOURCES) $(KAN_SOURCES) $(ADAPTER_SOURCES) \
                $(CURIOSITY_SOURCES) $(SNAPSHOT_SOURCES) $(LTM_SOURCES) \
                $(MICROMODEL_SOURCES) $(COGNITIVE_SOURCES) $(UNDERSTANDING_SOURCES) \
                $(LLM_SOURCES) $(IMPORTER_SOURCES) $(INGESTOR_SOURCES) \
-               $(PERSISTENT_SOURCES)
+               $(PERSISTENT_SOURCES) $(HYBRID_SOURCES) $(EVOLUTION_SOURCES) \
+               $(BOOTSTRAP_SOURCES) $(STREAMS_SOURCES) $(CORE_APP_SOURCES)
 
 CORE_OBJECTS = $(CORE_SOURCES:.cpp=.o)
 
 # === Targets ===
-TARGETS = demo_integrated demo_epistemic_complete demo_understanding_layer \
+TARGETS = brain19 \
+          demo_integrated demo_epistemic_complete demo_understanding_layer \
           demo_cognitive_dynamics demo_chat \
           test_cognitive_dynamics test_epistemic_enforcement \
           test_understanding_layer test_importers \
@@ -45,6 +61,10 @@ TARGETS = demo_integrated demo_epistemic_complete demo_understanding_layer \
 .PHONY: all clean run
 
 all: $(TARGETS)
+
+# --- Main Binary ---
+brain19: main.o $(CORE_OBJECTS)
+	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
 # --- Demos ---
 demo_integrated: demo_integrated.o $(CORE_OBJECTS)
@@ -99,7 +119,7 @@ brain19_cli: tools/brain19_cli.o $(CORE_OBJECTS)
 
 clean:
 	find . -name '*.o' -delete
-	rm -f $(TARGETS) snapshot.json
+	rm -f $(TARGETS) snapshot.json brain19
 
-run: demo_integrated
-	./demo_integrated
+run: brain19
+	./brain19

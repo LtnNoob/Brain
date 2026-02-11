@@ -148,8 +148,7 @@ void Brain19App::cmd_restore(const std::string& dir) {
 }
 
 void Brain19App::cmd_concepts() {
-    auto& ltm = orchestrator_.ltm();
-    auto ids = ltm.get_all_concept_ids();
+    auto ids = orchestrator_.get_all_concept_ids();
     std::cout << "Total concepts: " << ids.size() << "\n";
 
     // Show first 20
@@ -159,7 +158,7 @@ void Brain19App::cmd_concepts() {
             std::cout << "  ... and " << (ids.size() - 20) << " more\n";
             break;
         }
-        auto info = ltm.retrieve_concept(cid);
+        auto info = orchestrator_.get_concept(cid);
         if (info) {
             std::cout << "  [" << info->id << "] " << info->label
                       << " (" << epistemic_type_to_string(info->epistemic.type)
@@ -175,30 +174,36 @@ void Brain19App::cmd_explain(const std::string& id_str) {
         return;
     }
 
+    ConceptId cid;
     try {
-        ConceptId cid = std::stoull(id_str);
-        auto info = orchestrator_.ltm().retrieve_concept(cid);
-        if (!info) {
-            std::cout << "Concept " << cid << " not found\n";
-            return;
-        }
-        std::cout << "Concept #" << info->id << ": " << info->label << "\n";
-        std::cout << "  Definition: " << info->definition << "\n";
-        std::cout << "  Type: " << epistemic_type_to_string(info->epistemic.type) << "\n";
-        std::cout << "  Status: " << epistemic_status_to_string(info->epistemic.status) << "\n";
-        std::cout << "  Trust: " << info->epistemic.trust << "\n";
-
-        auto rels = orchestrator_.ltm().get_outgoing_relations(cid);
-        if (!rels.empty()) {
-            std::cout << "  Relations:\n";
-            for (auto& r : rels) {
-                auto target = orchestrator_.ltm().retrieve_concept(r.target);
-                std::cout << "    → " << (target ? target->label : "?")
-                          << " (weight=" << r.weight << ")\n";
-            }
-        }
-    } catch (...) {
+        cid = std::stoull(id_str);
+    } catch (const std::invalid_argument&) {
         std::cout << "Invalid concept ID\n";
+        return;
+    } catch (const std::out_of_range&) {
+        std::cout << "Concept ID out of range\n";
+        return;
+    }
+
+    auto info = orchestrator_.get_concept(cid);
+    if (!info) {
+        std::cout << "Concept " << cid << " not found\n";
+        return;
+    }
+    std::cout << "Concept #" << info->id << ": " << info->label << "\n";
+    std::cout << "  Definition: " << info->definition << "\n";
+    std::cout << "  Type: " << epistemic_type_to_string(info->epistemic.type) << "\n";
+    std::cout << "  Status: " << epistemic_status_to_string(info->epistemic.status) << "\n";
+    std::cout << "  Trust: " << info->epistemic.trust << "\n";
+
+    auto rels = orchestrator_.get_outgoing_relations(cid);
+    if (!rels.empty()) {
+        std::cout << "  Relations:\n";
+        for (auto& r : rels) {
+            auto target = orchestrator_.get_concept(r.target);
+            std::cout << "    → " << (target ? target->label : "?")
+                      << " (weight=" << r.weight << ")\n";
+        }
     }
 }
 
@@ -213,8 +218,8 @@ void Brain19App::cmd_think(const std::string& concept_label) {
     std::transform(lower_search.begin(), lower_search.end(), lower_search.begin(), ::tolower);
 
     std::vector<ConceptId> seeds;
-    for (auto cid : orchestrator_.ltm().get_all_concept_ids()) {
-        auto info = orchestrator_.ltm().retrieve_concept(cid);
+    for (auto cid : orchestrator_.get_all_concept_ids()) {
+        auto info = orchestrator_.get_concept(cid);
         if (!info) continue;
         std::string lower_label = info->label;
         std::transform(lower_label.begin(), lower_label.end(), lower_label.begin(), ::tolower);

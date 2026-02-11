@@ -237,21 +237,21 @@ void SystemOrchestrator::shutdown() {
     if (!running_) return;
     log("Shutting down Brain19...");
 
-    running_ = false;
-
-    // Stop periodic task thread
+    // Stop periodic task thread first (while running_ is still true)
     periodic_running_ = false;
     if (periodic_thread_.joinable()) {
         log("  Stopping periodic tasks...");
         periodic_thread_.join();
     }
 
-    // Auto-checkpoint on shutdown
+    // Auto-checkpoint on shutdown (before setting running_ = false)
     if (config_.enable_persistence && wal_) {
         log("  Final checkpoint on shutdown...");
         create_checkpoint("shutdown");
         wal_->checkpoint();
     }
+
+    running_ = false;
 
     // Clear stream alert callback before stopping (prevents use-after-free)
     if (stream_orch_) {
@@ -525,6 +525,7 @@ std::string SystemOrchestrator::get_status() const {
 }
 
 std::string SystemOrchestrator::get_stream_status() const {
+    std::lock_guard<std::recursive_mutex> lock(subsystem_mtx_);
     if (!stream_monitor_) return "Stream monitoring disabled\n";
 
     auto snapshots = stream_monitor_->stream_snapshots();
@@ -546,18 +547,37 @@ std::string SystemOrchestrator::get_stream_status() const {
 // ─── Access ──────────────────────────────────────────────────────────────────
 
 size_t SystemOrchestrator::concept_count() const {
+    std::lock_guard<std::recursive_mutex> lock(subsystem_mtx_);
     return ltm_ ? ltm_->get_all_concept_ids().size() : 0;
 }
 
 size_t SystemOrchestrator::relation_count() const {
+    std::lock_guard<std::recursive_mutex> lock(subsystem_mtx_);
     if (!ltm_) return 0;
     return ltm_->total_relation_count();
+}
+
+std::vector<ConceptId> SystemOrchestrator::get_all_concept_ids() const {
+    std::lock_guard<std::recursive_mutex> lock(subsystem_mtx_);
+    return ltm_ ? ltm_->get_all_concept_ids() : std::vector<ConceptId>{};
+}
+
+std::optional<ConceptInfo> SystemOrchestrator::get_concept(ConceptId cid) const {
+    std::lock_guard<std::recursive_mutex> lock(subsystem_mtx_);
+    return ltm_ ? ltm_->retrieve_concept(cid) : std::nullopt;
+}
+
+std::vector<RelationInfo> SystemOrchestrator::get_outgoing_relations(ConceptId cid) const {
+    std::lock_guard<std::recursive_mutex> lock(subsystem_mtx_);
+    return ltm_ ? ltm_->get_outgoing_relations(cid) : std::vector<RelationInfo>{};
 }
 
 // ─── Thinking ────────────────────────────────────────────────────────────────
 
 ThinkingResult SystemOrchestrator::run_thinking_cycle(const std::vector<ConceptId>& seeds) {
     if (!running_ || !thinking_) return {};
+
+    std::lock_guard<std::recursive_mutex> lock(subsystem_mtx_);
 
     auto result = thinking_->execute(
         seeds, active_context_,
@@ -603,29 +623,16 @@ void SystemOrchestrator::run_periodic_maintenance() {
             " concepts pending human review for FACT promotion");
     }
     
-    // Run pattern discovery and feed gaps to CuriosityEngine
+    // Run pattern discovery
     auto patterns = pattern_discovery_->discover_all();
-    
-    size_t gap_count = 0;
-    for (const auto& pattern : patterns) {
-        if (pattern.pattern_type == "gap") {
-            // Create curiosity trigger for knowledge gaps
-            CuriosityTrigger trigger(
-                TriggerType::SHALLOW_RELATIONS,
-                active_context_,
-                pattern.involved_concepts,
-                "Pattern discovery gap: " + pattern.description
-            );
-            
-            // Add trigger to curiosity engine (this would need a method in CuriosityEngine)
-            // For now, just count the gaps
-            gap_count++;
+
+    if (!patterns.empty()) {
+        size_t gap_count = 0;
+        for (const auto& pattern : patterns) {
+            if (pattern.pattern_type == "gap") gap_count++;
         }
-    }
-    
-    if (gap_count > 0) {
-        log("  Pattern discovery: found " + std::to_string(gap_count) +
-            " knowledge gaps, " + std::to_string(patterns.size()) + " total patterns");
+        log("  Pattern discovery: " + std::to_string(patterns.size()) + " patterns" +
+            (gap_count > 0 ? ", " + std::to_string(gap_count) + " gaps" : ""));
     }
 }
 

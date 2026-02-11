@@ -134,8 +134,13 @@ ChatResponse ChatInterface::ask(
             info.epistemic.type == EpistemicType::HYPOTHESIS) {
             response.contains_speculation = true;
         }
+        if (info.epistemic.status == EpistemicStatus::INVALIDATED) {
+            response.epistemic_note = "Contains invalidated knowledge";
+        } else if (info.epistemic.trust < 0.5 && response.epistemic_note.empty()) {
+            response.epistemic_note = "Low certainty information";
+        }
     }
-    
+
     // If no LLM, use simple fallback
     if (!llm_available_) {
         if (relevant.empty()) {
@@ -205,6 +210,11 @@ ChatResponse ChatInterface::ask_with_context(
             if (info_opt->epistemic.type == EpistemicType::SPECULATION ||
                 info_opt->epistemic.type == EpistemicType::HYPOTHESIS) {
                 response.contains_speculation = true;
+            }
+            if (info_opt->epistemic.status == EpistemicStatus::INVALIDATED) {
+                response.epistemic_note = "Contains invalidated knowledge";
+            } else if (info_opt->epistemic.trust < 0.5 && response.epistemic_note.empty()) {
+                response.epistemic_note = "Low certainty information";
             }
         }
     }

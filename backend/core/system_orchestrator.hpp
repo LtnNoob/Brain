@@ -106,12 +106,15 @@ public:
     std::string get_status() const;
     std::string get_stream_status() const;
 
-    // ─── Access (const) ──────────────────────────────────────────────────────
+    // ─── Access (const, locked) ────────────────────────────────────────────
 
-    const LongTermMemory& ltm() const { return *ltm_; }
-    LongTermMemory& ltm_mutable() { return *ltm_; }
     size_t concept_count() const;
     size_t relation_count() const;
+
+    // Locked LTM access for REPL commands
+    std::vector<ConceptId> get_all_concept_ids() const;
+    std::optional<ConceptInfo> get_concept(ConceptId cid) const;
+    std::vector<RelationInfo> get_outgoing_relations(ConceptId cid) const;
 
     // ─── Thinking ────────────────────────────────────────────────────────────
 

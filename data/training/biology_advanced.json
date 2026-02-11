@@ -1,0 +1,946 @@
+{
+  "source": "training-data:biology-advanced-v1",
+  "concepts": [
+    {
+      "id": "synapse",
+      "name": "Synapse",
+      "definition": "Junction between two nerve cells where neurotransmitters are released to transmit signals",
+      "category": "neurologie",
+      "trust_category": "FACT",
+      "trust_value": 0.99
+    },
+    {
+      "id": "axon",
+      "name": "Axon",
+      "definition": "Long projection of a neuron that conducts electrical impulses away from the cell body",
+      "category": "neurologie",
+      "trust_category": "FACT",
+      "trust_value": 0.99
+    },
+    {
+      "id": "dendrite",
+      "name": "Dendrite",
+      "definition": "Branched extensions of neurons that receive signals from other neurons",
+      "category": "neurologie",
+      "trust_category": "FACT",
+      "trust_value": 0.99
+    },
+    {
+      "id": "myelin",
+      "name": "Myelin",
+      "definition": "Fatty substance that forms insulating sheaths around nerve fibers to increase signal transmission speed",
+      "category": "neurologie",
+      "trust_category": "FACT",
+      "trust_value": 0.99
+    },
+    {
+      "id": "serotonin",
+      "name": "Serotonin",
+      "definition": "Neurotransmitter that regulates mood, sleep, appetite, and other functions",
+      "category": "neurologie",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "id": "dopamine",
+      "name": "Dopamine",
+      "definition": "Neurotransmitter involved in reward, motivation, motor control, and pleasure pathways",
+      "category": "neurologie",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "id": "gaba",
+      "name": "GABA",
+      "definition": "Gamma-aminobutyric acid, the primary inhibitory neurotransmitter in the central nervous system",
+      "category": "neurologie",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "id": "cortex",
+      "name": "Cortex",
+      "definition": "Outer layer of the brain responsible for higher-order thinking, sensory processing, and motor control",
+      "category": "neurologie",
+      "trust_category": "FACT",
+      "trust_value": 0.99
+    },
+    {
+      "id": "hippocampus",
+      "name": "Hippocampus",
+      "definition": "Brain structure critical for learning, memory formation, and spatial navigation",
+      "category": "neurologie",
+      "trust_category": "FACT",
+      "trust_value": 0.99
+    },
+    {
+      "id": "amygdala",
+      "name": "Amygdala",
+      "definition": "Brain structure involved in processing emotions, particularly fear and threat detection",
+      "category": "neurologie",
+      "trust_category": "FACT",
+      "trust_value": 0.99
+    },
+    {
+      "id": "antibody",
+      "name": "Antibody",
+      "definition": "Y-shaped proteins produced by B cells that bind to specific antigens to neutralize threats",
+      "category": "immunologie",
+      "trust_category": "FACT",
+      "trust_value": 0.99
+    },
+    {
+      "id": "antigen",
+      "name": "Antigen",
+      "definition": "Substance that triggers an immune response by binding to antibodies or T cell receptors",
+      "category": "immunologie",
+      "trust_category": "FACT",
+      "trust_value": 0.99
+    },
+    {
+      "id": "t_cell",
+      "name": "T Cell",
+      "definition": "Type of white blood cell that plays central role in cell-mediated immunity",
+      "category": "immunologie",
+      "trust_category": "FACT",
+      "trust_value": 0.99
+    },
+    {
+      "id": "b_cell",
+      "name": "B Cell",
+      "definition": "White blood cell that produces antibodies and provides humoral immunity",
+      "category": "immunologie",
+      "trust_category": "FACT",
+      "trust_value": 0.99
+    },
+    {
+      "id": "macrophage",
+      "name": "Macrophage",
+      "definition": "Large phagocytic cells that engulf pathogens, dead cells, and cellular debris",
+      "category": "immunologie",
+      "trust_category": "FACT",
+      "trust_value": 0.99
+    },
+    {
+      "id": "cytokine",
+      "name": "Cytokine",
+      "definition": "Signaling proteins that mediate communication between immune cells",
+      "category": "immunologie",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "id": "vaccine",
+      "name": "Vaccine",
+      "definition": "Biological preparation that provides immunity against specific diseases",
+      "category": "immunologie",
+      "trust_category": "FACT",
+      "trust_value": 0.99
+    },
+    {
+      "id": "inflammation",
+      "name": "Inflammation",
+      "definition": "Immune response characterized by redness, swelling, heat, and pain to combat infection or injury",
+      "category": "immunologie",
+      "trust_category": "FACT",
+      "trust_value": 0.99
+    },
+    {
+      "id": "complement_system",
+      "name": "Complement System",
+      "definition": "Cascade of proteins that enhance immune response and destroy pathogens",
+      "category": "immunologie",
+      "trust_category": "FACT",
+      "trust_value": 0.97
+    },
+    {
+      "id": "immunoglobulin",
+      "name": "Immunoglobulin",
+      "definition": "Class of proteins that function as antibodies in immune response",
+      "category": "immunologie",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "id": "crispr",
+      "name": "CRISPR",
+      "definition": "Gene editing technology that allows precise modification of DNA sequences",
+      "category": "genetik",
+      "trust_category": "FACT",
+      "trust_value": 0.99
+    },
+    {
+      "id": "epigenetics",
+      "name": "Epigenetics",
+      "definition": "Study of heritable changes in gene expression that don't involve DNA sequence changes",
+      "category": "genetik",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "id": "transcription",
+      "name": "Transcription",
+      "definition": "Process of copying DNA sequence into RNA",
+      "category": "genetik",
+      "trust_category": "FACT",
+      "trust_value": 0.99
+    },
+    {
+      "id": "translation",
+      "name": "Translation",
+      "definition": "Process of synthesizing proteins from mRNA templates using ribosomes",
+      "category": "genetik",
+      "trust_category": "FACT",
+      "trust_value": 0.99
+    },
+    {
+      "id": "codon",
+      "name": "Codon",
+      "definition": "Three-nucleotide sequence that specifies which amino acid to add during protein synthesis",
+      "category": "genetik",
+      "trust_category": "FACT",
+      "trust_value": 0.99
+    },
+    {
+      "id": "intron",
+      "name": "Intron",
+      "definition": "Non-coding DNA sequence that is removed during RNA processing",
+      "category": "genetik",
+      "trust_category": "FACT",
+      "trust_value": 0.99
+    },
+    {
+      "id": "exon",
+      "name": "Exon",
+      "definition": "Coding DNA sequence that remains in mature mRNA after splicing",
+      "category": "genetik",
+      "trust_category": "FACT",
+      "trust_value": 0.99
+    },
+    {
+      "id": "plasmid",
+      "name": "Plasmid",
+      "definition": "Small DNA molecule separate from chromosomes, commonly used in genetic engineering",
+      "category": "genetik",
+      "trust_category": "FACT",
+      "trust_value": 0.99
+    },
+    {
+      "id": "ribosome",
+      "name": "Ribosome",
+      "definition": "Cellular structure where protein synthesis occurs",
+      "category": "genetik",
+      "trust_category": "FACT",
+      "trust_value": 0.99
+    },
+    {
+      "id": "polymerase",
+      "name": "Polymerase",
+      "definition": "Enzyme that synthesizes DNA or RNA from nucleotides",
+      "category": "genetik",
+      "trust_category": "FACT",
+      "trust_value": 0.99
+    },
+    {
+      "id": "food_chain",
+      "name": "Food Chain",
+      "definition": "Linear sequence of organisms showing who eats whom in an ecosystem",
+      "category": "oekologie",
+      "trust_category": "FACT",
+      "trust_value": 0.99
+    },
+    {
+      "id": "biome",
+      "name": "Biome",
+      "definition": "Large ecological area characterized by distinctive plant and animal groups",
+      "category": "oekologie",
+      "trust_category": "FACT",
+      "trust_value": 0.99
+    },
+    {
+      "id": "symbiosis",
+      "name": "Symbiosis",
+      "definition": "Close ecological relationship between two different species",
+      "category": "oekologie",
+      "trust_category": "FACT",
+      "trust_value": 0.99
+    },
+    {
+      "id": "parasitism",
+      "name": "Parasitism",
+      "definition": "Relationship where one organism benefits at the expense of another",
+      "category": "oekologie",
+      "trust_category": "FACT",
+      "trust_value": 0.99
+    },
+    {
+      "id": "predation",
+      "name": "Predation",
+      "definition": "Interaction where one organism captures and consumes another",
+      "category": "oekologie",
+      "trust_category": "FACT",
+      "trust_value": 0.99
+    },
+    {
+      "id": "succession",
+      "name": "Succession",
+      "definition": "Predictable sequence of ecological changes in an ecosystem over time",
+      "category": "oekologie",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "id": "carrying_capacity",
+      "name": "Carrying Capacity",
+      "definition": "Maximum population size an environment can sustain indefinitely",
+      "category": "oekologie",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "id": "biodiversity",
+      "name": "Biodiversity",
+      "definition": "Variety of life forms within ecosystems, species, and genes",
+      "category": "oekologie",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "id": "niche",
+      "name": "Niche",
+      "definition": "Role and position of species within ecosystem including habitat and resource use",
+      "category": "oekologie",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "id": "trophic_level",
+      "name": "Trophic Level",
+      "definition": "Position in food chain based on feeding relationships",
+      "category": "oekologie",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "id": "biofilm",
+      "name": "Biofilm",
+      "definition": "Community of microorganisms embedded in protective matrix on surfaces",
+      "category": "mikrobiologie",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "id": "prion",
+      "name": "Prion",
+      "definition": "Infectious protein particle that causes neurodegenerative diseases",
+      "category": "mikrobiologie",
+      "trust_category": "FACT",
+      "trust_value": 0.97
+    },
+    {
+      "id": "archaea",
+      "name": "Archaea",
+      "definition": "Domain of single-celled microorganisms distinct from bacteria and eukaryotes",
+      "category": "mikrobiologie",
+      "trust_category": "FACT",
+      "trust_value": 0.99
+    },
+    {
+      "id": "phage",
+      "name": "Phage",
+      "definition": "Virus that infects and replicates within bacteria",
+      "category": "mikrobiologie",
+      "trust_category": "FACT",
+      "trust_value": 0.99
+    },
+    {
+      "id": "antibiotic_resistance",
+      "name": "Antibiotic Resistance",
+      "definition": "Ability of microorganisms to survive exposure to antibiotics",
+      "category": "mikrobiologie",
+      "trust_category": "FACT",
+      "trust_value": 0.99
+    },
+    {
+      "id": "quorum_sensing",
+      "name": "Quorum Sensing",
+      "definition": "Cell-to-cell communication system bacteria use to coordinate group behaviors",
+      "category": "mikrobiologie",
+      "trust_category": "FACT",
+      "trust_value": 0.97
+    },
+    {
+      "id": "extremophile",
+      "name": "Extremophile",
+      "definition": "Microorganism that thrives in extreme environmental conditions",
+      "category": "mikrobiologie",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "id": "horizontal_gene_transfer",
+      "name": "Horizontal Gene Transfer",
+      "definition": "Movement of genetic material between organisms other than by vertical descent",
+      "category": "mikrobiologie",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "id": "pathogenicity",
+      "name": "Pathogenicity",
+      "definition": "Ability of microorganism to cause disease in host",
+      "category": "mikrobiologie",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "id": "microbiome",
+      "name": "Microbiome",
+      "definition": "Community of microorganisms living in specific environment like human gut",
+      "category": "mikrobiologie",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    }
+  ],
+  "relations": [
+    {
+      "from": "synapse",
+      "to": "serotonin",
+      "relation": "transmits_via",
+      "strength": 0.95,
+      "description": "Synapses transmit signals using serotonin as neurotransmitter"
+    },
+    {
+      "from": "synapse",
+      "to": "dopamine",
+      "relation": "transmits_via",
+      "strength": 0.95,
+      "description": "Synapses transmit signals using dopamine as neurotransmitter"
+    },
+    {
+      "from": "synapse",
+      "to": "gaba",
+      "relation": "transmits_via",
+      "strength": 0.95,
+      "description": "Synapses transmit inhibitory signals using GABA"
+    },
+    {
+      "from": "axon",
+      "to": "synapse",
+      "relation": "connects_to",
+      "strength": 0.99,
+      "description": "Axons terminate at synapses to transmit signals"
+    },
+    {
+      "from": "dendrite",
+      "to": "synapse",
+      "relation": "receives_at",
+      "strength": 0.99,
+      "description": "Dendrites receive signals at synaptic junctions"
+    },
+    {
+      "from": "myelin",
+      "to": "axon",
+      "relation": "insulates",
+      "strength": 0.98,
+      "description": "Myelin sheaths insulate axons to increase conduction speed"
+    },
+    {
+      "from": "cortex",
+      "to": "hippocampus",
+      "relation": "connects_to",
+      "strength": 0.92,
+      "description": "Cortical regions connect to hippocampus for memory processing"
+    },
+    {
+      "from": "hippocampus",
+      "to": "amygdala",
+      "relation": "modulates",
+      "strength": 0.88,
+      "description": "Hippocampus modulates amygdala emotional responses"
+    },
+    {
+      "from": "antibody",
+      "to": "antigen",
+      "relation": "binds_to",
+      "strength": 0.99,
+      "description": "Antibodies specifically bind to antigens"
+    },
+    {
+      "from": "b_cell",
+      "to": "antibody",
+      "relation": "produces",
+      "strength": 0.99,
+      "description": "B cells produce and secrete antibodies"
+    },
+    {
+      "from": "t_cell",
+      "to": "antigen",
+      "relation": "recognizes",
+      "strength": 0.95,
+      "description": "T cells recognize antigens via TCR receptors"
+    },
+    {
+      "from": "macrophage",
+      "to": "antigen",
+      "relation": "presents",
+      "strength": 0.94,
+      "description": "Macrophages present antigens to T cells"
+    },
+    {
+      "from": "cytokine",
+      "to": "t_cell",
+      "relation": "activates",
+      "strength": 0.92,
+      "description": "Cytokines activate and coordinate T cell responses"
+    },
+    {
+      "from": "cytokine",
+      "to": "b_cell",
+      "relation": "activates",
+      "strength": 0.92,
+      "description": "Cytokines activate B cell proliferation and differentiation"
+    },
+    {
+      "from": "vaccine",
+      "to": "antibody",
+      "relation": "stimulates_production",
+      "strength": 0.95,
+      "description": "Vaccines stimulate antibody production for immunity"
+    },
+    {
+      "from": "inflammation",
+      "to": "cytokine",
+      "relation": "mediated_by",
+      "strength": 0.93,
+      "description": "Inflammatory responses are mediated by cytokines"
+    },
+    {
+      "from": "complement_system",
+      "to": "antibody",
+      "relation": "enhances",
+      "strength": 0.89,
+      "description": "Complement system enhances antibody effectiveness"
+    },
+    {
+      "from": "immunoglobulin",
+      "to": "antibody",
+      "relation": "is_type_of",
+      "strength": 0.99,
+      "description": "Immunoglobulins are the protein class of antibodies"
+    },
+    {
+      "from": "crispr",
+      "to": "transcription",
+      "relation": "modifies",
+      "strength": 0.91,
+      "description": "CRISPR can modify genes affecting transcription"
+    },
+    {
+      "from": "transcription",
+      "to": "translation",
+      "relation": "precedes",
+      "strength": 0.99,
+      "description": "Transcription produces mRNA for translation"
+    },
+    {
+      "from": "ribosome",
+      "to": "translation",
+      "relation": "performs",
+      "strength": 0.99,
+      "description": "Ribosomes are the cellular machines that perform translation"
+    },
+    {
+      "from": "codon",
+      "to": "translation",
+      "relation": "guides",
+      "strength": 0.98,
+      "description": "Codons specify amino acids during translation"
+    },
+    {
+      "from": "intron",
+      "to": "exon",
+      "relation": "spliced_from",
+      "strength": 0.95,
+      "description": "Introns are spliced out leaving exons in mature mRNA"
+    },
+    {
+      "from": "polymerase",
+      "to": "transcription",
+      "relation": "catalyzes",
+      "strength": 0.99,
+      "description": "RNA polymerase catalyzes transcription process"
+    },
+    {
+      "from": "epigenetics",
+      "to": "transcription",
+      "relation": "regulates",
+      "strength": 0.94,
+      "description": "Epigenetic modifications regulate transcription"
+    },
+    {
+      "from": "plasmid",
+      "to": "crispr",
+      "relation": "carries",
+      "strength": 0.87,
+      "description": "Plasmids can carry CRISPR components for gene editing"
+    },
+    {
+      "from": "food_chain",
+      "to": "trophic_level",
+      "relation": "organized_by",
+      "strength": 0.96,
+      "description": "Food chains are organized by trophic levels"
+    },
+    {
+      "from": "predation",
+      "to": "food_chain",
+      "relation": "drives",
+      "strength": 0.94,
+      "description": "Predation relationships drive food chain structure"
+    },
+    {
+      "from": "carrying_capacity",
+      "to": "biome",
+      "relation": "limits_in",
+      "strength": 0.89,
+      "description": "Carrying capacity varies across different biomes"
+    },
+    {
+      "from": "symbiosis",
+      "to": "parasitism",
+      "relation": "includes",
+      "strength": 0.85,
+      "description": "Parasitism is one type of symbiotic relationship"
+    },
+    {
+      "from": "succession",
+      "to": "biome",
+      "relation": "shapes",
+      "strength": 0.88,
+      "description": "Succession processes shape biome development"
+    },
+    {
+      "from": "biodiversity",
+      "to": "biome",
+      "relation": "varies_across",
+      "strength": 0.92,
+      "description": "Biodiversity levels vary significantly across biomes"
+    },
+    {
+      "from": "niche",
+      "to": "symbiosis",
+      "relation": "overlaps_in",
+      "strength": 0.83,
+      "description": "Overlapping niches can lead to symbiotic relationships"
+    },
+    {
+      "from": "biofilm",
+      "to": "quorum_sensing",
+      "relation": "regulated_by",
+      "strength": 0.91,
+      "description": "Biofilm formation is regulated by quorum sensing"
+    },
+    {
+      "from": "antibiotic_resistance",
+      "to": "horizontal_gene_transfer",
+      "relation": "spreads_via",
+      "strength": 0.93,
+      "description": "Antibiotic resistance genes spread via horizontal transfer"
+    },
+    {
+      "from": "phage",
+      "to": "horizontal_gene_transfer",
+      "relation": "mediates",
+      "strength": 0.89,
+      "description": "Phages can mediate horizontal gene transfer between bacteria"
+    },
+    {
+      "from": "archaea",
+      "to": "extremophile",
+      "relation": "includes",
+      "strength": 0.94,
+      "description": "Many archaea are extremophiles"
+    },
+    {
+      "from": "microbiome",
+      "to": "symbiosis",
+      "relation": "exhibits",
+      "strength": 0.88,
+      "description": "Microbiomes exhibit symbiotic relationships with hosts"
+    },
+    {
+      "from": "pathogenicity",
+      "to": "biofilm",
+      "relation": "enhanced_by",
+      "strength": 0.86,
+      "description": "Pathogenicity is often enhanced by biofilm formation"
+    },
+    {
+      "from": "prion",
+      "to": "pathogenicity",
+      "relation": "exhibits",
+      "strength": 0.92,
+      "description": "Prions exhibit pathogenicity causing disease"
+    },
+    {
+      "from": "dopamine",
+      "to": "cortex",
+      "relation": "modulates",
+      "strength": 0.89,
+      "description": "Dopamine modulates cortical function and attention"
+    },
+    {
+      "from": "serotonin",
+      "to": "hippocampus",
+      "relation": "influences",
+      "strength": 0.85,
+      "description": "Serotonin influences hippocampal neuroplasticity"
+    },
+    {
+      "from": "gaba",
+      "to": "amygdala",
+      "relation": "inhibits",
+      "strength": 0.87,
+      "description": "GABA provides inhibitory control of amygdala activity"
+    },
+    {
+      "from": "macrophage",
+      "to": "inflammation",
+      "relation": "triggers",
+      "strength": 0.93,
+      "description": "Macrophages trigger inflammatory responses"
+    },
+    {
+      "from": "complement_system",
+      "to": "inflammation",
+      "relation": "promotes",
+      "strength": 0.90,
+      "description": "Complement activation promotes inflammation"
+    },
+    {
+      "from": "vaccine",
+      "to": "t_cell",
+      "relation": "activates",
+      "strength": 0.91,
+      "description": "Vaccines activate T cell mediated immunity"
+    },
+    {
+      "from": "crispr",
+      "to": "plasmid",
+      "relation": "delivered_via",
+      "strength": 0.88,
+      "description": "CRISPR components are often delivered via plasmids"
+    },
+    {
+      "from": "epigenetics",
+      "to": "microbiome",
+      "relation": "influenced_by",
+      "strength": 0.82,
+      "description": "Host epigenetics can be influenced by microbiome"
+    },
+    {
+      "from": "horizontal_gene_transfer",
+      "to": "plasmid",
+      "relation": "mediated_by",
+      "strength": 0.95,
+      "description": "Plasmids are major mediators of horizontal gene transfer"
+    },
+    {
+      "from": "biodiversity",
+      "to": "microbiome",
+      "relation": "includes",
+      "strength": 0.91,
+      "description": "Microbial diversity is a major component of biodiversity"
+    },
+    {
+      "from": "succession",
+      "to": "microbiome",
+      "relation": "involves",
+      "strength": 0.84,
+      "description": "Ecological succession involves changes in microbial communities"
+    },
+    {
+      "from": "extremophile",
+      "to": "biome",
+      "relation": "inhabits_extreme",
+      "strength": 0.87,
+      "description": "Extremophiles inhabit the most extreme biomes"
+    },
+    {
+      "from": "phage",
+      "to": "microbiome",
+      "relation": "shapes",
+      "strength": 0.86,
+      "description": "Phages help shape bacterial microbiome composition"
+    },
+    {
+      "from": "quorum_sensing",
+      "to": "pathogenicity",
+      "relation": "regulates",
+      "strength": 0.88,
+      "description": "Quorum sensing regulates virulence and pathogenicity"
+    },
+    {
+      "from": "antibiotic_resistance",
+      "to": "biofilm",
+      "relation": "enhanced_in",
+      "strength": 0.89,
+      "description": "Antibiotic resistance is enhanced within biofilms"
+    },
+    {
+      "from": "transcription",
+      "to": "polymerase",
+      "relation": "requires",
+      "strength": 0.99,
+      "description": "Transcription requires RNA polymerase enzyme"
+    },
+    {
+      "from": "translation",
+      "to": "codon",
+      "relation": "reads",
+      "strength": 0.98,
+      "description": "Translation machinery reads codons to determine amino acids"
+    },
+    {
+      "from": "exon",
+      "to": "translation",
+      "relation": "codes_for",
+      "strength": 0.96,
+      "description": "Exons contain coding sequences for translation"
+    },
+    {
+      "from": "predation",
+      "to": "parasitism",
+      "relation": "contrasts_with",
+      "strength": 0.78,
+      "description": "Predation and parasitism are different feeding strategies"
+    },
+    {
+      "from": "carrying_capacity",
+      "to": "predation",
+      "relation": "regulated_by",
+      "strength": 0.85,
+      "description": "Predation helps regulate populations within carrying capacity"
+    },
+    {
+      "from": "niche",
+      "to": "food_chain",
+      "relation": "determines_position",
+      "strength": 0.91,
+      "description": "Species niche determines its position in food chain"
+    },
+    {
+      "from": "biodiversity",
+      "to": "succession",
+      "relation": "increases_during",
+      "strength": 0.87,
+      "description": "Biodiversity typically increases during succession"
+    },
+    {
+      "from": "trophic_level",
+      "to": "predation",
+      "relation": "structured_by",
+      "strength": 0.92,
+      "description": "Trophic levels are structured by predation relationships"
+    },
+    {
+      "from": "cortex",
+      "to": "myelin",
+      "relation": "contains_myelinated",
+      "strength": 0.88,
+      "description": "Cortical white matter contains myelinated axons"
+    },
+    {
+      "from": "hippocampus",
+      "to": "dendrite",
+      "relation": "forms_with",
+      "strength": 0.85,
+      "description": "Hippocampal neurons form extensive dendritic trees"
+    },
+    {
+      "from": "amygdala",
+      "to": "axon",
+      "relation": "projects_via",
+      "strength": 0.86,
+      "description": "Amygdala projects to other brain regions via axons"
+    },
+    {
+      "from": "immunoglobulin",
+      "to": "b_cell",
+      "relation": "produced_by",
+      "strength": 0.97,
+      "description": "Immunoglobulins are produced by B cells"
+    },
+    {
+      "from": "complement_system",
+      "to": "macrophage",
+      "relation": "activates",
+      "strength": 0.91,
+      "description": "Complement proteins can activate macrophages"
+    },
+    {
+      "from": "vaccine",
+      "to": "immunoglobulin",
+      "relation": "induces",
+      "strength": 0.94,
+      "description": "Vaccines induce production of specific immunoglobulins"
+    },
+    {
+      "from": "archaea",
+      "to": "horizontal_gene_transfer",
+      "relation": "participates_in",
+      "strength": 0.86,
+      "description": "Archaea participate in horizontal gene transfer"
+    },
+    {
+      "from": "microbiome",
+      "to": "biofilm",
+      "relation": "contains",
+      "strength": 0.89,
+      "description": "Microbiomes often contain biofilm communities"
+    },
+    {
+      "from": "extremophile",
+      "to": "archaea",
+      "relation": "often_classified_as",
+      "strength": 0.91,
+      "description": "Many extremophiles are classified as archaea"
+    },
+    {
+      "from": "prion",
+      "to": "horizontal_gene_transfer",
+      "relation": "independent_of",
+      "strength": 0.95,
+      "description": "Prion transmission is independent of horizontal gene transfer"
+    },
+    {
+      "from": "pathogenicity",
+      "to": "quorum_sensing",
+      "relation": "coordinated_by",
+      "strength": 0.87,
+      "description": "Pathogenic behaviors are often coordinated by quorum sensing"
+    },
+    {
+      "from": "ribosome",
+      "to": "codon",
+      "relation": "decodes",
+      "strength": 0.97,
+      "description": "Ribosomes decode codons during protein synthesis"
+    },
+    {
+      "from": "intron",
+      "to": "polymerase",
+      "relation": "transcribed_by",
+      "strength": 0.94,
+      "description": "Introns are transcribed by RNA polymerase but later removed"
+    },
+    {
+      "from": "epigenetics",
+      "to": "crispr",
+      "relation": "targeted_by",
+      "strength": 0.83,
+      "description": "Epigenetic modifications can be targeted by CRISPR systems"
+    }
+  ]
+}

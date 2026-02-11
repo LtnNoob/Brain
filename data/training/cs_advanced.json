@@ -1,0 +1,996 @@
+{
+  "source": "training-data:cs-advanced-v1",
+  "concepts": [
+    {
+      "id": "crypto_aes",
+      "name": "AES",
+      "type": "algorithm",
+      "description": "Advanced Encryption Standard, symmetric block cipher with 128, 192, or 256-bit keys",
+      "domain": "cryptography",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "id": "crypto_rsa",
+      "name": "RSA Algorithm",
+      "type": "algorithm",
+      "description": "Public-key cryptosystem based on integer factorization difficulty",
+      "domain": "cryptography",
+      "trust_category": "FACT",
+      "trust_value": 0.99
+    },
+    {
+      "id": "crypto_public_key",
+      "name": "Public Key",
+      "type": "concept",
+      "description": "Publicly accessible key in asymmetric cryptography for encryption/verification",
+      "domain": "cryptography",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "id": "crypto_digital_signature",
+      "name": "Digital Signature",
+      "type": "concept",
+      "description": "Cryptographic mechanism for authenticity and non-repudiation",
+      "domain": "cryptography",
+      "trust_category": "FACT",
+      "trust_value": 0.97
+    },
+    {
+      "id": "crypto_blockchain",
+      "name": "Blockchain",
+      "type": "concept",
+      "description": "Distributed ledger with cryptographically linked blocks",
+      "domain": "cryptography",
+      "trust_category": "FACT",
+      "trust_value": 0.96
+    },
+    {
+      "id": "crypto_zkp",
+      "name": "Zero Knowledge Proof",
+      "type": "concept",
+      "description": "Cryptographic proof that reveals no information beyond statement validity",
+      "domain": "cryptography",
+      "trust_category": "FACT",
+      "trust_value": 0.95
+    },
+    {
+      "id": "crypto_elliptic_curve",
+      "name": "Elliptic Curve",
+      "type": "concept",
+      "description": "Mathematical structure used in elliptic curve cryptography",
+      "domain": "cryptography",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "id": "crypto_sha256",
+      "name": "SHA-256",
+      "type": "algorithm",
+      "description": "Cryptographic hash function producing 256-bit hash values",
+      "domain": "cryptography",
+      "trust_category": "FACT",
+      "trust_value": 0.99
+    },
+    {
+      "id": "crypto_symmetric",
+      "name": "Symmetric Encryption",
+      "type": "concept",
+      "description": "Encryption using the same key for encryption and decryption",
+      "domain": "cryptography",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "id": "crypto_hash_function",
+      "name": "Hash Function",
+      "type": "concept",
+      "description": "Mathematical function mapping arbitrary data to fixed-size values",
+      "domain": "cryptography",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "id": "compiler_lexer",
+      "name": "Lexer",
+      "type": "component",
+      "description": "Tokenizes source code into lexical tokens for parsing",
+      "domain": "compiler",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "id": "compiler_parser",
+      "name": "Parser",
+      "type": "component",
+      "description": "Analyzes token sequences and builds abstract syntax trees",
+      "domain": "compiler",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "id": "compiler_ast",
+      "name": "AST",
+      "type": "data_structure",
+      "description": "Abstract Syntax Tree representing program structure",
+      "domain": "compiler",
+      "trust_category": "FACT",
+      "trust_value": 0.99
+    },
+    {
+      "id": "compiler_codegen",
+      "name": "Code Generation",
+      "type": "process",
+      "description": "Translates intermediate representation to target machine code",
+      "domain": "compiler",
+      "trust_category": "FACT",
+      "trust_value": 0.97
+    },
+    {
+      "id": "compiler_optimization",
+      "name": "Optimization Pass",
+      "type": "process",
+      "description": "Compiler phase improving code performance or size",
+      "domain": "compiler",
+      "trust_category": "FACT",
+      "trust_value": 0.96
+    },
+    {
+      "id": "compiler_jit",
+      "name": "JIT",
+      "type": "concept",
+      "description": "Just-In-Time compilation during runtime execution",
+      "domain": "compiler",
+      "trust_category": "FACT",
+      "trust_value": 0.97
+    },
+    {
+      "id": "compiler_bytecode",
+      "name": "Bytecode",
+      "type": "concept",
+      "description": "Intermediate code representation for virtual machines",
+      "domain": "compiler",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "id": "compiler_frontend",
+      "name": "Compiler Frontend",
+      "type": "component",
+      "description": "Source language analysis including lexing, parsing, and semantic analysis",
+      "domain": "compiler",
+      "trust_category": "FACT",
+      "trust_value": 0.97
+    },
+    {
+      "id": "compiler_backend",
+      "name": "Compiler Backend",
+      "type": "component",
+      "description": "Target code generation and machine-specific optimizations",
+      "domain": "compiler",
+      "trust_category": "FACT",
+      "trust_value": 0.97
+    },
+    {
+      "id": "compiler_ir",
+      "name": "Intermediate Representation",
+      "type": "concept",
+      "description": "Language-neutral code representation for optimization",
+      "domain": "compiler",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "id": "dist_consensus",
+      "name": "Consensus",
+      "type": "concept",
+      "description": "Agreement protocol in distributed systems",
+      "domain": "distributed_systems",
+      "trust_category": "FACT",
+      "trust_value": 0.97
+    },
+    {
+      "id": "dist_paxos",
+      "name": "Paxos",
+      "type": "algorithm",
+      "description": "Consensus algorithm for unreliable networks",
+      "domain": "distributed_systems",
+      "trust_category": "FACT",
+      "trust_value": 0.96
+    },
+    {
+      "id": "dist_raft",
+      "name": "Raft",
+      "type": "algorithm",
+      "description": "Consensus algorithm designed for understandability",
+      "domain": "distributed_systems",
+      "trust_category": "FACT",
+      "trust_value": 0.97
+    },
+    {
+      "id": "dist_cap",
+      "name": "CAP Theorem",
+      "type": "theorem",
+      "description": "Consistency, Availability, Partition tolerance trade-off",
+      "domain": "distributed_systems",
+      "trust_category": "FACT",
+      "trust_value": 0.99
+    },
+    {
+      "id": "dist_sharding",
+      "name": "Sharding",
+      "type": "technique",
+      "description": "Horizontal database partitioning across multiple machines",
+      "domain": "distributed_systems",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "id": "dist_replication",
+      "name": "Replication",
+      "type": "technique",
+      "description": "Data duplication across multiple nodes for availability",
+      "domain": "distributed_systems",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "id": "dist_eventual_consistency",
+      "name": "Eventual Consistency",
+      "type": "concept",
+      "description": "Consistency model where updates propagate asynchronously",
+      "domain": "distributed_systems",
+      "trust_category": "FACT",
+      "trust_value": 0.96
+    },
+    {
+      "id": "dist_byzantine_fault",
+      "name": "Byzantine Fault Tolerance",
+      "type": "concept",
+      "description": "System resilience to arbitrary node failures",
+      "domain": "distributed_systems",
+      "trust_category": "FACT",
+      "trust_value": 0.95
+    },
+    {
+      "id": "dist_vector_clock",
+      "name": "Vector Clock",
+      "type": "concept",
+      "description": "Logical clock for ordering events in distributed systems",
+      "domain": "distributed_systems",
+      "trust_category": "FACT",
+      "trust_value": 0.96
+    },
+    {
+      "id": "dist_gossip_protocol",
+      "name": "Gossip Protocol",
+      "type": "algorithm",
+      "description": "Epidemic communication pattern for distributed coordination",
+      "domain": "distributed_systems",
+      "trust_category": "FACT",
+      "trust_value": 0.95
+    },
+    {
+      "id": "lang_type_system",
+      "name": "Type System",
+      "type": "concept",
+      "description": "Language rules for assigning types to program constructs",
+      "domain": "programming_languages",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "id": "lang_lambda_calculus",
+      "name": "Lambda Calculus",
+      "type": "concept",
+      "description": "Formal system for function definition and application",
+      "domain": "programming_languages",
+      "trust_category": "FACT",
+      "trust_value": 0.99
+    },
+    {
+      "id": "lang_gc",
+      "name": "Garbage Collection",
+      "type": "technique",
+      "description": "Automatic memory management reclaiming unused objects",
+      "domain": "programming_languages",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "id": "lang_closures",
+      "name": "Closures",
+      "type": "concept",
+      "description": "Functions capturing variables from enclosing scope",
+      "domain": "programming_languages",
+      "trust_category": "FACT",
+      "trust_value": 0.97
+    },
+    {
+      "id": "lang_monads",
+      "name": "Monads",
+      "type": "concept",
+      "description": "Functional programming pattern for composable computations",
+      "domain": "programming_languages",
+      "trust_category": "FACT",
+      "trust_value": 0.95
+    },
+    {
+      "id": "lang_pattern_matching",
+      "name": "Pattern Matching",
+      "type": "feature",
+      "description": "Structural comparison and destructuring of data",
+      "domain": "programming_languages",
+      "trust_category": "FACT",
+      "trust_value": 0.97
+    },
+    {
+      "id": "lang_polymorphism",
+      "name": "Polymorphism",
+      "type": "concept",
+      "description": "Code working with multiple types through common interface",
+      "domain": "programming_languages",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "id": "lang_higher_order_functions",
+      "name": "Higher-Order Functions",
+      "type": "concept",
+      "description": "Functions that operate on other functions",
+      "domain": "programming_languages",
+      "trust_category": "FACT",
+      "trust_value": 0.97
+    },
+    {
+      "id": "lang_immutability",
+      "name": "Immutability",
+      "type": "concept",
+      "description": "Data structures that cannot be modified after creation",
+      "domain": "programming_languages",
+      "trust_category": "FACT",
+      "trust_value": 0.96
+    },
+    {
+      "id": "lang_tail_recursion",
+      "name": "Tail Recursion",
+      "type": "concept",
+      "description": "Recursive calls in tail position for stack optimization",
+      "domain": "programming_languages",
+      "trust_category": "FACT",
+      "trust_value": 0.97
+    },
+    {
+      "id": "hw_alu",
+      "name": "ALU",
+      "type": "component",
+      "description": "Arithmetic Logic Unit performing mathematical operations",
+      "domain": "hardware",
+      "trust_category": "FACT",
+      "trust_value": 0.99
+    },
+    {
+      "id": "hw_register",
+      "name": "Register",
+      "type": "component",
+      "description": "High-speed storage location within CPU",
+      "domain": "hardware",
+      "trust_category": "FACT",
+      "trust_value": 0.99
+    },
+    {
+      "id": "hw_cache_line",
+      "name": "Cache Line",
+      "type": "concept",
+      "description": "Fixed-size block of data transferred between cache levels",
+      "domain": "hardware",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "id": "hw_pipeline",
+      "name": "Pipeline",
+      "type": "architecture",
+      "description": "Instruction processing in overlapping stages",
+      "domain": "hardware",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "id": "hw_branch_prediction",
+      "name": "Branch Prediction",
+      "type": "technique",
+      "description": "CPU predicting conditional branch outcomes",
+      "domain": "hardware",
+      "trust_category": "FACT",
+      "trust_value": 0.97
+    },
+    {
+      "id": "hw_fpga",
+      "name": "FPGA",
+      "type": "device",
+      "description": "Field-Programmable Gate Array for reconfigurable logic",
+      "domain": "hardware",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "id": "hw_simd",
+      "name": "SIMD",
+      "type": "architecture",
+      "description": "Single Instruction Multiple Data parallel processing",
+      "domain": "hardware",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "id": "hw_risc",
+      "name": "RISC",
+      "type": "architecture",
+      "description": "Reduced Instruction Set Computer design philosophy",
+      "domain": "hardware",
+      "trust_category": "FACT",
+      "trust_value": 0.99
+    },
+    {
+      "id": "hw_cisc",
+      "name": "CISC",
+      "type": "architecture",
+      "description": "Complex Instruction Set Computer design philosophy",
+      "domain": "hardware",
+      "trust_category": "FACT",
+      "trust_value": 0.99
+    },
+    {
+      "id": "hw_superscalar",
+      "name": "Superscalar",
+      "type": "architecture",
+      "description": "CPU executing multiple instructions per clock cycle",
+      "domain": "hardware",
+      "trust_category": "FACT",
+      "trust_value": 0.97
+    }
+  ],
+  "relations": [
+    {
+      "source": "crypto_rsa",
+      "target": "crypto_public_key",
+      "type": "uses",
+      "strength": 0.9,
+      "description": "RSA algorithm employs public key cryptography"
+    },
+    {
+      "source": "crypto_digital_signature",
+      "target": "crypto_public_key",
+      "type": "requires",
+      "strength": 0.85,
+      "description": "Digital signatures require public key infrastructure"
+    },
+    {
+      "source": "crypto_blockchain",
+      "target": "crypto_digital_signature",
+      "type": "uses",
+      "strength": 0.8,
+      "description": "Blockchain uses digital signatures for transaction validation"
+    },
+    {
+      "source": "crypto_blockchain",
+      "target": "crypto_sha256",
+      "type": "uses",
+      "strength": 0.9,
+      "description": "Many blockchains use SHA-256 for hashing"
+    },
+    {
+      "source": "crypto_elliptic_curve",
+      "target": "crypto_public_key",
+      "type": "implements",
+      "strength": 0.85,
+      "description": "Elliptic curve cryptography implements public key systems"
+    },
+    {
+      "source": "crypto_zkp",
+      "target": "crypto_blockchain",
+      "type": "enhances",
+      "strength": 0.7,
+      "description": "Zero-knowledge proofs enhance blockchain privacy"
+    },
+    {
+      "source": "crypto_aes",
+      "target": "crypto_symmetric",
+      "type": "implements",
+      "strength": 0.9,
+      "description": "AES is a symmetric encryption algorithm"
+    },
+    {
+      "source": "crypto_sha256",
+      "target": "crypto_hash_function",
+      "type": "implements",
+      "strength": 0.95,
+      "description": "SHA-256 is a specific hash function implementation"
+    },
+    {
+      "source": "compiler_lexer",
+      "target": "compiler_parser",
+      "type": "feeds_into",
+      "strength": 0.9,
+      "description": "Lexer output feeds into parser"
+    },
+    {
+      "source": "compiler_parser",
+      "target": "compiler_ast",
+      "type": "produces",
+      "strength": 0.95,
+      "description": "Parser produces abstract syntax trees"
+    },
+    {
+      "source": "compiler_ast",
+      "target": "compiler_ir",
+      "type": "converts_to",
+      "strength": 0.8,
+      "description": "AST converts to intermediate representation"
+    },
+    {
+      "source": "compiler_ir",
+      "target": "compiler_codegen",
+      "type": "input_to",
+      "strength": 0.85,
+      "description": "IR is input to code generation"
+    },
+    {
+      "source": "compiler_optimization",
+      "target": "compiler_ir",
+      "type": "transforms",
+      "strength": 0.8,
+      "description": "Optimization passes transform IR"
+    },
+    {
+      "source": "compiler_jit",
+      "target": "compiler_codegen",
+      "type": "performs",
+      "strength": 0.75,
+      "description": "JIT performs runtime code generation"
+    },
+    {
+      "source": "compiler_bytecode",
+      "target": "compiler_ir",
+      "type": "type_of",
+      "strength": 0.7,
+      "description": "Bytecode is a type of intermediate representation"
+    },
+    {
+      "source": "compiler_frontend",
+      "target": "compiler_lexer",
+      "type": "contains",
+      "strength": 0.85,
+      "description": "Compiler frontend contains lexer"
+    },
+    {
+      "source": "compiler_frontend",
+      "target": "compiler_parser",
+      "type": "contains",
+      "strength": 0.85,
+      "description": "Compiler frontend contains parser"
+    },
+    {
+      "source": "compiler_backend",
+      "target": "compiler_codegen",
+      "type": "contains",
+      "strength": 0.85,
+      "description": "Compiler backend contains code generation"
+    },
+    {
+      "source": "dist_paxos",
+      "target": "dist_consensus",
+      "type": "implements",
+      "strength": 0.9,
+      "description": "Paxos implements consensus mechanism"
+    },
+    {
+      "source": "dist_raft",
+      "target": "dist_consensus",
+      "type": "implements",
+      "strength": 0.9,
+      "description": "Raft implements consensus mechanism"
+    },
+    {
+      "source": "dist_cap",
+      "target": "dist_eventual_consistency",
+      "type": "explains",
+      "strength": 0.8,
+      "description": "CAP theorem explains eventual consistency trade-offs"
+    },
+    {
+      "source": "dist_sharding",
+      "target": "dist_replication",
+      "type": "complements",
+      "strength": 0.7,
+      "description": "Sharding often works with replication"
+    },
+    {
+      "source": "dist_byzantine_fault",
+      "target": "dist_consensus",
+      "type": "challenges",
+      "strength": 0.75,
+      "description": "Byzantine faults complicate consensus"
+    },
+    {
+      "source": "dist_vector_clock",
+      "target": "dist_eventual_consistency",
+      "type": "enables",
+      "strength": 0.8,
+      "description": "Vector clocks help implement eventual consistency"
+    },
+    {
+      "source": "dist_gossip_protocol",
+      "target": "dist_eventual_consistency",
+      "type": "implements",
+      "strength": 0.75,
+      "description": "Gossip protocols implement eventual consistency"
+    },
+    {
+      "source": "lang_lambda_calculus",
+      "target": "lang_closures",
+      "type": "foundation_for",
+      "strength": 0.85,
+      "description": "Lambda calculus provides foundation for closures"
+    },
+    {
+      "source": "lang_lambda_calculus",
+      "target": "lang_higher_order_functions",
+      "type": "foundation_for",
+      "strength": 0.9,
+      "description": "Lambda calculus enables higher-order functions"
+    },
+    {
+      "source": "lang_type_system",
+      "target": "lang_polymorphism",
+      "type": "enables",
+      "strength": 0.8,
+      "description": "Type systems enable polymorphism"
+    },
+    {
+      "source": "lang_gc",
+      "target": "lang_immutability",
+      "type": "simplifies",
+      "strength": 0.7,
+      "description": "Garbage collection simplifies immutable data management"
+    },
+    {
+      "source": "lang_monads",
+      "target": "lang_higher_order_functions",
+      "type": "uses",
+      "strength": 0.8,
+      "description": "Monads use higher-order functions"
+    },
+    {
+      "source": "lang_pattern_matching",
+      "target": "lang_type_system",
+      "type": "leverages",
+      "strength": 0.75,
+      "description": "Pattern matching leverages type information"
+    },
+    {
+      "source": "lang_tail_recursion",
+      "target": "lang_higher_order_functions",
+      "type": "optimization_for",
+      "strength": 0.7,
+      "description": "Tail recursion optimizes recursive higher-order functions"
+    },
+    {
+      "source": "hw_alu",
+      "target": "hw_register",
+      "type": "operates_on",
+      "strength": 0.9,
+      "description": "ALU operates on register contents"
+    },
+    {
+      "source": "hw_pipeline",
+      "target": "hw_alu",
+      "type": "contains",
+      "strength": 0.8,
+      "description": "Pipeline contains ALU stages"
+    },
+    {
+      "source": "hw_branch_prediction",
+      "target": "hw_pipeline",
+      "type": "optimizes",
+      "strength": 0.85,
+      "description": "Branch prediction optimizes pipeline efficiency"
+    },
+    {
+      "source": "hw_cache_line",
+      "target": "hw_register",
+      "type": "feeds",
+      "strength": 0.75,
+      "description": "Cache lines feed data to registers"
+    },
+    {
+      "source": "hw_simd",
+      "target": "hw_alu",
+      "type": "extends",
+      "strength": 0.8,
+      "description": "SIMD extends ALU for parallel operations"
+    },
+    {
+      "source": "hw_risc",
+      "target": "hw_pipeline",
+      "type": "facilitates",
+      "strength": 0.8,
+      "description": "RISC design facilitates efficient pipelining"
+    },
+    {
+      "source": "hw_cisc",
+      "target": "hw_pipeline",
+      "type": "complicates",
+      "strength": 0.7,
+      "description": "CISC instructions complicate pipeline design"
+    },
+    {
+      "source": "hw_superscalar",
+      "target": "hw_pipeline",
+      "type": "extends",
+      "strength": 0.85,
+      "description": "Superscalar extends pipeline with multiple execution units"
+    },
+    {
+      "source": "compiler_jit",
+      "target": "hw_branch_prediction",
+      "type": "benefits_from",
+      "strength": 0.6,
+      "description": "JIT compilation benefits from branch prediction"
+    },
+    {
+      "source": "compiler_optimization",
+      "target": "hw_simd",
+      "type": "targets",
+      "strength": 0.7,
+      "description": "Compiler optimizations target SIMD instructions"
+    },
+    {
+      "source": "crypto_aes",
+      "target": "hw_simd",
+      "type": "accelerated_by",
+      "strength": 0.75,
+      "description": "AES encryption accelerated by SIMD instructions"
+    },
+    {
+      "source": "crypto_elliptic_curve",
+      "target": "hw_fpga",
+      "type": "implemented_on",
+      "strength": 0.7,
+      "description": "Elliptic curve operations implemented on FPGA"
+    },
+    {
+      "source": "dist_consensus",
+      "target": "crypto_digital_signature",
+      "type": "uses",
+      "strength": 0.75,
+      "description": "Consensus protocols use digital signatures"
+    },
+    {
+      "source": "dist_sharding",
+      "target": "crypto_hash_function",
+      "type": "uses",
+      "strength": 0.8,
+      "description": "Sharding uses hash functions for data distribution"
+    },
+    {
+      "source": "compiler_bytecode",
+      "target": "dist_replication",
+      "type": "distributed_via",
+      "strength": 0.6,
+      "description": "Bytecode can be distributed via replication"
+    },
+    {
+      "source": "lang_gc",
+      "target": "compiler_optimization",
+      "type": "requires",
+      "strength": 0.7,
+      "description": "Garbage collection requires compiler optimizations"
+    },
+    {
+      "source": "lang_type_system",
+      "target": "compiler_ast",
+      "type": "annotates",
+      "strength": 0.8,
+      "description": "Type systems annotate AST nodes"
+    },
+    {
+      "source": "hw_cache_line",
+      "target": "lang_gc",
+      "type": "affects",
+      "strength": 0.65,
+      "description": "Cache line size affects garbage collection performance"
+    },
+    {
+      "source": "crypto_zkp",
+      "target": "lang_type_system",
+      "type": "verified_by",
+      "strength": 0.6,
+      "description": "Zero-knowledge proofs can be verified by type systems"
+    },
+    {
+      "source": "dist_vector_clock",
+      "target": "compiler_optimization",
+      "type": "optimized_by",
+      "strength": 0.55,
+      "description": "Vector clock operations optimized by compilers"
+    },
+    {
+      "source": "hw_fpga",
+      "target": "compiler_codegen",
+      "type": "target_of",
+      "strength": 0.65,
+      "description": "FPGA is a code generation target"
+    },
+    {
+      "source": "crypto_blockchain",
+      "target": "dist_cap",
+      "type": "constrained_by",
+      "strength": 0.7,
+      "description": "Blockchain systems constrained by CAP theorem"
+    },
+    {
+      "source": "lang_monads",
+      "target": "compiler_ir",
+      "type": "represented_in",
+      "strength": 0.6,
+      "description": "Monadic computations represented in IR"
+    },
+    {
+      "source": "hw_risc",
+      "target": "compiler_codegen",
+      "type": "simplifies",
+      "strength": 0.75,
+      "description": "RISC architecture simplifies code generation"
+    },
+    {
+      "source": "crypto_symmetric",
+      "target": "hw_alu",
+      "type": "computed_by",
+      "strength": 0.7,
+      "description": "Symmetric encryption computed by ALU operations"
+    },
+    {
+      "source": "dist_gossip_protocol",
+      "target": "crypto_hash_function",
+      "type": "uses",
+      "strength": 0.65,
+      "description": "Gossip protocols use hash functions for message integrity"
+    },
+    {
+      "source": "lang_pattern_matching",
+      "target": "compiler_ast",
+      "type": "analyzed_via",
+      "strength": 0.7,
+      "description": "Pattern matching analyzed via AST traversal"
+    },
+    {
+      "source": "hw_superscalar",
+      "target": "compiler_optimization",
+      "type": "enables",
+      "strength": 0.8,
+      "description": "Superscalar architecture enables advanced optimizations"
+    },
+    {
+      "source": "crypto_rsa",
+      "target": "dist_byzantine_fault",
+      "type": "helps_solve",
+      "strength": 0.65,
+      "description": "RSA signatures help solve Byzantine fault problems"
+    },
+    {
+      "source": "lang_immutability",
+      "target": "dist_eventual_consistency",
+      "type": "simplifies",
+      "strength": 0.7,
+      "description": "Immutable data simplifies eventual consistency"
+    },
+    {
+      "source": "compiler_frontend",
+      "target": "lang_type_system",
+      "type": "implements",
+      "strength": 0.8,
+      "description": "Compiler frontend implements type checking"
+    },
+    {
+      "source": "hw_cache_line",
+      "target": "compiler_optimization",
+      "type": "guides",
+      "strength": 0.75,
+      "description": "Cache line size guides memory access optimizations"
+    },
+    {
+      "source": "crypto_elliptic_curve",
+      "target": "crypto_zkp",
+      "type": "enables",
+      "strength": 0.7,
+      "description": "Elliptic curves enable efficient zero-knowledge proofs"
+    },
+    {
+      "source": "dist_paxos",
+      "target": "crypto_digital_signature",
+      "type": "secured_by",
+      "strength": 0.7,
+      "description": "Paxos messages secured by digital signatures"
+    },
+    {
+      "source": "lang_tail_recursion",
+      "target": "compiler_optimization",
+      "type": "enabled_by",
+      "strength": 0.8,
+      "description": "Tail call optimization enabled by compiler"
+    },
+    {
+      "source": "hw_branch_prediction",
+      "target": "lang_pattern_matching",
+      "type": "optimizes",
+      "strength": 0.6,
+      "description": "Branch prediction optimizes pattern matching execution"
+    },
+    {
+      "source": "crypto_sha256",
+      "target": "hw_simd",
+      "type": "accelerated_by",
+      "strength": 0.75,
+      "description": "SHA-256 computation accelerated by SIMD"
+    },
+    {
+      "source": "dist_raft",
+      "target": "crypto_hash_function",
+      "type": "uses",
+      "strength": 0.7,
+      "description": "Raft uses hash functions for log integrity"
+    },
+    {
+      "source": "lang_closures",
+      "target": "compiler_codegen",
+      "type": "challenges",
+      "strength": 0.65,
+      "description": "Closures challenge efficient code generation"
+    },
+    {
+      "source": "hw_register",
+      "target": "compiler_optimization",
+      "type": "target_of",
+      "strength": 0.85,
+      "description": "Register allocation is key compiler optimization"
+    },
+    {
+      "source": "crypto_public_key",
+      "target": "dist_consensus",
+      "type": "secures",
+      "strength": 0.75,
+      "description": "Public key cryptography secures consensus protocols"
+    },
+    {
+      "source": "lang_polymorphism",
+      "target": "compiler_ir",
+      "type": "represented_in",
+      "strength": 0.7,
+      "description": "Polymorphic dispatch represented in IR"
+    },
+    {
+      "source": "hw_cisc",
+      "target": "compiler_ir",
+      "type": "complicates",
+      "strength": 0.6,
+      "description": "CISC instruction complexity affects IR design"
+    },
+    {
+      "source": "dist_replication",
+      "target": "crypto_hash_function",
+      "type": "verified_by",
+      "strength": 0.75,
+      "description": "Data replication verified by hash functions"
+    },
+    {
+      "source": "compiler_backend",
+      "target": "hw_pipeline",
+      "type": "optimizes_for",
+      "strength": 0.8,
+      "description": "Compiler backend optimizes for pipeline architecture"
+    }
+  ]
+}

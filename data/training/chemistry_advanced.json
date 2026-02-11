@@ -1,0 +1,1023 @@
+{
+  "source": "training-data:chemistry-advanced-v1",
+  "concepts": [
+    {
+      "id": "alkane",
+      "name": "Alkane",
+      "category": "organic_chemistry",
+      "description": "Saturated hydrocarbons with single C-C bonds",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "id": "alkene",
+      "name": "Alkene",
+      "category": "organic_chemistry", 
+      "description": "Unsaturated hydrocarbons with C=C double bonds",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "id": "alkyne",
+      "name": "Alkyne",
+      "category": "organic_chemistry",
+      "description": "Unsaturated hydrocarbons with C≡C triple bonds",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "id": "alcohol",
+      "name": "Alcohol",
+      "category": "organic_chemistry",
+      "description": "Organic compounds containing hydroxyl (-OH) functional group",
+      "trust_category": "FACT",
+      "trust_value": 0.97
+    },
+    {
+      "id": "aldehyde",
+      "name": "Aldehyde", 
+      "category": "organic_chemistry",
+      "description": "Organic compounds with carbonyl group (C=O) at terminal carbon",
+      "trust_category": "FACT",
+      "trust_value": 0.97
+    },
+    {
+      "id": "ketone",
+      "name": "Ketone",
+      "category": "organic_chemistry",
+      "description": "Organic compounds with carbonyl group (C=O) between two carbons",
+      "trust_category": "FACT",
+      "trust_value": 0.97
+    },
+    {
+      "id": "ester",
+      "name": "Ester",
+      "category": "organic_chemistry",
+      "description": "Compounds formed by reaction between carboxylic acid and alcohol",
+      "trust_category": "FACT",
+      "trust_value": 0.97
+    },
+    {
+      "id": "amine",
+      "name": "Amine",
+      "category": "organic_chemistry",
+      "description": "Organic compounds derived from ammonia (NH3)",
+      "trust_category": "FACT",
+      "trust_value": 0.97
+    },
+    {
+      "id": "benzene",
+      "name": "Benzene",
+      "category": "organic_chemistry",
+      "description": "Aromatic hydrocarbon with six-carbon ring structure",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "id": "carboxylic_acid",
+      "name": "Carboxylic Acid",
+      "category": "organic_chemistry",
+      "description": "Organic acids containing carboxyl group (-COOH)",
+      "trust_category": "FACT",
+      "trust_value": 0.97
+    },
+    {
+      "id": "phenol",
+      "name": "Phenol",
+      "category": "organic_chemistry",
+      "description": "Aromatic compounds with hydroxyl group attached to benzene ring",
+      "trust_category": "FACT",
+      "trust_value": 0.97
+    },
+    {
+      "id": "ether",
+      "name": "Ether",
+      "category": "organic_chemistry",
+      "description": "Organic compounds with oxygen atom connecting two alkyl groups",
+      "trust_category": "FACT",
+      "trust_value": 0.97
+    },
+    {
+      "id": "amino_acid",
+      "name": "Amino Acid",
+      "category": "biochemistry",
+      "description": "Building blocks of proteins containing amino and carboxyl groups",
+      "trust_category": "FACT",
+      "trust_value": 0.99
+    },
+    {
+      "id": "lipid",
+      "name": "Lipid",
+      "category": "biochemistry",
+      "description": "Biological molecules including fats, oils, and phospholipids",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "id": "carbohydrate",
+      "name": "Carbohydrate",
+      "category": "biochemistry",
+      "description": "Biomolecules consisting of carbon, hydrogen, and oxygen",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "id": "atp",
+      "name": "ATP",
+      "category": "biochemistry",
+      "description": "Adenosine triphosphate, the energy currency of cells",
+      "trust_category": "FACT",
+      "trust_value": 0.99
+    },
+    {
+      "id": "glucose",
+      "name": "Glucose",
+      "category": "biochemistry",
+      "description": "Simple sugar and primary source of cellular energy",
+      "trust_category": "FACT",
+      "trust_value": 0.99
+    },
+    {
+      "id": "insulin",
+      "name": "Insulin",
+      "category": "biochemistry",
+      "description": "Protein hormone regulating glucose metabolism",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "id": "hemoglobin",
+      "name": "Hemoglobin",
+      "category": "biochemistry",
+      "description": "Iron-containing protein carrying oxygen in blood",
+      "trust_category": "FACT",
+      "trust_value": 0.99
+    },
+    {
+      "id": "chlorophyll",
+      "name": "Chlorophyll",
+      "category": "biochemistry",
+      "description": "Green pigment enabling photosynthesis in plants",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "id": "electrolysis",
+      "name": "Electrolysis",
+      "category": "electrochemistry",
+      "description": "Chemical decomposition using electrical current",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "id": "battery",
+      "name": "Battery",
+      "category": "electrochemistry",
+      "description": "Device converting chemical energy to electrical energy",
+      "trust_category": "FACT",
+      "trust_value": 0.97
+    },
+    {
+      "id": "galvanic_cell",
+      "name": "Galvanic Cell",
+      "category": "electrochemistry",
+      "description": "Electrochemical cell generating electricity from spontaneous reactions",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "id": "electrode",
+      "name": "Electrode",
+      "category": "electrochemistry",
+      "description": "Conductor through which electric current enters or leaves medium",
+      "trust_category": "FACT",
+      "trust_value": 0.97
+    },
+    {
+      "id": "faraday",
+      "name": "Faraday",
+      "category": "electrochemistry",
+      "description": "Unit of electric charge in electrochemistry (96,485 C/mol)",
+      "trust_category": "FACT",
+      "trust_value": 0.99
+    },
+    {
+      "id": "steel",
+      "name": "Steel",
+      "category": "materials_science",
+      "description": "Iron-carbon alloy with enhanced strength and durability",
+      "trust_category": "FACT",
+      "trust_value": 0.97
+    },
+    {
+      "id": "glass",
+      "name": "Glass",
+      "category": "materials_science",
+      "description": "Amorphous solid typically made from silica",
+      "trust_category": "FACT",
+      "trust_value": 0.97
+    },
+    {
+      "id": "graphene",
+      "name": "Graphene",
+      "category": "materials_science",
+      "description": "Single layer of carbon atoms arranged in hexagonal lattice",
+      "trust_category": "FACT",
+      "trust_value": 0.96
+    },
+    {
+      "id": "nanotube",
+      "name": "Nanotube",
+      "category": "materials_science",
+      "description": "Cylindrical carbon structures with exceptional properties",
+      "trust_category": "FACT",
+      "trust_value": 0.96
+    },
+    {
+      "id": "ceramic",
+      "name": "Ceramic",
+      "category": "materials_science",
+      "description": "Inorganic crystalline materials with high melting points",
+      "trust_category": "FACT",
+      "trust_value": 0.97
+    },
+    {
+      "id": "polymer",
+      "name": "Polymer",
+      "category": "materials_science",
+      "description": "Large molecules composed of repeated monomer units",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "id": "alloy",
+      "name": "Alloy",
+      "category": "materials_science",
+      "description": "Mixture of metals with enhanced properties",
+      "trust_category": "FACT",
+      "trust_value": 0.97
+    },
+    {
+      "id": "drug",
+      "name": "Drug",
+      "category": "pharmaceutical",
+      "description": "Chemical substance affecting biological systems therapeutically",
+      "trust_category": "FACT",
+      "trust_value": 0.96
+    },
+    {
+      "id": "receptor",
+      "name": "Receptor",
+      "category": "pharmaceutical",
+      "description": "Protein binding sites for drugs and signaling molecules",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "id": "pharmacokinetics",
+      "name": "Pharmacokinetics",
+      "category": "pharmaceutical",
+      "description": "Study of drug absorption, distribution, metabolism, and excretion",
+      "trust_category": "FACT",
+      "trust_value": 0.97
+    },
+    {
+      "id": "synthesis",
+      "name": "Synthesis",
+      "category": "pharmaceutical",
+      "description": "Chemical process of creating compounds from simpler molecules",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "id": "chirality",
+      "name": "Chirality",
+      "category": "pharmaceutical",
+      "description": "Property of molecules having non-superimposable mirror images",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "id": "enantiomer",
+      "name": "Enantiomer",
+      "category": "pharmaceutical",
+      "description": "Non-superimposable mirror image stereoisomers",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "id": "enzyme",
+      "name": "Enzyme",
+      "category": "biochemistry",
+      "description": "Protein catalysts accelerating biochemical reactions",
+      "trust_category": "FACT",
+      "trust_value": 0.99
+    },
+    {
+      "id": "catalyst",
+      "name": "Catalyst",
+      "category": "general_chemistry",
+      "description": "Substance increasing reaction rate without being consumed",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "id": "oxidation",
+      "name": "Oxidation",
+      "category": "general_chemistry",
+      "description": "Chemical reaction involving loss of electrons",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "id": "reduction",
+      "name": "Reduction",
+      "category": "general_chemistry",
+      "description": "Chemical reaction involving gain of electrons",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "id": "ph",
+      "name": "pH",
+      "category": "general_chemistry",
+      "description": "Measure of hydrogen ion concentration in solution",
+      "trust_category": "FACT",
+      "trust_value": 0.99
+    },
+    {
+      "id": "buffer",
+      "name": "Buffer",
+      "category": "general_chemistry",
+      "description": "Solution resisting pH changes upon acid/base addition",
+      "trust_category": "FACT",
+      "trust_value": 0.97
+    },
+    {
+      "id": "ionic_bond",
+      "name": "Ionic Bond",
+      "category": "general_chemistry",
+      "description": "Chemical bond formed by electron transfer between atoms",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "id": "covalent_bond",
+      "name": "Covalent Bond",
+      "category": "general_chemistry",
+      "description": "Chemical bond formed by electron sharing between atoms",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "id": "hydrogen_bond",
+      "name": "Hydrogen Bond",
+      "category": "general_chemistry",
+      "description": "Weak intermolecular attraction involving hydrogen atoms",
+      "trust_category": "FACT",
+      "trust_value": 0.97
+    },
+    {
+      "id": "thermodynamics",
+      "name": "Thermodynamics",
+      "category": "physical_chemistry",
+      "description": "Study of energy changes in chemical reactions",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "id": "kinetics",
+      "name": "Kinetics",
+      "category": "physical_chemistry",
+      "description": "Study of reaction rates and mechanisms",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "id": "spectroscopy",
+      "name": "Spectroscopy",
+      "category": "analytical_chemistry",
+      "description": "Analysis technique using electromagnetic radiation interaction",
+      "trust_category": "FACT",
+      "trust_value": 0.97
+    },
+    {
+      "id": "chromatography",
+      "name": "Chromatography",
+      "category": "analytical_chemistry",
+      "description": "Separation technique based on component mobility differences",
+      "trust_category": "FACT",
+      "trust_value": 0.97
+    }
+  ],
+  "relations": [
+    {
+      "from": "alkane",
+      "to": "alkene",
+      "type": "transformation",
+      "description": "Alkanes can be dehydrogenated to form alkenes",
+      "trust_category": "FACT",
+      "trust_value": 0.97
+    },
+    {
+      "from": "alkene",
+      "to": "alkyne",
+      "type": "transformation",
+      "description": "Alkenes can be further dehydrogenated to form alkynes",
+      "trust_category": "FACT",
+      "trust_value": 0.97
+    },
+    {
+      "from": "alkene",
+      "to": "alcohol",
+      "type": "hydration",
+      "description": "Alkenes can undergo hydration to form alcohols",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "from": "alcohol",
+      "to": "aldehyde",
+      "type": "oxidation",
+      "description": "Primary alcohols can be oxidized to aldehydes",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "from": "alcohol",
+      "to": "ketone",
+      "type": "oxidation",
+      "description": "Secondary alcohols can be oxidized to ketones",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "from": "aldehyde",
+      "to": "carboxylic_acid",
+      "type": "oxidation",
+      "description": "Aldehydes can be further oxidized to carboxylic acids",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "from": "carboxylic_acid",
+      "to": "ester",
+      "type": "esterification",
+      "description": "Carboxylic acids react with alcohols to form esters",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "from": "benzene",
+      "to": "phenol",
+      "type": "substitution",
+      "description": "Benzene can undergo electrophilic substitution to form phenol",
+      "trust_category": "FACT",
+      "trust_value": 0.97
+    },
+    {
+      "from": "amine",
+      "to": "amino_acid",
+      "type": "biosynthesis",
+      "description": "Amines are precursors in amino acid biosynthesis",
+      "trust_category": "FACT",
+      "trust_value": 0.96
+    },
+    {
+      "from": "amino_acid",
+      "to": "insulin",
+      "type": "protein_synthesis",
+      "description": "Amino acids are building blocks of insulin protein",
+      "trust_category": "FACT",
+      "trust_value": 0.99
+    },
+    {
+      "from": "amino_acid",
+      "to": "hemoglobin",
+      "type": "protein_synthesis",
+      "description": "Amino acids form the protein structure of hemoglobin",
+      "trust_category": "FACT",
+      "trust_value": 0.99
+    },
+    {
+      "from": "glucose",
+      "to": "atp",
+      "type": "glycolysis",
+      "description": "Glucose is metabolized to produce ATP through glycolysis",
+      "trust_category": "FACT",
+      "trust_value": 0.99
+    },
+    {
+      "from": "glucose",
+      "to": "carbohydrate",
+      "type": "classification",
+      "description": "Glucose is a simple carbohydrate monosaccharide",
+      "trust_category": "FACT",
+      "trust_value": 0.99
+    },
+    {
+      "from": "chlorophyll",
+      "to": "glucose",
+      "type": "photosynthesis",
+      "description": "Chlorophyll enables glucose production through photosynthesis",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "from": "lipid",
+      "to": "atp",
+      "type": "beta_oxidation",
+      "description": "Lipids are metabolized to produce ATP through beta-oxidation",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "from": "electrode",
+      "to": "electrolysis",
+      "type": "component",
+      "description": "Electrodes are essential components of electrolysis setup",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "from": "electrode",
+      "to": "galvanic_cell",
+      "type": "component",
+      "description": "Electrodes are fundamental components of galvanic cells",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "from": "galvanic_cell",
+      "to": "battery",
+      "type": "implementation",
+      "description": "Batteries are practical implementations of galvanic cells",
+      "trust_category": "FACT",
+      "trust_value": 0.97
+    },
+    {
+      "from": "faraday",
+      "to": "electrolysis",
+      "type": "quantification",
+      "description": "Faraday constant quantifies charge in electrolysis reactions",
+      "trust_category": "FACT",
+      "trust_value": 0.99
+    },
+    {
+      "from": "oxidation",
+      "to": "reduction",
+      "type": "redox_pair",
+      "description": "Oxidation and reduction always occur together in redox reactions",
+      "trust_category": "FACT",
+      "trust_value": 0.99
+    },
+    {
+      "from": "oxidation",
+      "to": "electrode",
+      "type": "electrochemistry",
+      "description": "Oxidation occurs at the anode electrode",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "from": "reduction",
+      "to": "electrode",
+      "type": "electrochemistry",
+      "description": "Reduction occurs at the cathode electrode",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "from": "steel",
+      "to": "alloy",
+      "type": "classification",
+      "description": "Steel is a specific type of iron-carbon alloy",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "from": "graphene",
+      "to": "nanotube",
+      "type": "structural_relation",
+      "description": "Nanotubes can be conceptualized as rolled graphene sheets",
+      "trust_category": "FACT",
+      "trust_value": 0.97
+    },
+    {
+      "from": "polymer",
+      "to": "synthesis",
+      "type": "production_method",
+      "description": "Polymers are produced through polymerization synthesis reactions",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "from": "chirality",
+      "to": "enantiomer",
+      "type": "definition",
+      "description": "Enantiomers are specific manifestations of molecular chirality",
+      "trust_category": "FACT",
+      "trust_value": 0.99
+    },
+    {
+      "from": "drug",
+      "to": "receptor",
+      "type": "interaction",
+      "description": "Drugs exert effects by binding to specific receptors",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "from": "drug",
+      "to": "pharmacokinetics",
+      "type": "study_relationship",
+      "description": "Pharmacokinetics studies how the body processes drugs",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "from": "drug",
+      "to": "synthesis",
+      "type": "production",
+      "description": "Drugs are produced through chemical synthesis processes",
+      "trust_category": "FACT",
+      "trust_value": 0.97
+    },
+    {
+      "from": "enantiomer",
+      "to": "drug",
+      "type": "stereochemistry",
+      "description": "Drug enantiomers often have different biological activities",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "from": "enzyme",
+      "to": "catalyst",
+      "type": "classification",
+      "description": "Enzymes are biological catalysts that accelerate reactions",
+      "trust_category": "FACT",
+      "trust_value": 0.99
+    },
+    {
+      "from": "enzyme",
+      "to": "amino_acid",
+      "type": "composition",
+      "description": "Enzymes are proteins composed of amino acid sequences",
+      "trust_category": "FACT",
+      "trust_value": 0.99
+    },
+    {
+      "from": "catalyst",
+      "to": "kinetics",
+      "type": "effect",
+      "description": "Catalysts increase reaction rates studied in kinetics",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "from": "ph",
+      "to": "buffer",
+      "type": "regulation",
+      "description": "Buffers help maintain stable pH in chemical systems",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "from": "ionic_bond",
+      "to": "covalent_bond",
+      "type": "bonding_types",
+      "description": "Ionic and covalent bonds represent different electron-sharing modes",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "from": "hydrogen_bond",
+      "to": "amino_acid",
+      "type": "protein_structure",
+      "description": "Hydrogen bonds stabilize protein secondary structures",
+      "trust_category": "FACT",
+      "trust_value": 0.97
+    },
+    {
+      "from": "thermodynamics",
+      "to": "kinetics",
+      "type": "physical_chemistry",
+      "description": "Thermodynamics and kinetics are complementary aspects of reactions",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "from": "spectroscopy",
+      "to": "chromatography",
+      "type": "analytical_methods",
+      "description": "Both are key analytical techniques for chemical analysis",
+      "trust_category": "FACT",
+      "trust_value": 0.97
+    },
+    {
+      "from": "benzene",
+      "to": "polymer",
+      "type": "monomer_relation",
+      "description": "Benzene derivatives can serve as monomers for polymers",
+      "trust_category": "FACT",
+      "trust_value": 0.96
+    },
+    {
+      "from": "ester",
+      "to": "lipid",
+      "type": "biochemical_component",
+      "description": "Many lipids contain ester linkages in their structure",
+      "trust_category": "FACT",
+      "trust_value": 0.97
+    },
+    {
+      "from": "ketone",
+      "to": "glucose",
+      "type": "metabolic_intermediate",
+      "description": "Ketone bodies are metabolic alternatives to glucose",
+      "trust_category": "FACT",
+      "trust_value": 0.96
+    },
+    {
+      "from": "amine",
+      "to": "drug",
+      "type": "pharmacophore",
+      "description": "Amine groups are common pharmacophores in drug molecules",
+      "trust_category": "FACT",
+      "trust_value": 0.97
+    },
+    {
+      "from": "carboxylic_acid",
+      "to": "amino_acid",
+      "type": "functional_group",
+      "description": "All amino acids contain carboxylic acid functional groups",
+      "trust_category": "FACT",
+      "trust_value": 0.99
+    },
+    {
+      "from": "phenol",
+      "to": "drug",
+      "type": "pharmaceutical_scaffold",
+      "description": "Phenolic compounds serve as scaffolds for many drugs",
+      "trust_category": "FACT",
+      "trust_value": 0.96
+    },
+    {
+      "from": "ether",
+      "to": "drug",
+      "type": "drug_component",
+      "description": "Ether linkages are found in various pharmaceutical compounds",
+      "trust_category": "FACT",
+      "trust_value": 0.95
+    },
+    {
+      "from": "alkyne",
+      "to": "synthesis",
+      "type": "synthetic_building_block",
+      "description": "Alkynes are versatile building blocks in organic synthesis",
+      "trust_category": "FACT",
+      "trust_value": 0.97
+    },
+    {
+      "from": "insulin",
+      "to": "receptor",
+      "type": "hormone_receptor",
+      "description": "Insulin exerts effects through binding to insulin receptors",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "from": "hemoglobin",
+      "to": "oxidation",
+      "type": "oxygen_transport",
+      "description": "Hemoglobin undergoes oxidation state changes during oxygen transport",
+      "trust_category": "FACT",
+      "trust_value": 0.97
+    },
+    {
+      "from": "chlorophyll",
+      "to": "oxidation",
+      "type": "photosynthesis_chemistry",
+      "description": "Chlorophyll facilitates oxidation reactions in photosynthesis",
+      "trust_category": "FACT",
+      "trust_value": 0.97
+    },
+    {
+      "from": "battery",
+      "to": "polymer",
+      "type": "materials_application",
+      "description": "Polymer electrolytes are used in advanced battery technologies",
+      "trust_category": "FACT",
+      "trust_value": 0.95
+    },
+    {
+      "from": "glass",
+      "to": "ceramic",
+      "type": "materials_classification",
+      "description": "Glass is considered an amorphous ceramic material",
+      "trust_category": "FACT",
+      "trust_value": 0.96
+    },
+    {
+      "from": "steel",
+      "to": "oxidation",
+      "type": "corrosion",
+      "description": "Steel undergoes oxidation reactions leading to rust formation",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "from": "graphene",
+      "to": "electrode",
+      "type": "materials_application",
+      "description": "Graphene shows promise as electrode material in electrochemistry",
+      "trust_category": "FACT",
+      "trust_value": 0.95
+    },
+    {
+      "from": "nanotube",
+      "to": "electrode",
+      "type": "materials_application",
+      "description": "Carbon nanotubes are used in advanced electrode designs",
+      "trust_category": "FACT",
+      "trust_value": 0.95
+    },
+    {
+      "from": "synthesis",
+      "to": "catalyst",
+      "type": "synthetic_chemistry",
+      "description": "Catalysts are essential tools in chemical synthesis reactions",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "from": "pharmacokinetics",
+      "to": "enzyme",
+      "type": "drug_metabolism",
+      "description": "Enzymes play key roles in drug metabolism studied in pharmacokinetics",
+      "trust_category": "FACT",
+      "trust_value": 0.97
+    },
+    {
+      "from": "receptor",
+      "to": "amino_acid",
+      "type": "protein_structure",
+      "description": "Receptors are proteins composed of amino acid sequences",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "from": "alloy",
+      "to": "electrode",
+      "type": "materials_application",
+      "description": "Metal alloys are commonly used as electrode materials",
+      "trust_category": "FACT",
+      "trust_value": 0.96
+    },
+    {
+      "from": "ceramic",
+      "to": "electrode",
+      "type": "materials_application",
+      "description": "Ceramic materials are used in specialized electrode applications",
+      "trust_category": "FACT",
+      "trust_value": 0.95
+    },
+    {
+      "from": "buffer",
+      "to": "enzyme",
+      "type": "biochemical_environment",
+      "description": "Buffers maintain optimal pH for enzyme function",
+      "trust_category": "FACT",
+      "trust_value": 0.97
+    },
+    {
+      "from": "spectroscopy",
+      "to": "drug",
+      "type": "analytical_application",
+      "description": "Spectroscopy is used for drug identification and quality control",
+      "trust_category": "FACT",
+      "trust_value": 0.97
+    },
+    {
+      "from": "chromatography",
+      "to": "drug",
+      "type": "analytical_application",
+      "description": "Chromatography is essential for drug purification and analysis",
+      "trust_category": "FACT",
+      "trust_value": 0.97
+    },
+    {
+      "from": "thermodynamics",
+      "to": "battery",
+      "type": "energy_conversion",
+      "description": "Thermodynamics governs energy conversion efficiency in batteries",
+      "trust_category": "FACT",
+      "trust_value": 0.96
+    },
+    {
+      "from": "kinetics",
+      "to": "enzyme",
+      "type": "enzyme_kinetics",
+      "description": "Enzyme kinetics studies the rates of enzyme-catalyzed reactions",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "from": "ionic_bond",
+      "to": "ceramic",
+      "type": "materials_bonding",
+      "description": "Ceramic materials are held together primarily by ionic bonds",
+      "trust_category": "FACT",
+      "trust_value": 0.97
+    },
+    {
+      "from": "covalent_bond",
+      "to": "polymer",
+      "type": "materials_bonding",
+      "description": "Polymers are held together by covalent bonds between monomers",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "from": "hydrogen_bond",
+      "to": "carbohydrate",
+      "type": "biochemical_structure",
+      "description": "Hydrogen bonds stabilize carbohydrate structures",
+      "trust_category": "FACT",
+      "trust_value": 0.96
+    },
+    {
+      "from": "atp",
+      "to": "thermodynamics",
+      "type": "bioenergetics",
+      "description": "ATP hydrolysis provides thermodynamic driving force for cellular processes",
+      "trust_category": "FACT",
+      "trust_value": 0.97
+    },
+    {
+      "from": "lipid",
+      "to": "ester",
+      "type": "biochemical_linkage",
+      "description": "Most lipids contain ester bonds connecting fatty acids to backbone",
+      "trust_category": "FACT",
+      "trust_value": 0.97
+    },
+    {
+      "from": "carbohydrate",
+      "to": "ether",
+      "type": "glycosidic_bond",
+      "description": "Carbohydrates are linked through ether-like glycosidic bonds",
+      "trust_category": "FACT",
+      "trust_value": 0.96
+    },
+    {
+      "from": "electrolysis",
+      "to": "synthesis",
+      "type": "synthetic_method",
+      "description": "Electrolysis can be used as a method for chemical synthesis",
+      "trust_category": "FACT",
+      "trust_value": 0.96
+    },
+    {
+      "from": "galvanic_cell",
+      "to": "thermodynamics",
+      "type": "electrochemical_thermodynamics",
+      "description": "Galvanic cell voltage is determined by thermodynamic principles",
+      "trust_category": "FACT",
+      "trust_value": 0.97
+    },
+    {
+      "from": "faraday",
+      "to": "kinetics",
+      "type": "electrokinetics",
+      "description": "Faraday's laws relate to kinetics of electrochemical processes",
+      "trust_category": "FACT",
+      "trust_value": 0.96
+    },
+    {
+      "from": "chirality",
+      "to": "amino_acid",
+      "type": "stereochemistry",
+      "description": "Most amino acids exhibit chirality with L-configuration in biology",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    },
+    {
+      "from": "enantiomer",
+      "to": "synthesis",
+      "type": "stereosynthesis",
+      "description": "Enantioselective synthesis is crucial for producing single enantiomers",
+      "trust_category": "FACT",
+      "trust_value": 0.97
+    },
+    {
+      "from": "ph",
+      "to": "amino_acid",
+      "type": "ionization",
+      "description": "Amino acid ionization state depends on solution pH",
+      "trust_category": "FACT",
+      "trust_value": 0.98
+    }
+  ]
+}

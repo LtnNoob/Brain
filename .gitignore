@@ -4,3 +4,5 @@ backend/brain19
 backend/brain19_data/
 *.tmp
 *.log
+backend/brain19_cli
+backend/tools/brain19_cli

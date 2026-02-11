@@ -1,0 +1,523 @@
+{
+  "source": "training-data:medicine-health-v1",
+  "concepts": [
+    {
+      "label": "Anatomy",
+      "definition": "The branch of biology concerned with the study of the structure of organisms and their parts",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["medicine", "biology", "structure"]
+    },
+    {
+      "label": "Physiology", 
+      "definition": "The branch of biology that deals with the normal functions of living organisms and their parts",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["medicine", "biology", "function"]
+    },
+    {
+      "label": "Pathology",
+      "definition": "The science of the causes and effects of diseases, especially the branch of medicine that deals with the laboratory examination of samples of body tissue for diagnostic or forensic purposes",
+      "trust_category": "FACT", 
+      "trust_value": 0.98,
+      "tags": ["medicine", "disease", "diagnosis"]
+    },
+    {
+      "label": "Pharmacology",
+      "definition": "The branch of medicine concerned with the uses, effects, and modes of action of drugs",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["medicine", "drugs", "therapy"]
+    },
+    {
+      "label": "Immunology",
+      "definition": "The branch of medicine and biology concerned with immunity",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["medicine", "immunity", "defense"]
+    },
+    {
+      "label": "Epidemiology",
+      "definition": "The branch of medicine which deals with the incidence, distribution, and possible control of diseases and other factors relating to health",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["medicine", "public health", "statistics"]
+    },
+    {
+      "label": "Cardiology",
+      "definition": "The branch of medicine that deals with diseases and abnormalities of the heart",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["medicine", "heart", "specialty"]
+    },
+    {
+      "label": "Neurology",
+      "definition": "The branch of medicine or biology that deals with the anatomy, functions, and organic disorders of nerves and the nervous system",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["medicine", "nervous system", "brain"]
+    },
+    {
+      "label": "Oncology",
+      "definition": "The study and treatment of tumors",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["medicine", "cancer", "tumors"]
+    },
+    {
+      "label": "Psychiatry",
+      "definition": "The study and treatment of mental illness, emotional disturbance, and abnormal behavior",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["medicine", "mental health", "psychology"]
+    },
+    {
+      "label": "Radiology",
+      "definition": "The science dealing with X-rays and other high-energy radiation, especially the use of such radiation for the diagnosis and treatment of disease",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["medicine", "imaging", "diagnosis"]
+    },
+    {
+      "label": "Surgery",
+      "definition": "The treatment of injuries or disorders of the body by incision or manipulation, especially with instruments",
+      "trust_category": "FACT", 
+      "trust_value": 0.98,
+      "tags": ["medicine", "treatment", "procedure"]
+    },
+    {
+      "label": "Anesthesia",
+      "definition": "Insensitivity to pain, especially as artificially induced by the administration of gases or the injection of drugs before surgical operations",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["medicine", "pain management", "surgery"]
+    },
+    {
+      "label": "Microbiology",
+      "definition": "The branch of biology that deals with microorganisms and their effects on other organisms",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["medicine", "microorganisms", "infection"]
+    },
+    {
+      "label": "Genetics",
+      "definition": "The study of heredity and the variation of inherited characteristics",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["medicine", "heredity", "DNA"]
+    },
+    {
+      "label": "Endocrinology",
+      "definition": "The branch of physiology and medicine concerned with endocrine glands and hormones",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["medicine", "hormones", "glands"]
+    },
+    {
+      "label": "Dermatology",
+      "definition": "The branch of medicine concerned with the diagnosis and treatment of skin disorders",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["medicine", "skin", "diagnosis"]
+    },
+    {
+      "label": "Orthopedics",
+      "definition": "The branch of medicine dealing with the correction of deformities of bones or muscles",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["medicine", "bones", "muscles"]
+    },
+    {
+      "label": "Pediatrics",
+      "definition": "The branch of medicine dealing with children and their diseases",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["medicine", "children", "development"]
+    },
+    {
+      "label": "Geriatrics",
+      "definition": "The branch of medicine or social science dealing with the health and care of old people",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["medicine", "elderly", "aging"]
+    },
+    {
+      "label": "Emergency Medicine",
+      "definition": "The medical specialty concerned with the care of illnesses or injuries requiring immediate medical attention",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["medicine", "emergency", "trauma"]
+    },
+    {
+      "label": "Public Health",
+      "definition": "The health of the population as a whole, especially as the subject of government regulation and support",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["medicine", "population", "prevention"]
+    },
+    {
+      "label": "Nutrition",
+      "definition": "The process of providing or obtaining the food necessary for health and growth",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["health", "food", "wellness"]
+    },
+    {
+      "label": "Bioethics",
+      "definition": "The ethics of medical and biological research",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["medicine", "ethics", "research"]
+    },
+    {
+      "label": "Telemedicine",
+      "definition": "The remote diagnosis and treatment of patients by means of telecommunications technology",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["medicine", "technology", "remote care"]
+    },
+    {
+      "label": "Preventive Medicine",
+      "definition": "The branch of medicine concerned with preventing disease",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["medicine", "prevention", "wellness"]
+    },
+    {
+      "label": "Rehabilitation",
+      "definition": "The action of restoring someone to health or normal life through training and therapy after imprisonment, addiction, or illness",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["medicine", "recovery", "therapy"]
+    },
+    {
+      "label": "Medical Imaging",
+      "definition": "The technique and process of creating visual representations of the interior of a body for clinical analysis and medical intervention",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["medicine", "imaging", "diagnosis"]
+    },
+    {
+      "label": "Clinical Trial",
+      "definition": "A research study conducted to evaluate a medical, surgical, or behavioral intervention",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["medicine", "research", "evidence"]
+    },
+    {
+      "label": "Evidence-Based Medicine",
+      "definition": "The conscientious, explicit and judicious use of current best evidence in making decisions about the care of individual patients",
+      "trust_category": "FACT", 
+      "trust_value": 0.98,
+      "tags": ["medicine", "evidence", "decision making"]
+    }
+  ],
+  "relations": [
+    {
+      "source_label": "Anatomy",
+      "target_label": "Physiology",
+      "relation_type": "relates_to",
+      "weight": 0.9
+    },
+    {
+      "source_label": "Anatomy",
+      "target_label": "Surgery",
+      "relation_type": "informs",
+      "weight": 0.85
+    },
+    {
+      "source_label": "Physiology",
+      "target_label": "Pathology", 
+      "relation_type": "contrasts_with",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Pathology",
+      "target_label": "Radiology",
+      "relation_type": "uses",
+      "weight": 0.7
+    },
+    {
+      "source_label": "Pharmacology",
+      "target_label": "Clinical Trial",
+      "relation_type": "evaluated_by",
+      "weight": 0.85
+    },
+    {
+      "source_label": "Immunology",
+      "target_label": "Microbiology",
+      "relation_type": "relates_to",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Epidemiology",
+      "target_label": "Public Health",
+      "relation_type": "is_component_of",
+      "weight": 0.9
+    },
+    {
+      "source_label": "Cardiology",
+      "target_label": "Emergency Medicine",
+      "relation_type": "overlaps_with",
+      "weight": 0.7
+    },
+    {
+      "source_label": "Neurology",
+      "target_label": "Psychiatry",
+      "relation_type": "relates_to",
+      "weight": 0.75
+    },
+    {
+      "source_label": "Oncology",
+      "target_label": "Radiology",
+      "relation_type": "uses",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Surgery",
+      "target_label": "Anesthesia", 
+      "relation_type": "requires",
+      "weight": 0.9
+    },
+    {
+      "source_label": "Surgery",
+      "target_label": "Orthopedics",
+      "relation_type": "includes",
+      "weight": 0.75
+    },
+    {
+      "source_label": "Genetics",
+      "target_label": "Oncology",
+      "relation_type": "informs",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Endocrinology",
+      "target_label": "Nutrition",
+      "relation_type": "relates_to",
+      "weight": 0.75
+    },
+    {
+      "source_label": "Dermatology",
+      "target_label": "Oncology",
+      "relation_type": "overlaps_with",
+      "weight": 0.6
+    },
+    {
+      "source_label": "Pediatrics",
+      "target_label": "Genetics",
+      "relation_type": "uses",
+      "weight": 0.7
+    },
+    {
+      "source_label": "Geriatrics",
+      "target_label": "Cardiology",
+      "relation_type": "often_involves",
+      "weight": 0.75
+    },
+    {
+      "source_label": "Medical Imaging",
+      "target_label": "Radiology",
+      "relation_type": "is_component_of",
+      "weight": 0.95
+    },
+    {
+      "source_label": "Evidence-Based Medicine",
+      "target_label": "Clinical Trial",
+      "relation_type": "relies_on",
+      "weight": 0.9
+    },
+    {
+      "source_label": "Preventive Medicine",
+      "target_label": "Public Health",
+      "relation_type": "overlaps_with",
+      "weight": 0.85
+    },
+    {
+      "source_label": "Rehabilitation",
+      "target_label": "Orthopedics",
+      "relation_type": "follows",
+      "weight": 0.7
+    },
+    {
+      "source_label": "Telemedicine",
+      "target_label": "Emergency Medicine",
+      "relation_type": "enables",
+      "weight": 0.65
+    },
+    {
+      "source_label": "Bioethics",
+      "target_label": "Clinical Trial",
+      "relation_type": "governs",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Microbiology",
+      "target_label": "Pharmacology",
+      "relation_type": "informs",
+      "weight": 0.75
+    },
+    {
+      "source_label": "Psychiatry",
+      "target_label": "Neurology", 
+      "relation_type": "overlaps_with",
+      "weight": 0.75
+    },
+    {
+      "source_label": "Public Health",
+      "target_label": "Nutrition",
+      "relation_type": "promotes",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Emergency Medicine",
+      "target_label": "Surgery",
+      "relation_type": "may_require",
+      "weight": 0.7
+    },
+    {
+      "source_label": "Clinical Trial",
+      "target_label": "Evidence-Based Medicine",
+      "relation_type": "supports",
+      "weight": 0.9
+    },
+    {
+      "source_label": "Genetics",
+      "target_label": "Pediatrics",
+      "relation_type": "informs",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Pathology",
+      "target_label": "Oncology",
+      "relation_type": "diagnoses",
+      "weight": 0.85
+    },
+    {
+      "source_label": "Immunology",
+      "target_label": "Genetics",
+      "relation_type": "involves",
+      "weight": 0.7
+    },
+    {
+      "source_label": "Dermatology",
+      "target_label": "Pathology",
+      "relation_type": "uses",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Endocrinology",
+      "target_label": "Genetics",
+      "relation_type": "involves",
+      "weight": 0.75
+    },
+    {
+      "source_label": "Orthopedics",
+      "target_label": "Rehabilitation",
+      "relation_type": "leads_to",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Anesthesia",
+      "target_label": "Emergency Medicine",
+      "relation_type": "used_in",
+      "weight": 0.75
+    },
+    {
+      "source_label": "Medical Imaging",
+      "target_label": "Cardiology",
+      "relation_type": "assists",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Medical Imaging",
+      "target_label": "Oncology",
+      "relation_type": "assists",
+      "weight": 0.85
+    },
+    {
+      "source_label": "Medical Imaging",
+      "target_label": "Neurology",
+      "relation_type": "assists",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Preventive Medicine",
+      "target_label": "Nutrition",
+      "relation_type": "emphasizes",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Telemedicine",
+      "target_label": "Preventive Medicine",
+      "relation_type": "enables",
+      "weight": 0.7
+    },
+    {
+      "source_label": "Bioethics",
+      "target_label": "Genetics",
+      "relation_type": "governs",
+      "weight": 0.75
+    },
+    {
+      "source_label": "Epidemiology",
+      "target_label": "Preventive Medicine",
+      "relation_type": "informs",
+      "weight": 0.85
+    },
+    {
+      "source_label": "Nutrition",
+      "target_label": "Endocrinology",
+      "relation_type": "affects",
+      "weight": 0.75
+    },
+    {
+      "source_label": "Geriatrics",
+      "target_label": "Nutrition",
+      "relation_type": "emphasizes",
+      "weight": 0.7
+    },
+    {
+      "source_label": "Pediatrics",
+      "target_label": "Nutrition",
+      "relation_type": "emphasizes",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Surgery",
+      "target_label": "Medical Imaging",
+      "relation_type": "guided_by",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Pharmacology",
+      "target_label": "Anesthesia",
+      "relation_type": "provides",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Microbiology",
+      "target_label": "Public Health",
+      "relation_type": "informs",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Evidence-Based Medicine",
+      "target_label": "Bioethics",
+      "relation_type": "guided_by",
+      "weight": 0.75
+    },
+    {
+      "source_label": "Rehabilitation",
+      "target_label": "Emergency Medicine",
+      "relation_type": "follows",
+      "weight": 0.6
+    },
+    {
+      "source_label": "Telemedicine",
+      "target_label": "Medical Imaging",
+      "relation_type": "transmits",
+      "weight": 0.7
+    }
+  ]
+}

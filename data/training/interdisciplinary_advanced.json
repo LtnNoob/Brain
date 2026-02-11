@@ -1,0 +1,1512 @@
+{
+  "source": "training-data:interdisciplinary-advanced-v1",
+  "concepts": [
+    {
+      "label": "Systems Biology",
+      "definition": "A biology-based interdisciplinary field of study that focuses on complex interactions within biological systems",
+      "trust_category": "FACT",
+      "trust_value": 0.96,
+      "tags": [
+        "biology",
+        "systems",
+        "interdisciplinary"
+      ]
+    },
+    {
+      "label": "Bioinformatics",
+      "definition": "An interdisciplinary field that develops methods and software tools for understanding biological data",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": [
+        "biology",
+        "computer science",
+        "data"
+      ]
+    },
+    {
+      "label": "Computational Neuroscience",
+      "definition": "A branch of neuroscience which employs mathematical models, theoretical analysis and computer simulations",
+      "trust_category": "FACT",
+      "trust_value": 0.96,
+      "tags": [
+        "neuroscience",
+        "mathematics",
+        "computation"
+      ]
+    },
+    {
+      "label": "Digital Humanities",
+      "definition": "An area of scholarly activity at the intersection of computing and the disciplines of the humanities",
+      "trust_category": "FACT",
+      "trust_value": 0.95,
+      "tags": [
+        "humanities",
+        "technology",
+        "interdisciplinary"
+      ]
+    },
+    {
+      "label": "Environmental Engineering",
+      "definition": "A professional engineering discipline that takes from broad scientific topics like chemistry, biology, ecology, geology, hydraulics, hydrology, microbiology, and mathematics",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": [
+        "engineering",
+        "environment",
+        "multiple disciplines"
+      ]
+    },
+    {
+      "label": "Cognitive Science",
+      "definition": "The interdisciplinary scientific study of the mind and its processes",
+      "trust_category": "FACT",
+      "trust_value": 0.96,
+      "tags": [
+        "psychology",
+        "neuroscience",
+        "philosophy",
+        "ai"
+      ]
+    },
+    {
+      "label": "Mechatronics",
+      "definition": "A multidisciplinary branch of engineering that focuses on the engineering of electronic, electrical and mechanical systems",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": [
+        "engineering",
+        "electronics",
+        "mechanics"
+      ]
+    },
+    {
+      "label": "Econophysics",
+      "definition": "A heterodox interdisciplinary research field applying theories and methods originally developed by physicists to economic problems",
+      "trust_category": "FACT",
+      "trust_value": 0.94,
+      "tags": [
+        "economics",
+        "physics",
+        "mathematical modeling"
+      ]
+    },
+    {
+      "label": "Psycholinguistics",
+      "definition": "The study of the psychological and neurobiological factors that enable humans to acquire, use, comprehend, and produce language",
+      "trust_category": "FACT",
+      "trust_value": 0.96,
+      "tags": [
+        "psychology",
+        "linguistics",
+        "cognition"
+      ]
+    },
+    {
+      "label": "Biomedical Engineering",
+      "definition": "The application of engineering principles and design concepts to medicine and biology for healthcare purposes",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": [
+        "engineering",
+        "medicine",
+        "biology"
+      ]
+    },
+    {
+      "label": "Astrobiology",
+      "definition": "The study of the origin, evolution, distribution, and future of life in the universe",
+      "trust_category": "FACT",
+      "trust_value": 0.95,
+      "tags": [
+        "biology",
+        "astronomy",
+        "space science"
+      ]
+    },
+    {
+      "label": "Geophysics",
+      "definition": "A subject of natural science concerned with the physical processes and physical properties of the Earth and its surrounding space environment",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": [
+        "geology",
+        "physics",
+        "earth science"
+      ]
+    },
+    {
+      "label": "Mathematical Psychology",
+      "definition": "An approach to psychological research that is based on mathematical modeling of perceptual, thought, cognitive and motor processes",
+      "trust_category": "FACT",
+      "trust_value": 0.95,
+      "tags": [
+        "psychology",
+        "mathematics",
+        "modeling"
+      ]
+    },
+    {
+      "label": "Sociobiology",
+      "definition": "A field of biology that aims to explain social behavior in terms of evolution",
+      "trust_category": "FACT",
+      "trust_value": 0.94,
+      "tags": [
+        "biology",
+        "sociology",
+        "evolution"
+      ]
+    },
+    {
+      "label": "Neuroeconomics",
+      "definition": "An interdisciplinary field that seeks to explain human decision making, the ability to process multiple alternatives and to follow a course of action",
+      "trust_category": "FACT",
+      "trust_value": 0.95,
+      "tags": [
+        "neuroscience",
+        "economics",
+        "decision making"
+      ]
+    },
+    {
+      "label": "Chemical Biology",
+      "definition": "A scientific discipline between chemistry and biology that involves the application of chemical techniques, analysis, and often small molecules produced through synthetic chemistry, to the study and manipulation of biological systems",
+      "trust_category": "FACT",
+      "trust_value": 0.96,
+      "tags": [
+        "chemistry",
+        "biology",
+        "molecular"
+      ]
+    },
+    {
+      "label": "Quantum Biology",
+      "definition": "The field of study concerned with whether quantum effects play a role in biological processes",
+      "trust_category": "THEORIES",
+      "trust_value": 0.85,
+      "tags": [
+        "quantum physics",
+        "biology",
+        "emerging field"
+      ]
+    },
+    {
+      "label": "Computational Social Science",
+      "definition": "The academic sub-discipline concerned with computational approaches to the social sciences",
+      "trust_category": "FACT",
+      "trust_value": 0.96,
+      "tags": [
+        "social science",
+        "computation",
+        "data science"
+      ]
+    },
+    {
+      "label": "Network Science",
+      "definition": "An academic field which studies complex networks such as telecommunication networks, computer networks, biological networks, cognitive and semantic networks, and social networks",
+      "trust_category": "FACT",
+      "trust_value": 0.96,
+      "tags": [
+        "mathematics",
+        "systems",
+        "networks"
+      ]
+    },
+    {
+      "label": "Science and Technology Studies",
+      "definition": "An interdisciplinary field that examines the creation, development, and consequences of science and technology in their historical, cultural, and social contexts",
+      "trust_category": "FACT",
+      "trust_value": 0.95,
+      "tags": [
+        "sociology",
+        "technology",
+        "science policy"
+      ]
+    }
+  ],
+  "relations": [
+    {
+      "source_label": "Systems Biology",
+      "target_label": "Bioinformatics",
+      "relation_type": "uses",
+      "weight": 0.95
+    },
+    {
+      "source_label": "Systems Biology",
+      "target_label": "Network Science",
+      "relation_type": "applies",
+      "weight": 0.85
+    },
+    {
+      "source_label": "Systems Biology",
+      "target_label": "Computational Neuroscience",
+      "relation_type": "overlaps_with",
+      "weight": 0.75
+    },
+    {
+      "source_label": "Systems Biology",
+      "target_label": "Mathematical Psychology",
+      "relation_type": "shares_methods_with",
+      "weight": 0.6
+    },
+    {
+      "source_label": "Systems Biology",
+      "target_label": "Chemical Biology",
+      "relation_type": "incorporates",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Bioinformatics",
+      "target_label": "Computational Neuroscience",
+      "relation_type": "provides_tools_for",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Bioinformatics",
+      "target_label": "Digital Humanities",
+      "relation_type": "shares_methods_with",
+      "weight": 0.7
+    },
+    {
+      "source_label": "Bioinformatics",
+      "target_label": "Computational Social Science",
+      "relation_type": "shares_techniques_with",
+      "weight": 0.75
+    },
+    {
+      "source_label": "Bioinformatics",
+      "target_label": "Network Science",
+      "relation_type": "utilizes",
+      "weight": 0.85
+    },
+    {
+      "source_label": "Bioinformatics",
+      "target_label": "Astrobiology",
+      "relation_type": "supports",
+      "weight": 0.65
+    },
+    {
+      "source_label": "Computational Neuroscience",
+      "target_label": "Cognitive Science",
+      "relation_type": "is_component_of",
+      "weight": 0.9
+    },
+    {
+      "source_label": "Computational Neuroscience",
+      "target_label": "Mathematical Psychology",
+      "relation_type": "relates_to",
+      "weight": 0.85
+    },
+    {
+      "source_label": "Computational Neuroscience",
+      "target_label": "Neuroeconomics",
+      "relation_type": "informs",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Computational Neuroscience",
+      "target_label": "Psycholinguistics",
+      "relation_type": "models",
+      "weight": 0.75
+    },
+    {
+      "source_label": "Computational Neuroscience",
+      "target_label": "Biomedical Engineering",
+      "relation_type": "collaborates_with",
+      "weight": 0.7
+    },
+    {
+      "source_label": "Digital Humanities",
+      "target_label": "Computational Social Science",
+      "relation_type": "overlaps_with",
+      "weight": 0.85
+    },
+    {
+      "source_label": "Digital Humanities",
+      "target_label": "Network Science",
+      "relation_type": "applies",
+      "weight": 0.75
+    },
+    {
+      "source_label": "Digital Humanities",
+      "target_label": "Science and Technology Studies",
+      "relation_type": "informs",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Digital Humanities",
+      "target_label": "Psycholinguistics",
+      "relation_type": "analyzes_texts_for",
+      "weight": 0.65
+    },
+    {
+      "source_label": "Environmental Engineering",
+      "target_label": "Systems Biology",
+      "relation_type": "applies",
+      "weight": 0.7
+    },
+    {
+      "source_label": "Environmental Engineering",
+      "target_label": "Geophysics",
+      "relation_type": "uses",
+      "weight": 0.85
+    },
+    {
+      "source_label": "Environmental Engineering",
+      "target_label": "Chemical Biology",
+      "relation_type": "incorporates",
+      "weight": 0.75
+    },
+    {
+      "source_label": "Environmental Engineering",
+      "target_label": "Network Science",
+      "relation_type": "models_systems_with",
+      "weight": 0.7
+    },
+    {
+      "source_label": "Environmental Engineering",
+      "target_label": "Computational Social Science",
+      "relation_type": "analyzes_impact_with",
+      "weight": 0.65
+    },
+    {
+      "source_label": "Cognitive Science",
+      "target_label": "Psycholinguistics",
+      "relation_type": "includes",
+      "weight": 0.9
+    },
+    {
+      "source_label": "Cognitive Science",
+      "target_label": "Mathematical Psychology",
+      "relation_type": "uses",
+      "weight": 0.85
+    },
+    {
+      "source_label": "Cognitive Science",
+      "target_label": "Neuroeconomics",
+      "relation_type": "includes",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Cognitive Science",
+      "target_label": "Digital Humanities",
+      "relation_type": "informs",
+      "weight": 0.7
+    },
+    {
+      "source_label": "Cognitive Science",
+      "target_label": "Computational Social Science",
+      "relation_type": "relates_to",
+      "weight": 0.75
+    },
+    {
+      "source_label": "Mechatronics",
+      "target_label": "Biomedical Engineering",
+      "relation_type": "applies_to",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Mechatronics",
+      "target_label": "Network Science",
+      "relation_type": "designs_systems_with",
+      "weight": 0.7
+    },
+    {
+      "source_label": "Mechatronics",
+      "target_label": "Environmental Engineering",
+      "relation_type": "supports",
+      "weight": 0.75
+    },
+    {
+      "source_label": "Mechatronics",
+      "target_label": "Astrobiology",
+      "relation_type": "builds_instruments_for",
+      "weight": 0.65
+    },
+    {
+      "source_label": "Econophysics",
+      "target_label": "Mathematical Psychology",
+      "relation_type": "shares_methods_with",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Econophysics",
+      "target_label": "Network Science",
+      "relation_type": "models_markets_with",
+      "weight": 0.85
+    },
+    {
+      "source_label": "Econophysics",
+      "target_label": "Computational Social Science",
+      "relation_type": "contributes_to",
+      "weight": 0.9
+    },
+    {
+      "source_label": "Econophysics",
+      "target_label": "Neuroeconomics",
+      "relation_type": "complements",
+      "weight": 0.75
+    },
+    {
+      "source_label": "Econophysics",
+      "target_label": "Systems Biology",
+      "relation_type": "borrows_concepts_from",
+      "weight": 0.6
+    },
+    {
+      "source_label": "Psycholinguistics",
+      "target_label": "Mathematical Psychology",
+      "relation_type": "uses_models_from",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Psycholinguistics",
+      "target_label": "Biomedical Engineering",
+      "relation_type": "informs_speech_technology_in",
+      "weight": 0.7
+    },
+    {
+      "source_label": "Psycholinguistics",
+      "target_label": "Computational Social Science",
+      "relation_type": "analyzes_language_with",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Psycholinguistics",
+      "target_label": "Network Science",
+      "relation_type": "studies_language_networks_with",
+      "weight": 0.75
+    },
+    {
+      "source_label": "Biomedical Engineering",
+      "target_label": "Chemical Biology",
+      "relation_type": "designs_devices_for",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Biomedical Engineering",
+      "target_label": "Network Science",
+      "relation_type": "models_biological_systems_with",
+      "weight": 0.75
+    },
+    {
+      "source_label": "Biomedical Engineering",
+      "target_label": "Quantum Biology",
+      "relation_type": "may_exploit_effects_from",
+      "weight": 0.6
+    },
+    {
+      "source_label": "Biomedical Engineering",
+      "target_label": "Science and Technology Studies",
+      "relation_type": "is_studied_by",
+      "weight": 0.7
+    },
+    {
+      "source_label": "Astrobiology",
+      "target_label": "Geophysics",
+      "relation_type": "studies_planetary_conditions_with",
+      "weight": 0.85
+    },
+    {
+      "source_label": "Astrobiology",
+      "target_label": "Chemical Biology",
+      "relation_type": "searches_for_life_chemistry_with",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Astrobiology",
+      "target_label": "Environmental Engineering",
+      "relation_type": "designs_life_support_with",
+      "weight": 0.75
+    },
+    {
+      "source_label": "Astrobiology",
+      "target_label": "Quantum Biology",
+      "relation_type": "investigates_quantum_effects_with",
+      "weight": 0.65
+    },
+    {
+      "source_label": "Astrobiology",
+      "target_label": "Science and Technology Studies",
+      "relation_type": "impacts_discussed_by",
+      "weight": 0.7
+    },
+    {
+      "source_label": "Geophysics",
+      "target_label": "Network Science",
+      "relation_type": "models_earth_systems_with",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Geophysics",
+      "target_label": "Mathematical Psychology",
+      "relation_type": "shares_statistical_methods_with",
+      "weight": 0.6
+    },
+    {
+      "source_label": "Geophysics",
+      "target_label": "Computational Social Science",
+      "relation_type": "studies_human_impact_with",
+      "weight": 0.7
+    },
+    {
+      "source_label": "Mathematical Psychology",
+      "target_label": "Network Science",
+      "relation_type": "models_cognition_with",
+      "weight": 0.85
+    },
+    {
+      "source_label": "Mathematical Psychology",
+      "target_label": "Science and Technology Studies",
+      "relation_type": "studies_technology_adoption_with",
+      "weight": 0.65
+    },
+    {
+      "source_label": "Sociobiology",
+      "target_label": "Mathematical Psychology",
+      "relation_type": "models_behavior_with",
+      "weight": 0.75
+    },
+    {
+      "source_label": "Sociobiology",
+      "target_label": "Network Science",
+      "relation_type": "analyzes_social_networks_with",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Sociobiology",
+      "target_label": "Computational Social Science",
+      "relation_type": "contributes_to",
+      "weight": 0.85
+    },
+    {
+      "source_label": "Sociobiology",
+      "target_label": "Neuroeconomics",
+      "relation_type": "explains_decision_making_for",
+      "weight": 0.7
+    },
+    {
+      "source_label": "Sociobiology",
+      "target_label": "Science and Technology Studies",
+      "relation_type": "is_analyzed_by",
+      "weight": 0.65
+    },
+    {
+      "source_label": "Neuroeconomics",
+      "target_label": "Network Science",
+      "relation_type": "models_decision_networks_with",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Neuroeconomics",
+      "target_label": "Biomedical Engineering",
+      "relation_type": "uses_brain_imaging_from",
+      "weight": 0.75
+    },
+    {
+      "source_label": "Neuroeconomics",
+      "target_label": "Chemical Biology",
+      "relation_type": "studies_neurotransmitters_with",
+      "weight": 0.7
+    },
+    {
+      "source_label": "Chemical Biology",
+      "target_label": "Quantum Biology",
+      "relation_type": "investigates_quantum_effects_with",
+      "weight": 0.75
+    },
+    {
+      "source_label": "Chemical Biology",
+      "target_label": "Network Science",
+      "relation_type": "maps_molecular_networks_with",
+      "weight": 0.85
+    },
+    {
+      "source_label": "Chemical Biology",
+      "target_label": "Science and Technology Studies",
+      "relation_type": "development_studied_by",
+      "weight": 0.65
+    },
+    {
+      "source_label": "Quantum Biology",
+      "target_label": "Network Science",
+      "relation_type": "models_quantum_systems_with",
+      "weight": 0.7
+    },
+    {
+      "source_label": "Quantum Biology",
+      "target_label": "Science and Technology Studies",
+      "relation_type": "implications_discussed_by",
+      "weight": 0.75
+    },
+    {
+      "source_label": "Computational Social Science",
+      "target_label": "Network Science",
+      "relation_type": "heavily_uses",
+      "weight": 0.95
+    },
+    {
+      "source_label": "Computational Social Science",
+      "target_label": "Science and Technology Studies",
+      "relation_type": "informs",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Network Science",
+      "target_label": "Science and Technology Studies",
+      "relation_type": "analyzes_knowledge_networks_for",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Systems Biology",
+      "target_label": "Econophysics",
+      "relation_type": "shares_modeling_approaches_with",
+      "weight": 0.7
+    },
+    {
+      "source_label": "Systems Biology",
+      "target_label": "Environmental Engineering",
+      "relation_type": "models_ecosystems_for",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Systems Biology",
+      "target_label": "Mechatronics",
+      "relation_type": "inspires_bio_robots_in",
+      "weight": 0.65
+    },
+    {
+      "source_label": "Systems Biology",
+      "target_label": "Science and Technology Studies",
+      "relation_type": "development_analyzed_by",
+      "weight": 0.7
+    },
+    {
+      "source_label": "Systems Biology",
+      "target_label": "Sociobiology",
+      "relation_type": "models_social_systems_with",
+      "weight": 0.75
+    },
+    {
+      "source_label": "Bioinformatics",
+      "target_label": "Mechatronics",
+      "relation_type": "designs_bio_sensors_with",
+      "weight": 0.7
+    },
+    {
+      "source_label": "Bioinformatics",
+      "target_label": "Econophysics",
+      "relation_type": "shares_big_data_methods_with",
+      "weight": 0.75
+    },
+    {
+      "source_label": "Bioinformatics",
+      "target_label": "Environmental Engineering",
+      "relation_type": "analyzes_environmental_data_for",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Bioinformatics",
+      "target_label": "Geophysics",
+      "relation_type": "processes_geological_data_with",
+      "weight": 0.6
+    },
+    {
+      "source_label": "Bioinformatics",
+      "target_label": "Sociobiology",
+      "relation_type": "analyzes_genetic_social_behavior_for",
+      "weight": 0.7
+    },
+    {
+      "source_label": "Bioinformatics",
+      "target_label": "Quantum Biology",
+      "relation_type": "models_quantum_effects_for",
+      "weight": 0.65
+    },
+    {
+      "source_label": "Computational Neuroscience",
+      "target_label": "Mechatronics",
+      "relation_type": "designs_neural_interfaces_with",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Computational Neuroscience",
+      "target_label": "Econophysics",
+      "relation_type": "models_market_psychology_with",
+      "weight": 0.7
+    },
+    {
+      "source_label": "Computational Neuroscience",
+      "target_label": "Environmental Engineering",
+      "relation_type": "optimizes_human_factors_for",
+      "weight": 0.65
+    },
+    {
+      "source_label": "Computational Neuroscience",
+      "target_label": "Geophysics",
+      "relation_type": "shares_signal_processing_with",
+      "weight": 0.6
+    },
+    {
+      "source_label": "Computational Neuroscience",
+      "target_label": "Sociobiology",
+      "relation_type": "models_social_cognition_with",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Computational Neuroscience",
+      "target_label": "Quantum Biology",
+      "relation_type": "investigates_quantum_cognition_with",
+      "weight": 0.6
+    },
+    {
+      "source_label": "Computational Neuroscience",
+      "target_label": "Astrobiology",
+      "relation_type": "studies_space_psychology_for",
+      "weight": 0.55
+    },
+    {
+      "source_label": "Computational Neuroscience",
+      "target_label": "Chemical Biology",
+      "relation_type": "models_neurotransmission_with",
+      "weight": 0.85
+    },
+    {
+      "source_label": "Digital Humanities",
+      "target_label": "Mechatronics",
+      "relation_type": "designs_interactive_exhibits_with",
+      "weight": 0.6
+    },
+    {
+      "source_label": "Digital Humanities",
+      "target_label": "Econophysics",
+      "relation_type": "analyzes_economic_texts_with",
+      "weight": 0.65
+    },
+    {
+      "source_label": "Digital Humanities",
+      "target_label": "Environmental Engineering",
+      "relation_type": "documents_environmental_history_for",
+      "weight": 0.7
+    },
+    {
+      "source_label": "Digital Humanities",
+      "target_label": "Geophysics",
+      "relation_type": "maps_historical_climate_with",
+      "weight": 0.65
+    },
+    {
+      "source_label": "Digital Humanities",
+      "target_label": "Sociobiology",
+      "relation_type": "analyzes_cultural_evolution_with",
+      "weight": 0.75
+    },
+    {
+      "source_label": "Digital Humanities",
+      "target_label": "Quantum Biology",
+      "relation_type": "documents_scientific_history_of",
+      "weight": 0.5
+    },
+    {
+      "source_label": "Digital Humanities",
+      "target_label": "Astrobiology",
+      "relation_type": "preserves_space_exploration_history_for",
+      "weight": 0.6
+    },
+    {
+      "source_label": "Digital Humanities",
+      "target_label": "Chemical Biology",
+      "relation_type": "archives_chemistry_history_for",
+      "weight": 0.55
+    },
+    {
+      "source_label": "Digital Humanities",
+      "target_label": "Biomedical Engineering",
+      "relation_type": "documents_medical_technology_history_for",
+      "weight": 0.65
+    },
+    {
+      "source_label": "Digital Humanities",
+      "target_label": "Mathematical Psychology",
+      "relation_type": "analyzes_psychology_texts_with",
+      "weight": 0.7
+    },
+    {
+      "source_label": "Digital Humanities",
+      "target_label": "Neuroeconomics",
+      "relation_type": "studies_economic_decision_texts_for",
+      "weight": 0.6
+    },
+    {
+      "source_label": "Environmental Engineering",
+      "target_label": "Mechatronics",
+      "relation_type": "builds_environmental_monitoring_with",
+      "weight": 0.85
+    },
+    {
+      "source_label": "Environmental Engineering",
+      "target_label": "Econophysics",
+      "relation_type": "models_environmental_economics_with",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Environmental Engineering",
+      "target_label": "Sociobiology",
+      "relation_type": "studies_human_environmental_impact_with",
+      "weight": 0.75
+    },
+    {
+      "source_label": "Environmental Engineering",
+      "target_label": "Quantum Biology",
+      "relation_type": "explores_quantum_photosynthesis_with",
+      "weight": 0.6
+    },
+    {
+      "source_label": "Environmental Engineering",
+      "target_label": "Mathematical Psychology",
+      "relation_type": "models_environmental_behavior_with",
+      "weight": 0.7
+    },
+    {
+      "source_label": "Environmental Engineering",
+      "target_label": "Neuroeconomics",
+      "relation_type": "studies_environmental_decisions_with",
+      "weight": 0.75
+    },
+    {
+      "source_label": "Environmental Engineering",
+      "target_label": "Astrobiology",
+      "relation_type": "designs_life_support_systems_with",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Environmental Engineering",
+      "target_label": "Biomedical Engineering",
+      "relation_type": "shares_filtration_technology_with",
+      "weight": 0.7
+    },
+    {
+      "source_label": "Cognitive Science",
+      "target_label": "Mechatronics",
+      "relation_type": "designs_cognitive_robots_with",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Cognitive Science",
+      "target_label": "Econophysics",
+      "relation_type": "models_cognitive_economics_with",
+      "weight": 0.75
+    },
+    {
+      "source_label": "Cognitive Science",
+      "target_label": "Environmental Engineering",
+      "relation_type": "designs_cognitive_ergonomics_for",
+      "weight": 0.7
+    },
+    {
+      "source_label": "Cognitive Science",
+      "target_label": "Geophysics",
+      "relation_type": "studies_spatial_cognition_with",
+      "weight": 0.65
+    },
+    {
+      "source_label": "Cognitive Science",
+      "target_label": "Sociobiology",
+      "relation_type": "explains_social_cognition_with",
+      "weight": 0.85
+    },
+    {
+      "source_label": "Cognitive Science",
+      "target_label": "Quantum Biology",
+      "relation_type": "investigates_quantum_consciousness_with",
+      "weight": 0.6
+    },
+    {
+      "source_label": "Cognitive Science",
+      "target_label": "Astrobiology",
+      "relation_type": "studies_alien_cognition_possibilities_with",
+      "weight": 0.55
+    },
+    {
+      "source_label": "Cognitive Science",
+      "target_label": "Chemical Biology",
+      "relation_type": "studies_cognitive_biochemistry_with",
+      "weight": 0.75
+    },
+    {
+      "source_label": "Cognitive Science",
+      "target_label": "Biomedical Engineering",
+      "relation_type": "designs_cognitive_prosthetics_with",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Cognitive Science",
+      "target_label": "Network Science",
+      "relation_type": "maps_cognitive_networks_with",
+      "weight": 0.85
+    },
+    {
+      "source_label": "Mechatronics",
+      "target_label": "Econophysics",
+      "relation_type": "automates_trading_systems_for",
+      "weight": 0.7
+    },
+    {
+      "source_label": "Mechatronics",
+      "target_label": "Geophysics",
+      "relation_type": "builds_seismic_monitoring_with",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Mechatronics",
+      "target_label": "Sociobiology",
+      "relation_type": "creates_social_robots_informed_by",
+      "weight": 0.7
+    },
+    {
+      "source_label": "Mechatronics",
+      "target_label": "Quantum Biology",
+      "relation_type": "builds_quantum_sensors_for",
+      "weight": 0.65
+    },
+    {
+      "source_label": "Mechatronics",
+      "target_label": "Mathematical Psychology",
+      "relation_type": "implements_cognitive_models_in",
+      "weight": 0.75
+    },
+    {
+      "source_label": "Mechatronics",
+      "target_label": "Neuroeconomics",
+      "relation_type": "builds_decision_support_systems_for",
+      "weight": 0.7
+    },
+    {
+      "source_label": "Mechatronics",
+      "target_label": "Chemical Biology",
+      "relation_type": "automates_chemical_synthesis_for",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Mechatronics",
+      "target_label": "Computational Social Science",
+      "relation_type": "builds_social_monitoring_systems_for",
+      "weight": 0.7
+    },
+    {
+      "source_label": "Mechatronics",
+      "target_label": "Science and Technology Studies",
+      "relation_type": "automation_impacts_studied_by",
+      "weight": 0.75
+    },
+    {
+      "source_label": "Econophysics",
+      "target_label": "Geophysics",
+      "relation_type": "models_resource_markets_with",
+      "weight": 0.75
+    },
+    {
+      "source_label": "Econophysics",
+      "target_label": "Sociobiology",
+      "relation_type": "models_evolutionary_economics_with",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Econophysics",
+      "target_label": "Quantum Biology",
+      "relation_type": "explores_quantum_market_effects_with",
+      "weight": 0.5
+    },
+    {
+      "source_label": "Econophysics",
+      "target_label": "Astrobiology",
+      "relation_type": "models_space_economy_for",
+      "weight": 0.6
+    },
+    {
+      "source_label": "Econophysics",
+      "target_label": "Chemical Biology",
+      "relation_type": "models_pharmaceutical_markets_with",
+      "weight": 0.7
+    },
+    {
+      "source_label": "Econophysics",
+      "target_label": "Biomedical Engineering",
+      "relation_type": "models_healthcare_economics_for",
+      "weight": 0.75
+    },
+    {
+      "source_label": "Psycholinguistics",
+      "target_label": "Mechatronics",
+      "relation_type": "designs_speech_interfaces_with",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Psycholinguistics",
+      "target_label": "Econophysics",
+      "relation_type": "analyzes_economic_language_with",
+      "weight": 0.65
+    },
+    {
+      "source_label": "Psycholinguistics",
+      "target_label": "Environmental Engineering",
+      "relation_type": "designs_environmental_communication_for",
+      "weight": 0.7
+    },
+    {
+      "source_label": "Psycholinguistics",
+      "target_label": "Geophysics",
+      "relation_type": "studies_geological_terminology_with",
+      "weight": 0.55
+    },
+    {
+      "source_label": "Psycholinguistics",
+      "target_label": "Sociobiology",
+      "relation_type": "studies_language_evolution_with",
+      "weight": 0.85
+    },
+    {
+      "source_label": "Psycholinguistics",
+      "target_label": "Quantum Biology",
+      "relation_type": "studies_quantum_language_processing_with",
+      "weight": 0.5
+    },
+    {
+      "source_label": "Psycholinguistics",
+      "target_label": "Astrobiology",
+      "relation_type": "designs_alien_communication_protocols_for",
+      "weight": 0.6
+    },
+    {
+      "source_label": "Psycholinguistics",
+      "target_label": "Chemical Biology",
+      "relation_type": "studies_chemical_communication_with",
+      "weight": 0.7
+    },
+    {
+      "source_label": "Psycholinguistics",
+      "target_label": "Science and Technology Studies",
+      "relation_type": "analyzes_scientific_language_for",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Biomedical Engineering",
+      "target_label": "Geophysics",
+      "relation_type": "uses_imaging_techniques_from",
+      "weight": 0.7
+    },
+    {
+      "source_label": "Biomedical Engineering",
+      "target_label": "Sociobiology",
+      "relation_type": "designs_social_health_interventions_with",
+      "weight": 0.7
+    },
+    {
+      "source_label": "Biomedical Engineering",
+      "target_label": "Mathematical Psychology",
+      "relation_type": "models_patient_behavior_with",
+      "weight": 0.75
+    },
+    {
+      "source_label": "Biomedical Engineering",
+      "target_label": "Computational Social Science",
+      "relation_type": "analyzes_health_networks_with",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Astrobiology",
+      "target_label": "Sociobiology",
+      "relation_type": "studies_social_space_colonization_with",
+      "weight": 0.65
+    },
+    {
+      "source_label": "Astrobiology",
+      "target_label": "Mathematical Psychology",
+      "relation_type": "models_space_psychology_with",
+      "weight": 0.7
+    },
+    {
+      "source_label": "Astrobiology",
+      "target_label": "Neuroeconomics",
+      "relation_type": "studies_space_mission_decisions_with",
+      "weight": 0.6
+    },
+    {
+      "source_label": "Astrobiology",
+      "target_label": "Computational Social Science",
+      "relation_type": "analyzes_space_exploration_impact_with",
+      "weight": 0.65
+    },
+    {
+      "source_label": "Geophysics",
+      "target_label": "Sociobiology",
+      "relation_type": "studies_environmental_social_impact_with",
+      "weight": 0.75
+    },
+    {
+      "source_label": "Geophysics",
+      "target_label": "Quantum Biology",
+      "relation_type": "investigates_geological_quantum_effects_with",
+      "weight": 0.6
+    },
+    {
+      "source_label": "Geophysics",
+      "target_label": "Neuroeconomics",
+      "relation_type": "studies_resource_extraction_decisions_with",
+      "weight": 0.65
+    },
+    {
+      "source_label": "Geophysics",
+      "target_label": "Chemical Biology",
+      "relation_type": "studies_geochemical_life_processes_with",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Geophysics",
+      "target_label": "Biomedical Engineering",
+      "relation_type": "shares_imaging_technology_with",
+      "weight": 0.75
+    },
+    {
+      "source_label": "Mathematical Psychology",
+      "target_label": "Sociobiology",
+      "relation_type": "models_social_psychology_with",
+      "weight": 0.85
+    },
+    {
+      "source_label": "Mathematical Psychology",
+      "target_label": "Quantum Biology",
+      "relation_type": "investigates_quantum_consciousness_models_with",
+      "weight": 0.6
+    },
+    {
+      "source_label": "Mathematical Psychology",
+      "target_label": "Chemical Biology",
+      "relation_type": "models_neurochemistry_effects_with",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Sociobiology",
+      "target_label": "Quantum Biology",
+      "relation_type": "investigates_quantum_social_effects_with",
+      "weight": 0.55
+    },
+    {
+      "source_label": "Sociobiology",
+      "target_label": "Chemical Biology",
+      "relation_type": "studies_social_chemical_signals_with",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Neuroeconomics",
+      "target_label": "Quantum Biology",
+      "relation_type": "investigates_quantum_decision_processes_with",
+      "weight": 0.6
+    },
+    {
+      "source_label": "Neuroeconomics",
+      "target_label": "Computational Social Science",
+      "relation_type": "models_social_economic_decisions_with",
+      "weight": 0.85
+    },
+    {
+      "source_label": "Systems Biology",
+      "target_label": "Digital Humanities",
+      "relation_type": "visualizes_biological_history_with",
+      "weight": 0.65
+    },
+    {
+      "source_label": "Systems Biology",
+      "target_label": "Psycholinguistics",
+      "relation_type": "models_biological_communication_with",
+      "weight": 0.7
+    },
+    {
+      "source_label": "Bioinformatics",
+      "target_label": "Science and Technology Studies",
+      "relation_type": "development_impact_studied_by",
+      "weight": 0.75
+    },
+    {
+      "source_label": "Computational Neuroscience",
+      "target_label": "Science and Technology Studies",
+      "relation_type": "AI_implications_studied_by",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Environmental Engineering",
+      "target_label": "Science and Technology Studies",
+      "relation_type": "sustainability_policies_informed_by",
+      "weight": 0.85
+    },
+    {
+      "source_label": "Cognitive Science",
+      "target_label": "Science and Technology Studies",
+      "relation_type": "human-AI_interaction_studied_by",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Mechatronics",
+      "target_label": "Psycholinguistics",
+      "relation_type": "designs_language_robots_with",
+      "weight": 0.7
+    },
+    {
+      "source_label": "Econophysics",
+      "target_label": "Science and Technology Studies",
+      "relation_type": "market_algorithms_impact_studied_by",
+      "weight": 0.75
+    },
+    {
+      "source_label": "Psycholinguistics",
+      "target_label": "Neuroeconomics",
+      "relation_type": "studies_economic_language_processing_with",
+      "weight": 0.75
+    },
+    {
+      "source_label": "Biomedical Engineering",
+      "target_label": "Econophysics",
+      "relation_type": "models_healthcare_market_dynamics_with",
+      "weight": 0.7
+    },
+    {
+      "source_label": "Astrobiology",
+      "target_label": "Digital Humanities",
+      "relation_type": "preserves_space_exploration_narratives_with",
+      "weight": 0.6
+    },
+    {
+      "source_label": "Geophysics",
+      "target_label": "Econophysics",
+      "relation_type": "models_commodity_markets_with",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Mathematical Psychology",
+      "target_label": "Astrobiology",
+      "relation_type": "models_isolation_psychology_for",
+      "weight": 0.65
+    },
+    {
+      "source_label": "Sociobiology",
+      "target_label": "Digital Humanities",
+      "relation_type": "analyzes_cultural_transmission_with",
+      "weight": 0.75
+    },
+    {
+      "source_label": "Neuroeconomics",
+      "target_label": "Science and Technology Studies",
+      "relation_type": "decision_technology_impact_studied_by",
+      "weight": 0.75
+    },
+    {
+      "source_label": "Chemical Biology",
+      "target_label": "Econophysics",
+      "relation_type": "models_pharmaceutical_pricing_with",
+      "weight": 0.7
+    },
+    {
+      "source_label": "Quantum Biology",
+      "target_label": "Computational Social Science",
+      "relation_type": "investigates_quantum_social_behavior_with",
+      "weight": 0.5
+    },
+    {
+      "source_label": "Computational Social Science",
+      "target_label": "Geophysics",
+      "relation_type": "analyzes_climate_social_impact_with",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Network Science",
+      "target_label": "Econophysics",
+      "relation_type": "models_financial_networks_with",
+      "weight": 0.9
+    },
+    {
+      "source_label": "Network Science",
+      "target_label": "Geophysics",
+      "relation_type": "models_geological_networks_with",
+      "weight": 0.75
+    },
+    {
+      "source_label": "Network Science",
+      "target_label": "Quantum Biology",
+      "relation_type": "models_quantum_biological_networks_with",
+      "weight": 0.7
+    },
+    {
+      "source_label": "Network Science",
+      "target_label": "Astrobiology",
+      "relation_type": "models_planetary_communication_networks_for",
+      "weight": 0.65
+    },
+    {
+      "source_label": "Systems Biology",
+      "target_label": "Neuroeconomics",
+      "relation_type": "models_brain_economic_systems_with",
+      "weight": 0.75
+    },
+    {
+      "source_label": "Bioinformatics",
+      "target_label": "Psycholinguistics",
+      "relation_type": "analyzes_genetic_language_patterns_with",
+      "weight": 0.65
+    },
+    {
+      "source_label": "Computational Neuroscience",
+      "target_label": "Digital Humanities",
+      "relation_type": "models_cognitive_text_processing_for",
+      "weight": 0.7
+    },
+    {
+      "source_label": "Environmental Engineering",
+      "target_label": "Psycholinguistics",
+      "relation_type": "designs_environmental_messaging_with",
+      "weight": 0.7
+    },
+    {
+      "source_label": "Cognitive Science",
+      "target_label": "Geophysics",
+      "relation_type": "studies_spatial_cognitive_mapping_with",
+      "weight": 0.7
+    },
+    {
+      "source_label": "Mechatronics",
+      "target_label": "Digital Humanities",
+      "relation_type": "creates_interactive_historical_displays_with",
+      "weight": 0.6
+    },
+    {
+      "source_label": "Econophysics",
+      "target_label": "Psycholinguistics",
+      "relation_type": "analyzes_financial_communication_with",
+      "weight": 0.65
+    },
+    {
+      "source_label": "Biomedical Engineering",
+      "target_label": "Digital Humanities",
+      "relation_type": "documents_medical_device_history_with",
+      "weight": 0.6
+    },
+    {
+      "source_label": "Astrobiology",
+      "target_label": "Psycholinguistics",
+      "relation_type": "develops_interspecies_communication_with",
+      "weight": 0.6
+    },
+    {
+      "source_label": "Geophysics",
+      "target_label": "Digital Humanities",
+      "relation_type": "maps_historical_geological_changes_with",
+      "weight": 0.65
+    },
+    {
+      "source_label": "Mathematical Psychology",
+      "target_label": "Digital Humanities",
+      "relation_type": "analyzes_psychological_texts_quantitatively_with",
+      "weight": 0.7
+    },
+    {
+      "source_label": "Sociobiology",
+      "target_label": "Geophysics",
+      "relation_type": "studies_environmental_social_adaptation_with",
+      "weight": 0.7
+    },
+    {
+      "source_label": "Chemical Biology",
+      "target_label": "Digital Humanities",
+      "relation_type": "preserves_chemical_discovery_history_with",
+      "weight": 0.55
+    },
+    {
+      "source_label": "Quantum Biology",
+      "target_label": "Digital Humanities",
+      "relation_type": "documents_quantum_biology_emergence_with",
+      "weight": 0.5
+    },
+    {
+      "source_label": "Network Science",
+      "target_label": "Digital Humanities",
+      "relation_type": "maps_historical_knowledge_networks_with",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Science and Technology Studies",
+      "target_label": "Systems Biology",
+      "relation_type": "analyzes_systems_thinking_emergence_in",
+      "weight": 0.75
+    },
+    {
+      "source_label": "Science and Technology Studies",
+      "target_label": "Bioinformatics",
+      "relation_type": "studies_computational_biology_impact_of",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Science and Technology Studies",
+      "target_label": "Quantum Biology",
+      "relation_type": "examines_quantum_paradigm_shift_in",
+      "weight": 0.7
+    },
+    {
+      "source_label": "Science and Technology Studies",
+      "target_label": "Astrobiology",
+      "relation_type": "analyzes_space_science_sociology_of",
+      "weight": 0.75
+    },
+    {
+      "source_label": "Science and Technology Studies",
+      "target_label": "Geophysics",
+      "relation_type": "studies_climate_science_politics_of",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Science and Technology Studies",
+      "target_label": "Mathematical Psychology",
+      "relation_type": "examines_quantitative_psychology_development_in",
+      "weight": 0.7
+    },
+    {
+      "source_label": "Science and Technology Studies",
+      "target_label": "Chemical Biology",
+      "relation_type": "analyzes_chemical_tool_development_in",
+      "weight": 0.7
+    },
+    {
+      "source_label": "Quantum Biology",
+      "target_label": "Geophysics",
+      "relation_type": "investigates_quantum_earth_processes_with",
+      "weight": 0.6
+    },
+    {
+      "source_label": "Quantum Biology",
+      "target_label": "Mathematical Psychology",
+      "relation_type": "explores_quantum_cognitive_models_with",
+      "weight": 0.6
+    },
+    {
+      "source_label": "Quantum Biology",
+      "target_label": "Sociobiology",
+      "relation_type": "investigates_quantum_social_coherence_with",
+      "weight": 0.5
+    },
+    {
+      "source_label": "Quantum Biology",
+      "target_label": "Psycholinguistics",
+      "relation_type": "explores_quantum_language_processing_with",
+      "weight": 0.5
+    },
+    {
+      "source_label": "Quantum Biology",
+      "target_label": "Econophysics",
+      "relation_type": "investigates_quantum_market_consciousness_with",
+      "weight": 0.45
+    },
+    {
+      "source_label": "Quantum Biology",
+      "target_label": "Neuroeconomics",
+      "relation_type": "explores_quantum_decision_coherence_with",
+      "weight": 0.55
+    }
+  ]
+}

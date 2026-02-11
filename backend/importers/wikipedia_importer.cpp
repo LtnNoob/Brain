@@ -108,8 +108,14 @@ std::unique_ptr<KnowledgeProposal> WikipediaImporter::import_article(
         return proposal;
     }
 
-    // Should not reach here
-    return nullptr;
+    // Empty pages object — API returned no results
+    auto proposal = std::make_unique<KnowledgeProposal>();
+    proposal->proposal_id = next_proposal_id_++;
+    proposal->source_type = SourceType::WIKIPEDIA;
+    proposal->title = article_title;
+    proposal->import_timestamp = std::chrono::system_clock::now();
+    proposal->notes_for_human_review = "Wikipedia API returned empty pages object.";
+    return proposal;
 }
 
 std::unique_ptr<KnowledgeProposal> WikipediaImporter::import_from_url(

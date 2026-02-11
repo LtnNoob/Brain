@@ -44,7 +44,12 @@ int main(int argc, char* argv[]) {
             config.seed_foundation = false;
             arg_start = i + 1;
         } else if (std::strcmp(argv[i], "--max-streams") == 0 && i + 1 < argc) {
-            config.max_streams = std::stoul(argv[++i]);
+            try {
+                config.max_streams = std::stoul(argv[++i]);
+            } catch (const std::exception&) {
+                std::cerr << "Invalid value for --max-streams\n";
+                return 1;
+            }
             arg_start = i + 1;
         } else if (std::strcmp(argv[i], "--no-monitor") == 0) {
             config.enable_monitoring = false;

@@ -53,12 +53,12 @@ public:
 
 private:
     std::unique_ptr<ShortTermMemory> stm_;
-    bool initialized_;
+    bool initialized_ = false;
     
     // Thinking state per context
     struct ThinkingState {
-        bool is_thinking;
-        std::chrono::steady_clock::time_point start_time;
+        bool is_thinking = false;
+        std::chrono::steady_clock::time_point start_time{};
     };
     std::unordered_map<ContextId, ThinkingState> thinking_states_;
 };

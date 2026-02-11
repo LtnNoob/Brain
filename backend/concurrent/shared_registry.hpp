@@ -83,24 +83,13 @@ public:
         return reg_.size();
     }
 
-    // === Per-model access for training (lock model individually) ===
-    // Usage: auto* model = registry.lock_model_for_training(cid);
-    //        // ... train model ...
-    //        registry.unlock_model(cid);
+    // === Per-model access for training ===
+    // DEPRECATED: lock_model_for_training/unlock_model are unsafe (shared lock released
+    // before model mutex, allowing concurrent remove_model to cause use-after-free).
+    // Always use model_guard() instead.
     //
-    // Or use the RAII helper: auto guard = registry.model_guard(cid);
-
-    MicroModel* lock_model_for_training(ConceptId cid) {
-        std::shared_lock lock(mtx_);
-        auto* model = reg_.get_model(cid);
-        if (!model) return nullptr;
-        model_mutexes_.at(cid)->lock();
-        return model;
-    }
-
-    void unlock_model(ConceptId cid) {
-        model_mutexes_.at(cid)->unlock();
-    }
+    // Usage: auto guard = registry.model_guard(cid);
+    //        if (guard) { guard->train(...); }
 
     // RAII guard for per-model locking — holds registry shared_lock to prevent
     // use-after-free if remove_model() is called concurrently

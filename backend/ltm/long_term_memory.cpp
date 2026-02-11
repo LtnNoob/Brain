@@ -216,7 +216,7 @@ bool LongTermMemory::remove_relation(RelationId id) {
 
     // Remove relation itself
     relations_.erase(it);
-    --total_relations_;
+    if (total_relations_ > 0) --total_relations_;
 
     return true;
 }

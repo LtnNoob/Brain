@@ -86,7 +86,7 @@ public:
 
     // State
     StreamId id() const { return id_; }
-    ContextId context_id() const { return context_id_; }
+    ContextId context_id() const { return context_id_.load(std::memory_order_acquire); }
     StreamState state() const { return state_.load(std::memory_order_acquire); }
     const StreamMetrics& metrics() const { return metrics_; }
     size_t pending_tasks() const { return work_queue_.size_approx(); }
@@ -105,7 +105,7 @@ private:
     void backoff(uint32_t& idle_count);
 
     const StreamId id_;
-    ContextId context_id_ = 0;
+    std::atomic<ContextId> context_id_{0};
 
     SharedLTM& ltm_;
     SharedSTM& stm_;

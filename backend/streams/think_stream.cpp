@@ -22,24 +22,15 @@ ThinkStream::ThinkStream(StreamId id,
 
 ThinkStream::~ThinkStream() {
     stop();
+    // Never detach — the thread reads our members, so we must outlive it.
+    // stop_requested_ is set, so the thread will exit its run-loop.
     if (thread_.joinable()) {
-        // Wait with timeout to avoid blocking forever
-        auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(5);
-        while (std::chrono::steady_clock::now() < deadline) {
-            auto s = state_.load(std::memory_order_acquire);
-            if (s == StreamState::Stopped || s == StreamState::Error) break;
-            std::this_thread::sleep_for(std::chrono::milliseconds(1));
-        }
-        auto s = state_.load(std::memory_order_acquire);
-        if (s == StreamState::Stopped || s == StreamState::Error) {
-            thread_.join();
-        } else {
-            thread_.detach();  // last resort — stop_requested_ is true, thread will exit
-        }
+        thread_.join();
     }
     // Destroy our context if we created one
-    if (context_id_ != 0) {
-        try { stm_.destroy_context(context_id_); } catch (...) {}
+    auto cid = context_id_.load(std::memory_order_acquire);
+    if (cid != 0) {
+        try { stm_.destroy_context(cid); } catch (...) {}
     }
 }
 
@@ -64,13 +55,14 @@ bool ThinkStream::start() {
     metrics_.reset();
 
     // Destroy old context if exists (prevent context leak on restart)
-    if (context_id_ != 0) {
-        try { stm_.destroy_context(context_id_); } catch (...) {}
-        context_id_ = 0;
+    auto old_cid = context_id_.load(std::memory_order_relaxed);
+    if (old_cid != 0) {
+        try { stm_.destroy_context(old_cid); } catch (...) {}
+        context_id_.store(0, std::memory_order_relaxed);
     }
 
     // Create a dedicated STM context for this stream
-    context_id_ = stm_.create_context();
+    context_id_.store(stm_.create_context(), std::memory_order_release);
 
     thread_ = std::thread(&ThinkStream::run, this);
     return true;
@@ -94,8 +86,9 @@ bool ThinkStream::join(std::chrono::milliseconds timeout) {
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
 
-    // Timeout — thread still running. Detach to avoid blocking destructor forever.
-    // The stop flag is already set, so the thread will eventually exit.
+    // Timeout — thread still running but stop_requested_ is set.
+    // Do NOT detach (would cause use-after-free). Caller should retry or
+    // let the destructor block until the thread exits.
     return false;
 }
 
@@ -174,14 +167,16 @@ void ThinkStream::tick() {
 void ThinkStream::do_spreading() {
     // Spreading activation: take active concepts from STM,
     // follow LTM relations, boost neighbors
-    auto active = stm_.get_active_concepts(context_id_, 0.3);
-    for (auto cid : active) {
-        auto relations = ltm_.get_outgoing_relations(cid);
-        double source_act = stm_.get_concept_activation(context_id_, cid);
+    auto ctx = context_id_.load(std::memory_order_acquire);
+    if (ctx == 0) return;
+    auto active = stm_.get_active_concepts(ctx, 0.3);
+    for (auto concept_id : active) {
+        auto relations = ltm_.get_outgoing_relations(concept_id);
+        double source_act = stm_.get_concept_activation(ctx, concept_id);
         for (auto& rel : relations) {
             double spread = source_act * rel.weight * 0.5;
             if (spread > 0.05) {
-                stm_.boost_concept(context_id_, rel.target, spread);
+                stm_.boost_concept(ctx, rel.target, spread);
             }
         }
     }
@@ -189,7 +184,9 @@ void ThinkStream::do_spreading() {
 
 void ThinkStream::do_salience() {
     // Salience: decay activations, prune weak ones
-    stm_.decay_all(context_id_, 
+    auto ctx = context_id_.load(std::memory_order_acquire);
+    if (ctx == 0) return;
+    stm_.decay_all(ctx,
         static_cast<double>(config_.tick_interval.count()) / 1000.0);
 }
 
@@ -202,14 +199,16 @@ void ThinkStream::do_curiosity() {
     if (all_ids.empty()) return;
     if (curiosity_offset_ >= all_ids.size()) curiosity_offset_ = 0;
     size_t end = std::min(curiosity_offset_ + max_per_tick, all_ids.size());
+    auto ctx = context_id_.load(std::memory_order_acquire);
+    if (ctx == 0) return;
     for (size_t i = curiosity_offset_; i < end; ++i) {
-        auto cid = all_ids[i];
-        double act = stm_.get_concept_activation(context_id_, cid);
+        auto concept_id = all_ids[i];
+        double act = stm_.get_concept_activation(ctx, concept_id);
         if (act < 0.1) {
-            size_t rel_count = ltm_.get_relation_count(cid);
+            size_t rel_count = ltm_.get_relation_count(concept_id);
             if (rel_count > 3) {
                 double boost = 0.02 * static_cast<double>(std::min(rel_count, size_t(10)));
-                stm_.activate_concept(context_id_, cid, boost, ActivationClass::CONTEXTUAL);
+                stm_.activate_concept(ctx, concept_id, boost, ActivationClass::CONTEXTUAL);
             }
         }
     }
@@ -218,16 +217,18 @@ void ThinkStream::do_curiosity() {
 
 void ThinkStream::do_understanding() {
     // Understanding: check active concepts for contradictions
-    auto active = stm_.get_active_concepts(context_id_, 0.5);
+    auto ctx = context_id_.load(std::memory_order_acquire);
+    if (ctx == 0) return;
+    auto active = stm_.get_active_concepts(ctx, 0.5);
     for (size_t i = 0; i < active.size(); ++i) {
         auto rels = ltm_.get_outgoing_relations(active[i]);
         for (auto& rel : rels) {
             if (rel.type == RelationType::CONTRADICTS) {
-                double other_act = stm_.get_concept_activation(context_id_, rel.target);
+                double other_act = stm_.get_concept_activation(ctx, rel.target);
                 if (other_act > 0.5) {
                     // Both contradicting concepts active — dampen both slightly
-                    stm_.boost_concept(context_id_, active[i], -0.1);
-                    stm_.boost_concept(context_id_, rel.target, -0.1);
+                    stm_.boost_concept(ctx, active[i], -0.1);
+                    stm_.boost_concept(ctx, rel.target, -0.1);
                 }
             }
         }

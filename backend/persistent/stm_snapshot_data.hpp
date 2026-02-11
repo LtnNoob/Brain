@@ -29,7 +29,7 @@ struct SnapshotContext {
 };
 
 struct STMSnapshotData {
-    uint64_t timestamp;
+    uint64_t timestamp = 0;
     std::vector<SnapshotContext> contexts;
 };
 

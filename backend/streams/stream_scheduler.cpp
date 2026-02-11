@@ -107,7 +107,9 @@ bool StreamScheduler::schedule_task(StreamCategory cat, ThinkTask task) {
     for (auto sid : category_streams_[idx]) {
         // Use orchestrator's distribute mechanism via direct push
         // We just need any stream in this category to accept
-        if (orchestrator_.distribute_task(std::move(task))) {
+        // Pass by copy (not move) since the loop may retry on failure
+        ThinkTask copy = task;
+        if (orchestrator_.distribute_task(std::move(copy))) {
             return true;
         }
     }

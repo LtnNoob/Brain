@@ -42,7 +42,7 @@ public:
     }
 
     void clear_context(ContextId context_id) {
-        auto& cmtx = get_context_mutex(context_id);
+        auto [gl, cmtx] = get_context_mutex(context_id);
         std::unique_lock lock(cmtx);
         stm_.clear_context(context_id);
     }
@@ -51,26 +51,26 @@ public:
 
     void activate_concept(ContextId context_id, ConceptId concept_id,
                          double activation, ActivationClass classification) {
-        auto& cmtx = get_context_mutex(context_id);
+        auto [gl, cmtx] = get_context_mutex(context_id);
         std::unique_lock lock(cmtx);
         stm_.activate_concept(context_id, concept_id, activation, classification);
     }
 
     void activate_relation(ContextId context_id, ConceptId source, ConceptId target,
                           RelationType type, double activation) {
-        auto& cmtx = get_context_mutex(context_id);
+        auto [gl, cmtx] = get_context_mutex(context_id);
         std::unique_lock lock(cmtx);
         stm_.activate_relation(context_id, source, target, type, activation);
     }
 
     void boost_concept(ContextId context_id, ConceptId concept_id, double delta) {
-        auto& cmtx = get_context_mutex(context_id);
+        auto [gl, cmtx] = get_context_mutex(context_id);
         std::unique_lock lock(cmtx);
         stm_.boost_concept(context_id, concept_id, delta);
     }
 
     void boost_relation(ContextId context_id, ConceptId source, ConceptId target, double delta) {
-        auto& cmtx = get_context_mutex(context_id);
+        auto [gl, cmtx] = get_context_mutex(context_id);
         std::unique_lock lock(cmtx);
         stm_.boost_relation(context_id, source, target, delta);
     }
@@ -78,31 +78,31 @@ public:
     // === Per-context READ operations ===
 
     double get_concept_activation(ContextId context_id, ConceptId concept_id) const {
-        auto& cmtx = get_context_mutex(context_id);
+        auto [gl, cmtx] = get_context_mutex(context_id);
         std::shared_lock lock(cmtx);
         return stm_.get_concept_activation(context_id, concept_id);
     }
 
     double get_relation_activation(ContextId context_id, ConceptId source, ConceptId target) const {
-        auto& cmtx = get_context_mutex(context_id);
+        auto [gl, cmtx] = get_context_mutex(context_id);
         std::shared_lock lock(cmtx);
         return stm_.get_relation_activation(context_id, source, target);
     }
 
     ActivationLevel get_concept_level(ContextId context_id, ConceptId concept_id) const {
-        auto& cmtx = get_context_mutex(context_id);
+        auto [gl, cmtx] = get_context_mutex(context_id);
         std::shared_lock lock(cmtx);
         return stm_.get_concept_level(context_id, concept_id);
     }
 
     std::vector<ConceptId> get_active_concepts(ContextId context_id, double threshold = 0.0) const {
-        auto& cmtx = get_context_mutex(context_id);
+        auto [gl, cmtx] = get_context_mutex(context_id);
         std::shared_lock lock(cmtx);
         return stm_.get_active_concepts(context_id, threshold);
     }
 
     std::vector<ActiveRelation> get_active_relations(ContextId context_id, double threshold = 0.0) const {
-        auto& cmtx = get_context_mutex(context_id);
+        auto [gl, cmtx] = get_context_mutex(context_id);
         std::shared_lock lock(cmtx);
         return stm_.get_active_relations(context_id, threshold);
     }
@@ -110,7 +110,7 @@ public:
     // === Cross-context operations (global lock) ===
 
     void decay_all(ContextId context_id, double time_delta_seconds) {
-        auto& cmtx = get_context_mutex(context_id);
+        auto [gl, cmtx] = get_context_mutex(context_id);
         std::unique_lock lock(cmtx);
         stm_.decay_all(context_id, time_delta_seconds);
     }
@@ -150,13 +150,13 @@ public:
     // === Debug (per-context read lock) ===
 
     size_t debug_active_concept_count(ContextId context_id) const {
-        auto& cmtx = get_context_mutex(context_id);
+        auto [gl, cmtx] = get_context_mutex(context_id);
         std::shared_lock lock(cmtx);
         return stm_.debug_active_concept_count(context_id);
     }
 
     size_t debug_active_relation_count(ContextId context_id) const {
-        auto& cmtx = get_context_mutex(context_id);
+        auto [gl, cmtx] = get_context_mutex(context_id);
         std::shared_lock lock(cmtx);
         return stm_.debug_active_relation_count(context_id);
     }
@@ -166,10 +166,18 @@ private:
     mutable std::shared_mutex global_mtx_;
     mutable std::unordered_map<ContextId, std::unique_ptr<std::shared_mutex>> context_mutexes_;
 
-    std::shared_mutex& get_context_mutex(ContextId cid) const {
-        // Hold global shared lock to protect map access from concurrent destroy_context
-        std::shared_lock lock(global_mtx_);
-        return *context_mutexes_.at(cid);
+    // Returns a pair: shared_lock (keeps global lock held to prevent destroy_context
+    // from erasing the mutex) + reference to the per-context mutex.
+    // The caller MUST keep the returned shared_lock alive for the duration of use.
+    struct ContextMutexRef {
+        std::shared_lock<std::shared_mutex> global_lock;
+        std::shared_mutex& mutex;
+    };
+
+    ContextMutexRef get_context_mutex(ContextId cid) const {
+        std::shared_lock<std::shared_mutex> lock(global_mtx_);
+        auto& mtx = *context_mutexes_.at(cid);
+        return {std::move(lock), mtx};
     }
 };
 

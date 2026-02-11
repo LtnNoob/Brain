@@ -16,7 +16,7 @@
 
 namespace brain19 {
 
-// ─── Latency Histogram (lock-free sliding window) ───────────────────────────
+// ─── Latency Histogram (mutex-guarded sliding window) ────────────────────────
 
 class LatencyHistogram {
 public:

@@ -222,7 +222,7 @@ BRAIN19_SRCS = \
 
 brain19: $(BACKEND)/main.cpp $(BRAIN19_SRCS)
 	$(CXX) $(CXXFLAGS) -I$(BACKEND) -o brain19 \
-		$(BACKEND)/main.cpp $(BRAIN19_SRCS)
+		$(BACKEND)/main.cpp $(BRAIN19_SRCS) -lcurl
 
 test_system_integration: tests/test_system_integration.cpp $(BRAIN19_SRCS)
 	$(CXX) $(CXXFLAGS) -I$(BACKEND) -o test_system_integration \

@@ -109,8 +109,8 @@ std::string ChatInterface::build_epistemic_context(
     
     for (const auto& info : concepts) {
         ctx << "--- Concept: " << info.label << " ---\n";
-        ctx << "Type: " << to_string(info.epistemic.type) << "\n";
-        ctx << "Status: " << to_string(info.epistemic.status) << "\n";
+        ctx << "Type: " << epistemic_type_to_string(info.epistemic.type) << "\n";
+        ctx << "Status: " << epistemic_status_to_string(info.epistemic.status) << "\n";
         ctx << "Trust: " << (info.epistemic.trust * 100.0) << "%\n";
         ctx << "Definition: " << info.definition << "\n\n";
     }
@@ -144,7 +144,7 @@ ChatResponse ChatInterface::ask(
             std::ostringstream ans;
             ans << "Basierend auf meinem Wissen:\n\n";
             for (const auto& info : relevant) {
-                ans << "**" << info.label << "** (" << to_string(info.epistemic.type);
+                ans << "**" << info.label << "** (" << epistemic_type_to_string(info.epistemic.type);
                 ans << ", Trust: " << (info.epistemic.trust * 100.0) << "%)\n";
                 ans << info.definition << "\n\n";
             }
@@ -202,8 +202,8 @@ std::string ChatInterface::explain_concept(
         out << "╔═══════════════════════════════════════════╗\n";
         out << "║  " << info.label << "\n";
         out << "╚═══════════════════════════════════════════╝\n\n";
-        out << "Type: " << to_string(info.epistemic.type) << "\n";
-        out << "Status: " << to_string(info.epistemic.status) << "\n";
+        out << "Type: " << epistemic_type_to_string(info.epistemic.type) << "\n";
+        out << "Status: " << epistemic_status_to_string(info.epistemic.status) << "\n";
         out << "Trust: " << (info.epistemic.trust * 100.0) << "%\n\n";
         out << info.definition << "\n";
         return out.str();
@@ -243,9 +243,9 @@ std::string ChatInterface::compare(
     if (!llm_available_) {
         std::ostringstream out;
         out << "=== Vergleich ===\n\n";
-        out << "1. " << info1.label << " (" << to_string(info1.epistemic.type);
+        out << "1. " << info1.label << " (" << epistemic_type_to_string(info1.epistemic.type);
         out << ", " << (info1.epistemic.trust * 100.0) << "%)\n\n";
-        out << "2. " << info2.label << " (" << to_string(info2.epistemic.type);
+        out << "2. " << info2.label << " (" << epistemic_type_to_string(info2.epistemic.type);
         out << ", " << (info2.epistemic.trust * 100.0) << "%)\n";
         return out.str();
     }

@@ -1,0 +1,1960 @@
+{
+  "source": "training-data:physics-v1",
+  "concepts": [
+    {
+      "label": "Force",
+      "definition": "A push or pull that can change the motion of an object",
+      "trust_category": "FACT",
+      "trust_value": 0.99,
+      "tags": ["mechanics", "fundamentals", "vector"]
+    },
+    {
+      "label": "Energy",
+      "definition": "The capacity to do work or produce heat",
+      "trust_category": "FACT",
+      "trust_value": 0.99,
+      "tags": ["mechanics", "thermodynamics", "conservation"]
+    },
+    {
+      "label": "Mass",
+      "definition": "A measure of the amount of matter in an object",
+      "trust_category": "FACT",
+      "trust_value": 0.99,
+      "tags": ["mechanics", "fundamentals", "scalar"]
+    },
+    {
+      "label": "Velocity",
+      "definition": "The rate of change of displacement with respect to time",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["mechanics", "kinematics", "vector"]
+    },
+    {
+      "label": "Acceleration",
+      "definition": "The rate of change of velocity with respect to time",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["mechanics", "kinematics", "vector"]
+    },
+    {
+      "label": "Gravity",
+      "definition": "A fundamental force that attracts objects with mass toward each other",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["gravity", "force", "universal"]
+    },
+    {
+      "label": "Newton's First Law",
+      "definition": "An object at rest stays at rest and an object in motion stays in motion unless acted upon by an unbalanced force",
+      "trust_category": "FACT",
+      "trust_value": 0.99,
+      "tags": ["mechanics", "laws", "newton"]
+    },
+    {
+      "label": "Newton's Second Law",
+      "definition": "The acceleration of an object is directly proportional to the net force and inversely proportional to its mass (F = ma)",
+      "trust_category": "FACT",
+      "trust_value": 0.99,
+      "tags": ["mechanics", "laws", "newton"]
+    },
+    {
+      "label": "Newton's Third Law",
+      "definition": "For every action, there is an equal and opposite reaction",
+      "trust_category": "FACT",
+      "trust_value": 0.99,
+      "tags": ["mechanics", "laws", "newton"]
+    },
+    {
+      "label": "Momentum",
+      "definition": "The product of an object's mass and velocity",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["mechanics", "conservation", "vector"]
+    },
+    {
+      "label": "Angular Momentum",
+      "definition": "The rotational equivalent of linear momentum",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["mechanics", "rotation", "conservation"]
+    },
+    {
+      "label": "Kinetic Energy",
+      "definition": "Energy possessed by an object due to its motion",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["mechanics", "energy", "motion"]
+    },
+    {
+      "label": "Potential Energy",
+      "definition": "Stored energy that has the potential to do work",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["mechanics", "energy", "position"]
+    },
+    {
+      "label": "Work",
+      "definition": "Energy transferred to or from an object via the application of force along a displacement",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["mechanics", "energy", "scalar"]
+    },
+    {
+      "label": "Power",
+      "definition": "The rate at which work is done or energy is transferred",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["mechanics", "energy", "time"]
+    },
+    {
+      "label": "Pressure",
+      "definition": "Force applied perpendicular to a surface per unit area",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["mechanics", "fluids", "scalar"]
+    },
+    {
+      "label": "Density",
+      "definition": "Mass per unit volume of a substance",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["mechanics", "properties", "scalar"]
+    },
+    {
+      "label": "Friction",
+      "definition": "The force that opposes the relative motion of surfaces in contact",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["mechanics", "force", "surface"]
+    },
+    {
+      "label": "Temperature",
+      "definition": "A measure of the average kinetic energy of particles in a substance",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["thermodynamics", "kinetic-theory", "scalar"]
+    },
+    {
+      "label": "Heat",
+      "definition": "Energy transferred between objects due to temperature difference",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["thermodynamics", "energy-transfer", "scalar"]
+    },
+    {
+      "label": "Entropy",
+      "definition": "A measure of the disorder or randomness in a system",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["thermodynamics", "statistical-mechanics", "scalar"]
+    },
+    {
+      "label": "First Law of Thermodynamics",
+      "definition": "Energy cannot be created or destroyed, only converted from one form to another",
+      "trust_category": "FACT",
+      "trust_value": 0.99,
+      "tags": ["thermodynamics", "conservation", "laws"]
+    },
+    {
+      "label": "Second Law of Thermodynamics",
+      "definition": "The entropy of an isolated system never decreases over time",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["thermodynamics", "entropy", "laws"]
+    },
+    {
+      "label": "Ideal Gas Law",
+      "definition": "Relates pressure, volume, temperature, and amount of gas (PV = nRT)",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["thermodynamics", "gas", "equation"]
+    },
+    {
+      "label": "Electric Field",
+      "definition": "A region around a charged object where electric forces can be experienced",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["electromagnetism", "field", "vector"]
+    },
+    {
+      "label": "Electric Current",
+      "definition": "The flow of electric charge through a conductor",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["electromagnetism", "charge", "scalar"]
+    },
+    {
+      "label": "Voltage",
+      "definition": "The electric potential difference between two points",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["electromagnetism", "potential", "scalar"]
+    },
+    {
+      "label": "Resistance",
+      "definition": "The opposition to the flow of electric current",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["electromagnetism", "current", "scalar"]
+    },
+    {
+      "label": "Ohm's Law",
+      "definition": "The current through a conductor is proportional to the voltage and inversely proportional to resistance (V = IR)",
+      "trust_category": "FACT",
+      "trust_value": 0.99,
+      "tags": ["electromagnetism", "laws", "equation"]
+    },
+    {
+      "label": "Magnetic Field",
+      "definition": "A region around a magnet or moving charge where magnetic forces can be experienced",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["electromagnetism", "field", "vector"]
+    },
+    {
+      "label": "Electromagnetic Induction",
+      "definition": "The generation of electric current by changing magnetic fields",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["electromagnetism", "induction", "faraday"]
+    },
+    {
+      "label": "Faraday's Law",
+      "definition": "The induced electromagnetic force is proportional to the rate of change of magnetic flux",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["electromagnetism", "induction", "laws"]
+    },
+    {
+      "label": "Maxwell's Equations",
+      "definition": "Four fundamental equations that describe electromagnetic phenomena",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["electromagnetism", "maxwell", "equations"]
+    },
+    {
+      "label": "Wave",
+      "definition": "A disturbance that transfers energy through space or matter",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["waves", "energy", "propagation"]
+    },
+    {
+      "label": "Frequency",
+      "definition": "The number of wave cycles that pass a point per unit time",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["waves", "periodic", "scalar"]
+    },
+    {
+      "label": "Wavelength",
+      "definition": "The distance between two consecutive points in phase on a wave",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["waves", "spatial", "scalar"]
+    },
+    {
+      "label": "Amplitude",
+      "definition": "The maximum displacement of a wave from its equilibrium position",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["waves", "magnitude", "scalar"]
+    },
+    {
+      "label": "Electromagnetic Wave",
+      "definition": "A wave consisting of oscillating electric and magnetic fields",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["waves", "electromagnetism", "light"]
+    },
+    {
+      "label": "Light",
+      "definition": "Electromagnetic radiation that is visible to the human eye",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["optics", "electromagnetic", "visible"]
+    },
+    {
+      "label": "Speed of Light",
+      "definition": "The speed at which electromagnetic radiation travels in a vacuum, approximately 299,792,458 m/s",
+      "trust_category": "FACT",
+      "trust_value": 0.99,
+      "tags": ["constants", "light", "relativity"]
+    },
+    {
+      "label": "Reflection",
+      "definition": "The bouncing back of light from a surface",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["optics", "light", "surface"]
+    },
+    {
+      "label": "Refraction",
+      "definition": "The bending of light as it passes from one medium to another",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["optics", "light", "medium"]
+    },
+    {
+      "label": "Interference",
+      "definition": "The superposition of two or more waves resulting in a new wave pattern",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["waves", "superposition", "pattern"]
+    },
+    {
+      "label": "Diffraction",
+      "definition": "The spreading of waves around obstacles or through openings",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["waves", "spreading", "obstacle"]
+    },
+    {
+      "label": "Photon",
+      "definition": "A particle representing a quantum of electromagnetic radiation",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["quantum", "particle", "electromagnetic"]
+    },
+    {
+      "label": "Planck's Constant",
+      "definition": "A fundamental physical constant that relates energy to frequency of electromagnetic radiation",
+      "trust_category": "FACT",
+      "trust_value": 0.99,
+      "tags": ["constants", "quantum", "planck"]
+    },
+    {
+      "label": "Wave-Particle Duality",
+      "definition": "The concept that light and matter exhibit both wave-like and particle-like properties",
+      "trust_category": "THEORY",
+      "trust_value": 0.95,
+      "tags": ["quantum", "duality", "fundamental"]
+    },
+    {
+      "label": "Uncertainty Principle",
+      "definition": "The principle that certain pairs of physical properties cannot be simultaneously measured with arbitrary precision",
+      "trust_category": "THEORY",
+      "trust_value": 0.96,
+      "tags": ["quantum", "heisenberg", "fundamental"]
+    },
+    {
+      "label": "Quantum State",
+      "definition": "A mathematical description of the quantum system",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["quantum", "state", "mathematics"]
+    },
+    {
+      "label": "Superposition",
+      "definition": "The quantum mechanical principle that particles can exist in multiple states simultaneously",
+      "trust_category": "THEORY",
+      "trust_value": 0.95,
+      "tags": ["quantum", "superposition", "states"]
+    },
+    {
+      "label": "Quantum Entanglement",
+      "definition": "A quantum phenomenon where particles become correlated such that the state of one affects the other instantly",
+      "trust_category": "THEORY",
+      "trust_value": 0.94,
+      "tags": ["quantum", "entanglement", "correlation"]
+    },
+    {
+      "label": "Schrödinger Equation",
+      "definition": "The fundamental equation of quantum mechanics that describes how quantum states evolve over time",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["quantum", "equation", "schrodinger"]
+    },
+    {
+      "label": "Electron",
+      "definition": "A negatively charged subatomic particle that orbits the nucleus of an atom",
+      "trust_category": "FACT",
+      "trust_value": 0.99,
+      "tags": ["particle", "atomic", "charge"]
+    },
+    {
+      "label": "Proton",
+      "definition": "A positively charged subatomic particle found in the nucleus of an atom",
+      "trust_category": "FACT",
+      "trust_value": 0.99,
+      "tags": ["particle", "atomic", "nucleus"]
+    },
+    {
+      "label": "Neutron",
+      "definition": "A neutral subatomic particle found in the nucleus of an atom",
+      "trust_category": "FACT",
+      "trust_value": 0.99,
+      "tags": ["particle", "atomic", "nucleus"]
+    },
+    {
+      "label": "Quark",
+      "definition": "Elementary particles that combine to form protons and neutrons",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["particle", "elementary", "quark"]
+    },
+    {
+      "label": "Standard Model",
+      "definition": "The theory describing the fundamental particles and their interactions",
+      "trust_category": "THEORY",
+      "trust_value": 0.93,
+      "tags": ["particle", "model", "fundamental"]
+    },
+    {
+      "label": "Strong Nuclear Force",
+      "definition": "The force that holds protons and neutrons together in the atomic nucleus",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["force", "nuclear", "strong"]
+    },
+    {
+      "label": "Weak Nuclear Force",
+      "definition": "The force responsible for radioactive decay and neutrino interactions",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["force", "nuclear", "weak"]
+    },
+    {
+      "label": "Special Relativity",
+      "definition": "Einstein's theory describing physics in inertial reference frames",
+      "trust_category": "THEORY",
+      "trust_value": 0.96,
+      "tags": ["relativity", "einstein", "special"]
+    },
+    {
+      "label": "General Relativity",
+      "definition": "Einstein's theory of gravitation describing gravity as curvature of spacetime",
+      "trust_category": "THEORY",
+      "trust_value": 0.95,
+      "tags": ["relativity", "einstein", "gravity"]
+    },
+    {
+      "label": "Spacetime",
+      "definition": "The four-dimensional continuum combining space and time",
+      "trust_category": "THEORY",
+      "trust_value": 0.95,
+      "tags": ["relativity", "spacetime", "continuum"]
+    },
+    {
+      "label": "Time Dilation",
+      "definition": "The slowing down of time as observed from a different reference frame",
+      "trust_category": "THEORY",
+      "trust_value": 0.95,
+      "tags": ["relativity", "time", "dilation"]
+    },
+    {
+      "label": "Length Contraction",
+      "definition": "The shortening of length in the direction of motion at high speeds",
+      "trust_category": "THEORY",
+      "trust_value": 0.95,
+      "tags": ["relativity", "length", "contraction"]
+    },
+    {
+      "label": "Event Horizon",
+      "definition": "The boundary around a black hole beyond which nothing can escape",
+      "trust_category": "THEORY",
+      "trust_value": 0.93,
+      "tags": ["black-hole", "gravity", "boundary"]
+    },
+    {
+      "label": "Black Hole",
+      "definition": "A region of spacetime where gravity is so strong that nothing can escape",
+      "trust_category": "THEORY",
+      "trust_value": 0.94,
+      "tags": ["astronomy", "gravity", "extreme"]
+    },
+    {
+      "label": "Gravitational Wave",
+      "definition": "Ripples in spacetime caused by accelerating masses",
+      "trust_category": "THEORY",
+      "trust_value": 0.94,
+      "tags": ["gravity", "wave", "spacetime"]
+    },
+    {
+      "label": "Simple Harmonic Motion",
+      "definition": "Periodic motion where the restoring force is proportional to displacement",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["mechanics", "oscillation", "periodic"]
+    },
+    {
+      "label": "Pendulum",
+      "definition": "A weight suspended from a pivot that can swing freely",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["mechanics", "oscillation", "gravity"]
+    },
+    {
+      "label": "Spring Constant",
+      "definition": "A measure of the resistance of a spring to deformation",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["mechanics", "elasticity", "constant"]
+    },
+    {
+      "label": "Hooke's Law",
+      "definition": "The force needed to extend or compress a spring is proportional to the distance of extension or compression",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["mechanics", "elasticity", "law"]
+    },
+    {
+      "label": "Centripetal Force",
+      "definition": "The force that keeps an object moving in a circular path",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["mechanics", "circular", "force"]
+    },
+    {
+      "label": "Centrifugal Force",
+      "definition": "A fictitious force experienced in a rotating reference frame",
+      "trust_category": "FACT",
+      "trust_value": 0.96,
+      "tags": ["mechanics", "rotation", "fictitious"]
+    },
+    {
+      "label": "Torque",
+      "definition": "The rotational equivalent of force",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["mechanics", "rotation", "vector"]
+    },
+    {
+      "label": "Moment of Inertia",
+      "definition": "A measure of an object's resistance to angular acceleration",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["mechanics", "rotation", "inertia"]
+    },
+    {
+      "label": "Conservation of Energy",
+      "definition": "Energy cannot be created or destroyed, only transformed from one form to another",
+      "trust_category": "FACT",
+      "trust_value": 0.99,
+      "tags": ["conservation", "energy", "fundamental"]
+    },
+    {
+      "label": "Conservation of Momentum",
+      "definition": "The total momentum of a closed system remains constant",
+      "trust_category": "FACT",
+      "trust_value": 0.99,
+      "tags": ["conservation", "momentum", "fundamental"]
+    },
+    {
+      "label": "Conservation of Angular Momentum",
+      "definition": "The total angular momentum of a closed system remains constant",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["conservation", "angular-momentum", "fundamental"]
+    },
+    {
+      "label": "Elastic Collision",
+      "definition": "A collision in which kinetic energy is conserved",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["mechanics", "collision", "elastic"]
+    },
+    {
+      "label": "Inelastic Collision",
+      "definition": "A collision in which kinetic energy is not conserved",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["mechanics", "collision", "inelastic"]
+    },
+    {
+      "label": "Impulse",
+      "definition": "The change in momentum of an object when a force is applied over time",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["mechanics", "momentum", "time"]
+    },
+    {
+      "label": "Center of Mass",
+      "definition": "The point where the total mass of a system can be considered to be concentrated",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["mechanics", "mass", "center"]
+    },
+    {
+      "label": "Fluid",
+      "definition": "A substance that flows and takes the shape of its container",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["fluid-mechanics", "matter", "flow"]
+    },
+    {
+      "label": "Viscosity",
+      "definition": "A measure of a fluid's resistance to flow",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["fluid-mechanics", "resistance", "flow"]
+    },
+    {
+      "label": "Bernoulli's Principle",
+      "definition": "An increase in the speed of a fluid occurs simultaneously with a decrease in pressure",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["fluid-mechanics", "pressure", "speed"]
+    },
+    {
+      "label": "Buoyancy",
+      "definition": "The upward force exerted by a fluid on an immersed object",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["fluid-mechanics", "force", "archimedes"]
+    },
+    {
+      "label": "Archimedes' Principle",
+      "definition": "The buoyant force equals the weight of the displaced fluid",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["fluid-mechanics", "buoyancy", "archimedes"]
+    },
+    {
+      "label": "Surface Tension",
+      "definition": "The force that causes the surface of a liquid to behave like a stretched elastic sheet",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["fluid-mechanics", "surface", "molecular"]
+    },
+    {
+      "label": "Doppler Effect",
+      "definition": "The change in frequency of a wave due to relative motion between source and observer",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["waves", "frequency", "motion"]
+    },
+    {
+      "label": "Resonance",
+      "definition": "The phenomenon of increased amplitude when the frequency of a driving force matches the natural frequency",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["waves", "frequency", "amplitude"]
+    },
+    {
+      "label": "Standing Wave",
+      "definition": "A wave pattern that remains stationary, formed by interference of waves traveling in opposite directions",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["waves", "interference", "stationary"]
+    },
+    {
+      "label": "Electromagnetic Spectrum",
+      "definition": "The range of all types of electromagnetic radiation ordered by frequency or wavelength",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["electromagnetic", "spectrum", "radiation"]
+    },
+    {
+      "label": "X-rays",
+      "definition": "High-energy electromagnetic radiation with very short wavelengths",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["electromagnetic", "radiation", "high-energy"]
+    },
+    {
+      "label": "Gamma Rays",
+      "definition": "Extremely high-energy electromagnetic radiation emitted by radioactive decay",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["electromagnetic", "radiation", "radioactive"]
+    },
+    {
+      "label": "Infrared Radiation",
+      "definition": "Electromagnetic radiation with wavelengths longer than visible light but shorter than microwaves",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["electromagnetic", "radiation", "thermal"]
+    },
+    {
+      "label": "Ultraviolet Radiation",
+      "definition": "Electromagnetic radiation with wavelengths shorter than visible light but longer than X-rays",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["electromagnetic", "radiation", "uv"]
+    },
+    {
+      "label": "Radioactivity",
+      "definition": "The spontaneous emission of radiation from unstable atomic nuclei",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["nuclear", "decay", "radiation"]
+    },
+    {
+      "label": "Half-life",
+      "definition": "The time required for half of a sample of radioactive material to decay",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["nuclear", "decay", "time"]
+    },
+    {
+      "label": "Alpha Decay",
+      "definition": "A type of radioactive decay in which an alpha particle is emitted",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["nuclear", "decay", "alpha"]
+    },
+    {
+      "label": "Beta Decay",
+      "definition": "A type of radioactive decay in which a beta particle is emitted",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["nuclear", "decay", "beta"]
+    },
+    {
+      "label": "Nuclear Fusion",
+      "definition": "The process of combining light atomic nuclei to form heavier nuclei, releasing energy",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["nuclear", "fusion", "energy"]
+    },
+    {
+      "label": "Nuclear Fission",
+      "definition": "The process of splitting heavy atomic nuclei into lighter nuclei, releasing energy",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["nuclear", "fission", "energy"]
+    },
+    {
+      "label": "Critical Mass",
+      "definition": "The minimum amount of fissile material needed to sustain a nuclear chain reaction",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["nuclear", "fission", "mass"]
+    },
+    {
+      "label": "Laser",
+      "definition": "A device that emits coherent light through optical amplification",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["optics", "light", "coherent"]
+    },
+    {
+      "label": "Polarization",
+      "definition": "The orientation of oscillations in electromagnetic waves",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["waves", "electromagnetic", "orientation"]
+    },
+    {
+      "label": "Lens",
+      "definition": "A transparent optical element that focuses or disperses light rays",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["optics", "light", "focus"]
+    },
+    {
+      "label": "Mirror",
+      "definition": "A reflective surface that forms images by reflecting light",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["optics", "reflection", "image"]
+    },
+    {
+      "label": "Focal Length",
+      "definition": "The distance from a lens or mirror to its focal point",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["optics", "focus", "distance"]
+    },
+    {
+      "label": "Magnification",
+      "definition": "The ratio of image size to object size in optical systems",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["optics", "size", "ratio"]
+    },
+    {
+      "label": "Prism",
+      "definition": "A transparent optical element that disperses light into its component colors",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["optics", "dispersion", "spectrum"]
+    },
+    {
+      "label": "Spectrum",
+      "definition": "The range of colors produced when white light is dispersed",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["optics", "color", "dispersion"]
+    },
+    {
+      "label": "Field",
+      "definition": "A region of space where a physical quantity has a value at every point",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["physics", "space", "quantity"]
+    },
+    {
+      "label": "Vector",
+      "definition": "A quantity that has both magnitude and direction",
+      "trust_category": "FACT",
+      "trust_value": 0.99,
+      "tags": ["mathematics", "physics", "direction"]
+    },
+    {
+      "label": "Scalar",
+      "definition": "A quantity that has magnitude but no direction",
+      "trust_category": "FACT",
+      "trust_value": 0.99,
+      "tags": ["mathematics", "physics", "magnitude"]
+    },
+    {
+      "label": "Phase",
+      "definition": "A particular stage in a periodic process or wave",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["waves", "periodic", "stage"]
+    },
+    {
+      "label": "Equilibrium",
+      "definition": "A state where all forces and torques are balanced",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["mechanics", "balance", "stability"]
+    },
+    {
+      "label": "Inertia",
+      "definition": "The tendency of an object to resist changes in its state of motion",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["mechanics", "resistance", "motion"]
+    },
+    {
+      "label": "Displacement",
+      "definition": "The change in position of an object",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["mechanics", "position", "vector"]
+    },
+    {
+      "label": "Speed",
+      "definition": "The rate of change of distance with respect to time",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["mechanics", "kinematics", "scalar"]
+    },
+    {
+      "label": "Free Fall",
+      "definition": "Motion under the influence of gravity alone",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["mechanics", "gravity", "motion"]
+    },
+    {
+      "label": "Projectile Motion",
+      "definition": "The motion of an object thrown or projected into the air",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["mechanics", "trajectory", "parabolic"]
+    },
+    {
+      "label": "Circular Motion",
+      "definition": "Motion of an object along a circular path",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["mechanics", "circular", "rotation"]
+    },
+    {
+      "label": "Period",
+      "definition": "The time required for one complete cycle of periodic motion",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["periodic", "time", "cycle"]
+    },
+    {
+      "label": "Wavefunction",
+      "definition": "A mathematical description of the quantum state of a system",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["quantum", "mathematics", "state"]
+    },
+    {
+      "label": "Quantum Tunneling",
+      "definition": "The quantum mechanical phenomenon where particles can pass through energy barriers",
+      "trust_category": "THEORY",
+      "trust_value": 0.95,
+      "tags": ["quantum", "tunneling", "barrier"]
+    },
+    {
+      "label": "Spin",
+      "definition": "An intrinsic form of angular momentum carried by elementary particles",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["quantum", "angular-momentum", "intrinsic"]
+    },
+    {
+      "label": "Bohr Model",
+      "definition": "An early model of atomic structure with electrons in fixed orbits",
+      "trust_category": "THEORY",
+      "trust_value": 0.85,
+      "tags": ["atomic", "model", "historical"]
+    },
+    {
+      "label": "Quantum Field Theory",
+      "definition": "A theoretical framework combining quantum mechanics and special relativity",
+      "trust_category": "THEORY",
+      "trust_value": 0.92,
+      "tags": ["quantum", "field", "relativity"]
+    },
+    {
+      "label": "Higgs Boson",
+      "definition": "A fundamental particle associated with the Higgs field that gives mass to other particles",
+      "trust_category": "FACT",
+      "trust_value": 0.96,
+      "tags": ["particle", "higgs", "mass"]
+    },
+    {
+      "label": "Antimatter",
+      "definition": "Matter composed of antiparticles, which have the same mass but opposite charge",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["particle", "antimatter", "opposite"]
+    },
+    {
+      "label": "Dark Matter",
+      "definition": "A form of matter that does not interact electromagnetically but affects gravity",
+      "trust_category": "THEORY",
+      "trust_value": 0.90,
+      "tags": ["cosmology", "matter", "gravity"]
+    },
+    {
+      "label": "Dark Energy",
+      "definition": "A theoretical form of energy that drives the accelerated expansion of the universe",
+      "trust_category": "THEORY",
+      "trust_value": 0.88,
+      "tags": ["cosmology", "energy", "expansion"]
+    },
+    {
+      "label": "Big Bang Theory",
+      "definition": "The prevailing scientific theory about the early development and shape of the universe",
+      "trust_category": "THEORY",
+      "trust_value": 0.93,
+      "tags": ["cosmology", "universe", "origin"]
+    },
+    {
+      "label": "Cosmic Microwave Background",
+      "definition": "Thermal radiation left over from the Big Bang",
+      "trust_category": "FACT",
+      "trust_value": 0.96,
+      "tags": ["cosmology", "radiation", "big-bang"]
+    },
+    {
+      "label": "Redshift",
+      "definition": "The increase in wavelength of electromagnetic radiation from distant sources",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["cosmology", "wavelength", "doppler"]
+    },
+    {
+      "label": "Hubble's Law",
+      "definition": "The observation that galaxies are moving away from us at speeds proportional to their distance",
+      "trust_category": "FACT",
+      "trust_value": 0.96,
+      "tags": ["cosmology", "expansion", "hubble"]
+    },
+    {
+      "label": "Neutron Star",
+      "definition": "An extremely dense stellar remnant composed primarily of neutrons",
+      "trust_category": "FACT",
+      "trust_value": 0.95,
+      "tags": ["astronomy", "stellar", "dense"]
+    },
+    {
+      "label": "White Dwarf",
+      "definition": "A hot, dense stellar remnant that is the final evolutionary state of low to medium mass stars",
+      "trust_category": "FACT",
+      "trust_value": 0.95,
+      "tags": ["astronomy", "stellar", "evolution"]
+    },
+    {
+      "label": "Supernova",
+      "definition": "A stellar explosion that occurs at the end of a massive star's life cycle",
+      "trust_category": "FACT",
+      "trust_value": 0.95,
+      "tags": ["astronomy", "explosion", "stellar"]
+    },
+    {
+      "label": "Nuclear Binding Energy",
+      "definition": "The energy required to separate the nucleons in an atomic nucleus",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["nuclear", "binding", "energy"]
+    },
+    {
+      "label": "Mass-Energy Equivalence",
+      "definition": "Einstein's principle that mass and energy are interchangeable (E=mc²)",
+      "trust_category": "FACT",
+      "trust_value": 0.99,
+      "tags": ["relativity", "mass", "energy"]
+    },
+    {
+      "label": "Lorentz Transformation",
+      "definition": "Mathematical equations relating space and time coordinates in different reference frames",
+      "trust_category": "FACT",
+      "trust_value": 0.96,
+      "tags": ["relativity", "transformation", "coordinates"]
+    },
+    {
+      "label": "Reference Frame",
+      "definition": "A coordinate system used to describe the motion of objects",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["mechanics", "coordinates", "motion"]
+    },
+    {
+      "label": "Inertial Frame",
+      "definition": "A reference frame in which Newton's first law holds",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["mechanics", "reference", "newton"]
+    },
+    {
+      "label": "Non-inertial Frame",
+      "definition": "A reference frame that is accelerating with respect to an inertial frame",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["mechanics", "reference", "acceleration"]
+    },
+    {
+      "label": "Coriolis Effect",
+      "definition": "The apparent deflection of moving objects in a rotating reference frame",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["mechanics", "rotation", "deflection"]
+    },
+    {
+      "label": "Gyroscope",
+      "definition": "A device that maintains orientation based on angular momentum conservation",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["mechanics", "orientation", "angular-momentum"]
+    },
+    {
+      "label": "Precession",
+      "definition": "The slow rotation of the axis of a spinning object",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["mechanics", "rotation", "axis"]
+    },
+    {
+      "label": "Chaos Theory",
+      "definition": "The study of systems that are highly sensitive to initial conditions",
+      "trust_category": "THEORY",
+      "trust_value": 0.90,
+      "tags": ["dynamics", "chaos", "sensitivity"]
+    },
+    {
+      "label": "Strange Attractor",
+      "definition": "A set of states toward which a dynamical system evolves",
+      "trust_category": "THEORY",
+      "trust_value": 0.88,
+      "tags": ["dynamics", "chaos", "attractor"]
+    },
+    {
+      "label": "Butterfly Effect",
+      "definition": "The sensitive dependence on initial conditions in chaotic systems",
+      "trust_category": "THEORY",
+      "trust_value": 0.89,
+      "tags": ["chaos", "sensitivity", "initial-conditions"]
+    },
+    {
+      "label": "Fractal",
+      "definition": "A geometric shape that exhibits self-similarity at all scales",
+      "trust_category": "FACT",
+      "trust_value": 0.95,
+      "tags": ["mathematics", "geometry", "self-similarity"]
+    },
+    {
+      "label": "Dimensional Analysis",
+      "definition": "A method of checking equations and converting units using dimensional consistency",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["mathematics", "units", "consistency"]
+    },
+    {
+      "label": "Symmetry",
+      "definition": "The invariance of a system under certain transformations",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["mathematics", "physics", "invariance"]
+    },
+    {
+      "label": "Conservation Law",
+      "definition": "A principle stating that certain quantities remain constant in isolated systems",
+      "trust_category": "FACT",
+      "trust_value": 0.99,
+      "tags": ["conservation", "fundamental", "constant"]
+    },
+    {
+      "label": "Noether's Theorem",
+      "definition": "Every symmetry in physics corresponds to a conservation law",
+      "trust_category": "THEORY",
+      "trust_value": 0.95,
+      "tags": ["symmetry", "conservation", "theorem"]
+    },
+    {
+      "label": "Principle of Least Action",
+      "definition": "Nature chooses the path that minimizes the action integral",
+      "trust_category": "THEORY",
+      "trust_value": 0.94,
+      "tags": ["mechanics", "optimization", "path"]
+    },
+    {
+      "label": "Lagrangian",
+      "definition": "A function that summarizes the dynamics of a system",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["mechanics", "dynamics", "function"]
+    },
+    {
+      "label": "Hamiltonian",
+      "definition": "A function representing the total energy of a system",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["mechanics", "energy", "function"]
+    },
+    {
+      "label": "Phase Space",
+      "definition": "A mathematical space representing all possible states of a system",
+      "trust_category": "FACT",
+      "trust_value": 0.96,
+      "tags": ["mechanics", "mathematics", "states"]
+    },
+    {
+      "label": "Canonical Momentum",
+      "definition": "The momentum conjugate to a generalized coordinate in Lagrangian mechanics",
+      "trust_category": "FACT",
+      "trust_value": 0.96,
+      "tags": ["mechanics", "momentum", "lagrangian"]
+    },
+    {
+      "label": "Poisson Bracket",
+      "definition": "A mathematical operation in Hamiltonian mechanics",
+      "trust_category": "FACT",
+      "trust_value": 0.95,
+      "tags": ["mechanics", "mathematics", "hamiltonian"]
+    },
+    {
+      "label": "Action",
+      "definition": "The integral of the Lagrangian over time",
+      "trust_category": "FACT",
+      "trust_value": 0.96,
+      "tags": ["mechanics", "integral", "lagrangian"]
+    },
+    {
+      "label": "Virtual Work",
+      "definition": "The work done by forces during a virtual displacement",
+      "trust_category": "FACT",
+      "trust_value": 0.95,
+      "tags": ["mechanics", "work", "virtual"]
+    },
+    {
+      "label": "D'Alembert's Principle",
+      "definition": "The principle of virtual work applied to dynamic systems",
+      "trust_category": "FACT",
+      "trust_value": 0.95,
+      "tags": ["mechanics", "dynamics", "principle"]
+    }
+  ],
+  "relations": [
+    {
+      "source_label": "Force",
+      "target_label": "Acceleration",
+      "relation_type": "causes",
+      "weight": 0.99
+    },
+    {
+      "source_label": "Mass",
+      "target_label": "Acceleration",
+      "relation_type": "inversely-proportional-to",
+      "weight": 0.98
+    },
+    {
+      "source_label": "Newton's Second Law",
+      "target_label": "Force",
+      "relation_type": "relates-to",
+      "weight": 0.99
+    },
+    {
+      "source_label": "Newton's Second Law",
+      "target_label": "Mass",
+      "relation_type": "relates-to",
+      "weight": 0.99
+    },
+    {
+      "source_label": "Newton's Second Law",
+      "target_label": "Acceleration",
+      "relation_type": "relates-to",
+      "weight": 0.99
+    },
+    {
+      "source_label": "Energy",
+      "target_label": "Work",
+      "relation_type": "related-to",
+      "weight": 0.95
+    },
+    {
+      "source_label": "Kinetic Energy",
+      "target_label": "Energy",
+      "relation_type": "type-of",
+      "weight": 0.98
+    },
+    {
+      "source_label": "Potential Energy",
+      "target_label": "Energy",
+      "relation_type": "type-of",
+      "weight": 0.98
+    },
+    {
+      "source_label": "Velocity",
+      "target_label": "Kinetic Energy",
+      "relation_type": "affects",
+      "weight": 0.96
+    },
+    {
+      "source_label": "Mass",
+      "target_label": "Kinetic Energy",
+      "relation_type": "affects",
+      "weight": 0.96
+    },
+    {
+      "source_label": "Gravity",
+      "target_label": "Force",
+      "relation_type": "type-of",
+      "weight": 0.98
+    },
+    {
+      "source_label": "Gravity",
+      "target_label": "Potential Energy",
+      "relation_type": "creates",
+      "weight": 0.95
+    },
+    {
+      "source_label": "Momentum",
+      "target_label": "Mass",
+      "relation_type": "depends-on",
+      "weight": 0.98
+    },
+    {
+      "source_label": "Momentum",
+      "target_label": "Velocity",
+      "relation_type": "depends-on",
+      "weight": 0.98
+    },
+    {
+      "source_label": "Angular Momentum",
+      "target_label": "Momentum",
+      "relation_type": "analogous-to",
+      "weight": 0.90
+    },
+    {
+      "source_label": "Temperature",
+      "target_label": "Heat",
+      "relation_type": "related-to",
+      "weight": 0.95
+    },
+    {
+      "source_label": "Entropy",
+      "target_label": "Second Law of Thermodynamics",
+      "relation_type": "central-to",
+      "weight": 0.97
+    },
+    {
+      "source_label": "First Law of Thermodynamics",
+      "target_label": "Conservation of Energy",
+      "relation_type": "expresses",
+      "weight": 0.98
+    },
+    {
+      "source_label": "Electric Field",
+      "target_label": "Electric Current",
+      "relation_type": "can-cause",
+      "weight": 0.90
+    },
+    {
+      "source_label": "Voltage",
+      "target_label": "Electric Field",
+      "relation_type": "creates",
+      "weight": 0.95
+    },
+    {
+      "source_label": "Ohm's Law",
+      "target_label": "Voltage",
+      "relation_type": "relates-to",
+      "weight": 0.98
+    },
+    {
+      "source_label": "Ohm's Law",
+      "target_label": "Electric Current",
+      "relation_type": "relates-to",
+      "weight": 0.98
+    },
+    {
+      "source_label": "Ohm's Law",
+      "target_label": "Resistance",
+      "relation_type": "relates-to",
+      "weight": 0.98
+    },
+    {
+      "source_label": "Magnetic Field",
+      "target_label": "Electric Field",
+      "relation_type": "complementary-to",
+      "weight": 0.95
+    },
+    {
+      "source_label": "Electromagnetic Induction",
+      "target_label": "Faraday's Law",
+      "relation_type": "described-by",
+      "weight": 0.98
+    },
+    {
+      "source_label": "Maxwell's Equations",
+      "target_label": "Electric Field",
+      "relation_type": "describes",
+      "weight": 0.96
+    },
+    {
+      "source_label": "Maxwell's Equations",
+      "target_label": "Magnetic Field",
+      "relation_type": "describes",
+      "weight": 0.96
+    },
+    {
+      "source_label": "Wave",
+      "target_label": "Frequency",
+      "relation_type": "has-property",
+      "weight": 0.98
+    },
+    {
+      "source_label": "Wave",
+      "target_label": "Wavelength",
+      "relation_type": "has-property",
+      "weight": 0.98
+    },
+    {
+      "source_label": "Wave",
+      "target_label": "Amplitude",
+      "relation_type": "has-property",
+      "weight": 0.98
+    },
+    {
+      "source_label": "Electromagnetic Wave",
+      "target_label": "Light",
+      "relation_type": "includes",
+      "weight": 0.96
+    },
+    {
+      "source_label": "Speed of Light",
+      "target_label": "Light",
+      "relation_type": "property-of",
+      "weight": 0.98
+    },
+    {
+      "source_label": "Photon",
+      "target_label": "Light",
+      "relation_type": "quantum-of",
+      "weight": 0.96
+    },
+    {
+      "source_label": "Planck's Constant",
+      "target_label": "Photon",
+      "relation_type": "relates-to",
+      "weight": 0.97
+    },
+    {
+      "source_label": "Wave-Particle Duality",
+      "target_label": "Photon",
+      "relation_type": "applies-to",
+      "weight": 0.95
+    },
+    {
+      "source_label": "Uncertainty Principle",
+      "target_label": "Quantum State",
+      "relation_type": "limits",
+      "weight": 0.94
+    },
+    {
+      "source_label": "Superposition",
+      "target_label": "Quantum State",
+      "relation_type": "property-of",
+      "weight": 0.95
+    },
+    {
+      "source_label": "Quantum Entanglement",
+      "target_label": "Quantum State",
+      "relation_type": "involves",
+      "weight": 0.93
+    },
+    {
+      "source_label": "Schrödinger Equation",
+      "target_label": "Quantum State",
+      "relation_type": "governs",
+      "weight": 0.97
+    },
+    {
+      "source_label": "Electron",
+      "target_label": "Quark",
+      "relation_type": "different-from",
+      "weight": 0.85
+    },
+    {
+      "source_label": "Proton",
+      "target_label": "Quark",
+      "relation_type": "composed-of",
+      "weight": 0.96
+    },
+    {
+      "source_label": "Neutron",
+      "target_label": "Quark",
+      "relation_type": "composed-of",
+      "weight": 0.96
+    },
+    {
+      "source_label": "Standard Model",
+      "target_label": "Electron",
+      "relation_type": "includes",
+      "weight": 0.95
+    },
+    {
+      "source_label": "Standard Model",
+      "target_label": "Quark",
+      "relation_type": "includes",
+      "weight": 0.95
+    },
+    {
+      "source_label": "Strong Nuclear Force",
+      "target_label": "Proton",
+      "relation_type": "binds",
+      "weight": 0.96
+    },
+    {
+      "source_label": "Strong Nuclear Force",
+      "target_label": "Neutron",
+      "relation_type": "binds",
+      "weight": 0.96
+    },
+    {
+      "source_label": "Weak Nuclear Force",
+      "target_label": "Beta Decay",
+      "relation_type": "causes",
+      "weight": 0.95
+    },
+    {
+      "source_label": "Special Relativity",
+      "target_label": "Speed of Light",
+      "relation_type": "based-on",
+      "weight": 0.97
+    },
+    {
+      "source_label": "General Relativity",
+      "target_label": "Gravity",
+      "relation_type": "explains",
+      "weight": 0.96
+    },
+    {
+      "source_label": "Spacetime",
+      "target_label": "General Relativity",
+      "relation_type": "central-to",
+      "weight": 0.97
+    },
+    {
+      "source_label": "Time Dilation",
+      "target_label": "Special Relativity",
+      "relation_type": "predicted-by",
+      "weight": 0.96
+    },
+    {
+      "source_label": "Length Contraction",
+      "target_label": "Special Relativity",
+      "relation_type": "predicted-by",
+      "weight": 0.96
+    },
+    {
+      "source_label": "Black Hole",
+      "target_label": "Event Horizon",
+      "relation_type": "has-boundary",
+      "weight": 0.95
+    },
+    {
+      "source_label": "Black Hole",
+      "target_label": "General Relativity",
+      "relation_type": "predicted-by",
+      "weight": 0.94
+    },
+    {
+      "source_label": "Gravitational Wave",
+      "target_label": "General Relativity",
+      "relation_type": "predicted-by",
+      "weight": 0.95
+    },
+    {
+      "source_label": "Simple Harmonic Motion",
+      "target_label": "Pendulum",
+      "relation_type": "exhibited-by",
+      "weight": 0.96
+    },
+    {
+      "source_label": "Spring Constant",
+      "target_label": "Hooke's Law",
+      "relation_type": "part-of",
+      "weight": 0.97
+    },
+    {
+      "source_label": "Centripetal Force",
+      "target_label": "Circular Motion",
+      "relation_type": "required-for",
+      "weight": 0.98
+    },
+    {
+      "source_label": "Centrifugal Force",
+      "target_label": "Centripetal Force",
+      "relation_type": "opposite-of",
+      "weight": 0.90
+    },
+    {
+      "source_label": "Torque",
+      "target_label": "Angular Momentum",
+      "relation_type": "changes",
+      "weight": 0.96
+    },
+    {
+      "source_label": "Moment of Inertia",
+      "target_label": "Angular Momentum",
+      "relation_type": "affects",
+      "weight": 0.95
+    },
+    {
+      "source_label": "Conservation of Energy",
+      "target_label": "First Law of Thermodynamics",
+      "relation_type": "equivalent-to",
+      "weight": 0.98
+    },
+    {
+      "source_label": "Conservation of Momentum",
+      "target_label": "Newton's Third Law",
+      "relation_type": "follows-from",
+      "weight": 0.95
+    },
+    {
+      "source_label": "Elastic Collision",
+      "target_label": "Kinetic Energy",
+      "relation_type": "conserves",
+      "weight": 0.98
+    },
+    {
+      "source_label": "Inelastic Collision",
+      "target_label": "Kinetic Energy",
+      "relation_type": "does-not-conserve",
+      "weight": 0.96
+    },
+    {
+      "source_label": "Impulse",
+      "target_label": "Momentum",
+      "relation_type": "changes",
+      "weight": 0.98
+    },
+    {
+      "source_label": "Viscosity",
+      "target_label": "Fluid",
+      "relation_type": "property-of",
+      "weight": 0.97
+    },
+    {
+      "source_label": "Bernoulli's Principle",
+      "target_label": "Fluid",
+      "relation_type": "applies-to",
+      "weight": 0.95
+    },
+    {
+      "source_label": "Buoyancy",
+      "target_label": "Archimedes' Principle",
+      "relation_type": "explained-by",
+      "weight": 0.98
+    },
+    {
+      "source_label": "Surface Tension",
+      "target_label": "Fluid",
+      "relation_type": "property-of",
+      "weight": 0.95
+    },
+    {
+      "source_label": "Doppler Effect",
+      "target_label": "Wave",
+      "relation_type": "affects",
+      "weight": 0.96
+    },
+    {
+      "source_label": "Resonance",
+      "target_label": "Frequency",
+      "relation_type": "depends-on",
+      "weight": 0.96
+    },
+    {
+      "source_label": "Standing Wave",
+      "target_label": "Interference",
+      "relation_type": "result-of",
+      "weight": 0.95
+    },
+    {
+      "source_label": "X-rays",
+      "target_label": "Electromagnetic Spectrum",
+      "relation_type": "part-of",
+      "weight": 0.98
+    },
+    {
+      "source_label": "Gamma Rays",
+      "target_label": "Electromagnetic Spectrum",
+      "relation_type": "part-of",
+      "weight": 0.98
+    },
+    {
+      "source_label": "Infrared Radiation",
+      "target_label": "Electromagnetic Spectrum",
+      "relation_type": "part-of",
+      "weight": 0.98
+    },
+    {
+      "source_label": "Ultraviolet Radiation",
+      "target_label": "Electromagnetic Spectrum",
+      "relation_type": "part-of",
+      "weight": 0.98
+    },
+    {
+      "source_label": "Radioactivity",
+      "target_label": "Half-life",
+      "relation_type": "characterized-by",
+      "weight": 0.96
+    },
+    {
+      "source_label": "Alpha Decay",
+      "target_label": "Radioactivity",
+      "relation_type": "type-of",
+      "weight": 0.97
+    },
+    {
+      "source_label": "Beta Decay",
+      "target_label": "Radioactivity",
+      "relation_type": "type-of",
+      "weight": 0.97
+    },
+    {
+      "source_label": "Nuclear Fusion",
+      "target_label": "Nuclear Binding Energy",
+      "relation_type": "releases",
+      "weight": 0.95
+    },
+    {
+      "source_label": "Nuclear Fission",
+      "target_label": "Nuclear Binding Energy",
+      "relation_type": "releases",
+      "weight": 0.95
+    },
+    {
+      "source_label": "Critical Mass",
+      "target_label": "Nuclear Fission",
+      "relation_type": "required-for",
+      "weight": 0.96
+    },
+    {
+      "source_label": "Laser",
+      "target_label": "Light",
+      "relation_type": "produces",
+      "weight": 0.96
+    },
+    {
+      "source_label": "Polarization",
+      "target_label": "Electromagnetic Wave",
+      "relation_type": "property-of",
+      "weight": 0.95
+    },
+    {
+      "source_label": "Lens",
+      "target_label": "Refraction",
+      "relation_type": "uses",
+      "weight": 0.96
+    },
+    {
+      "source_label": "Mirror",
+      "target_label": "Reflection",
+      "relation_type": "uses",
+      "weight": 0.96
+    },
+    {
+      "source_label": "Focal Length",
+      "target_label": "Lens",
+      "relation_type": "property-of",
+      "weight": 0.97
+    },
+    {
+      "source_label": "Prism",
+      "target_label": "Spectrum",
+      "relation_type": "creates",
+      "weight": 0.96
+    },
+    {
+      "source_label": "Vector",
+      "target_label": "Scalar",
+      "relation_type": "different-from",
+      "weight": 0.90
+    },
+    {
+      "source_label": "Force",
+      "target_label": "Vector",
+      "relation_type": "is-a",
+      "weight": 0.98
+    },
+    {
+      "source_label": "Mass",
+      "target_label": "Scalar",
+      "relation_type": "is-a",
+      "weight": 0.98
+    },
+    {
+      "source_label": "Velocity",
+      "target_label": "Vector",
+      "relation_type": "is-a",
+      "weight": 0.98
+    },
+    {
+      "source_label": "Speed",
+      "target_label": "Scalar",
+      "relation_type": "is-a",
+      "weight": 0.98
+    },
+    {
+      "source_label": "Displacement",
+      "target_label": "Vector",
+      "relation_type": "is-a",
+      "weight": 0.98
+    },
+    {
+      "source_label": "Free Fall",
+      "target_label": "Gravity",
+      "relation_type": "caused-by",
+      "weight": 0.97
+    },
+    {
+      "source_label": "Projectile Motion",
+      "target_label": "Free Fall",
+      "relation_type": "includes",
+      "weight": 0.90
+    },
+    {
+      "source_label": "Circular Motion",
+      "target_label": "Centripetal Force",
+      "relation_type": "requires",
+      "weight": 0.98
+    },
+    {
+      "source_label": "Period",
+      "target_label": "Frequency",
+      "relation_type": "inverse-of",
+      "weight": 0.98
+    },
+    {
+      "source_label": "Wavefunction",
+      "target_label": "Schrödinger Equation",
+      "relation_type": "solution-of",
+      "weight": 0.97
+    },
+    {
+      "source_label": "Quantum Tunneling",
+      "target_label": "Wavefunction",
+      "relation_type": "described-by",
+      "weight": 0.94
+    },
+    {
+      "source_label": "Spin",
+      "target_label": "Electron",
+      "relation_type": "property-of",
+      "weight": 0.96
+    },
+    {
+      "source_label": "Bohr Model",
+      "target_label": "Electron",
+      "relation_type": "describes",
+      "weight": 0.85
+    },
+    {
+      "source_label": "Quantum Field Theory",
+      "target_label": "Standard Model",
+      "relation_type": "foundation-of",
+      "weight": 0.93
+    },
+    {
+      "source_label": "Higgs Boson",
+      "target_label": "Standard Model",
+      "relation_type": "part-of",
+      "weight": 0.95
+    },
+    {
+      "source_label": "Antimatter",
+      "target_label": "Electron",
+      "relation_type": "has-antiparticle",
+      "weight": 0.94
+    },
+    {
+      "source_label": "Dark Matter",
+      "target_label": "Gravity",
+      "relation_type": "interacts-via",
+      "weight": 0.92
+    },
+    {
+      "source_label": "Dark Energy",
+      "target_label": "Big Bang Theory",
+      "relation_type": "part-of",
+      "weight": 0.88
+    },
+    {
+      "source_label": "Cosmic Microwave Background",
+      "target_label": "Big Bang Theory",
+      "relation_type": "evidence-for",
+      "weight": 0.95
+    },
+    {
+      "source_label": "Redshift",
+      "target_label": "Hubble's Law",
+      "relation_type": "basis-of",
+      "weight": 0.96
+    },
+    {
+      "source_label": "Neutron Star",
+      "target_label": "Neutron",
+      "relation_type": "composed-of",
+      "weight": 0.95
+    },
+    {
+      "source_label": "White Dwarf",
+      "target_label": "Electron",
+      "relation_type": "supported-by",
+      "weight": 0.90
+    },
+    {
+      "source_label": "Supernova",
+      "target_label": "Neutron Star",
+      "relation_type": "can-create",
+      "weight": 0.85
+    },
+    {
+      "source_label": "Supernova",
+      "target_label": "Black Hole",
+      "relation_type": "can-create",
+      "weight": 0.80
+    },
+    {
+      "source_label": "Nuclear Binding Energy",
+      "target_label": "Mass-Energy Equivalence",
+      "relation_type": "explained-by",
+      "weight": 0.95
+    },
+    {
+      "source_label": "Lorentz Transformation",
+      "target_label": "Special Relativity",
+      "relation_type": "mathematical-basis-of",
+      "weight": 0.96
+    },
+    {
+      "source_label": "Inertial Frame",
+      "target_label": "Newton's First Law",
+      "relation_type": "defined-by",
+      "weight": 0.96
+    },
+    {
+      "source_label": "Non-inertial Frame",
+      "target_label": "Inertial Frame",
+      "relation_type": "different-from",
+      "weight": 0.95
+    },
+    {
+      "source_label": "Coriolis Effect",
+      "target_label": "Non-inertial Frame",
+      "relation_type": "occurs-in",
+      "weight": 0.94
+    },
+    {
+      "source_label": "Gyroscope",
+      "target_label": "Conservation of Angular Momentum",
+      "relation_type": "demonstrates",
+      "weight": 0.95
+    },
+    {
+      "source_label": "Precession",
+      "target_label": "Gyroscope",
+      "relation_type": "exhibited-by",
+      "weight": 0.94
+    },
+    {
+      "source_label": "Chaos Theory",
+      "target_label": "Butterfly Effect",
+      "relation_type": "includes",
+      "weight": 0.92
+    },
+    {
+      "source_label": "Strange Attractor",
+      "target_label": "Chaos Theory",
+      "relation_type": "part-of",
+      "weight": 0.90
+    },
+    {
+      "source_label": "Fractal",
+      "target_label": "Chaos Theory",
+      "relation_type": "related-to",
+      "weight": 0.85
+    },
+    {
+      "source_label": "Symmetry",
+      "target_label": "Noether's Theorem",
+      "relation_type": "related-to",
+      "weight": 0.94
+    },
+    {
+      "source_label": "Conservation Law",
+      "target_label": "Noether's Theorem",
+      "relation_type": "follows-from",
+      "weight": 0.94
+    },
+    {
+      "source_label": "Principle of Least Action",
+      "target_label": "Lagrangian",
+      "relation_type": "uses",
+      "weight": 0.96
+    },
+    {
+      "source_label": "Lagrangian",
+      "target_label": "Hamiltonian",
+      "relation_type": "related-to",
+      "weight": 0.94
+    },
+    {
+      "source_label": "Phase Space",
+      "target_label": "Hamiltonian",
+      "relation_type": "uses",
+      "weight": 0.93
+    },
+    {
+      "source_label": "Canonical Momentum",
+      "target_label": "Lagrangian",
+      "relation_type": "derived-from",
+      "weight": 0.94
+    },
+    {
+      "source_label": "Poisson Bracket",
+      "target_label": "Hamiltonian",
+      "relation_type": "used-with",
+      "weight": 0.93
+    },
+    {
+      "source_label": "Action",
+      "target_label": "Principle of Least Action",
+      "relation_type": "minimized-in",
+      "weight": 0.96
+    },
+    {
+      "source_label": "Virtual Work",
+      "target_label": "D'Alembert's Principle",
+      "relation_type": "basis-of",
+      "weight": 0.94
+    }
+  ]
+}

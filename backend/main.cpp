@@ -72,8 +72,15 @@ int main(int argc, char* argv[]) {
             arg += argv[i];
         }
 
-        // Initialize for single command
-        return app.run_command(command, arg);
+        // Initialize orchestrator before running command
+        if (!app.initialize()) {
+            std::cerr << "Failed to initialize Brain19\n";
+            return 1;
+        }
+
+        int result = app.run_command(command, arg);
+        app.shutdown();
+        return result;
     }
 
     // Interactive mode

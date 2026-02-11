@@ -11,6 +11,12 @@ public:
     explicit Brain19App(SystemOrchestrator::Config config);
     ~Brain19App() = default;
 
+    // Initialize orchestrator (for non-interactive use)
+    bool initialize() { return orchestrator_.initialize(); }
+
+    // Shutdown orchestrator
+    void shutdown() { orchestrator_.shutdown(); }
+
     // Run interactive REPL
     int run_interactive();
 

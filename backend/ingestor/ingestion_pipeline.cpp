@@ -266,9 +266,9 @@ IngestionResult IngestionPipeline::commit_approved() {
                     auto rid = ltm_.add_relation(
                         src_it->second, tgt_it->second,
                         rel.relation_type, rel.confidence);
-                    if (rid.has_value()) {
+                    if (rid != 0) {
                         result.relations_stored++;
-                        result.stored_relation_ids.push_back(*rid);
+                        result.stored_relation_ids.push_back(rid);
                     }
                 }
             }

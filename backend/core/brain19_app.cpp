@@ -162,7 +162,7 @@ void Brain19App::cmd_concepts() {
         auto info = ltm.retrieve_concept(cid);
         if (info) {
             std::cout << "  [" << info->id << "] " << info->label
-                      << " (" << to_string(info->epistemic.type)
+                      << " (" << epistemic_type_to_string(info->epistemic.type)
                       << ", trust=" << info->epistemic.trust << ")\n";
         }
         ++shown;
@@ -184,8 +184,8 @@ void Brain19App::cmd_explain(const std::string& id_str) {
         }
         std::cout << "Concept #" << info->id << ": " << info->label << "\n";
         std::cout << "  Definition: " << info->definition << "\n";
-        std::cout << "  Type: " << to_string(info->epistemic.type) << "\n";
-        std::cout << "  Status: " << to_string(info->epistemic.status) << "\n";
+        std::cout << "  Type: " << epistemic_type_to_string(info->epistemic.type) << "\n";
+        std::cout << "  Status: " << epistemic_status_to_string(info->epistemic.status) << "\n";
         std::cout << "  Trust: " << info->epistemic.trust << "\n";
 
         auto rels = orchestrator_.ltm().get_outgoing_relations(cid);

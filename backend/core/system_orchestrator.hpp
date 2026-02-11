@@ -133,6 +133,11 @@ private:
     std::atomic<bool> running_{false};
     int init_stage_ = 0;  // tracks how far initialization got (for cleanup)
 
+    // Orchestrator-level mutex: protects all subsystem access (LTM, STM, registry, etc.)
+    // from concurrent use between ask()/ingest() on main thread and periodic_task_loop().
+    // Streams use SharedLTM/SharedSTM/SharedRegistry/SharedEmbeddings independently.
+    mutable std::recursive_mutex subsystem_mtx_;
+
     // ─── Subsystems (owned, initialization order) ────────────────────────────
 
     // 1. LTM
@@ -215,6 +220,11 @@ private:
 
     // Periodic task loop
     void periodic_task_loop();
+
+    // WAL helper: log a store_concept operation
+    void wal_log_store_concept(ConceptId cid, const std::string& label,
+                               const std::string& definition,
+                               const EpistemicMetadata& meta);
 };
 
 } // namespace brain19

@@ -13,10 +13,10 @@ namespace brain19 {
 struct ChatResponse {
     std::string answer;
     std::vector<ConceptId> referenced_concepts;
-    bool contains_speculation;
+    bool contains_speculation = false;
     std::string epistemic_note;
-    bool used_llm;
-    double llm_time_ms;
+    bool used_llm = false;
+    double llm_time_ms = 0.0;
 };
 
 // ChatInterface: LLM-powered verbalization of Brain19 knowledge

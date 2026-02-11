@@ -1,7 +1,9 @@
 #include "system_orchestrator.hpp"
 #include "../bootstrap/foundation_concepts.hpp"
 
+#include <algorithm>
 #include <chrono>
+#include <cstring>
 #include <filesystem>
 #include <iostream>
 #include <sstream>
@@ -251,6 +253,11 @@ void SystemOrchestrator::shutdown() {
         wal_->checkpoint();
     }
 
+    // Clear stream alert callback before stopping (prevents use-after-free)
+    if (stream_orch_) {
+        stream_orch_->set_alert_callback(nullptr);
+    }
+
     // Reverse order of initialization
     // 13: Streams
     if (stream_monitor_) {
@@ -278,6 +285,7 @@ void SystemOrchestrator::shutdown() {
     }
 
     // Reset all in reverse order
+    thinking_.reset();
     concept_proposer_.reset();
     epistemic_promotion_.reset();
     pattern_discovery_.reset();
@@ -305,7 +313,6 @@ void SystemOrchestrator::shutdown() {
     wal_.reset();
     persistent_ltm_.reset();
     ltm_.reset();
-    thinking_.reset();
 
     init_stage_ = 0;
     log("Brain19 shut down.");
@@ -315,6 +322,7 @@ void SystemOrchestrator::shutdown() {
 
 void SystemOrchestrator::cleanup_from_stage(int stage) {
     // Clean up in reverse from the stage that succeeded
+    thinking_.reset();  // Created after stage 15, always safe to reset
     if (stage >= 14) { concept_proposer_.reset(); epistemic_promotion_.reset(); pattern_discovery_.reset(); }
     if (stage >= 13) { stream_monitor_.reset(); stream_sched_.reset(); stream_orch_.reset(); }
     if (stage >= 12) { shared_embeddings_.reset(); shared_registry_.reset(); shared_stm_.reset(); shared_ltm_.reset(); }
@@ -344,18 +352,27 @@ void SystemOrchestrator::seed_foundation() {
 
 ChatResponse SystemOrchestrator::ask(const std::string& question) {
     if (!running_ || !chat_) {
-        ChatResponse resp;
+        ChatResponse resp{};
         resp.answer = "[Brain19 not running]";
         resp.used_llm = false;
+        resp.contains_speculation = false;
+        resp.llm_time_ms = 0.0;
         return resp;
     }
 
-    // Run a thinking cycle first to activate relevant concepts
-    // Find seed concepts by searching LTM labels
+    std::lock_guard<std::recursive_mutex> lock(subsystem_mtx_);
+
+    // Find seed concepts by searching LTM labels (case-insensitive)
     std::vector<ConceptId> seeds;
+    std::string lower_q = question;
+    std::transform(lower_q.begin(), lower_q.end(), lower_q.begin(), ::tolower);
+
     for (auto cid : ltm_->get_all_concept_ids()) {
         auto info = ltm_->retrieve_concept(cid);
-        if (info && question.find(info->label) != std::string::npos) {
+        if (!info) continue;
+        std::string lower_label = info->label;
+        std::transform(lower_label.begin(), lower_label.end(), lower_label.begin(), ::tolower);
+        if (lower_q.find(lower_label) != std::string::npos) {
             seeds.push_back(cid);
             if (seeds.size() >= 5) break;
         }
@@ -399,9 +416,10 @@ IngestionResult SystemOrchestrator::ingest_text(const std::string& text, bool au
         return r;
     }
 
+    std::lock_guard<std::recursive_mutex> lock(subsystem_mtx_);
+
     auto result = ingestion_->ingest_text(text, "", auto_approve);
     if (result.success && !result.stored_concept_ids.empty()) {
-        // Ensure micromodels only for newly stored concepts
         registry_->ensure_models_for(result.stored_concept_ids);
     }
     return result;
@@ -415,6 +433,7 @@ IngestionResult SystemOrchestrator::ingest_wikipedia(const std::string& url) {
         return r;
     }
 
+    // HTTP fetch outside lock (network I/O)
     auto proposal = wiki_importer_->import_from_url(url);
     if (!proposal) {
         IngestionResult r;
@@ -423,7 +442,8 @@ IngestionResult SystemOrchestrator::ingest_wikipedia(const std::string& url) {
         return r;
     }
 
-    // Ingest the extracted text
+    std::lock_guard<std::recursive_mutex> lock(subsystem_mtx_);
+
     auto result = ingestion_->ingest_text(proposal->extracted_text, url, true);
     if (result.success && !result.stored_concept_ids.empty()) {
         registry_->ensure_models_for(result.stored_concept_ids);
@@ -435,6 +455,8 @@ IngestionResult SystemOrchestrator::ingest_wikipedia(const std::string& url) {
 
 void SystemOrchestrator::create_checkpoint(const std::string& tag) {
     if (!running_) return;
+
+    std::lock_guard<std::recursive_mutex> lock(subsystem_mtx_);
 
     persistent::CheckpointManager::Options opts;
     opts.base_dir = config_.data_dir + "/checkpoints";
@@ -461,6 +483,8 @@ void SystemOrchestrator::create_checkpoint(const std::string& tag) {
 bool SystemOrchestrator::restore_checkpoint(const std::string& checkpoint_dir) {
     if (!running_) return false;
 
+    std::lock_guard<std::recursive_mutex> lock(subsystem_mtx_);
+
     STMSnapshotData stm_data;
     auto result = persistent::CheckpointRestore::restore(
         checkpoint_dir,
@@ -483,6 +507,8 @@ bool SystemOrchestrator::restore_checkpoint(const std::string& checkpoint_dir) {
 // ─── Monitoring ──────────────────────────────────────────────────────────────
 
 std::string SystemOrchestrator::get_status() const {
+    std::lock_guard<std::recursive_mutex> lock(subsystem_mtx_);
+
     std::ostringstream ss;
     ss << "=== Brain19 Status ===\n";
     ss << "Running: " << (running_ ? "yes" : "no") << "\n";
@@ -552,6 +578,8 @@ ThinkingResult SystemOrchestrator::run_thinking_cycle(const std::vector<ConceptI
 
 void SystemOrchestrator::run_periodic_maintenance() {
     if (!running_ || !epistemic_promotion_ || !pattern_discovery_ || !curiosity_) return;
+
+    std::lock_guard<std::recursive_mutex> lock(subsystem_mtx_);
 
     log("Running periodic maintenance...");
     
@@ -661,6 +689,7 @@ void SystemOrchestrator::run_evolution_after_thinking(const ThinkingResult& resu
             auto new_id = ltm_->store_concept(
                 proposal.label, proposal.description, meta
             );
+            wal_log_store_concept(new_id, proposal.label, proposal.description, meta);
             if (registry_) registry_->create_model(new_id);
         }
     }
@@ -679,9 +708,42 @@ void SystemOrchestrator::run_evolution_after_thinking(const ThinkingResult& resu
             auto new_id = ltm_->store_concept(
                 proposal.label, proposal.description, meta
             );
+            wal_log_store_concept(new_id, proposal.label, proposal.description, meta);
             if (registry_) registry_->create_model(new_id);
         }
     }
+}
+
+// ─── WAL Helpers ─────────────────────────────────────────────────────────────
+
+void SystemOrchestrator::wal_log_store_concept(
+    ConceptId cid, const std::string& label,
+    const std::string& definition, const EpistemicMetadata& meta
+) {
+    if (!wal_) return;
+
+    // Build payload: struct + string data appended
+    persistent::WALStoreConceptPayload payload{};
+    payload.concept_id = cid;
+    payload.label_offset = sizeof(payload);
+    payload.label_length = static_cast<uint32_t>(label.size());
+    payload.definition_offset = static_cast<uint32_t>(sizeof(payload) + label.size());
+    payload.definition_length = static_cast<uint32_t>(definition.size());
+    payload.epistemic_type = static_cast<uint8_t>(meta.type);
+    payload.epistemic_status = static_cast<uint8_t>(meta.status);
+    payload.trust = meta.trust;
+    payload.created_epoch_us = static_cast<uint64_t>(
+        std::chrono::duration_cast<std::chrono::microseconds>(
+            std::chrono::system_clock::now().time_since_epoch()
+        ).count());
+
+    // Assemble full payload: struct + label bytes + definition bytes
+    std::vector<uint8_t> buf(sizeof(payload) + label.size() + definition.size());
+    std::memcpy(buf.data(), &payload, sizeof(payload));
+    std::memcpy(buf.data() + sizeof(payload), label.data(), label.size());
+    std::memcpy(buf.data() + sizeof(payload) + label.size(), definition.data(), definition.size());
+
+    wal_->append(persistent::WALOpType::STORE_CONCEPT, buf.data(), static_cast<uint32_t>(buf.size()));
 }
 
 } // namespace brain19

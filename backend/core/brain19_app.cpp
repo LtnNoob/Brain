@@ -208,11 +208,17 @@ void Brain19App::cmd_think(const std::string& concept_label) {
         return;
     }
 
-    // Find concept by label
+    // Find concept by label (case-insensitive)
+    std::string lower_search = concept_label;
+    std::transform(lower_search.begin(), lower_search.end(), lower_search.begin(), ::tolower);
+
     std::vector<ConceptId> seeds;
     for (auto cid : orchestrator_.ltm().get_all_concept_ids()) {
         auto info = orchestrator_.ltm().retrieve_concept(cid);
-        if (info && info->label.find(concept_label) != std::string::npos) {
+        if (!info) continue;
+        std::string lower_label = info->label;
+        std::transform(lower_label.begin(), lower_label.end(), lower_label.begin(), ::tolower);
+        if (lower_label.find(lower_search) != std::string::npos) {
             seeds.push_back(cid);
             if (seeds.size() >= 3) break;
         }

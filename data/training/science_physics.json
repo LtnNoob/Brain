@@ -140,6 +140,293 @@
       "trust_category": "FACT",
       "trust_value": 0.97,
       "tags": ["physics", "electricity", "circuits"]
+    },
+    {
+      "label": "Enthalpy",
+      "definition": "A thermodynamic quantity representing the total heat content of a system at constant pressure",
+      "trust_category": "FACT",
+      "trust_value": 0.96,
+      "tags": ["physics", "thermodynamics", "chemistry"]
+    },
+    {
+      "label": "Heat Capacity",
+      "definition": "The amount of heat required to raise the temperature of a substance by one degree",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["physics", "thermodynamics", "thermal_properties"]
+    },
+    {
+      "label": "Carnot Cycle",
+      "definition": "An idealized thermodynamic cycle that provides the maximum theoretical efficiency for a heat engine",
+      "trust_category": "FACT",
+      "trust_value": 0.95,
+      "tags": ["physics", "thermodynamics", "heat_engines"]
+    },
+    {
+      "label": "Boltzmann Constant",
+      "definition": "A physical constant relating the average kinetic energy of particles to temperature in statistical mechanics",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["physics", "statistical_mechanics", "constants"]
+    },
+    {
+      "label": "Refraction",
+      "definition": "The bending of light when it passes from one medium to another with different optical density",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["physics", "optics", "light"]
+    },
+    {
+      "label": "Diffraction",
+      "definition": "The spreading of waves when they encounter an obstacle or pass through an opening",
+      "trust_category": "FACT",
+      "trust_value": 0.96,
+      "tags": ["physics", "optics", "wave_mechanics"]
+    },
+    {
+      "label": "Lens",
+      "definition": "An optical device that focuses or disperses light by refraction, used to form images",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["physics", "optics", "devices"]
+    },
+    {
+      "label": "Mirror",
+      "definition": "A reflective surface that forms images by reflecting light according to the laws of reflection",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["physics", "optics", "reflection"]
+    },
+    {
+      "label": "Spectrum",
+      "definition": "The range of electromagnetic radiation frequencies, often visible as colors when light is dispersed",
+      "trust_category": "FACT",
+      "trust_value": 0.96,
+      "tags": ["physics", "optics", "electromagnetic_radiation"]
+    },
+    {
+      "label": "Nuclear Fission",
+      "definition": "The process of splitting heavy atomic nuclei into lighter nuclei, releasing enormous amounts of energy",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["physics", "nuclear_physics", "energy_production"]
+    },
+    {
+      "label": "Nuclear Fusion",
+      "definition": "The process of combining light atomic nuclei to form heavier nuclei, powering stars and hydrogen bombs",
+      "trust_category": "FACT",
+      "trust_value": 0.96,
+      "tags": ["physics", "nuclear_physics", "astrophysics"]
+    },
+    {
+      "label": "Radioactivity",
+      "definition": "The spontaneous decay of unstable atomic nuclei, emitting radiation in the form of particles or energy",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["physics", "nuclear_physics", "radiation"]
+    },
+    {
+      "label": "Half-Life",
+      "definition": "The time required for half of a sample of radioactive nuclei to undergo radioactive decay",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["physics", "nuclear_physics", "decay_processes"]
+    },
+    {
+      "label": "Neutron",
+      "definition": "An electrically neutral subatomic particle found in atomic nuclei, crucial for nuclear reactions",
+      "trust_category": "FACT",
+      "trust_value": 0.99,
+      "tags": ["physics", "particle_physics", "nuclear_physics"]
+    },
+    {
+      "label": "Black Hole",
+      "definition": "A region of spacetime with gravitational effects so strong that nothing, not even light, can escape",
+      "trust_category": "FACT",
+      "trust_value": 0.95,
+      "tags": ["physics", "astrophysics", "relativity"]
+    },
+    {
+      "label": "Neutron Star",
+      "definition": "An extremely dense stellar remnant composed almost entirely of neutrons, formed from collapsed massive stars",
+      "trust_category": "FACT",
+      "trust_value": 0.94,
+      "tags": ["physics", "astrophysics", "stellar_evolution"]
+    },
+    {
+      "label": "Dark Matter",
+      "definition": "Hypothetical form of matter that does not emit electromagnetic radiation but affects gravitational interactions",
+      "trust_category": "THEORY",
+      "trust_value": 0.85,
+      "tags": ["physics", "astrophysics", "cosmology"]
+    },
+    {
+      "label": "Redshift",
+      "definition": "The increase in wavelength of electromagnetic radiation from distant objects due to cosmic expansion",
+      "trust_category": "FACT",
+      "trust_value": 0.96,
+      "tags": ["physics", "astrophysics", "cosmology"]
+    },
+    {
+      "label": "Hubble Constant",
+      "definition": "The rate of expansion of the universe, relating the recession velocity of galaxies to their distance",
+      "trust_category": "FACT",
+      "trust_value": 0.93,
+      "tags": ["physics", "astrophysics", "cosmology"]
+    },
+    {
+      "label": "Crystal",
+      "definition": "A solid material with atoms arranged in a highly ordered, repeating three-dimensional structure",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["physics", "solid_state", "materials_science"]
+    },
+    {
+      "label": "Semiconductor",
+      "definition": "A material with electrical conductivity between that of conductors and insulators, essential for electronics",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["physics", "solid_state", "electronics"]
+    },
+    {
+      "label": "Superconductor",
+      "definition": "A material that exhibits zero electrical resistance and expels magnetic fields below a critical temperature",
+      "trust_category": "FACT",
+      "trust_value": 0.96,
+      "tags": ["physics", "solid_state", "quantum_physics"]
+    },
+    {
+      "label": "Transistor",
+      "definition": "A semiconductor device used to amplify or switch electronic signals, fundamental to modern electronics",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["physics", "electronics", "solid_state"]
+    },
+    {
+      "label": "Thermal Equilibrium",
+      "definition": "The state in which two systems have the same temperature and no net heat flow occurs between them",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["physics", "thermodynamics"]
+    },
+    {
+      "label": "Ideal Gas",
+      "definition": "A theoretical gas composed of particles with no intermolecular forces, following simple gas laws",
+      "trust_category": "FACT",
+      "trust_value": 0.95,
+      "tags": ["physics", "thermodynamics", "statistical_mechanics"]
+    },
+    {
+      "label": "Polarization",
+      "definition": "The orientation of oscillations in electromagnetic waves, particularly the direction of electric field vectors",
+      "trust_category": "FACT",
+      "trust_value": 0.96,
+      "tags": ["physics", "optics", "electromagnetic_radiation"]
+    },
+    {
+      "label": "Interference",
+      "definition": "The phenomenon where waves combine to form a resultant wave of greater, lower, or equal amplitude",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["physics", "wave_mechanics", "optics"]
+    },
+    {
+      "label": "Isotope",
+      "definition": "Variants of chemical elements with the same number of protons but different numbers of neutrons",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["physics", "nuclear_physics", "atomic_structure"]
+    },
+    {
+      "label": "Cosmic Radiation",
+      "definition": "High-energy particles from outer space that constantly bombard Earth's atmosphere",
+      "trust_category": "FACT",
+      "trust_value": 0.95,
+      "tags": ["physics", "astrophysics", "particle_physics"]
+    },
+    {
+      "label": "Quasar",
+      "definition": "Extremely luminous active galactic nuclei powered by supermassive black holes accreting matter",
+      "trust_category": "FACT",
+      "trust_value": 0.93,
+      "tags": ["physics", "astrophysics", "galaxies"]
+    },
+    {
+      "label": "Band Gap",
+      "definition": "The energy difference between the valence and conduction bands in a solid, determining electrical properties",
+      "trust_category": "FACT",
+      "trust_value": 0.96,
+      "tags": ["physics", "solid_state", "electronics"]
+    },
+    {
+      "label": "Phonon",
+      "definition": "A quantum of vibrational energy in a crystal lattice, representing collective atomic vibrations",
+      "trust_category": "FACT",
+      "trust_value": 0.94,
+      "tags": ["physics", "solid_state", "quantum_mechanics"]
+    },
+    {
+      "label": "Plasma",
+      "definition": "The fourth state of matter consisting of ionized gas with free electrons and positive ions",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["physics", "plasma_physics", "states_of_matter"]
+    },
+    {
+      "label": "Doppler Effect",
+      "definition": "The change in frequency of waves from a source moving relative to an observer",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["physics", "wave_mechanics", "optics"]
+    },
+    {
+      "label": "Ferromagnetism",
+      "definition": "A type of magnetism where materials can form permanent magnets due to aligned magnetic moments",
+      "trust_category": "FACT",
+      "trust_value": 0.96,
+      "tags": ["physics", "magnetism", "solid_state"]
+    },
+    {
+      "label": "Capacitance",
+      "definition": "The ability of a component to store electrical energy in an electric field between conductors",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["physics", "electricity", "circuits"]
+    },
+    {
+      "label": "Inductance",
+      "definition": "The property of a conductor to oppose changes in electric current through electromagnetic induction",
+      "trust_category": "FACT",
+      "trust_value": 0.96,
+      "tags": ["physics", "electromagnetism", "circuits"]
+    },
+    {
+      "label": "Quantum Tunneling",
+      "definition": "A quantum mechanical phenomenon where particles pass through potential barriers they classically cannot surmount",
+      "trust_category": "FACT",
+      "trust_value": 0.94,
+      "tags": ["physics", "quantum_mechanics", "tunneling"]
+    },
+    {
+      "label": "Spin",
+      "definition": "An intrinsic form of angular momentum carried by elementary particles, fundamental to quantum mechanics",
+      "trust_category": "FACT",
+      "trust_value": 0.95,
+      "tags": ["physics", "quantum_mechanics", "particle_physics"]
+    },
+    {
+      "label": "Lattice",
+      "definition": "The regular, repeating arrangement of atoms, ions, or molecules in a crystalline solid",
+      "trust_category": "FACT",
+      "trust_value": 0.97,
+      "tags": ["physics", "solid_state", "crystallography"]
+    },
+    {
+      "label": "Phase Transition",
+      "definition": "The transformation between different states of matter, such as solid, liquid, gas, or plasma",
+      "trust_category": "FACT",
+      "trust_value": 0.96,
+      "tags": ["physics", "thermodynamics", "phase_changes"]
     }
   ],
   "relations": [
@@ -292,6 +579,498 @@
       "target_label": "Photon",
       "relation_type": "characterizes",
       "weight": 0.89
+    },
+    {
+      "source_label": "Enthalpy",
+      "target_label": "Energy",
+      "relation_type": "type-of",
+      "weight": 0.94
+    },
+    {
+      "source_label": "Enthalpy",
+      "target_label": "Temperature",
+      "relation_type": "related-to",
+      "weight": 0.88
+    },
+    {
+      "source_label": "Heat Capacity",
+      "target_label": "Temperature",
+      "relation_type": "measures-change-in",
+      "weight": 0.92
+    },
+    {
+      "source_label": "Heat Capacity",
+      "target_label": "Energy",
+      "relation_type": "related-to",
+      "weight": 0.89
+    },
+    {
+      "source_label": "Carnot Cycle",
+      "target_label": "Entropy",
+      "relation_type": "involves",
+      "weight": 0.86
+    },
+    {
+      "source_label": "Carnot Cycle",
+      "target_label": "Temperature",
+      "relation_type": "operates-between",
+      "weight": 0.91
+    },
+    {
+      "source_label": "Boltzmann Constant",
+      "target_label": "Temperature",
+      "relation_type": "relates-to",
+      "weight": 0.95
+    },
+    {
+      "source_label": "Boltzmann Constant",
+      "target_label": "Entropy",
+      "relation_type": "defines",
+      "weight": 0.93
+    },
+    {
+      "source_label": "Refraction",
+      "target_label": "Photon",
+      "relation_type": "affects",
+      "weight": 0.89
+    },
+    {
+      "source_label": "Refraction",
+      "target_label": "Wave",
+      "relation_type": "phenomenon-of",
+      "weight": 0.92
+    },
+    {
+      "source_label": "Diffraction",
+      "target_label": "Wave",
+      "relation_type": "property-of",
+      "weight": 0.94
+    },
+    {
+      "source_label": "Diffraction",
+      "target_label": "Frequency",
+      "relation_type": "depends-on",
+      "weight": 0.87
+    },
+    {
+      "source_label": "Lens",
+      "target_label": "Refraction",
+      "relation_type": "uses",
+      "weight": 0.96
+    },
+    {
+      "source_label": "Lens",
+      "target_label": "Photon",
+      "relation_type": "focuses",
+      "weight": 0.91
+    },
+    {
+      "source_label": "Mirror",
+      "target_label": "Photon",
+      "relation_type": "reflects",
+      "weight": 0.94
+    },
+    {
+      "source_label": "Mirror",
+      "target_label": "Wave",
+      "relation_type": "reflects",
+      "weight": 0.93
+    },
+    {
+      "source_label": "Spectrum",
+      "target_label": "Frequency",
+      "relation_type": "composed-of",
+      "weight": 0.95
+    },
+    {
+      "source_label": "Spectrum",
+      "target_label": "Photon",
+      "relation_type": "represents",
+      "weight": 0.90
+    },
+    {
+      "source_label": "Nuclear Fission",
+      "target_label": "Neutron",
+      "relation_type": "requires",
+      "weight": 0.93
+    },
+    {
+      "source_label": "Nuclear Fission",
+      "target_label": "Energy",
+      "relation_type": "releases",
+      "weight": 0.97
+    },
+    {
+      "source_label": "Nuclear Fusion",
+      "target_label": "Energy",
+      "relation_type": "produces",
+      "weight": 0.96
+    },
+    {
+      "source_label": "Nuclear Fusion",
+      "target_label": "Temperature",
+      "relation_type": "requires-high",
+      "weight": 0.89
+    },
+    {
+      "source_label": "Radioactivity",
+      "target_label": "Neutron",
+      "relation_type": "involves",
+      "weight": 0.88
+    },
+    {
+      "source_label": "Radioactivity",
+      "target_label": "Energy",
+      "relation_type": "releases",
+      "weight": 0.91
+    },
+    {
+      "source_label": "Half-Life",
+      "target_label": "Radioactivity",
+      "relation_type": "measures",
+      "weight": 0.95
+    },
+    {
+      "source_label": "Half-Life",
+      "target_label": "Isotope",
+      "relation_type": "characterizes",
+      "weight": 0.92
+    },
+    {
+      "source_label": "Neutron",
+      "target_label": "Mass",
+      "relation_type": "has",
+      "weight": 0.96
+    },
+    {
+      "source_label": "Neutron",
+      "target_label": "Nuclear Fusion",
+      "relation_type": "produced-by",
+      "weight": 0.85
+    },
+    {
+      "source_label": "Black Hole",
+      "target_label": "Gravity",
+      "relation_type": "extreme-form-of",
+      "weight": 0.97
+    },
+    {
+      "source_label": "Black Hole",
+      "target_label": "Mass",
+      "relation_type": "requires-extreme",
+      "weight": 0.94
+    },
+    {
+      "source_label": "Neutron Star",
+      "target_label": "Neutron",
+      "relation_type": "composed-of",
+      "weight": 0.98
+    },
+    {
+      "source_label": "Neutron Star",
+      "target_label": "Gravity",
+      "relation_type": "has-extreme",
+      "weight": 0.95
+    },
+    {
+      "source_label": "Dark Matter",
+      "target_label": "Gravity",
+      "relation_type": "interacts-via",
+      "weight": 0.91
+    },
+    {
+      "source_label": "Dark Matter",
+      "target_label": "Mass",
+      "relation_type": "has",
+      "weight": 0.87
+    },
+    {
+      "source_label": "Redshift",
+      "target_label": "Frequency",
+      "relation_type": "decreases",
+      "weight": 0.93
+    },
+    {
+      "source_label": "Redshift",
+      "target_label": "Doppler Effect",
+      "relation_type": "example-of",
+      "weight": 0.89
+    },
+    {
+      "source_label": "Hubble Constant",
+      "target_label": "Redshift",
+      "relation_type": "measures",
+      "weight": 0.94
+    },
+    {
+      "source_label": "Hubble Constant",
+      "target_label": "Velocity",
+      "relation_type": "relates-to",
+      "weight": 0.88
+    },
+    {
+      "source_label": "Crystal",
+      "target_label": "Lattice",
+      "relation_type": "has",
+      "weight": 0.98
+    },
+    {
+      "source_label": "Crystal",
+      "target_label": "Phonon",
+      "relation_type": "supports",
+      "weight": 0.86
+    },
+    {
+      "source_label": "Semiconductor",
+      "target_label": "Band Gap",
+      "relation_type": "characterized-by",
+      "weight": 0.96
+    },
+    {
+      "source_label": "Semiconductor",
+      "target_label": "Electron",
+      "relation_type": "conducts-via",
+      "weight": 0.92
+    },
+    {
+      "source_label": "Superconductor",
+      "target_label": "Resistance",
+      "relation_type": "eliminates",
+      "weight": 0.98
+    },
+    {
+      "source_label": "Superconductor",
+      "target_label": "Temperature",
+      "relation_type": "critical",
+      "weight": 0.93
+    },
+    {
+      "source_label": "Transistor",
+      "target_label": "Semiconductor",
+      "relation_type": "made-from",
+      "weight": 0.97
+    },
+    {
+      "source_label": "Transistor",
+      "target_label": "Current",
+      "relation_type": "controls",
+      "weight": 0.95
+    },
+    {
+      "source_label": "Thermal Equilibrium",
+      "target_label": "Temperature",
+      "relation_type": "involves-equal",
+      "weight": 0.96
+    },
+    {
+      "source_label": "Thermal Equilibrium",
+      "target_label": "Entropy",
+      "relation_type": "maximizes",
+      "weight": 0.88
+    },
+    {
+      "source_label": "Ideal Gas",
+      "target_label": "Pressure",
+      "relation_type": "follows-law",
+      "weight": 0.94
+    },
+    {
+      "source_label": "Ideal Gas",
+      "target_label": "Temperature",
+      "relation_type": "related-to",
+      "weight": 0.93
+    },
+    {
+      "source_label": "Polarization",
+      "target_label": "Wave",
+      "relation_type": "property-of",
+      "weight": 0.95
+    },
+    {
+      "source_label": "Polarization",
+      "target_label": "Photon",
+      "relation_type": "characteristic-of",
+      "weight": 0.92
+    },
+    {
+      "source_label": "Interference",
+      "target_label": "Wave",
+      "relation_type": "phenomenon-of",
+      "weight": 0.97
+    },
+    {
+      "source_label": "Interference",
+      "target_label": "Frequency",
+      "relation_type": "depends-on",
+      "weight": 0.89
+    },
+    {
+      "source_label": "Isotope",
+      "target_label": "Neutron",
+      "relation_type": "contains-different",
+      "weight": 0.94
+    },
+    {
+      "source_label": "Isotope",
+      "target_label": "Radioactivity",
+      "relation_type": "may-exhibit",
+      "weight": 0.87
+    },
+    {
+      "source_label": "Cosmic Radiation",
+      "target_label": "Energy",
+      "relation_type": "carries-high",
+      "weight": 0.92
+    },
+    {
+      "source_label": "Cosmic Radiation",
+      "target_label": "Neutron",
+      "relation_type": "produces",
+      "weight": 0.85
+    },
+    {
+      "source_label": "Quasar",
+      "target_label": "Black Hole",
+      "relation_type": "powered-by",
+      "weight": 0.94
+    },
+    {
+      "source_label": "Quasar",
+      "target_label": "Energy",
+      "relation_type": "emits-enormous",
+      "weight": 0.96
+    },
+    {
+      "source_label": "Band Gap",
+      "target_label": "Energy",
+      "relation_type": "measures",
+      "weight": 0.93
+    },
+    {
+      "source_label": "Band Gap",
+      "target_label": "Electron",
+      "relation_type": "affects",
+      "weight": 0.91
+    },
+    {
+      "source_label": "Phonon",
+      "target_label": "Energy",
+      "relation_type": "quantum-of",
+      "weight": 0.90
+    },
+    {
+      "source_label": "Phonon",
+      "target_label": "Lattice",
+      "relation_type": "vibration-in",
+      "weight": 0.95
+    },
+    {
+      "source_label": "Plasma",
+      "target_label": "Electron",
+      "relation_type": "contains-free",
+      "weight": 0.97
+    },
+    {
+      "source_label": "Plasma",
+      "target_label": "Temperature",
+      "relation_type": "requires-high",
+      "weight": 0.91
+    },
+    {
+      "source_label": "Doppler Effect",
+      "target_label": "Frequency",
+      "relation_type": "changes",
+      "weight": 0.96
+    },
+    {
+      "source_label": "Doppler Effect",
+      "target_label": "Velocity",
+      "relation_type": "depends-on-relative",
+      "weight": 0.94
+    },
+    {
+      "source_label": "Ferromagnetism",
+      "target_label": "Magnetism",
+      "relation_type": "type-of",
+      "weight": 0.95
+    },
+    {
+      "source_label": "Ferromagnetism",
+      "target_label": "Electron",
+      "relation_type": "involves-spin-of",
+      "weight": 0.88
+    },
+    {
+      "source_label": "Capacitance",
+      "target_label": "Energy",
+      "relation_type": "stores",
+      "weight": 0.92
+    },
+    {
+      "source_label": "Capacitance",
+      "target_label": "Voltage",
+      "relation_type": "relates-to",
+      "weight": 0.93
+    },
+    {
+      "source_label": "Inductance",
+      "target_label": "Current",
+      "relation_type": "opposes-changes-in",
+      "weight": 0.94
+    },
+    {
+      "source_label": "Inductance",
+      "target_label": "Magnetism",
+      "relation_type": "involves",
+      "weight": 0.91
+    },
+    {
+      "source_label": "Quantum Tunneling",
+      "target_label": "Energy",
+      "relation_type": "overcomes-barriers",
+      "weight": 0.89
+    },
+    {
+      "source_label": "Quantum Tunneling",
+      "target_label": "Electron",
+      "relation_type": "allows-passage-of",
+      "weight": 0.92
+    },
+    {
+      "source_label": "Spin",
+      "target_label": "Electron",
+      "relation_type": "property-of",
+      "weight": 0.97
+    },
+    {
+      "source_label": "Spin",
+      "target_label": "Magnetism",
+      "relation_type": "causes",
+      "weight": 0.93
+    },
+    {
+      "source_label": "Lattice",
+      "target_label": "Crystal",
+      "relation_type": "structure-of",
+      "weight": 0.98
+    },
+    {
+      "source_label": "Lattice",
+      "target_label": "Phonon",
+      "relation_type": "supports-vibrations",
+      "weight": 0.86
+    },
+    {
+      "source_label": "Phase Transition",
+      "target_label": "Temperature",
+      "relation_type": "occurs-at-specific",
+      "weight": 0.94
+    },
+    {
+      "source_label": "Phase Transition",
+      "target_label": "Energy",
+      "relation_type": "requires",
+      "weight": 0.91
     }
   ]
 }

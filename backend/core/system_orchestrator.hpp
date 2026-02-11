@@ -35,12 +35,19 @@
 #include "../hybrid/kan_validator.hpp"
 #include "../hybrid/domain_manager.hpp"
 #include "../hybrid/refinement_loop.hpp"
+#include "../evolution/pattern_discovery.hpp"
+#include "../evolution/epistemic_promotion.hpp"
+#include "../evolution/concept_proposal.hpp"
 
 #include "thinking_pipeline.hpp"
 
 #include <atomic>
+#include <chrono>
 #include <memory>
+#include <mutex>
 #include <string>
+#include <thread>
+#include <vector>
 
 namespace brain19 {
 
@@ -110,6 +117,10 @@ public:
 
     ThinkingResult run_thinking_cycle(const std::vector<ConceptId>& seeds);
 
+    // ─── Evolution ──────────────────────────────────────────────────────────
+
+    void run_periodic_maintenance();
+
     // ─── Subsystem Access (for advanced use) ─────────────────────────────────
 
     BrainController* brain_controller() { return brain_.get(); }
@@ -127,6 +138,9 @@ private:
     // 1. LTM
     std::unique_ptr<LongTermMemory> ltm_;
     std::unique_ptr<persistent::PersistentLTM> persistent_ltm_;
+
+    // 2. WAL
+    std::unique_ptr<persistent::WALWriter> wal_;
 
     // 3. BrainController + STM
     std::unique_ptr<BrainController> brain_;
@@ -171,17 +185,36 @@ private:
     std::unique_ptr<StreamScheduler> stream_sched_;
     std::unique_ptr<StreamMonitor> stream_monitor_;
 
+    // 14. Evolution
+    std::unique_ptr<PatternDiscovery> pattern_discovery_;
+    std::unique_ptr<EpistemicPromotion> epistemic_promotion_;
+    std::unique_ptr<ConceptProposer> concept_proposer_;
+
     // Thinking pipeline
     std::unique_ptr<ThinkingPipeline> thinking_;
 
     // Active context for interactive use
     ContextId active_context_ = 0;
 
+    // Periodic task thread
+    std::thread periodic_thread_;
+    std::atomic<bool> periodic_running_{false};
+
+    // Stream alert log (thread-safe)
+    mutable std::mutex alert_log_mtx_;
+    std::vector<std::string> stream_alerts_;
+
     // ─── Helpers ─────────────────────────────────────────────────────────────
 
     void cleanup_from_stage(int stage);
     void seed_foundation();
     void log(const std::string& msg) const;
+
+    // Evolution: process thinking result for concept proposals
+    void run_evolution_after_thinking(const ThinkingResult& result);
+
+    // Periodic task loop
+    void periodic_task_loop();
 };
 
 } // namespace brain19

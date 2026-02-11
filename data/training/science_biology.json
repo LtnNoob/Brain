@@ -1,2128 +1,338 @@
 {
-  "source": "training-data:biology-v1",
+  "source": "training-data:science_biology-v1",
   "concepts": [
-    {
-      "label": "Cell",
-      "definition": "The basic structural and functional unit of all living organisms",
-      "trust_category": "FACT",
-      "trust_value": 0.99,
-      "tags": ["fundamental", "structure", "life"]
-    },
-    {
-      "label": "DNA",
-      "definition": "Deoxyribonucleic acid, the molecule that contains genetic information",
-      "trust_category": "FACT",
-      "trust_value": 0.99,
-      "tags": ["genetics", "nucleic-acid", "heredity"]
-    },
-    {
-      "label": "RNA",
-      "definition": "Ribonucleic acid, involved in protein synthesis and gene regulation",
-      "trust_category": "FACT",
-      "trust_value": 0.99,
-      "tags": ["genetics", "nucleic-acid", "protein-synthesis"]
-    },
-    {
-      "label": "Protein",
-      "definition": "Large molecules composed of amino acids that perform many cellular functions",
-      "trust_category": "FACT",
-      "trust_value": 0.99,
-      "tags": ["macromolecule", "amino-acid", "function"]
-    },
-    {
-      "label": "Gene",
-      "definition": "A distinct sequence of nucleotides that codes for a specific trait",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["genetics", "heredity", "trait"]
-    },
-    {
-      "label": "Chromosome",
-      "definition": "A structure containing DNA and associated proteins found in the nucleus",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["genetics", "nuclear", "structure"]
-    },
-    {
-      "label": "Mutation",
-      "definition": "A change in the DNA sequence that can alter gene function",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["genetics", "variation", "change"]
-    },
-    {
-      "label": "Natural Selection",
-      "definition": "The process by which organisms with favorable traits survive and reproduce more successfully",
-      "trust_category": "THEORY",
-      "trust_value": 0.96,
-      "tags": ["evolution", "selection", "survival"]
-    },
-    {
-      "label": "Evolution",
-      "definition": "The change in heritable traits of biological populations over successive generations",
-      "trust_category": "THEORY",
-      "trust_value": 0.95,
-      "tags": ["change", "population", "time"]
-    },
-    {
-      "label": "Ecosystem",
-      "definition": "A community of living organisms interacting with their physical environment",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["ecology", "environment", "interaction"]
-    },
-    {
-      "label": "Organism",
-      "definition": "An individual living system capable of functioning independently",
-      "trust_category": "FACT",
-      "trust_value": 0.99,
-      "tags": ["individual", "living", "independent"]
-    },
-    {
-      "label": "Species",
-      "definition": "A group of organisms capable of interbreeding and producing fertile offspring",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["classification", "reproduction", "group"]
-    },
-    {
-      "label": "Photosynthesis",
-      "definition": "Process by which plants convert light energy into chemical energy",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["plant", "energy-conversion", "light"]
-    },
-    {
-      "label": "Cellular Respiration",
-      "definition": "Process by which cells break down glucose to produce ATP energy",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["cellular", "energy", "glucose"]
-    },
-    {
-      "label": "Mitosis",
-      "definition": "Cell division process that produces two identical diploid cells",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["cell-division", "identical", "diploid"]
-    },
-    {
-      "label": "Meiosis",
-      "definition": "Cell division process that produces four genetically different gametes",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["cell-division", "gametes", "genetic-variation"]
-    },
-    {
-      "label": "Gamete",
-      "definition": "A reproductive cell (sperm or egg) containing half the genetic material",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["reproduction", "haploid", "genetic"]
-    },
-    {
-      "label": "Fertilization",
-      "definition": "The fusion of male and female gametes to form a zygote",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["reproduction", "fusion", "zygote"]
-    },
-    {
-      "label": "Zygote",
-      "definition": "A fertilized egg cell that develops into an organism",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["fertilized", "development", "single-cell"]
-    },
-    {
-      "label": "Embryo",
-      "definition": "An organism in its early stages of development",
-      "trust_category": "FACT",
-      "trust_value": 0.97,
-      "tags": ["development", "early-stage", "growing"]
-    },
-    {
-      "label": "Nucleus",
-      "definition": "The membrane-bound organelle containing the cell's genetic material",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["organelle", "genetic-material", "membrane-bound"]
-    },
-    {
-      "label": "Mitochondria",
-      "definition": "Organelles that produce ATP through cellular respiration",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["organelle", "ATP", "energy-production"]
-    },
-    {
-      "label": "Chloroplast",
-      "definition": "Organelles in plant cells where photosynthesis occurs",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["organelle", "plant", "photosynthesis"]
-    },
-    {
-      "label": "Ribosome",
-      "definition": "Cellular structures that synthesize proteins",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["protein-synthesis", "structure", "translation"]
-    },
-    {
-      "label": "Endoplasmic Reticulum",
-      "definition": "A network of membranes involved in protein and lipid synthesis",
-      "trust_category": "FACT",
-      "trust_value": 0.97,
-      "tags": ["membrane", "synthesis", "network"]
-    },
-    {
-      "label": "Golgi Apparatus",
-      "definition": "Organelle that modifies, packages, and ships proteins",
-      "trust_category": "FACT",
-      "trust_value": 0.97,
-      "tags": ["organelle", "protein-processing", "packaging"]
-    },
-    {
-      "label": "Cell Membrane",
-      "definition": "The phospholipid bilayer that controls what enters and exits the cell",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["boundary", "phospholipid", "selective"]
-    },
-    {
-      "label": "Cell Wall",
-      "definition": "A rigid structure surrounding plant cells that provides support",
-      "trust_category": "FACT",
-      "trust_value": 0.97,
-      "tags": ["plant", "rigid", "support"]
-    },
-    {
-      "label": "Cytoplasm",
-      "definition": "The gel-like substance inside cells where organelles are suspended",
-      "trust_category": "FACT",
-      "trust_value": 0.97,
-      "tags": ["interior", "gel-like", "organelles"]
-    },
-    {
-      "label": "Enzyme",
-      "definition": "A protein that catalyzes biochemical reactions by lowering activation energy",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["catalyst", "protein", "reaction"]
-    },
-    {
-      "label": "ATP",
-      "definition": "Adenosine triphosphate, the primary energy currency of cells",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["energy", "currency", "phosphate"]
-    },
-    {
-      "label": "Amino Acid",
-      "definition": "Building blocks of proteins containing amino and carboxyl groups",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["protein", "building-block", "structure"]
-    },
-    {
-      "label": "Nucleotide",
-      "definition": "Building blocks of DNA and RNA consisting of a base, sugar, and phosphate",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["DNA", "RNA", "building-block"]
-    },
-    {
-      "label": "Base Pair",
-      "definition": "Complementary nucleotides that form hydrogen bonds in DNA (A-T, G-C)",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["DNA", "complementary", "hydrogen-bond"]
-    },
-    {
-      "label": "Transcription",
-      "definition": "The process of copying DNA into RNA",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["DNA-to-RNA", "gene-expression", "copying"]
-    },
-    {
-      "label": "Translation",
-      "definition": "The process of converting RNA into proteins",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["RNA-to-protein", "protein-synthesis", "conversion"]
-    },
-    {
-      "label": "Codon",
-      "definition": "A sequence of three nucleotides that codes for a specific amino acid",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["genetic-code", "triplet", "amino-acid"]
-    },
-    {
-      "label": "Anticodon",
-      "definition": "A sequence of three nucleotides in tRNA complementary to a codon",
-      "trust_category": "FACT",
-      "trust_value": 0.97,
-      "tags": ["tRNA", "complementary", "codon"]
-    },
-    {
-      "label": "mRNA",
-      "definition": "Messenger RNA that carries genetic information from DNA to ribosomes",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["messenger", "genetic-information", "ribosome"]
-    },
-    {
-      "label": "tRNA",
-      "definition": "Transfer RNA that brings amino acids to the ribosome during translation",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["transfer", "amino-acid", "translation"]
-    },
-    {
-      "label": "rRNA",
-      "definition": "Ribosomal RNA that forms the structural and catalytic components of ribosomes",
-      "trust_category": "FACT",
-      "trust_value": 0.97,
-      "tags": ["ribosomal", "structural", "catalytic"]
-    },
-    {
-      "label": "Allele",
-      "definition": "Different versions of the same gene",
-      "trust_category": "FACT",
-      "trust_value": 0.97,
-      "tags": ["gene-variant", "heredity", "trait"]
-    },
-    {
-      "label": "Dominant Allele",
-      "definition": "An allele that is expressed when present in one or two copies",
-      "trust_category": "FACT",
-      "trust_value": 0.97,
-      "tags": ["expression", "one-copy", "phenotype"]
-    },
-    {
-      "label": "Recessive Allele",
-      "definition": "An allele that is only expressed when present in two copies",
-      "trust_category": "FACT",
-      "trust_value": 0.97,
-      "tags": ["expression", "two-copies", "hidden"]
-    },
-    {
-      "label": "Genotype",
-      "definition": "The genetic makeup of an organism",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["genetic-makeup", "DNA", "inherited"]
-    },
-    {
-      "label": "Phenotype",
-      "definition": "The observable characteristics of an organism",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["observable", "traits", "expressed"]
-    },
-    {
-      "label": "Homozygous",
-      "definition": "Having two identical alleles for a particular gene",
-      "trust_category": "FACT",
-      "trust_value": 0.97,
-      "tags": ["identical-alleles", "pure", "breeding"]
-    },
-    {
-      "label": "Heterozygous",
-      "definition": "Having two different alleles for a particular gene",
-      "trust_category": "FACT",
-      "trust_value": 0.97,
-      "tags": ["different-alleles", "hybrid", "mixed"]
-    },
-    {
-      "label": "Heredity",
-      "definition": "The passing of traits from parents to offspring",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["inheritance", "traits", "genetic"]
-    },
-    {
-      "label": "Mendel's Laws",
-      "definition": "Principles of inheritance discovered by Gregor Mendel",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["inheritance", "mendel", "principles"]
-    },
-    {
-      "label": "Independent Assortment",
-      "definition": "Genes for different traits are inherited independently",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["inheritance", "independent", "traits"]
-    },
-    {
-      "label": "Segregation",
-      "definition": "The separation of allele pairs during gamete formation",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["allele-separation", "gametes", "meiosis"]
-    },
-    {
-      "label": "Genetic Drift",
-      "definition": "Random changes in allele frequencies in small populations",
-      "trust_category": "THEORY",
-      "trust_value": 0.93,
-      "tags": ["random", "population", "frequency"]
-    },
-    {
-      "label": "Gene Flow",
-      "definition": "The transfer of genetic material between populations",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["transfer", "populations", "migration"]
-    },
-    {
-      "label": "Hardy-Weinberg Equilibrium",
-      "definition": "A principle stating that allele frequencies remain constant in an ideal population",
-      "trust_category": "THEORY",
-      "trust_value": 0.92,
-      "tags": ["equilibrium", "frequency", "population"]
-    },
-    {
-      "label": "Adaptation",
-      "definition": "A trait that increases an organism's fitness in its environment",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["fitness", "environment", "beneficial"]
-    },
-    {
-      "label": "Fitness",
-      "definition": "An organism's ability to survive and reproduce in its environment",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["survival", "reproduction", "success"]
-    },
-    {
-      "label": "Speciation",
-      "definition": "The formation of new species through evolutionary processes",
-      "trust_category": "THEORY",
-      "trust_value": 0.93,
-      "tags": ["new-species", "evolution", "divergence"]
-    },
-    {
-      "label": "Reproductive Isolation",
-      "definition": "Barriers that prevent species from interbreeding",
-      "trust_category": "FACT",
-      "trust_value": 0.94,
-      "tags": ["barriers", "interbreeding", "separation"]
-    },
-    {
-      "label": "Homology",
-      "definition": "Similarity in structure due to shared evolutionary origin",
-      "trust_category": "FACT",
-      "trust_value": 0.94,
-      "tags": ["similarity", "common-ancestor", "structure"]
-    },
-    {
-      "label": "Analogy",
-      "definition": "Similarity in function but not structure due to convergent evolution",
-      "trust_category": "FACT",
-      "trust_value": 0.93,
-      "tags": ["function", "convergent", "independent"]
-    },
-    {
-      "label": "Vestigial Structure",
-      "definition": "A structure that has lost most or all of its ancestral function",
-      "trust_category": "FACT",
-      "trust_value": 0.93,
-      "tags": ["reduced-function", "ancestral", "evolutionary"]
-    },
-    {
-      "label": "Fossil Record",
-      "definition": "The history of life preserved in rock layers",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["history", "preserved", "evidence"]
-    },
-    {
-      "label": "Taxonomy",
-      "definition": "The science of classifying and naming organisms",
-      "trust_category": "FACT",
-      "trust_value": 0.97,
-      "tags": ["classification", "naming", "organization"]
-    },
-    {
-      "label": "Phylogeny",
-      "definition": "The evolutionary relationships among species",
-      "trust_category": "FACT",
-      "trust_value": 0.94,
-      "tags": ["evolutionary-relationships", "tree", "ancestry"]
-    },
-    {
-      "label": "Domain",
-      "definition": "The highest taxonomic category dividing all life",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["highest-category", "life", "classification"]
-    },
-    {
-      "label": "Kingdom",
-      "definition": "A major taxonomic group within a domain",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["major-group", "taxonomy", "classification"]
-    },
-    {
-      "label": "Phylum",
-      "definition": "A taxonomic group of related classes",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["related-classes", "taxonomy", "body-plan"]
-    },
-    {
-      "label": "Class",
-      "definition": "A taxonomic group of related orders",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["related-orders", "taxonomy", "classification"]
-    },
-    {
-      "label": "Order",
-      "definition": "A taxonomic group of related families",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["related-families", "taxonomy", "classification"]
-    },
-    {
-      "label": "Family",
-      "definition": "A taxonomic group of related genera",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["related-genera", "taxonomy", "classification"]
-    },
-    {
-      "label": "Genus",
-      "definition": "A taxonomic group of closely related species",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["closely-related", "species", "classification"]
-    },
-    {
-      "label": "Prokaryote",
-      "definition": "Organisms lacking a membrane-bound nucleus",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["no-nucleus", "bacteria", "simple"]
-    },
-    {
-      "label": "Eukaryote",
-      "definition": "Organisms with a membrane-bound nucleus",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["nucleus", "complex", "organelles"]
-    },
-    {
-      "label": "Bacteria",
-      "definition": "Single-celled prokaryotic organisms",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["single-celled", "prokaryotic", "ubiquitous"]
-    },
-    {
-      "label": "Archaea",
-      "definition": "Single-celled prokaryotic organisms distinct from bacteria",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["prokaryotic", "extreme-environments", "ancient"]
-    },
-    {
-      "label": "Virus",
-      "definition": "Non-cellular infectious agents that require host cells to reproduce",
-      "trust_category": "FACT",
-      "trust_value": 0.97,
-      "tags": ["non-cellular", "infectious", "parasitic"]
-    },
-    {
-      "label": "Fungi",
-      "definition": "Eukaryotic organisms that obtain nutrients through absorption",
-      "trust_category": "FACT",
-      "trust_value": 0.97,
-      "tags": ["eukaryotic", "absorption", "decomposer"]
-    },
-    {
-      "label": "Plant",
-      "definition": "Multicellular eukaryotic organisms that perform photosynthesis",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["multicellular", "photosynthesis", "autotrophic"]
-    },
-    {
-      "label": "Animal",
-      "definition": "Multicellular eukaryotic organisms that consume other organisms for energy",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["multicellular", "heterotrophic", "mobile"]
-    },
-    {
-      "label": "Protist",
-      "definition": "Diverse group of eukaryotic organisms, mostly single-celled",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["eukaryotic", "diverse", "mostly-unicellular"]
-    },
-    {
-      "label": "Autotroph",
-      "definition": "An organism that produces its own food using inorganic compounds",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["self-feeding", "producer", "inorganic"]
-    },
-    {
-      "label": "Heterotroph",
-      "definition": "An organism that obtains nutrients by consuming other organisms",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["consumer", "dependent", "organic"]
-    },
-    {
-      "label": "Producer",
-      "definition": "An organism that makes its own food through photosynthesis or chemosynthesis",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["primary", "energy-conversion", "food-chain"]
-    },
-    {
-      "label": "Primary Consumer",
-      "definition": "An organism that feeds directly on producers",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["herbivore", "first-level", "consumer"]
-    },
-    {
-      "label": "Secondary Consumer",
-      "definition": "An organism that feeds on primary consumers",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["carnivore", "second-level", "consumer"]
-    },
-    {
-      "label": "Decomposer",
-      "definition": "An organism that breaks down dead organic matter",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["breakdown", "recycling", "nutrients"]
-    },
-    {
-      "label": "Food Chain",
-      "definition": "A linear sequence of organisms showing who eats whom",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["linear", "feeding", "energy-flow"]
-    },
-    {
-      "label": "Food Web",
-      "definition": "A complex network of interconnected food chains",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["network", "interconnected", "complex"]
-    },
-    {
-      "label": "Energy Pyramid",
-      "definition": "A diagram showing the flow of energy through trophic levels",
-      "trust_category": "FACT",
-      "trust_value": 0.94,
-      "tags": ["energy-flow", "trophic-levels", "pyramid"]
-    },
-    {
-      "label": "Trophic Level",
-      "definition": "The position an organism occupies in a food chain",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["position", "feeding-level", "energy"]
-    },
-    {
-      "label": "Biomass",
-      "definition": "The total mass of living organisms in a given area",
-      "trust_category": "FACT",
-      "trust_value": 0.94,
-      "tags": ["living-mass", "total", "area"]
-    },
-    {
-      "label": "Population",
-      "definition": "A group of organisms of the same species living in the same area",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["same-species", "area", "group"]
-    },
-    {
-      "label": "Community",
-      "definition": "All the populations of different species living in the same area",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["multiple-species", "populations", "area"]
-    },
-    {
-      "label": "Biome",
-      "definition": "A large ecological area with distinctive plant and animal communities",
-      "trust_category": "FACT",
-      "trust_value": 0.94,
-      "tags": ["large-area", "climate", "community"]
-    },
-    {
-      "label": "Habitat",
-      "definition": "The natural environment where an organism lives and meets its needs",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["environment", "living-space", "needs"]
-    },
-    {
-      "label": "Ecological Niche",
-      "definition": "The role an organism plays in its ecosystem, including its habitat and interactions",
-      "trust_category": "FACT",
-      "trust_value": 0.93,
-      "tags": ["role", "interactions", "function"]
-    },
-    {
-      "label": "Competition",
-      "definition": "The struggle between organisms for limited resources",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["struggle", "limited-resources", "survival"]
-    },
-    {
-      "label": "Predation",
-      "definition": "The consumption of one organism by another",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["consumption", "predator-prey", "feeding"]
-    },
-    {
-      "label": "Symbiosis",
-      "definition": "A close ecological relationship between two different species",
-      "trust_category": "FACT",
-      "trust_value": 0.94,
-      "tags": ["close-relationship", "two-species", "interaction"]
-    },
-    {
-      "label": "Mutualism",
-      "definition": "A symbiotic relationship where both species benefit",
-      "trust_category": "FACT",
-      "trust_value": 0.94,
-      "tags": ["mutual-benefit", "symbiosis", "positive"]
-    },
-    {
-      "label": "Commensalism",
-      "definition": "A symbiotic relationship where one species benefits and the other is unaffected",
-      "trust_category": "FACT",
-      "trust_value": 0.93,
-      "tags": ["one-benefits", "neutral", "symbiosis"]
-    },
-    {
-      "label": "Parasitism",
-      "definition": "A symbiotic relationship where one species benefits at the expense of the other",
-      "trust_category": "FACT",
-      "trust_value": 0.94,
-      "tags": ["one-benefits", "harm", "exploitation"]
-    },
-    {
-      "label": "Carbon Cycle",
-      "definition": "The movement of carbon through ecosystems",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["carbon", "cycle", "ecosystem"]
-    },
-    {
-      "label": "Nitrogen Cycle",
-      "definition": "The movement of nitrogen through ecosystems",
-      "trust_category": "FACT",
-      "trust_value": 0.94,
-      "tags": ["nitrogen", "cycle", "ecosystem"]
-    },
-    {
-      "label": "Water Cycle",
-      "definition": "The continuous movement of water through the environment",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["water", "cycle", "continuous"]
-    },
-    {
-      "label": "Phosphorus Cycle",
-      "definition": "The movement of phosphorus through ecosystems",
-      "trust_category": "FACT",
-      "trust_value": 0.93,
-      "tags": ["phosphorus", "cycle", "ecosystem"]
-    },
-    {
-      "label": "Carrying Capacity",
-      "definition": "The maximum population size an environment can sustain",
-      "trust_category": "FACT",
-      "trust_value": 0.93,
-      "tags": ["maximum", "population", "sustainable"]
-    },
-    {
-      "label": "Limiting Factor",
-      "definition": "A resource or condition that restricts population growth",
-      "trust_category": "FACT",
-      "trust_value": 0.94,
-      "tags": ["restriction", "population-growth", "resource"]
-    },
-    {
-      "label": "Exponential Growth",
-      "definition": "Rapid population growth under ideal conditions",
-      "trust_category": "FACT",
-      "trust_value": 0.93,
-      "tags": ["rapid", "ideal-conditions", "unlimited"]
-    },
-    {
-      "label": "Logistic Growth",
-      "definition": "Population growth that levels off as it approaches carrying capacity",
-      "trust_category": "FACT",
-      "trust_value": 0.92,
-      "tags": ["levels-off", "carrying-capacity", "realistic"]
-    },
-    {
-      "label": "Biodiversity",
-      "definition": "The variety of life in an ecosystem or on Earth",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["variety", "life", "ecosystem"]
-    },
-    {
-      "label": "Extinction",
-      "definition": "The complete disappearance of a species from Earth",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["disappearance", "species", "permanent"]
-    },
-    {
-      "label": "Conservation",
-      "definition": "The protection and preservation of natural resources and species",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["protection", "preservation", "natural-resources"]
-    },
-    {
-      "label": "Succession",
-      "definition": "The gradual change in species composition over time",
-      "trust_category": "FACT",
-      "trust_value": 0.93,
-      "tags": ["gradual-change", "species-composition", "time"]
-    },
-    {
-      "label": "Primary Succession",
-      "definition": "Succession that occurs on previously lifeless surfaces",
-      "trust_category": "FACT",
-      "trust_value": 0.92,
-      "tags": ["lifeless-surface", "new", "pioneer-species"]
-    },
-    {
-      "label": "Secondary Succession",
-      "definition": "Succession that occurs after a disturbance in an existing ecosystem",
-      "trust_category": "FACT",
-      "trust_value": 0.92,
-      "tags": ["disturbance", "existing-ecosystem", "recovery"]
-    },
-    {
-      "label": "Climax Community",
-      "definition": "A stable, mature ecological community at the end of succession",
-      "trust_category": "FACT",
-      "trust_value": 0.91,
-      "tags": ["stable", "mature", "end-stage"]
-    },
-    {
-      "label": "Homeostasis",
-      "definition": "The maintenance of stable internal conditions in living organisms",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["stable", "internal-conditions", "regulation"]
-    },
-    {
-      "label": "Feedback Loop",
-      "definition": "A biological mechanism that regulates physiological processes",
-      "trust_category": "FACT",
-      "trust_value": 0.94,
-      "tags": ["regulation", "mechanism", "response"]
-    },
-    {
-      "label": "Negative Feedback",
-      "definition": "A regulatory mechanism that counteracts changes to maintain stability",
-      "trust_category": "FACT",
-      "trust_value": 0.94,
-      "tags": ["counteract", "stability", "regulation"]
-    },
-    {
-      "label": "Positive Feedback",
-      "definition": "A regulatory mechanism that amplifies changes",
-      "trust_category": "FACT",
-      "trust_value": 0.92,
-      "tags": ["amplify", "changes", "acceleration"]
-    },
-    {
-      "label": "Nervous System",
-      "definition": "The network of nerve cells that controls body functions",
-      "trust_category": "FACT",
-      "trust_value": 0.97,
-      "tags": ["nerve-cells", "control", "communication"]
-    },
-    {
-      "label": "Neuron",
-      "definition": "A nerve cell that transmits electrical and chemical signals",
-      "trust_category": "FACT",
-      "trust_value": 0.97,
-      "tags": ["nerve-cell", "signals", "transmission"]
-    },
-    {
-      "label": "Synapse",
-      "definition": "The junction between two neurons where signals are transmitted",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["junction", "signal-transmission", "neurons"]
-    },
-    {
-      "label": "Neurotransmitter",
-      "definition": "Chemical messengers that transmit signals across synapses",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["chemical-messenger", "synapse", "signal"]
-    },
-    {
-      "label": "Central Nervous System",
-      "definition": "The brain and spinal cord that process and coordinate information",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["brain", "spinal-cord", "coordination"]
-    },
-    {
-      "label": "Peripheral Nervous System",
-      "definition": "All nerves outside the brain and spinal cord",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["outside-CNS", "nerves", "connection"]
-    },
-    {
-      "label": "Reflex",
-      "definition": "An automatic response to a stimulus that bypasses conscious thought",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["automatic", "stimulus", "unconscious"]
-    },
-    {
-      "label": "Hormone",
-      "definition": "Chemical messengers produced by glands that regulate body functions",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["chemical-messenger", "glands", "regulation"]
-    },
-    {
-      "label": "Endocrine System",
-      "definition": "The system of glands that produce and secrete hormones",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["glands", "hormones", "system"]
-    },
-    {
-      "label": "Circulatory System",
-      "definition": "The system that transports blood, nutrients, and gases throughout the body",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["transport", "blood", "circulation"]
-    },
-    {
-      "label": "Heart",
-      "definition": "The muscular organ that pumps blood through the circulatory system",
-      "trust_category": "FACT",
-      "trust_value": 0.97,
-      "tags": ["pump", "muscle", "circulation"]
-    },
-    {
-      "label": "Blood",
-      "definition": "The fluid that carries oxygen, nutrients, and waste products through the body",
-      "trust_category": "FACT",
-      "trust_value": 0.97,
-      "tags": ["fluid", "transport", "oxygen"]
-    },
-    {
-      "label": "Red Blood Cell",
-      "definition": "Blood cells that carry oxygen from lungs to body tissues",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["oxygen-transport", "hemoglobin", "circulation"]
-    },
-    {
-      "label": "White Blood Cell",
-      "definition": "Blood cells that defend the body against infections and diseases",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["immune-defense", "infection", "protection"]
-    },
-    {
-      "label": "Platelet",
-      "definition": "Blood cell fragments that help with blood clotting",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["clotting", "fragments", "healing"]
-    },
-    {
-      "label": "Respiratory System",
-      "definition": "The system that exchanges oxygen and carbon dioxide with the environment",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["gas-exchange", "breathing", "oxygen"]
-    },
-    {
-      "label": "Lung",
-      "definition": "The organ where gas exchange occurs between air and blood",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["gas-exchange", "breathing", "organ"]
-    },
-    {
-      "label": "Alveolus",
-      "definition": "Tiny air sacs in the lungs where gas exchange occurs",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["air-sac", "gas-exchange", "tiny"]
-    },
-    {
-      "label": "Digestive System",
-      "definition": "The system that breaks down food and absorbs nutrients",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["food-breakdown", "absorption", "nutrients"]
-    },
-    {
-      "label": "Stomach",
-      "definition": "The organ that chemically and mechanically breaks down food",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["digestion", "acid", "breakdown"]
-    },
-    {
-      "label": "Small Intestine",
-      "definition": "The organ where most nutrient absorption occurs",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["absorption", "nutrients", "digestion"]
-    },
-    {
-      "label": "Immune System",
-      "definition": "The body's defense system against pathogens and foreign substances",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["defense", "pathogens", "protection"]
-    },
-    {
-      "label": "Antibody",
-      "definition": "Proteins produced by immune cells that recognize and neutralize antigens",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["protein", "immune", "neutralize"]
-    },
-    {
-      "label": "Antigen",
-      "definition": "Foreign substances that trigger an immune response",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["foreign", "immune-response", "recognition"]
-    },
-    {
-      "label": "Vaccine",
-      "definition": "A preparation that stimulates immunity against a specific disease",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["immunity", "prevention", "disease"]
-    },
-    {
-      "label": "Tissue",
-      "definition": "A group of similar cells that work together to perform a specific function",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["cell-group", "function", "organization"]
-    },
-    {
-      "label": "Organ",
-      "definition": "A structure composed of different tissues that work together",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["tissue-group", "structure", "function"]
-    },
-    {
-      "label": "Organ System",
-      "definition": "A group of organs that work together to perform major functions",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["organ-group", "major-functions", "cooperation"]
-    },
-    {
-      "label": "Multicellularity",
-      "definition": "The condition of being composed of many cells",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["many-cells", "organization", "complexity"]
-    },
-    {
-      "label": "Cell Differentiation",
-      "definition": "The process by which cells become specialized for specific functions",
-      "trust_category": "FACT",
-      "trust_value": 0.94,
-      "tags": ["specialization", "development", "function"]
-    },
-    {
-      "label": "Stem Cell",
-      "definition": "Unspecialized cells that can develop into various cell types",
-      "trust_category": "FACT",
-      "trust_value": 0.94,
-      "tags": ["unspecialized", "potential", "development"]
-    },
-    {
-      "label": "Development",
-      "definition": "The process of growth and differentiation from embryo to adult",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["growth", "differentiation", "maturation"]
-    },
-    {
-      "label": "Regeneration",
-      "definition": "The ability to regrow lost or damaged body parts",
-      "trust_category": "FACT",
-      "trust_value": 0.93,
-      "tags": ["regrowth", "healing", "restoration"]
-    },
-    {
-      "label": "Aging",
-      "definition": "The gradual deterioration of physiological functions over time",
-      "trust_category": "FACT",
-      "trust_value": 0.94,
-      "tags": ["deterioration", "time", "physiological"]
-    },
-    {
-      "label": "Apoptosis",
-      "definition": "Programmed cell death that occurs as a normal part of development",
-      "trust_category": "FACT",
-      "trust_value": 0.93,
-      "tags": ["programmed", "cell-death", "development"]
-    },
-    {
-      "label": "Cancer",
-      "definition": "Uncontrolled cell division that can spread to other parts of the body",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["uncontrolled", "division", "malignant"]
-    },
-    {
-      "label": "Tumor",
-      "definition": "An abnormal growth of cells that can be benign or malignant",
-      "trust_category": "FACT",
-      "trust_value": 0.94,
-      "tags": ["abnormal-growth", "cells", "mass"]
-    },
-    {
-      "label": "Metastasis",
-      "definition": "The spread of cancer cells from the original site to other parts of the body",
-      "trust_category": "FACT",
-      "trust_value": 0.93,
-      "tags": ["spread", "cancer", "secondary"]
-    },
-    {
-      "label": "Biotechnology",
-      "definition": "The use of living organisms or their products to benefit humans",
-      "trust_category": "FACT",
-      "trust_value": 0.94,
-      "tags": ["technology", "organisms", "application"]
-    },
-    {
-      "label": "Genetic Engineering",
-      "definition": "The direct manipulation of genes to alter organisms",
-      "trust_category": "FACT",
-      "trust_value": 0.93,
-      "tags": ["manipulation", "genes", "modification"]
-    },
-    {
-      "label": "Recombinant DNA",
-      "definition": "DNA formed by combining genetic material from different sources",
-      "trust_category": "FACT",
-      "trust_value": 0.93,
-      "tags": ["combining", "different-sources", "artificial"]
-    },
-    {
-      "label": "PCR",
-      "definition": "Polymerase Chain Reaction, a technique for amplifying DNA sequences",
-      "trust_category": "FACT",
-      "trust_value": 0.92,
-      "tags": ["amplification", "DNA", "technique"]
-    },
-    {
-      "label": "Gel Electrophoresis",
-      "definition": "A technique for separating DNA, RNA, or proteins by size",
-      "trust_category": "FACT",
-      "trust_value": 0.91,
-      "tags": ["separation", "size", "technique"]
-    },
-    {
-      "label": "Cloning",
-      "definition": "The process of creating genetically identical organisms",
-      "trust_category": "FACT",
-      "trust_value": 0.92,
-      "tags": ["identical", "copying", "reproduction"]
-    },
-    {
-      "label": "Gene Therapy",
-      "definition": "The introduction of genes into cells to treat disease",
-      "trust_category": "FACT",
-      "trust_value": 0.90,
-      "tags": ["treatment", "genes", "medical"]
-    },
-    {
-      "label": "GMO",
-      "definition": "Genetically Modified Organism whose DNA has been altered using biotechnology",
-      "trust_category": "FACT",
-      "trust_value": 0.92,
-      "tags": ["modified", "biotechnology", "artificial"]
-    },
-    {
-      "label": "Bioinformatics",
-      "definition": "The application of computer science to biological data analysis",
-      "trust_category": "FACT",
-      "trust_value": 0.91,
-      "tags": ["computer-science", "data-analysis", "biology"]
-    },
-    {
-      "label": "Genomics",
-      "definition": "The study of an organism's complete set of genetic material",
-      "trust_category": "FACT",
-      "trust_value": 0.92,
-      "tags": ["genome", "complete-set", "genetic"]
-    },
-    {
-      "label": "Proteomics",
-      "definition": "The study of the complete set of proteins produced by an organism",
-      "trust_category": "FACT",
-      "trust_value": 0.90,
-      "tags": ["proteins", "complete-set", "expression"]
-    }
+    {"label": "Cell", "definition": "The basic structural and functional unit of all living organisms", "trust_category": "FACT", "trust_value": 0.99, "tags": ["basic unit", "life", "structure"]},
+    {"label": "Cell Theory", "definition": "The theory that all living things are composed of cells, cells are the basic unit of life, and all cells come from pre-existing cells", "trust_category": "THEORY", "trust_value": 0.98, "tags": ["fundamental theory", "life principles", "cellular basis"]},
+    {"label": "Prokaryote", "definition": "An organism whose cells lack a membrane-bound nucleus and organelles", "trust_category": "FACT", "trust_value": 0.98, "tags": ["no nucleus", "bacteria", "archaea"]},
+    {"label": "Eukaryote", "definition": "An organism whose cells have a membrane-bound nucleus and organelles", "trust_category": "FACT", "trust_value": 0.98, "tags": ["nucleus", "organelles", "complex"]},
+    {"label": "Cell Membrane", "definition": "The phospholipid bilayer that surrounds and protects the cell", "trust_category": "FACT", "trust_value": 0.98, "tags": ["boundary", "phospholipid", "protection"]},
+    {"label": "Nucleus", "definition": "The membrane-bound organelle containing the cell's DNA", "trust_category": "FACT", "trust_value": 0.99, "tags": ["DNA storage", "control center", "eukaryotic"]},
+    {"label": "Cytoplasm", "definition": "The gel-like substance filling the cell between the membrane and nucleus", "trust_category": "FACT", "trust_value": 0.98, "tags": ["cell interior", "gel-like", "organelle medium"]},
+    {"label": "Mitochondria", "definition": "The powerhouse organelles that produce ATP through cellular respiration", "trust_category": "FACT", "trust_value": 0.98, "tags": ["powerhouse", "ATP production", "energy"]},
+    {"label": "Chloroplast", "definition": "The organelle in plant cells where photosynthesis occurs", "trust_category": "FACT", "trust_value": 0.98, "tags": ["photosynthesis", "plants", "chlorophyll"]},
+    {"label": "Ribosome", "definition": "The cellular structure responsible for protein synthesis", "trust_category": "FACT", "trust_value": 0.98, "tags": ["protein synthesis", "translation", "RNA"]},
+    {"label": "Endoplasmic Reticulum", "definition": "A network of membranes involved in protein and lipid synthesis", "trust_category": "FACT", "trust_value": 0.97, "tags": ["membrane network", "synthesis", "transport"]},
+    {"label": "Golgi Apparatus", "definition": "The organelle that modifies, packages, and ships proteins from the ER", "trust_category": "FACT", "trust_value": 0.97, "tags": ["protein modification", "packaging", "shipping"]},
+    {"label": "Lysosome", "definition": "Membrane-bound organelles containing digestive enzymes", "trust_category": "FACT", "trust_value": 0.97, "tags": ["digestion", "enzymes", "waste removal"]},
+    {"label": "Vacuole", "definition": "Large membrane-bound sacs for storage and support, especially in plants", "trust_category": "FACT", "trust_value": 0.97, "tags": ["storage", "support", "plant cells"]},
+    {"label": "Cell Wall", "definition": "The rigid outer layer surrounding plant, fungal, and bacterial cells", "trust_category": "FACT", "trust_value": 0.98, "tags": ["rigid structure", "protection", "shape maintenance"]},
+    {"label": "Cytoskeleton", "definition": "A network of protein filaments that maintains cell shape and enables movement", "trust_category": "FACT", "trust_value": 0.97, "tags": ["protein network", "shape", "movement"]},
+    {"label": "DNA", "definition": "Deoxyribonucleic acid, the molecule that stores genetic information", "trust_category": "FACT", "trust_value": 0.99, "tags": ["genetic information", "heredity", "double helix"]},
+    {"label": "RNA", "definition": "Ribonucleic acid, involved in protein synthesis and gene regulation", "trust_category": "FACT", "trust_value": 0.98, "tags": ["protein synthesis", "gene regulation", "single strand"]},
+    {"label": "Gene", "definition": "A sequence of DNA that codes for a specific protein or RNA molecule", "trust_category": "FACT", "trust_value": 0.98, "tags": ["DNA sequence", "protein coding", "hereditary unit"]},
+    {"label": "Chromosome", "definition": "A structure containing DNA and proteins, carrying genetic information", "trust_category": "FACT", "trust_value": 0.98, "tags": ["DNA structure", "genetic material", "cell division"]},
+    {"label": "Allele", "definition": "Alternative forms of a gene that can exist at the same genetic locus", "trust_category": "FACT", "trust_value": 0.97, "tags": ["gene variants", "genetic diversity", "inheritance"]},
+    {"label": "Genotype", "definition": "The genetic makeup of an organism", "trust_category": "FACT", "trust_value": 0.98, "tags": ["genetic composition", "DNA sequence", "heredity"]},
+    {"label": "Phenotype", "definition": "The observable characteristics of an organism", "trust_category": "FACT", "trust_value": 0.98, "tags": ["observable traits", "gene expression", "environment"]},
+    {"label": "Dominant Allele", "definition": "An allele that is expressed when present in single copy", "trust_category": "FACT", "trust_value": 0.97, "tags": ["expressed allele", "single copy", "inheritance"]},
+    {"label": "Recessive Allele", "definition": "An allele that is only expressed when present in two copies", "trust_category": "FACT", "trust_value": 0.97, "tags": ["masked allele", "two copies", "inheritance"]},
+    {"label": "Mendel's Laws", "definition": "The principles of inheritance discovered by Gregor Mendel", "trust_category": "FACT", "trust_value": 0.96, "tags": ["inheritance laws", "genetics", "segregation"]},
+    {"label": "Segregation", "definition": "The separation of paired genes during gamete formation", "trust_category": "FACT", "trust_value": 0.96, "tags": ["gene separation", "gametes", "Mendel's first law"]},
+    {"label": "Independent Assortment", "definition": "The independent distribution of genes for different traits", "trust_category": "FACT", "trust_value": 0.95, "tags": ["independent distribution", "different traits", "Mendel's second law"]},
+    {"label": "Crossing Over", "definition": "The exchange of genetic material between homologous chromosomes during meiosis", "trust_category": "FACT", "trust_value": 0.96, "tags": ["genetic exchange", "meiosis", "recombination"]},
+    {"label": "Linkage", "definition": "The tendency for genes located close together on a chromosome to be inherited together", "trust_category": "FACT", "trust_value": 0.95, "tags": ["close genes", "inherited together", "chromosome proximity"]},
+    {"label": "Mutation", "definition": "A change in the DNA sequence that can be inherited", "trust_category": "FACT", "trust_value": 0.97, "tags": ["DNA change", "heritable", "genetic variation"]},
+    {"label": "Point Mutation", "definition": "A mutation affecting a single nucleotide in the DNA sequence", "trust_category": "FACT", "trust_value": 0.96, "tags": ["single nucleotide", "small change", "substitution"]},
+    {"label": "Frameshift Mutation", "definition": "A mutation caused by insertion or deletion of nucleotides, shifting the reading frame", "trust_category": "FACT", "trust_value": 0.95, "tags": ["insertion/deletion", "reading frame", "protein disruption"]},
+    {"label": "Replication", "definition": "The process by which DNA makes an identical copy of itself", "trust_category": "FACT", "trust_value": 0.98, "tags": ["DNA copying", "semiconservative", "cell division"]},
+    {"label": "Transcription", "definition": "The process of copying genetic information from DNA to RNA", "trust_category": "FACT", "trust_value": 0.98, "tags": ["DNA to RNA", "gene expression", "mRNA synthesis"]},
+    {"label": "Translation", "definition": "The process of synthesizing proteins using information from mRNA", "trust_category": "FACT", "trust_value": 0.98, "tags": ["mRNA to protein", "ribosome", "genetic code"]},
+    {"label": "Genetic Code", "definition": "The set of rules by which genetic information is translated into proteins", "trust_category": "FACT", "trust_value": 0.97, "tags": ["translation rules", "codons", "amino acids"]},
+    {"label": "Codon", "definition": "A sequence of three nucleotides that specifies an amino acid", "trust_category": "FACT", "trust_value": 0.97, "tags": ["three nucleotides", "amino acid specification", "genetic code"]},
+    {"label": "Mitosis", "definition": "Cell division that produces two identical diploid daughter cells", "trust_category": "FACT", "trust_value": 0.98, "tags": ["cell division", "identical cells", "diploid"]},
+    {"label": "Meiosis", "definition": "Cell division that produces four genetically different haploid gametes", "trust_category": "FACT", "trust_value": 0.98, "tags": ["gamete formation", "genetic diversity", "haploid"]},
+    {"label": "Diploid", "definition": "Having two complete sets of chromosomes", "trust_category": "FACT", "trust_value": 0.97, "tags": ["two chromosome sets", "somatic cells", "2n"]},
+    {"label": "Haploid", "definition": "Having one complete set of chromosomes", "trust_category": "FACT", "trust_value": 0.97, "tags": ["one chromosome set", "gametes", "n"]},
+    {"label": "Gamete", "definition": "A reproductive cell (egg or sperm) with half the normal number of chromosomes", "trust_category": "FACT", "trust_value": 0.98, "tags": ["reproductive cell", "haploid", "fertilization"]},
+    {"label": "Fertilization", "definition": "The fusion of gametes to form a diploid zygote", "trust_category": "FACT", "trust_value": 0.98, "tags": ["gamete fusion", "zygote formation", "reproduction"]},
+    {"label": "Zygote", "definition": "The diploid cell formed by the fusion of two gametes", "trust_category": "FACT", "trust_value": 0.97, "tags": ["fertilized egg", "diploid", "development start"]},
+    {"label": "Embryo", "definition": "An organism in its early stages of development", "trust_category": "FACT", "trust_value": 0.97, "tags": ["early development", "pre-birth", "growing organism"]},
+    {"label": "Stem Cell", "definition": "An undifferentiated cell capable of giving rise to specialized cells", "trust_category": "FACT", "trust_value": 0.96, "tags": ["undifferentiated", "pluripotent", "regeneration"]},
+    {"label": "Differentiation", "definition": "The process by which cells become specialized for specific functions", "trust_category": "FACT", "trust_value": 0.96, "tags": ["cell specialization", "function acquisition", "development"]},
+    {"label": "Homeostasis", "definition": "The maintenance of stable internal conditions in living organisms", "trust_category": "FACT", "trust_value": 0.97, "tags": ["internal stability", "regulation", "balance"]},
+    {"label": "Feedback Loop", "definition": "A regulatory mechanism where the output affects the input", "trust_category": "FACT", "trust_value": 0.95, "tags": ["regulation", "control mechanism", "response"]},
+    {"label": "Negative Feedback", "definition": "A feedback mechanism that counteracts changes to maintain stability", "trust_category": "FACT", "trust_value": 0.96, "tags": ["stability maintenance", "counteracts change", "homeostasis"]},
+    {"label": "Positive Feedback", "definition": "A feedback mechanism that amplifies changes", "trust_category": "FACT", "trust_value": 0.95, "tags": ["change amplification", "reinforcement", "acceleration"]},
+    {"label": "Hormone", "definition": "Chemical messengers that regulate biological processes", "trust_category": "FACT", "trust_value": 0.97, "tags": ["chemical messenger", "regulation", "signaling"]},
+    {"label": "Enzyme", "definition": "Proteins that catalyze biochemical reactions", "trust_category": "FACT", "trust_value": 0.98, "tags": ["biological catalyst", "protein", "reaction acceleration"]},
+    {"label": "ATP", "definition": "Adenosine triphosphate, the primary energy currency of cells", "trust_category": "FACT", "trust_value": 0.98, "tags": ["energy currency", "cellular energy", "phosphate bonds"]},
+    {"label": "Photosynthesis", "definition": "The process by which plants convert light energy into chemical energy", "trust_category": "FACT", "trust_value": 0.98, "tags": ["light to chemical energy", "plants", "oxygen production"]},
+    {"label": "Cellular Respiration", "definition": "The process of breaking down glucose to produce ATP", "trust_category": "FACT", "trust_value": 0.98, "tags": ["glucose breakdown", "ATP production", "energy release"]},
+    {"label": "Glycolysis", "definition": "The first stage of cellular respiration that breaks down glucose", "trust_category": "FACT", "trust_value": 0.96, "tags": ["glucose breakdown", "cytoplasm", "anaerobic"]},
+    {"label": "Krebs Cycle", "definition": "The second stage of cellular respiration occurring in mitochondria", "trust_category": "FACT", "trust_value": 0.95, "tags": ["mitochondria", "citric acid cycle", "aerobic"]},
+    {"label": "Electron Transport Chain", "definition": "The final stage of cellular respiration that produces most ATP", "trust_category": "FACT", "trust_value": 0.95, "tags": ["ATP production", "oxygen consumption", "inner membrane"]},
+    {"label": "Fermentation", "definition": "An anaerobic process that allows glycolysis to continue without oxygen", "trust_category": "FACT", "trust_value": 0.95, "tags": ["anaerobic", "no oxygen", "alcohol/lactic acid"]},
+    {"label": "Evolution", "definition": "The change in heritable traits of biological populations over successive generations", "trust_category": "THEORY", "trust_value": 0.98, "tags": ["heritable change", "populations", "time"]},
+    {"label": "Natural Selection", "definition": "The differential survival and reproduction of individuals due to differences in phenotype", "trust_category": "THEORY", "trust_value": 0.97, "tags": ["survival advantage", "phenotype differences", "reproduction"]},
+    {"label": "Adaptation", "definition": "A trait that increases an organism's fitness in its environment", "trust_category": "FACT", "trust_value": 0.96, "tags": ["fitness increase", "environmental advantage", "survival trait"]},
+    {"label": "Fitness", "definition": "An organism's ability to survive and reproduce in its environment", "trust_category": "FACT", "trust_value": 0.96, "tags": ["survival ability", "reproductive success", "adaptation measure"]},
+    {"label": "Selection Pressure", "definition": "Environmental factors that influence which traits are advantageous", "trust_category": "FACT", "trust_value": 0.95, "tags": ["environmental influence", "trait advantage", "survival factor"]},
+    {"label": "Genetic Drift", "definition": "Random changes in allele frequencies in small populations", "trust_category": "FACT", "trust_value": 0.94, "tags": ["random change", "small populations", "allele frequency"]},
+    {"label": "Gene Flow", "definition": "The movement of genes between populations through migration", "trust_category": "FACT", "trust_value": 0.95, "tags": ["gene movement", "migration", "population mixing"]},
+    {"label": "Speciation", "definition": "The formation of new species from existing ones", "trust_category": "FACT", "trust_value": 0.95, "tags": ["new species formation", "reproductive isolation", "divergence"]},
+    {"label": "Species", "definition": "A group of organisms capable of interbreeding and producing fertile offspring", "trust_category": "FACT", "trust_value": 0.96, "tags": ["interbreeding group", "fertile offspring", "classification unit"]},
+    {"label": "Population", "definition": "All individuals of a species living in the same area", "trust_category": "FACT", "trust_value": 0.97, "tags": ["same species", "same area", "interacting group"]},
+    {"label": "Hardy-Weinberg Equilibrium", "definition": "The principle that allele frequencies remain constant in the absence of evolutionary forces", "trust_category": "THEORY", "trust_value": 0.93, "tags": ["allele frequency", "equilibrium", "no evolution"]},
+    {"label": "Phylogeny", "definition": "The evolutionary history and relationships among organisms", "trust_category": "FACT", "trust_value": 0.95, "tags": ["evolutionary history", "relationships", "tree of life"]},
+    {"label": "Taxonomy", "definition": "The science of classifying and naming organisms", "trust_category": "FACT", "trust_value": 0.97, "tags": ["classification", "naming", "organization"]},
+    {"label": "Binomial Nomenclature", "definition": "The system of giving each species a two-part scientific name", "trust_category": "FACT", "trust_value": 0.96, "tags": ["two-part name", "genus species", "scientific naming"]},
+    {"label": "Kingdom", "definition": "The highest taxonomic rank in traditional classification systems", "trust_category": "FACT", "trust_value": 0.95, "tags": ["highest rank", "broad category", "major groups"]},
+    {"label": "Phylum", "definition": "A major taxonomic group within a kingdom", "trust_category": "FACT", "trust_value": 0.94, "tags": ["major group", "body plan", "kingdom subdivision"]},
+    {"label": "Class", "definition": "A taxonomic group within a phylum", "trust_category": "FACT", "trust_value": 0.94, "tags": ["phylum subdivision", "shared characteristics", "classification level"]},
+    {"label": "Order", "definition": "A taxonomic group within a class", "trust_category": "FACT", "trust_value": 0.93, "tags": ["class subdivision", "related families", "classification level"]},
+    {"label": "Family", "definition": "A taxonomic group within an order", "trust_category": "FACT", "trust_value": 0.93, "tags": ["order subdivision", "related genera", "classification level"]},
+    {"label": "Genus", "definition": "A taxonomic group within a family containing closely related species", "trust_category": "FACT", "trust_value": 0.94, "tags": ["closely related species", "family subdivision", "binomial name"]},
+    {"label": "Ecology", "definition": "The study of interactions between organisms and their environment", "trust_category": "FACT", "trust_value": 0.97, "tags": ["organism-environment interaction", "relationships", "ecosystems"]},
+    {"label": "Ecosystem", "definition": "A community of organisms and their physical environment functioning as a unit", "trust_category": "FACT", "trust_value": 0.97, "tags": ["community", "environment", "functional unit"]},
+    {"label": "Community", "definition": "All populations of different species living in the same area", "trust_category": "FACT", "trust_value": 0.96, "tags": ["multiple species", "same area", "interacting populations"]},
+    {"label": "Habitat", "definition": "The natural environment where an organism lives and meets its needs", "trust_category": "FACT", "trust_value": 0.96, "tags": ["natural environment", "organism needs", "living space"]},
+    {"label": "Niche", "definition": "An organism's role and position in its ecosystem", "trust_category": "FACT", "trust_value": 0.95, "tags": ["ecological role", "position", "function"]},
+    {"label": "Biome", "definition": "A large geographical area with similar climate and characteristic communities", "trust_category": "FACT", "trust_value": 0.95, "tags": ["large area", "similar climate", "characteristic life"]},
+    {"label": "Food Chain", "definition": "A linear sequence showing the transfer of energy through trophic levels", "trust_category": "FACT", "trust_value": 0.96, "tags": ["linear sequence", "energy transfer", "feeding levels"]},
+    {"label": "Food Web", "definition": "A complex network of interconnected food chains in an ecosystem", "trust_category": "FACT", "trust_value": 0.96, "tags": ["complex network", "interconnected chains", "ecosystem feeding"]},
+    {"label": "Producer", "definition": "An organism that makes its own food through photosynthesis or chemosynthesis", "trust_category": "FACT", "trust_value": 0.96, "tags": ["makes own food", "autotroph", "energy conversion"]},
+    {"label": "Primary Consumer", "definition": "An organism that feeds on producers (herbivores)", "trust_category": "FACT", "trust_value": 0.95, "tags": ["eats producers", "herbivore", "first level consumer"]},
+    {"label": "Secondary Consumer", "definition": "An organism that feeds on primary consumers", "trust_category": "FACT", "trust_value": 0.94, "tags": ["eats primary consumers", "carnivore", "second level"]},
+    {"label": "Tertiary Consumer", "definition": "An organism that feeds on secondary consumers", "trust_category": "FACT", "trust_value": 0.93, "tags": ["eats secondary consumers", "top predator", "third level"]},
+    {"label": "Decomposer", "definition": "An organism that breaks down dead organic matter", "trust_category": "FACT", "trust_value": 0.96, "tags": ["breaks down dead matter", "nutrient recycling", "bacteria/fungi"]},
+    {"label": "Trophic Level", "definition": "The position an organism occupies in a food chain", "trust_category": "FACT", "trust_value": 0.95, "tags": ["feeding position", "energy level", "food chain position"]},
+    {"label": "Energy Pyramid", "definition": "A diagram showing the flow of energy through trophic levels", "trust_category": "FACT", "trust_value": 0.94, "tags": ["energy flow", "pyramid shape", "trophic levels"]},
+    {"label": "Biomass", "definition": "The total mass of living organisms in a given area", "trust_category": "FACT", "trust_value": 0.95, "tags": ["living mass", "organic matter", "ecosystem measure"]},
+    {"label": "Carbon Cycle", "definition": "The circulation of carbon through the biosphere, atmosphere, and geosphere", "trust_category": "FACT", "trust_value": 0.96, "tags": ["carbon circulation", "global cycle", "atmosphere-biosphere"]},
+    {"label": "Nitrogen Cycle", "definition": "The circulation of nitrogen through ecosystems", "trust_category": "FACT", "trust_value": 0.95, "tags": ["nitrogen circulation", "ecosystem cycle", "nitrogen fixation"]},
+    {"label": "Water Cycle", "definition": "The continuous movement of water through the environment", "trust_category": "FACT", "trust_value": 0.96, "tags": ["water movement", "evaporation-precipitation", "continuous cycle"]},
+    {"label": "Nitrogen Fixation", "definition": "The conversion of atmospheric nitrogen into forms usable by living organisms", "trust_category": "FACT", "trust_value": 0.94, "tags": ["nitrogen conversion", "atmospheric nitrogen", "biological process"]},
+    {"label": "Competition", "definition": "The interaction between organisms competing for the same limited resources", "trust_category": "FACT", "trust_value": 0.95, "tags": ["resource competition", "limited resources", "survival struggle"]},
+    {"label": "Predation", "definition": "An interaction where one organism kills and eats another", "trust_category": "FACT", "trust_value": 0.96, "tags": ["killing for food", "predator-prey", "population control"]},
+    {"label": "Parasitism", "definition": "A relationship where one organism benefits at the expense of another", "trust_category": "FACT", "trust_value": 0.95, "tags": ["one benefits", "host harm", "dependency"]},
+    {"label": "Mutualism", "definition": "A relationship where both organisms benefit", "trust_category": "FACT", "trust_value": 0.95, "tags": ["both benefit", "cooperation", "mutual advantage"]},
+    {"label": "Commensalism", "definition": "A relationship where one organism benefits while the other is unaffected", "trust_category": "FACT", "trust_value": 0.94, "tags": ["one benefits", "other unaffected", "neutral relationship"]},
+    {"label": "Symbiosis", "definition": "A close, long-term relationship between organisms of different species", "trust_category": "FACT", "trust_value": 0.95, "tags": ["close relationship", "different species", "long-term"]},
+    {"label": "Carrying Capacity", "definition": "The maximum population size an environment can sustain", "trust_category": "FACT", "trust_value": 0.94, "tags": ["maximum population", "sustainable size", "environmental limit"]},
+    {"label": "Population Growth", "definition": "The change in population size over time", "trust_category": "FACT", "trust_value": 0.95, "tags": ["population change", "time-dependent", "growth rate"]},
+    {"label": "Exponential Growth", "definition": "Population growth that accelerates over time without limits", "trust_category": "FACT", "trust_value": 0.93, "tags": ["accelerating growth", "no limits", "J-curve"]},
+    {"label": "Logistic Growth", "definition": "Population growth that levels off as it approaches carrying capacity", "trust_category": "FACT", "trust_value": 0.92, "tags": ["levels off", "carrying capacity", "S-curve"]},
+    {"label": "Biodiversity", "definition": "The variety of life in all its forms and levels of organization", "trust_category": "FACT", "trust_value": 0.96, "tags": ["life variety", "species richness", "genetic diversity"]},
+    {"label": "Extinction", "definition": "The complete disappearance of a species from Earth", "trust_category": "FACT", "trust_value": 0.97, "tags": ["species disappearance", "permanent loss", "evolutionary endpoint"]},
+    {"label": "Conservation", "definition": "The protection and preservation of natural resources and biodiversity", "trust_category": "FACT", "trust_value": 0.95, "tags": ["protection", "preservation", "resource management"]},
+    {"label": "Succession", "definition": "The gradual change in species composition of a community over time", "trust_category": "FACT", "trust_value": 0.94, "tags": ["community change", "species composition", "gradual process"]},
+    {"label": "Primary Succession", "definition": "Succession that occurs in areas where no soil exists", "trust_category": "FACT", "trust_value": 0.93, "tags": ["no soil", "bare rock", "pioneer species"]},
+    {"label": "Secondary Succession", "definition": "Succession that occurs in areas where soil already exists", "trust_category": "FACT", "trust_value": 0.93, "tags": ["existing soil", "disturbance recovery", "faster process"]},
+    {"label": "Climax Community", "definition": "A stable, mature community that represents the endpoint of succession", "trust_category": "FACT", "trust_value": 0.92, "tags": ["stable community", "succession endpoint", "mature ecosystem"]},
+    {"label": "Keystone Species", "definition": "A species that has a disproportionately large impact on its ecosystem", "trust_category": "FACT", "trust_value": 0.93, "tags": ["large impact", "ecosystem influence", "critical species"]},
+    {"label": "Invasive Species", "definition": "Non-native species that cause harm to their new environment", "trust_category": "FACT", "trust_value": 0.94, "tags": ["non-native", "harmful", "ecosystem disruption"]},
+    {"label": "Endemic Species", "definition": "Species that are found naturally in only one particular area", "trust_category": "FACT", "trust_value": 0.94, "tags": ["single area", "unique location", "geographic restriction"]},
+    {"label": "Biogeochemical Cycle", "definition": "The movement of chemical elements through living and non-living components", "trust_category": "FACT", "trust_value": 0.93, "tags": ["element cycling", "living-nonliving", "chemical movement"]},
+    {"label": "Greenhouse Effect", "definition": "The warming of Earth's surface due to heat-trapping gases in the atmosphere", "trust_category": "FACT", "trust_value": 0.95, "tags": ["surface warming", "heat trapping", "atmospheric gases"]},
+    {"label": "Climate Change", "definition": "Long-term changes in global climate patterns", "trust_category": "FACT", "trust_value": 0.95, "tags": ["long-term changes", "global patterns", "environmental impact"]},
+    {"label": "Deforestation", "definition": "The clearing of forests for other land uses", "trust_category": "FACT", "trust_value": 0.96, "tags": ["forest clearing", "land use change", "habitat loss"]},
+    {"label": "Pollution", "definition": "The introduction of harmful substances into the environment", "trust_category": "FACT", "trust_value": 0.96, "tags": ["harmful substances", "environmental contamination", "human impact"]},
+    {"label": "Sustainable Development", "definition": "Development that meets present needs without compromising future generations", "trust_category": "FACT", "trust_value": 0.93, "tags": ["present needs", "future generations", "balance"]},
+    {"label": "Renewable Resource", "definition": "A natural resource that can be replenished naturally over time", "trust_category": "FACT", "trust_value": 0.95, "tags": ["naturally replenished", "sustainable", "regenerative"]},
+    {"label": "Non-renewable Resource", "definition": "A natural resource that cannot be replenished within human timescales", "trust_category": "FACT", "trust_value": 0.95, "tags": ["not replenishable", "finite", "depleting"]},
+    {"label": "Immune System", "definition": "The body's defense system against pathogens and foreign substances", "trust_category": "FACT", "trust_value": 0.97, "tags": ["defense system", "pathogen protection", "foreign substance recognition"]},
+    {"label": "Pathogen", "definition": "A disease-causing microorganism", "trust_category": "FACT", "trust_value": 0.97, "tags": ["disease-causing", "microorganism", "infectious agent"]},
+    {"label": "Antibody", "definition": "Proteins produced by the immune system to neutralize specific antigens", "trust_category": "FACT", "trust_value": 0.96, "tags": ["immune proteins", "antigen neutralization", "specific recognition"]},
+    {"label": "Antigen", "definition": "A substance that triggers an immune response", "trust_category": "FACT", "trust_value": 0.95, "tags": ["immune trigger", "foreign substance", "recognition target"]},
+    {"label": "Vaccination", "definition": "The administration of a vaccine to stimulate immunity against a disease", "trust_category": "FACT", "trust_value": 0.96, "tags": ["immunity stimulation", "disease prevention", "vaccine administration"]},
+    {"label": "Virus", "definition": "An infectious agent that can only replicate inside living cells", "trust_category": "FACT", "trust_value": 0.97, "tags": ["infectious agent", "cell-dependent replication", "obligate parasite"]},
+    {"label": "Bacteria", "definition": "Single-celled prokaryotic organisms", "trust_category": "FACT", "trust_value": 0.98, "tags": ["single-celled", "prokaryotic", "diverse organisms"]},
+    {"label": "Archaea", "definition": "Single-celled prokaryotes distinct from bacteria, often found in extreme environments", "trust_category": "FACT", "trust_value": 0.95, "tags": ["prokaryotes", "extreme environments", "distinct from bacteria"]},
+    {"label": "Fungi", "definition": "Eukaryotic organisms that decompose organic matter and form symbiotic relationships", "trust_category": "FACT", "trust_value": 0.96, "tags": ["eukaryotic", "decomposers", "symbiotic"]},
+    {"label": "Protist", "definition": "A diverse group of eukaryotic organisms that are not plants, animals, or fungi", "trust_category": "FACT", "trust_value": 0.94, "tags": ["diverse eukaryotes", "not plant/animal/fungi", "varied forms"]},
+    {"label": "Plant", "definition": "Multicellular eukaryotic organisms that perform photosynthesis", "trust_category": "FACT", "trust_value": 0.98, "tags": ["multicellular", "photosynthetic", "eukaryotic"]},
+    {"label": "Animal", "definition": "Multicellular eukaryotic organisms that are mobile and heterotrophic", "trust_category": "FACT", "trust_value": 0.98, "tags": ["multicellular", "mobile", "heterotrophic"]},
+    {"label": "Vertebrate", "definition": "Animals with a backbone or spinal column", "trust_category": "FACT", "trust_value": 0.97, "tags": ["backbone", "spinal column", "internal skeleton"]},
+    {"label": "Invertebrate", "definition": "Animals without a backbone", "trust_category": "FACT", "trust_value": 0.97, "tags": ["no backbone", "diverse group", "external/no skeleton"]},
+    {"label": "Mammal", "definition": "Warm-blooded vertebrates with hair and mammary glands", "trust_category": "FACT", "trust_value": 0.97, "tags": ["warm-blooded", "hair", "mammary glands"]},
+    {"label": "Bird", "definition": "Warm-blooded vertebrates with feathers and wings", "trust_category": "FACT", "trust_value": 0.97, "tags": ["warm-blooded", "feathers", "wings"]},
+    {"label": "Reptile", "definition": "Cold-blooded vertebrates with scales and lay eggs on land", "trust_category": "FACT", "trust_value": 0.96, "tags": ["cold-blooded", "scales", "terrestrial eggs"]},
+    {"label": "Amphibian", "definition": "Cold-blooded vertebrates that live both in water and on land", "trust_category": "FACT", "trust_value": 0.96, "tags": ["cold-blooded", "dual habitat", "metamorphosis"]},
+    {"label": "Fish", "definition": "Cold-blooded aquatic vertebrates with gills and fins", "trust_category": "FACT", "trust_value": 0.97, "tags": ["cold-blooded", "aquatic", "gills and fins"]},
+    {"label": "Photosynthesis", "definition": "The process by which plants convert light energy into chemical energy", "trust_category": "FACT", "trust_value": 0.98, "tags": ["light to chemical energy", "glucose production", "oxygen release"]},
+    {"label": "Chlorophyll", "definition": "The green pigment in plants that captures light energy for photosynthesis", "trust_category": "FACT", "trust_value": 0.97, "tags": ["green pigment", "light capture", "photosynthesis"]},
+    {"label": "Stomata", "definition": "Tiny pores in plant leaves that allow gas exchange", "trust_category": "FACT", "trust_value": 0.95, "tags": ["leaf pores", "gas exchange", "transpiration"]},
+    {"label": "Transpiration", "definition": "The loss of water vapor from plant leaves", "trust_category": "FACT", "trust_value": 0.94, "tags": ["water vapor loss", "leaves", "cooling mechanism"]},
+    {"label": "Root System", "definition": "The underground part of a plant that absorbs water and nutrients", "trust_category": "FACT", "trust_value": 0.96, "tags": ["underground", "absorption", "water and nutrients"]},
+    {"label": "Shoot System", "definition": "The above-ground part of a plant including stems and leaves", "trust_category": "FACT", "trust_value": 0.95, "tags": ["above-ground", "stems and leaves", "photosynthesis"]},
+    {"label": "Flower", "definition": "The reproductive structure of flowering plants", "trust_category": "FACT", "trust_value": 0.96, "tags": ["reproductive structure", "flowering plants", "pollination"]},
+    {"label": "Pollination", "definition": "The transfer of pollen from male to female parts of flowers", "trust_category": "FACT", "trust_value": 0.95, "tags": ["pollen transfer", "reproduction", "fertilization"]},
+    {"label": "Seed", "definition": "A plant embryo and its food supply enclosed in a protective coat", "trust_category": "FACT", "trust_value": 0.96, "tags": ["plant embryo", "food supply", "protective coat"]},
+    {"label": "Germination", "definition": "The process by which a seed begins to grow into a new plant", "trust_category": "FACT", "trust_value": 0.95, "tags": ["seed growth", "new plant development", "sprouting"]},
+    {"label": "Tropism", "definition": "The directional growth response of plants to environmental stimuli", "trust_category": "FACT", "trust_value": 0.93, "tags": ["directional growth", "environmental response", "plant behavior"]},
+    {"label": "Phototropism", "definition": "Plant growth in response to light", "trust_category": "FACT", "trust_value": 0.93, "tags": ["light response", "directional growth", "toward light"]},
+    {"label": "Gravitropism", "definition": "Plant growth in response to gravity", "trust_category": "FACT", "trust_value": 0.92, "tags": ["gravity response", "directional growth", "roots down/shoots up"]},
+    {"label": "Neuron", "definition": "A nerve cell that transmits electrical and chemical signals", "trust_category": "FACT", "trust_value": 0.97, "tags": ["nerve cell", "signal transmission", "electrical/chemical"]},
+    {"label": "Nervous System", "definition": "The network of neurons that coordinates body activities", "trust_category": "FACT", "trust_value": 0.97, "tags": ["neuron network", "coordination", "body activities"]},
+    {"label": "Brain", "definition": "The central organ of the nervous system that processes information", "trust_category": "FACT", "trust_value": 0.98, "tags": ["central organ", "information processing", "control center"]},
+    {"label": "Reflex", "definition": "An automatic response to a stimulus that doesn't involve the brain", "trust_category": "FACT", "trust_value": 0.95, "tags": ["automatic response", "stimulus", "no brain involvement"]},
+    {"label": "Synapse", "definition": "The junction between two neurons where signals are transmitted", "trust_category": "FACT", "trust_value": 0.95, "tags": ["neuron junction", "signal transmission", "chemical/electrical"]},
+    {"label": "Neurotransmitter", "definition": "Chemical messengers that transmit signals across synapses", "trust_category": "FACT", "trust_value": 0.94, "tags": ["chemical messenger", "synapse transmission", "signal communication"]},
+    {"label": "Circulatory System", "definition": "The system that transports blood throughout the body", "trust_category": "FACT", "trust_value": 0.97, "tags": ["blood transport", "circulation", "heart and vessels"]},
+    {"label": "Heart", "definition": "The muscular organ that pumps blood throughout the body", "trust_category": "FACT", "trust_value": 0.98, "tags": ["muscular organ", "blood pump", "circulation center"]},
+    {"label": "Blood", "definition": "The fluid that transports nutrients, oxygen, and waste throughout the body", "trust_category": "FACT", "trust_value": 0.98, "tags": ["transport fluid", "nutrients/oxygen", "waste removal"]},
+    {"label": "Respiratory System", "definition": "The system responsible for gas exchange between the body and environment", "trust_category": "FACT", "trust_value": 0.97, "tags": ["gas exchange", "breathing", "oxygen/carbon dioxide"]},
+    {"label": "Lung", "definition": "The organ where gas exchange occurs between air and blood", "trust_category": "FACT", "trust_value": 0.97, "tags": ["gas exchange organ", "air-blood interface", "breathing"]},
+    {"label": "Digestive System", "definition": "The system that breaks down food and absorbs nutrients", "trust_category": "FACT", "trust_value": 0.97, "tags": ["food breakdown", "nutrient absorption", "digestion"]},
+    {"label": "Excretory System", "definition": "The system that removes waste products from the body", "trust_category": "FACT", "trust_value": 0.96, "tags": ["waste removal", "filtration", "kidney and liver"]},
+    {"label": "Endocrine System", "definition": "The system of glands that produce and release hormones", "trust_category": "FACT", "trust_value": 0.96, "tags": ["hormone production", "glands", "chemical regulation"]},
+    {"label": "Reproductive System", "definition": "The system responsible for producing offspring", "trust_category": "FACT", "trust_value": 0.96, "tags": ["offspring production", "gamete formation", "reproduction"]},
+    {"label": "Skeletal System", "definition": "The system of bones that supports and protects the body", "trust_category": "FACT", "trust_value": 0.97, "tags": ["bone structure", "support", "protection"]},
+    {"label": "Muscular System", "definition": "The system of muscles that enables movement", "trust_category": "FACT", "trust_value": 0.97, "tags": ["muscle tissue", "movement", "contraction"]}
   ],
   "relations": [
-    {
-      "source_label": "Cell",
-      "target_label": "Organism",
-      "relation_type": "basic-unit-of",
-      "weight": 0.99
-    },
-    {
-      "source_label": "DNA",
-      "target_label": "Gene",
-      "relation_type": "contains",
-      "weight": 0.98
-    },
-    {
-      "source_label": "Gene",
-      "target_label": "Protein",
-      "relation_type": "codes-for",
-      "weight": 0.96
-    },
-    {
-      "source_label": "DNA",
-      "target_label": "Chromosome",
-      "relation_type": "organized-in",
-      "weight": 0.97
-    },
-    {
-      "source_label": "Mutation",
-      "target_label": "DNA",
-      "relation_type": "changes",
-      "weight": 0.96
-    },
-    {
-      "source_label": "Natural Selection",
-      "target_label": "Evolution",
-      "relation_type": "drives",
-      "weight": 0.95
-    },
-    {
-      "source_label": "Mutation",
-      "target_label": "Evolution",
-      "relation_type": "provides-variation-for",
-      "weight": 0.93
-    },
-    {
-      "source_label": "Organism",
-      "target_label": "Species",
-      "relation_type": "belongs-to",
-      "weight": 0.96
-    },
-    {
-      "source_label": "Species",
-      "target_label": "Population",
-      "relation_type": "forms",
-      "weight": 0.95
-    },
-    {
-      "source_label": "Population",
-      "target_label": "Community",
-      "relation_type": "part-of",
-      "weight": 0.94
-    },
-    {
-      "source_label": "Community",
-      "target_label": "Ecosystem",
-      "relation_type": "part-of",
-      "weight": 0.95
-    },
-    {
-      "source_label": "Photosynthesis",
-      "target_label": "Plant",
-      "relation_type": "performed-by",
-      "weight": 0.97
-    },
-    {
-      "source_label": "Photosynthesis",
-      "target_label": "Chloroplast",
-      "relation_type": "occurs-in",
-      "weight": 0.96
-    },
-    {
-      "source_label": "Cellular Respiration",
-      "target_label": "Mitochondria",
-      "relation_type": "occurs-in",
-      "weight": 0.96
-    },
-    {
-      "source_label": "Cellular Respiration",
-      "target_label": "ATP",
-      "relation_type": "produces",
-      "weight": 0.96
-    },
-    {
-      "source_label": "Mitosis",
-      "target_label": "Cell",
-      "relation_type": "divides",
-      "weight": 0.97
-    },
-    {
-      "source_label": "Meiosis",
-      "target_label": "Gamete",
-      "relation_type": "produces",
-      "weight": 0.97
-    },
-    {
-      "source_label": "Fertilization",
-      "target_label": "Gamete",
-      "relation_type": "involves",
-      "weight": 0.97
-    },
-    {
-      "source_label": "Fertilization",
-      "target_label": "Zygote",
-      "relation_type": "creates",
-      "weight": 0.97
-    },
-    {
-      "source_label": "Zygote",
-      "target_label": "Embryo",
-      "relation_type": "develops-into",
-      "weight": 0.96
-    },
-    {
-      "source_label": "Nucleus",
-      "target_label": "DNA",
-      "relation_type": "contains",
-      "weight": 0.97
-    },
-    {
-      "source_label": "Ribosome",
-      "target_label": "Protein",
-      "relation_type": "synthesizes",
-      "weight": 0.97
-    },
-    {
-      "source_label": "Cell Membrane",
-      "target_label": "Cell",
-      "relation_type": "surrounds",
-      "weight": 0.98
-    },
-    {
-      "source_label": "Cell Wall",
-      "target_label": "Plant",
-      "relation_type": "found-in",
-      "weight": 0.96
-    },
-    {
-      "source_label": "Enzyme",
-      "target_label": "Protein",
-      "relation_type": "type-of",
-      "weight": 0.96
-    },
-    {
-      "source_label": "Amino Acid",
-      "target_label": "Protein",
-      "relation_type": "building-block-of",
-      "weight": 0.97
-    },
-    {
-      "source_label": "Nucleotide",
-      "target_label": "DNA",
-      "relation_type": "building-block-of",
-      "weight": 0.97
-    },
-    {
-      "source_label": "Nucleotide",
-      "target_label": "RNA",
-      "relation_type": "building-block-of",
-      "weight": 0.97
-    },
-    {
-      "source_label": "Base Pair",
-      "target_label": "DNA",
-      "relation_type": "forms-structure-of",
-      "weight": 0.96
-    },
-    {
-      "source_label": "Transcription",
-      "target_label": "DNA",
-      "relation_type": "reads",
-      "weight": 0.96
-    },
-    {
-      "source_label": "Transcription",
-      "target_label": "mRNA",
-      "relation_type": "produces",
-      "weight": 0.96
-    },
-    {
-      "source_label": "Translation",
-      "target_label": "mRNA",
-      "relation_type": "reads",
-      "weight": 0.96
-    },
-    {
-      "source_label": "Translation",
-      "target_label": "Protein",
-      "relation_type": "produces",
-      "weight": 0.96
-    },
-    {
-      "source_label": "Codon",
-      "target_label": "mRNA",
-      "relation_type": "found-in",
-      "weight": 0.95
-    },
-    {
-      "source_label": "Anticodon",
-      "target_label": "tRNA",
-      "relation_type": "found-in",
-      "weight": 0.95
-    },
-    {
-      "source_label": "Codon",
-      "target_label": "Anticodon",
-      "relation_type": "pairs-with",
-      "weight": 0.94
-    },
-    {
-      "source_label": "tRNA",
-      "target_label": "Amino Acid",
-      "relation_type": "carries",
-      "weight": 0.95
-    },
-    {
-      "source_label": "rRNA",
-      "target_label": "Ribosome",
-      "relation_type": "component-of",
-      "weight": 0.94
-    },
-    {
-      "source_label": "Allele",
-      "target_label": "Gene",
-      "relation_type": "variant-of",
-      "weight": 0.95
-    },
-    {
-      "source_label": "Dominant Allele",
-      "target_label": "Phenotype",
-      "relation_type": "determines",
-      "weight": 0.93
-    },
-    {
-      "source_label": "Recessive Allele",
-      "target_label": "Phenotype",
-      "relation_type": "masked-in",
-      "weight": 0.90
-    },
-    {
-      "source_label": "Genotype",
-      "target_label": "Phenotype",
-      "relation_type": "influences",
-      "weight": 0.94
-    },
-    {
-      "source_label": "Homozygous",
-      "target_label": "Allele",
-      "relation_type": "has-identical",
-      "weight": 0.94
-    },
-    {
-      "source_label": "Heterozygous",
-      "target_label": "Allele",
-      "relation_type": "has-different",
-      "weight": 0.94
-    },
-    {
-      "source_label": "Heredity",
-      "target_label": "Gene",
-      "relation_type": "involves",
-      "weight": 0.95
-    },
-    {
-      "source_label": "Mendel's Laws",
-      "target_label": "Heredity",
-      "relation_type": "explains",
-      "weight": 0.94
-    },
-    {
-      "source_label": "Independent Assortment",
-      "target_label": "Mendel's Laws",
-      "relation_type": "part-of",
-      "weight": 0.93
-    },
-    {
-      "source_label": "Segregation",
-      "target_label": "Mendel's Laws",
-      "relation_type": "part-of",
-      "weight": 0.93
-    },
-    {
-      "source_label": "Segregation",
-      "target_label": "Meiosis",
-      "relation_type": "occurs-during",
-      "weight": 0.92
-    },
-    {
-      "source_label": "Genetic Drift",
-      "target_label": "Population",
-      "relation_type": "affects",
-      "weight": 0.91
-    },
-    {
-      "source_label": "Gene Flow",
-      "target_label": "Population",
-      "relation_type": "connects",
-      "weight": 0.90
-    },
-    {
-      "source_label": "Hardy-Weinberg Equilibrium",
-      "target_label": "Population",
-      "relation_type": "describes",
-      "weight": 0.89
-    },
-    {
-      "source_label": "Adaptation",
-      "target_label": "Natural Selection",
-      "relation_type": "result-of",
-      "weight": 0.93
-    },
-    {
-      "source_label": "Fitness",
-      "target_label": "Natural Selection",
-      "relation_type": "measured-by",
-      "weight": 0.92
-    },
-    {
-      "source_label": "Speciation",
-      "target_label": "Evolution",
-      "relation_type": "process-of",
-      "weight": 0.91
-    },
-    {
-      "source_label": "Reproductive Isolation",
-      "target_label": "Speciation",
-      "relation_type": "leads-to",
-      "weight": 0.90
-    },
-    {
-      "source_label": "Homology",
-      "target_label": "Evolution",
-      "relation_type": "evidence-for",
-      "weight": 0.91
-    },
-    {
-      "source_label": "Analogy",
-      "target_label": "Homology",
-      "relation_type": "different-from",
-      "weight": 0.85
-    },
-    {
-      "source_label": "Vestigial Structure",
-      "target_label": "Evolution",
-      "relation_type": "evidence-for",
-      "weight": 0.90
-    },
-    {
-      "source_label": "Fossil Record",
-      "target_label": "Evolution",
-      "relation_type": "evidence-for",
-      "weight": 0.92
-    },
-    {
-      "source_label": "Taxonomy",
-      "target_label": "Species",
-      "relation_type": "classifies",
-      "weight": 0.94
-    },
-    {
-      "source_label": "Phylogeny",
-      "target_label": "Evolution",
-      "relation_type": "represents",
-      "weight": 0.91
-    },
-    {
-      "source_label": "Kingdom",
-      "target_label": "Domain",
-      "relation_type": "subdivision-of",
-      "weight": 0.93
-    },
-    {
-      "source_label": "Phylum",
-      "target_label": "Kingdom",
-      "relation_type": "subdivision-of",
-      "weight": 0.93
-    },
-    {
-      "source_label": "Class",
-      "target_label": "Phylum",
-      "relation_type": "subdivision-of",
-      "weight": 0.93
-    },
-    {
-      "source_label": "Order",
-      "target_label": "Class",
-      "relation_type": "subdivision-of",
-      "weight": 0.93
-    },
-    {
-      "source_label": "Family",
-      "target_label": "Order",
-      "relation_type": "subdivision-of",
-      "weight": 0.93
-    },
-    {
-      "source_label": "Genus",
-      "target_label": "Family",
-      "relation_type": "subdivision-of",
-      "weight": 0.93
-    },
-    {
-      "source_label": "Species",
-      "target_label": "Genus",
-      "relation_type": "subdivision-of",
-      "weight": 0.93
-    },
-    {
-      "source_label": "Prokaryote",
-      "target_label": "Nucleus",
-      "relation_type": "lacks",
-      "weight": 0.96
-    },
-    {
-      "source_label": "Eukaryote",
-      "target_label": "Nucleus",
-      "relation_type": "has",
-      "weight": 0.96
-    },
-    {
-      "source_label": "Bacteria",
-      "target_label": "Prokaryote",
-      "relation_type": "type-of",
-      "weight": 0.96
-    },
-    {
-      "source_label": "Archaea",
-      "target_label": "Prokaryote",
-      "relation_type": "type-of",
-      "weight": 0.94
-    },
-    {
-      "source_label": "Virus",
-      "target_label": "Cell",
-      "relation_type": "requires",
-      "weight": 0.93
-    },
-    {
-      "source_label": "Fungi",
-      "target_label": "Eukaryote",
-      "relation_type": "type-of",
-      "weight": 0.95
-    },
-    {
-      "source_label": "Plant",
-      "target_label": "Eukaryote",
-      "relation_type": "type-of",
-      "weight": 0.96
-    },
-    {
-      "source_label": "Animal",
-      "target_label": "Eukaryote",
-      "relation_type": "type-of",
-      "weight": 0.96
-    },
-    {
-      "source_label": "Protist",
-      "target_label": "Eukaryote",
-      "relation_type": "type-of",
-      "weight": 0.94
-    },
-    {
-      "source_label": "Plant",
-      "target_label": "Autotroph",
-      "relation_type": "type-of",
-      "weight": 0.94
-    },
-    {
-      "source_label": "Animal",
-      "target_label": "Heterotroph",
-      "relation_type": "type-of",
-      "weight": 0.94
-    },
-    {
-      "source_label": "Producer",
-      "target_label": "Autotroph",
-      "relation_type": "equivalent-to",
-      "weight": 0.94
-    },
-    {
-      "source_label": "Primary Consumer",
-      "target_label": "Producer",
-      "relation_type": "feeds-on",
-      "weight": 0.94
-    },
-    {
-      "source_label": "Secondary Consumer",
-      "target_label": "Primary Consumer",
-      "relation_type": "feeds-on",
-      "weight": 0.93
-    },
-    {
-      "source_label": "Decomposer",
-      "target_label": "Ecosystem",
-      "relation_type": "recycles-nutrients-in",
-      "weight": 0.92
-    },
-    {
-      "source_label": "Food Chain",
-      "target_label": "Producer",
-      "relation_type": "starts-with",
-      "weight": 0.93
-    },
-    {
-      "source_label": "Food Web",
-      "target_label": "Food Chain",
-      "relation_type": "composed-of",
-      "weight": 0.92
-    },
-    {
-      "source_label": "Energy Pyramid",
-      "target_label": "Trophic Level",
-      "relation_type": "represents",
-      "weight": 0.91
-    },
-    {
-      "source_label": "Trophic Level",
-      "target_label": "Food Chain",
-      "relation_type": "level-in",
-      "weight": 0.92
-    },
-    {
-      "source_label": "Biomass",
-      "target_label": "Trophic Level",
-      "relation_type": "decreases-up",
-      "weight": 0.90
-    },
-    {
-      "source_label": "Biome",
-      "target_label": "Ecosystem",
-      "relation_type": "large-scale",
-      "weight": 0.90
-    },
-    {
-      "source_label": "Habitat",
-      "target_label": "Organism",
-      "relation_type": "home-of",
-      "weight": 0.94
-    },
-    {
-      "source_label": "Ecological Niche",
-      "target_label": "Species",
-      "relation_type": "role-of",
-      "weight": 0.90
-    },
-    {
-      "source_label": "Competition",
-      "target_label": "Natural Selection",
-      "relation_type": "drives",
-      "weight": 0.91
-    },
-    {
-      "source_label": "Predation",
-      "target_label": "Natural Selection",
-      "relation_type": "drives",
-      "weight": 0.90
-    },
-    {
-      "source_label": "Mutualism",
-      "target_label": "Symbiosis",
-      "relation_type": "type-of",
-      "weight": 0.92
-    },
-    {
-      "source_label": "Commensalism",
-      "target_label": "Symbiosis",
-      "relation_type": "type-of",
-      "weight": 0.91
-    },
-    {
-      "source_label": "Parasitism",
-      "target_label": "Symbiosis",
-      "relation_type": "type-of",
-      "weight": 0.92
-    },
-    {
-      "source_label": "Carbon Cycle",
-      "target_label": "Photosynthesis",
-      "relation_type": "includes",
-      "weight": 0.89
-    },
-    {
-      "source_label": "Carbon Cycle",
-      "target_label": "Cellular Respiration",
-      "relation_type": "includes",
-      "weight": 0.89
-    },
-    {
-      "source_label": "Nitrogen Cycle",
-      "target_label": "Bacteria",
-      "relation_type": "depends-on",
-      "weight": 0.87
-    },
-    {
-      "source_label": "Water Cycle",
-      "target_label": "Ecosystem",
-      "relation_type": "connects",
-      "weight": 0.88
-    },
-    {
-      "source_label": "Phosphorus Cycle",
-      "target_label": "Ecosystem",
-      "relation_type": "cycles-through",
-      "weight": 0.86
-    },
-    {
-      "source_label": "Carrying Capacity",
-      "target_label": "Population",
-      "relation_type": "limits",
-      "weight": 0.90
-    },
-    {
-      "source_label": "Limiting Factor",
-      "target_label": "Carrying Capacity",
-      "relation_type": "determines",
-      "weight": 0.89
-    },
-    {
-      "source_label": "Exponential Growth",
-      "target_label": "Logistic Growth",
-      "relation_type": "transitions-to",
-      "weight": 0.85
-    },
-    {
-      "source_label": "Logistic Growth",
-      "target_label": "Carrying Capacity",
-      "relation_type": "approaches",
-      "weight": 0.88
-    },
-    {
-      "source_label": "Biodiversity",
-      "target_label": "Ecosystem",
-      "relation_type": "measure-of",
-      "weight": 0.89
-    },
-    {
-      "source_label": "Extinction",
-      "target_label": "Biodiversity",
-      "relation_type": "reduces",
-      "weight": 0.88
-    },
-    {
-      "source_label": "Conservation",
-      "target_label": "Biodiversity",
-      "relation_type": "protects",
-      "weight": 0.90
-    },
-    {
-      "source_label": "Primary Succession",
-      "target_label": "Succession",
-      "relation_type": "type-of",
-      "weight": 0.90
-    },
-    {
-      "source_label": "Secondary Succession",
-      "target_label": "Succession",
-      "relation_type": "type-of",
-      "weight": 0.90
-    },
-    {
-      "source_label": "Climax Community",
-      "target_label": "Succession",
-      "relation_type": "end-result-of",
-      "weight": 0.87
-    },
-    {
-      "source_label": "Homeostasis",
-      "target_label": "Organism",
-      "relation_type": "maintained-by",
-      "weight": 0.93
-    },
-    {
-      "source_label": "Negative Feedback",
-      "target_label": "Homeostasis",
-      "relation_type": "maintains",
-      "weight": 0.91
-    },
-    {
-      "source_label": "Positive Feedback",
-      "target_label": "Homeostasis",
-      "relation_type": "disrupts",
-      "weight": 0.85
-    },
-    {
-      "source_label": "Neuron",
-      "target_label": "Nervous System",
-      "relation_type": "basic-unit-of",
-      "weight": 0.94
-    },
-    {
-      "source_label": "Synapse",
-      "target_label": "Neuron",
-      "relation_type": "connects",
-      "weight": 0.93
-    },
-    {
-      "source_label": "Neurotransmitter",
-      "target_label": "Synapse",
-      "relation_type": "crosses",
-      "weight": 0.92
-    },
-    {
-      "source_label": "Central Nervous System",
-      "target_label": "Nervous System",
-      "relation_type": "part-of",
-      "weight": 0.93
-    },
-    {
-      "source_label": "Peripheral Nervous System",
-      "target_label": "Nervous System",
-      "relation_type": "part-of",
-      "weight": 0.92
-    },
-    {
-      "source_label": "Reflex",
-      "target_label": "Nervous System",
-      "relation_type": "function-of",
-      "weight": 0.90
-    },
-    {
-      "source_label": "Hormone",
-      "target_label": "Endocrine System",
-      "relation_type": "produced-by",
-      "weight": 0.93
-    },
-    {
-      "source_label": "Heart",
-      "target_label": "Circulatory System",
-      "relation_type": "central-organ-of",
-      "weight": 0.95
-    },
-    {
-      "source_label": "Blood",
-      "target_label": "Circulatory System",
-      "relation_type": "circulated-by",
-      "weight": 0.94
-    },
-    {
-      "source_label": "Red Blood Cell",
-      "target_label": "Blood",
-      "relation_type": "component-of",
-      "weight": 0.93
-    },
-    {
-      "source_label": "White Blood Cell",
-      "target_label": "Blood",
-      "relation_type": "component-of",
-      "weight": 0.93
-    },
-    {
-      "source_label": "White Blood Cell",
-      "target_label": "Immune System",
-      "relation_type": "part-of",
-      "weight": 0.93
-    },
-    {
-      "source_label": "Platelet",
-      "target_label": "Blood",
-      "relation_type": "component-of",
-      "weight": 0.91
-    },
-    {
-      "source_label": "Lung",
-      "target_label": "Respiratory System",
-      "relation_type": "main-organ-of",
-      "weight": 0.94
-    },
-    {
-      "source_label": "Alveolus",
-      "target_label": "Lung",
-      "relation_type": "functional-unit-of",
-      "weight": 0.92
-    },
-    {
-      "source_label": "Stomach",
-      "target_label": "Digestive System",
-      "relation_type": "organ-of",
-      "weight": 0.93
-    },
-    {
-      "source_label": "Small Intestine",
-      "target_label": "Digestive System",
-      "relation_type": "organ-of",
-      "weight": 0.93
-    },
-    {
-      "source_label": "Antibody",
-      "target_label": "Immune System",
-      "relation_type": "component-of",
-      "weight": 0.92
-    },
-    {
-      "source_label": "Antigen",
-      "target_label": "Antibody",
-      "relation_type": "recognized-by",
-      "weight": 0.92
-    },
-    {
-      "source_label": "Vaccine",
-      "target_label": "Immune System",
-      "relation_type": "stimulates",
-      "weight": 0.91
-    },
-    {
-      "source_label": "Tissue",
-      "target_label": "Cell",
-      "relation_type": "composed-of",
-      "weight": 0.94
-    },
-    {
-      "source_label": "Organ",
-      "target_label": "Tissue",
-      "relation_type": "composed-of",
-      "weight": 0.93
-    },
-    {
-      "source_label": "Organ System",
-      "target_label": "Organ",
-      "relation_type": "composed-of",
-      "weight": 0.92
-    },
-    {
-      "source_label": "Cell Differentiation",
-      "target_label": "Development",
-      "relation_type": "process-of",
-      "weight": 0.91
-    },
-    {
-      "source_label": "Stem Cell",
-      "target_label": "Cell Differentiation",
-      "relation_type": "undergoes",
-      "weight": 0.90
-    },
-    {
-      "source_label": "Apoptosis",
-      "target_label": "Development",
-      "relation_type": "part-of",
-      "weight": 0.88
-    },
-    {
-      "source_label": "Cancer",
-      "target_label": "Cell",
-      "relation_type": "abnormal-division-of",
-      "weight": 0.92
-    },
-    {
-      "source_label": "Tumor",
-      "target_label": "Cancer",
-      "relation_type": "manifestation-of",
-      "weight": 0.90
-    },
-    {
-      "source_label": "Metastasis",
-      "target_label": "Cancer",
-      "relation_type": "advanced-stage-of",
-      "weight": 0.89
-    },
-    {
-      "source_label": "Genetic Engineering",
-      "target_label": "Biotechnology",
-      "relation_type": "application-of",
-      "weight": 0.91
-    },
-    {
-      "source_label": "Recombinant DNA",
-      "target_label": "Genetic Engineering",
-      "relation_type": "product-of",
-      "weight": 0.90
-    },
-    {
-      "source_label": "PCR",
-      "target_label": "DNA",
-      "relation_type": "amplifies",
-      "weight": 0.89
-    },
-    {
-      "source_label": "Gel Electrophoresis",
-      "target_label": "DNA",
-      "relation_type": "separates",
-      "weight": 0.87
-    },
-    {
-      "source_label": "Cloning",
-      "target_label": "Genetic Engineering",
-      "relation_type": "technique-of",
-      "weight": 0.88
-    },
-    {
-      "source_label": "Gene Therapy",
-      "target_label": "Genetic Engineering",
-      "relation_type": "medical-application-of",
-      "weight": 0.86
-    },
-    {
-      "source_label": "GMO",
-      "target_label": "Genetic Engineering",
-      "relation_type": "product-of",
-      "weight": 0.89
-    },
-    {
-      "source_label": "Bioinformatics",
-      "target_label": "Genomics",
-      "relation_type": "analyzes-data-from",
-      "weight": 0.87
-    },
-    {
-      "source_label": "Genomics",
-      "target_label": "DNA",
-      "relation_type": "studies",
-      "weight": 0.89
-    },
-    {
-      "source_label": "Proteomics",
-      "target_label": "Protein",
-      "relation_type": "studies",
-      "weight": 0.88
-    }
+    {"source_label": "Cell", "target_label": "Cell Theory", "relation_type": "part-of", "weight": 0.95},
+    {"source_label": "Prokaryote", "target_label": "Cell", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "Eukaryote", "target_label": "Cell", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "Nucleus", "target_label": "Eukaryote", "relation_type": "part-of", "weight": 0.95},
+    {"source_label": "Cell Membrane", "target_label": "Cell", "relation_type": "part-of", "weight": 0.95},
+    {"source_label": "Cytoplasm", "target_label": "Cell", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "Mitochondria", "target_label": "Eukaryote", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "Chloroplast", "target_label": "Plant", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "Ribosome", "target_label": "Cell", "relation_type": "part-of", "weight": 0.85},
+    {"source_label": "Endoplasmic Reticulum", "target_label": "Eukaryote", "relation_type": "part-of", "weight": 0.85},
+    {"source_label": "Golgi Apparatus", "target_label": "Eukaryote", "relation_type": "part-of", "weight": 0.85},
+    {"source_label": "Lysosome", "target_label": "Eukaryote", "relation_type": "part-of", "weight": 0.8},
+    {"source_label": "Vacuole", "target_label": "Plant", "relation_type": "part-of", "weight": 0.85},
+    {"source_label": "Cell Wall", "target_label": "Plant", "relation_type": "part-of", "weight": 0.85},
+    {"source_label": "DNA", "target_label": "Nucleus", "relation_type": "part-of", "weight": 0.95},
+    {"source_label": "Gene", "target_label": "DNA", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "Chromosome", "target_label": "DNA", "relation_type": "requires", "weight": 0.9},
+    {"source_label": "Allele", "target_label": "Gene", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "Genotype", "target_label": "Allele", "relation_type": "requires", "weight": 0.85},
+    {"source_label": "Phenotype", "target_label": "Genotype", "relation_type": "related-to", "weight": 0.9},
+    {"source_label": "Dominant Allele", "target_label": "Allele", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "Recessive Allele", "target_label": "Allele", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "Segregation", "target_label": "Mendel's Laws", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "Independent Assortment", "target_label": "Mendel's Laws", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "Crossing Over", "target_label": "Meiosis", "relation_type": "part-of", "weight": 0.85},
+    {"source_label": "Mutation", "target_label": "DNA", "relation_type": "related-to", "weight": 0.85},
+    {"source_label": "Point Mutation", "target_label": "Mutation", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "Frameshift Mutation", "target_label": "Mutation", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "Replication", "target_label": "DNA", "relation_type": "requires", "weight": 0.95},
+    {"source_label": "Transcription", "target_label": "DNA", "relation_type": "requires", "weight": 0.9},
+    {"source_label": "Transcription", "target_label": "RNA", "relation_type": "causes", "weight": 0.9},
+    {"source_label": "Translation", "target_label": "RNA", "relation_type": "requires", "weight": 0.9},
+    {"source_label": "Translation", "target_label": "Ribosome", "relation_type": "requires", "weight": 0.85},
+    {"source_label": "Genetic Code", "target_label": "Translation", "relation_type": "requires", "weight": 0.85},
+    {"source_label": "Codon", "target_label": "Genetic Code", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "Mitosis", "target_label": "Cell", "relation_type": "requires", "weight": 0.9},
+    {"source_label": "Meiosis", "target_label": "Gamete", "relation_type": "causes", "weight": 0.95},
+    {"source_label": "Diploid", "target_label": "Chromosome", "relation_type": "related-to", "weight": 0.85},
+    {"source_label": "Haploid", "target_label": "Gamete", "relation_type": "related-to", "weight": 0.95},
+    {"source_label": "Fertilization", "target_label": "Gamete", "relation_type": "requires", "weight": 0.95},
+    {"source_label": "Fertilization", "target_label": "Zygote", "relation_type": "causes", "weight": 0.95},
+    {"source_label": "Embryo", "target_label": "Zygote", "relation_type": "related-to", "weight": 0.85},
+    {"source_label": "Differentiation", "target_label": "Stem Cell", "relation_type": "related-to", "weight": 0.85},
+    {"source_label": "Homeostasis", "target_label": "Feedback Loop", "relation_type": "requires", "weight": 0.85},
+    {"source_label": "Negative Feedback", "target_label": "Feedback Loop", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "Positive Feedback", "target_label": "Feedback Loop", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "Hormone", "target_label": "Endocrine System", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "Enzyme", "target_label": "Protein", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "ATP", "target_label": "Cellular Respiration", "relation_type": "related-to", "weight": 0.9},
+    {"source_label": "ATP", "target_label": "Mitochondria", "relation_type": "related-to", "weight": 0.85},
+    {"source_label": "Photosynthesis", "target_label": "Chloroplast", "relation_type": "requires", "weight": 0.9},
+    {"source_label": "Photosynthesis", "target_label": "Chlorophyll", "relation_type": "requires", "weight": 0.85},
+    {"source_label": "Cellular Respiration", "target_label": "Mitochondria", "relation_type": "requires", "weight": 0.85},
+    {"source_label": "Glycolysis", "target_label": "Cellular Respiration", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "Krebs Cycle", "target_label": "Cellular Respiration", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "Electron Transport Chain", "target_label": "Cellular Respiration", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "Fermentation", "target_label": "Glycolysis", "relation_type": "related-to", "weight": 0.8},
+    {"source_label": "Natural Selection", "target_label": "Evolution", "relation_type": "part-of", "weight": 0.95},
+    {"source_label": "Adaptation", "target_label": "Natural Selection", "relation_type": "related-to", "weight": 0.9},
+    {"source_label": "Fitness", "target_label": "Natural Selection", "relation_type": "requires", "weight": 0.9},
+    {"source_label": "Selection Pressure", "target_label": "Natural Selection", "relation_type": "requires", "weight": 0.85},
+    {"source_label": "Genetic Drift", "target_label": "Evolution", "relation_type": "part-of", "weight": 0.8},
+    {"source_label": "Gene Flow", "target_label": "Population", "relation_type": "related-to", "weight": 0.85},
+    {"source_label": "Speciation", "target_label": "Evolution", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "Species", "target_label": "Population", "relation_type": "related-to", "weight": 0.85},
+    {"source_label": "Hardy-Weinberg Equilibrium", "target_label": "Population", "relation_type": "related-to", "weight": 0.8},
+    {"source_label": "Phylogeny", "target_label": "Evolution", "relation_type": "related-to", "weight": 0.85},
+    {"source_label": "Taxonomy", "target_label": "Species", "relation_type": "related-to", "weight": 0.85},
+    {"source_label": "Binomial Nomenclature", "target_label": "Taxonomy", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "Genus", "target_label": "Species", "relation_type": "related-to", "weight": 0.9},
+    {"source_label": "Family", "target_label": "Genus", "relation_type": "related-to", "weight": 0.85},
+    {"source_label": "Order", "target_label": "Family", "relation_type": "related-to", "weight": 0.85},
+    {"source_label": "Class", "target_label": "Order", "relation_type": "related-to", "weight": 0.85},
+    {"source_label": "Phylum", "target_label": "Class", "relation_type": "related-to", "weight": 0.85},
+    {"source_label": "Kingdom", "target_label": "Phylum", "relation_type": "related-to", "weight": 0.85},
+    {"source_label": "Ecosystem", "target_label": "Community", "relation_type": "requires", "weight": 0.9},
+    {"source_label": "Community", "target_label": "Population", "relation_type": "requires", "weight": 0.9},
+    {"source_label": "Population", "target_label": "Species", "relation_type": "requires", "weight": 0.95},
+    {"source_label": "Habitat", "target_label": "Species", "relation_type": "related-to", "weight": 0.85},
+    {"source_label": "Niche", "target_label": "Species", "relation_type": "related-to", "weight": 0.9},
+    {"source_label": "Food Chain", "target_label": "Trophic Level", "relation_type": "requires", "weight": 0.9},
+    {"source_label": "Food Web", "target_label": "Food Chain", "relation_type": "requires", "weight": 0.9},
+    {"source_label": "Producer", "target_label": "Trophic Level", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "Primary Consumer", "target_label": "Producer", "relation_type": "related-to", "weight": 0.9},
+    {"source_label": "Secondary Consumer", "target_label": "Primary Consumer", "relation_type": "related-to", "weight": 0.85},
+    {"source_label": "Tertiary Consumer", "target_label": "Secondary Consumer", "relation_type": "related-to", "weight": 0.85},
+    {"source_label": "Decomposer", "target_label": "Ecosystem", "relation_type": "part-of", "weight": 0.85},
+    {"source_label": "Energy Pyramid", "target_label": "Trophic Level", "relation_type": "requires", "weight": 0.85},
+    {"source_label": "Carbon Cycle", "target_label": "Ecosystem", "relation_type": "part-of", "weight": 0.8},
+    {"source_label": "Nitrogen Cycle", "target_label": "Ecosystem", "relation_type": "part-of", "weight": 0.8},
+    {"source_label": "Water Cycle", "target_label": "Ecosystem", "relation_type": "part-of", "weight": 0.8},
+    {"source_label": "Nitrogen Fixation", "target_label": "Nitrogen Cycle", "relation_type": "part-of", "weight": 0.85},
+    {"source_label": "Competition", "target_label": "Species", "relation_type": "related-to", "weight": 0.85},
+    {"source_label": "Predation", "target_label": "Species", "relation_type": "related-to", "weight": 0.9},
+    {"source_label": "Parasitism", "target_label": "Symbiosis", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "Mutualism", "target_label": "Symbiosis", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "Commensalism", "target_label": "Symbiosis", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "Carrying Capacity", "target_label": "Population Growth", "relation_type": "related-to", "weight": 0.85},
+    {"source_label": "Exponential Growth", "target_label": "Population Growth", "relation_type": "part-of", "weight": 0.85},
+    {"source_label": "Logistic Growth", "target_label": "Population Growth", "relation_type": "part-of", "weight": 0.85},
+    {"source_label": "Logistic Growth", "target_label": "Carrying Capacity", "relation_type": "requires", "weight": 0.9},
+    {"source_label": "Extinction", "target_label": "Species", "relation_type": "related-to", "weight": 0.85},
+    {"source_label": "Conservation", "target_label": "Biodiversity", "relation_type": "related-to", "weight": 0.85},
+    {"source_label": "Primary Succession", "target_label": "Succession", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "Secondary Succession", "target_label": "Succession", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "Climax Community", "target_label": "Succession", "relation_type": "related-to", "weight": 0.85},
+    {"source_label": "Keystone Species", "target_label": "Ecosystem", "relation_type": "part-of", "weight": 0.85},
+    {"source_label": "Invasive Species", "target_label": "Ecosystem", "relation_type": "related-to", "weight": 0.8},
+    {"source_label": "Endemic Species", "target_label": "Biodiversity", "relation_type": "part-of", "weight": 0.8},
+    {"source_label": "Greenhouse Effect", "target_label": "Climate Change", "relation_type": "causes", "weight": 0.85},
+    {"source_label": "Deforestation", "target_label": "Climate Change", "relation_type": "causes", "weight": 0.8},
+    {"source_label": "Pollution", "target_label": "Ecosystem", "relation_type": "related-to", "weight": 0.8},
+    {"source_label": "Renewable Resource", "target_label": "Sustainable Development", "relation_type": "related-to", "weight": 0.8},
+    {"source_label": "Non-renewable Resource", "target_label": "Sustainable Development", "relation_type": "opposite-of", "weight": 0.75},
+    {"source_label": "Antibody", "target_label": "Immune System", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "Antigen", "target_label": "Antibody", "relation_type": "related-to", "weight": 0.9},
+    {"source_label": "Vaccination", "target_label": "Immune System", "relation_type": "related-to", "weight": 0.85},
+    {"source_label": "Virus", "target_label": "Pathogen", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "Bacteria", "target_label": "Prokaryote", "relation_type": "part-of", "weight": 0.95},
+    {"source_label": "Archaea", "target_label": "Prokaryote", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "Fungi", "target_label": "Eukaryote", "relation_type": "part-of", "weight": 0.85},
+    {"source_label": "Protist", "target_label": "Eukaryote", "relation_type": "part-of", "weight": 0.8},
+    {"source_label": "Plant", "target_label": "Eukaryote", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "Animal", "target_label": "Eukaryote", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "Vertebrate", "target_label": "Animal", "relation_type": "part-of", "weight": 0.85},
+    {"source_label": "Invertebrate", "target_label": "Animal", "relation_type": "part-of", "weight": 0.85},
+    {"source_label": "Mammal", "target_label": "Vertebrate", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "Bird", "target_label": "Vertebrate", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "Reptile", "target_label": "Vertebrate", "relation_type": "part-of", "weight": 0.85},
+    {"source_label": "Amphibian", "target_label": "Vertebrate", "relation_type": "part-of", "weight": 0.85},
+    {"source_label": "Fish", "target_label": "Vertebrate", "relation_type": "part-of", "weight": 0.85},
+    {"source_label": "Stomata", "target_label": "Plant", "relation_type": "part-of", "weight": 0.85},
+    {"source_label": "Transpiration", "target_label": "Stomata", "relation_type": "related-to", "weight": 0.85},
+    {"source_label": "Root System", "target_label": "Plant", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "Shoot System", "target_label": "Plant", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "Flower", "target_label": "Plant", "relation_type": "part-of", "weight": 0.85},
+    {"source_label": "Pollination", "target_label": "Flower", "relation_type": "requires", "weight": 0.85},
+    {"source_label": "Seed", "target_label": "Plant", "relation_type": "part-of", "weight": 0.85},
+    {"source_label": "Germination", "target_label": "Seed", "relation_type": "requires", "weight": 0.9},
+    {"source_label": "Phototropism", "target_label": "Tropism", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "Gravitropism", "target_label": "Tropism", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "Neuron", "target_label": "Nervous System", "relation_type": "part-of", "weight": 0.95},
+    {"source_label": "Brain", "target_label": "Nervous System", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "Synapse", "target_label": "Neuron", "relation_type": "part-of", "weight": 0.85},
+    {"source_label": "Neurotransmitter", "target_label": "Synapse", "relation_type": "part-of", "weight": 0.85},
+    {"source_label": "Heart", "target_label": "Circulatory System", "relation_type": "part-of", "weight": 0.95},
+    {"source_label": "Blood", "target_label": "Circulatory System", "relation_type": "part-of", "weight": 0.9},
+    {"source_label": "Lung", "target_label": "Respiratory System", "relation_type": "part-of", "weight": 0.95},
+    {"source_label": "Digestive System", "target_label": "Animal", "relation_type": "part-of", "weight": 0.8},
+    {"source_label": "Excretory System", "target_label": "Animal", "relation_type": "part-of", "weight": 0.8},
+    {"source_label": "Reproductive System", "target_label": "Animal", "relation_type": "part-of", "weight": 0.8},
+    {"source_label": "Skeletal System", "target_label": "Vertebrate", "relation_type": "part-of", "weight": 0.85},
+    {"source_label": "Muscular System", "target_label": "Animal", "relation_type": "part-of", "weight": 0.85}
   ]
 }

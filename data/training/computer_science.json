@@ -1,0 +1,926 @@
+{
+  "source": "training-data:cs-v1-extended",
+  "concepts": [
+    {
+      "label": "Algorithm",
+      "definition": "A finite sequence of well-defined instructions for solving a computational problem or performing a task",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["computation", "problem-solving", "logic", "fundamental"]
+    },
+    {
+      "label": "Array",
+      "definition": "A data structure consisting of elements stored in contiguous memory locations, accessible by index",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["data-structure", "memory", "indexing", "linear"]
+    },
+    {
+      "label": "Tree",
+      "definition": "A hierarchical data structure with nodes connected by edges, having a root and no cycles",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["data-structure", "hierarchical", "graph-theory", "recursive"]
+    },
+    {
+      "label": "Graph",
+      "definition": "A mathematical structure consisting of vertices (nodes) connected by edges, used to model relationships",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["data-structure", "graph-theory", "network", "relationships"]
+    },
+    {
+      "label": "CPU",
+      "definition": "Central Processing Unit - the primary component that executes instructions and performs calculations",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["hardware", "processing", "execution", "computer-architecture"]
+    },
+    {
+      "label": "Memory",
+      "definition": "Computer storage that holds data and instructions temporarily or permanently for processing",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["hardware", "storage", "data", "computer-architecture"]
+    },
+    {
+      "label": "Process",
+      "definition": "An instance of a program in execution, containing program code and current activity state",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["operating-systems", "execution", "program", "concurrency"]
+    },
+    {
+      "label": "Thread",
+      "definition": "A lightweight unit of execution within a process, allowing concurrent execution of code",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["operating-systems", "concurrency", "parallelism", "execution"]
+    },
+    {
+      "label": "Neural Network",
+      "definition": "A computational model inspired by biological neural networks, used for machine learning tasks",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["artificial-intelligence", "machine-learning", "deep-learning", "pattern-recognition"]
+    },
+    {
+      "label": "Database",
+      "definition": "An organized collection of structured data stored and accessed electronically",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["data-management", "storage", "structured-data", "information-systems"]
+    },
+    {
+      "label": "Encryption",
+      "definition": "The process of converting plaintext into ciphertext to secure information from unauthorized access",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["security", "cryptography", "privacy", "data-protection"]
+    },
+    {
+      "label": "Protocol",
+      "definition": "A set of rules and standards that define how data is transmitted and received over a network",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["networking", "communication", "standards", "internet"]
+    },
+    {
+      "label": "Compiler",
+      "definition": "A program that translates source code written in a high-level language into machine code",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["programming", "translation", "code-generation", "software-development"]
+    },
+    {
+      "label": "Operating System",
+      "definition": "System software that manages computer hardware and provides services for computer programs",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["system-software", "resource-management", "hardware-abstraction", "platform"]
+    },
+    {
+      "label": "API",
+      "definition": "Application Programming Interface - a set of protocols and tools for building software applications",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["software-development", "interface", "integration", "communication"]
+    },
+    {
+      "label": "Recursion",
+      "definition": "A programming technique where a function calls itself to solve smaller instances of the same problem",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["programming", "algorithm", "problem-solving", "mathematical"]
+    },
+    {
+      "label": "Hash Function",
+      "definition": "A function that maps data of arbitrary size to fixed-size values, used in data structures and cryptography",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["cryptography", "data-structure", "mapping", "security"]
+    },
+    {
+      "label": "Binary Search",
+      "definition": "An efficient search algorithm that finds target values in sorted arrays by repeatedly halving the search space",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["algorithm", "search", "divide-and-conquer", "efficiency"]
+    },
+    {
+      "label": "Machine Learning",
+      "definition": "A subset of AI that enables computers to learn and make decisions from data without explicit programming",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["artificial-intelligence", "data-science", "pattern-recognition", "automation"]
+    },
+    {
+      "label": "Turing Machine",
+      "definition": "An abstract computational model that defines what it means for a function to be computable",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["theoretical-computer-science", "computation-theory", "mathematical", "foundational"]
+    },
+    {
+      "label": "TCP",
+      "definition": "Transmission Control Protocol - a reliable, connection-oriented transport protocol that ensures data delivery",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["networking", "transport-layer", "reliability", "connection-oriented"]
+    },
+    {
+      "label": "IP",
+      "definition": "Internet Protocol - a network layer protocol that routes data packets between devices across networks",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["networking", "network-layer", "addressing", "routing"]
+    },
+    {
+      "label": "HTTP",
+      "definition": "HyperText Transfer Protocol - an application layer protocol for transferring web content between clients and servers",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["networking", "web", "application-layer", "client-server"]
+    },
+    {
+      "label": "DNS",
+      "definition": "Domain Name System - a hierarchical naming system that translates domain names into IP addresses",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["networking", "naming", "resolution", "distributed-system"]
+    },
+    {
+      "label": "Firewall",
+      "definition": "A network security device that monitors and controls incoming and outgoing network traffic based on security rules",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["networking", "security", "access-control", "traffic-filtering"]
+    },
+    {
+      "label": "Router",
+      "definition": "A network device that forwards data packets between computer networks using routing tables",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["networking", "routing", "hardware", "packet-forwarding"]
+    },
+    {
+      "label": "Packet",
+      "definition": "A formatted unit of data carried over a network, containing both payload and control information",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["networking", "data-transmission", "protocol", "communication"]
+    },
+    {
+      "label": "Latency",
+      "definition": "The time delay between the initiation of a network request and the beginning of a response",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["networking", "performance", "timing", "network-metrics"]
+    },
+    {
+      "label": "Kernel",
+      "definition": "The core component of an operating system that manages system resources and provides low-level services",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["operating-systems", "system-level", "resource-management", "core"]
+    },
+    {
+      "label": "Virtual Memory",
+      "definition": "A memory management technique that provides an abstraction of storage resources, allowing programs to use more memory than physically available",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["operating-systems", "memory-management", "virtualization", "abstraction"]
+    },
+    {
+      "label": "File System",
+      "definition": "A method for organizing, storing, and retrieving files and directories on storage devices",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["operating-systems", "storage", "file-management", "data-organization"]
+    },
+    {
+      "label": "Scheduling",
+      "definition": "The process by which an operating system decides which processes or threads to execute and in what order",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["operating-systems", "process-management", "resource-allocation", "concurrency"]
+    },
+    {
+      "label": "Deadlock",
+      "definition": "A situation where two or more processes are blocked forever, each waiting for the other to release resources",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["operating-systems", "concurrency", "synchronization", "resource-conflict"]
+    },
+    {
+      "label": "SQL",
+      "definition": "Structured Query Language - a standardized language for managing and querying relational databases",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["databases", "query-language", "relational", "data-management"]
+    },
+    {
+      "label": "NoSQL",
+      "definition": "Non-relational database systems designed for handling large volumes of unstructured or semi-structured data",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["databases", "non-relational", "scalability", "flexible-schema"]
+    },
+    {
+      "label": "Index",
+      "definition": "A database structure that improves the speed of data retrieval operations on a table at the cost of additional storage",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["databases", "performance", "data-retrieval", "optimization"]
+    },
+    {
+      "label": "Transaction",
+      "definition": "A unit of work performed within a database management system that is treated as a single logical operation",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["databases", "consistency", "atomicity", "data-integrity"]
+    },
+    {
+      "label": "ACID",
+      "definition": "Atomicity, Consistency, Isolation, Durability - properties that guarantee reliable database transaction processing",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["databases", "transaction-properties", "reliability", "data-integrity"]
+    },
+    {
+      "label": "Normalization",
+      "definition": "The process of organizing database tables to reduce redundancy and improve data integrity",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["databases", "data-modeling", "redundancy-reduction", "integrity"]
+    },
+    {
+      "label": "Gradient Descent",
+      "definition": "An optimization algorithm that iteratively adjusts parameters to minimize a cost function by following the gradient",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["machine-learning", "optimization", "algorithm", "parameter-tuning"]
+    },
+    {
+      "label": "Backpropagation",
+      "definition": "A supervised learning algorithm that trains neural networks by propagating errors backward through the network layers",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["machine-learning", "neural-networks", "training", "error-propagation"]
+    },
+    {
+      "label": "CNN",
+      "definition": "Convolutional Neural Network - a deep learning architecture particularly effective for image recognition and computer vision tasks",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["machine-learning", "deep-learning", "computer-vision", "image-processing"]
+    },
+    {
+      "label": "RNN",
+      "definition": "Recurrent Neural Network - a neural network architecture designed to process sequential data with memory capabilities",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["machine-learning", "deep-learning", "sequential-data", "temporal-modeling"]
+    },
+    {
+      "label": "Transformer",
+      "definition": "A neural network architecture that uses attention mechanisms to process sequences in parallel, revolutionizing NLP",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["machine-learning", "deep-learning", "attention-mechanism", "nlp"]
+    },
+    {
+      "label": "Reinforcement Learning",
+      "definition": "A machine learning paradigm where agents learn to make decisions through trial and error interactions with an environment",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["machine-learning", "decision-making", "reward-based", "autonomous-learning"]
+    },
+    {
+      "label": "GAN",
+      "definition": "Generative Adversarial Network - two neural networks competing against each other to generate realistic synthetic data",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["machine-learning", "deep-learning", "generative-model", "adversarial-training"]
+    },
+    {
+      "label": "Design Pattern",
+      "definition": "Reusable solutions to commonly occurring problems in software design and architecture",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["software-engineering", "architecture", "best-practices", "reusability"]
+    },
+    {
+      "label": "Version Control",
+      "definition": "A system that tracks changes to files over time, enabling collaboration and history management in software development",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["software-engineering", "collaboration", "history-tracking", "development-tools"]
+    },
+    {
+      "label": "Testing",
+      "definition": "The process of evaluating software to find bugs and verify that it meets specified requirements",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["software-engineering", "quality-assurance", "bug-detection", "verification"]
+    },
+    {
+      "label": "CI/CD",
+      "definition": "Continuous Integration/Continuous Deployment - practices that enable frequent code integration and automated deployment",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["software-engineering", "automation", "deployment", "development-pipeline"]
+    },
+    {
+      "label": "Microservice",
+      "definition": "An architectural approach that structures applications as collections of loosely coupled, independently deployable services",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["software-engineering", "architecture", "scalability", "service-oriented"]
+    },
+    {
+      "label": "REST",
+      "definition": "Representational State Transfer - an architectural style for designing networked applications using HTTP methods",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["software-engineering", "web-services", "http", "api-design"]
+    },
+    {
+      "label": "Docker",
+      "definition": "A containerization platform that packages applications and their dependencies into portable, lightweight containers",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["software-engineering", "containerization", "deployment", "virtualization"]
+    },
+    {
+      "label": "Load Balancer",
+      "definition": "A device or software that distributes network traffic across multiple servers to ensure high availability and performance",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["networking", "scalability", "availability", "traffic-distribution"]
+    },
+    {
+      "label": "Cache",
+      "definition": "A high-speed storage layer that stores frequently accessed data to reduce access time and improve performance",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["performance", "storage", "optimization", "memory-hierarchy"]
+    },
+    {
+      "label": "Mutex",
+      "definition": "Mutual Exclusion - a synchronization primitive that prevents multiple threads from accessing shared resources simultaneously",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["operating-systems", "synchronization", "concurrency", "thread-safety"]
+    },
+    {
+      "label": "Big O Notation",
+      "definition": "A mathematical notation that describes the limiting behavior of functions, used to analyze algorithm complexity",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["algorithms", "complexity-analysis", "mathematical", "performance"]
+    },
+    {
+      "label": "Blockchain",
+      "definition": "A distributed ledger technology that maintains a continuously growing list of cryptographically linked records",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["distributed-systems", "cryptography", "decentralization", "consensus"]
+    },
+    {
+      "label": "MapReduce",
+      "definition": "A programming model for processing large datasets in a distributed computing environment using parallel processing",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["distributed-systems", "big-data", "parallel-processing", "data-processing"]
+    },
+    {
+      "label": "Kubernetes",
+      "definition": "An open-source container orchestration platform for automating deployment, scaling, and management of containerized applications",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["software-engineering", "container-orchestration", "scalability", "cloud-computing"]
+    },
+    {
+      "label": "OAuth",
+      "definition": "An open standard for access delegation that allows secure authorization without sharing credentials",
+      "trust_category": "FACT",
+      "trust_value": 0.98,
+      "tags": ["security", "authentication", "authorization", "web-standards"]
+    }
+  ],
+  "relations": [
+    {
+      "source_label": "Algorithm",
+      "target_label": "Binary Search",
+      "relation_type": "related-to",
+      "weight": 0.9
+    },
+    {
+      "source_label": "Algorithm",
+      "target_label": "Recursion",
+      "relation_type": "related-to",
+      "weight": 0.85
+    },
+    {
+      "source_label": "Array",
+      "target_label": "Binary Search",
+      "relation_type": "related-to",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Array",
+      "target_label": "Memory",
+      "relation_type": "related-to",
+      "weight": 0.75
+    },
+    {
+      "source_label": "Tree",
+      "target_label": "Graph",
+      "relation_type": "related-to",
+      "weight": 0.9
+    },
+    {
+      "source_label": "Tree",
+      "target_label": "Recursion",
+      "relation_type": "related-to",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Graph",
+      "target_label": "Algorithm",
+      "relation_type": "related-to",
+      "weight": 0.7
+    },
+    {
+      "source_label": "CPU",
+      "target_label": "Memory",
+      "relation_type": "related-to",
+      "weight": 0.95
+    },
+    {
+      "source_label": "CPU",
+      "target_label": "Process",
+      "relation_type": "related-to",
+      "weight": 0.9
+    },
+    {
+      "source_label": "Process",
+      "target_label": "Thread",
+      "relation_type": "related-to",
+      "weight": 0.9
+    },
+    {
+      "source_label": "Process",
+      "target_label": "Operating System",
+      "relation_type": "related-to",
+      "weight": 0.95
+    },
+    {
+      "source_label": "Thread",
+      "target_label": "Operating System",
+      "relation_type": "related-to",
+      "weight": 0.85
+    },
+    {
+      "source_label": "Neural Network",
+      "target_label": "Machine Learning",
+      "relation_type": "related-to",
+      "weight": 0.95
+    },
+    {
+      "source_label": "Database",
+      "target_label": "Hash Function",
+      "relation_type": "related-to",
+      "weight": 0.75
+    },
+    {
+      "source_label": "Encryption",
+      "target_label": "Hash Function",
+      "relation_type": "related-to",
+      "weight": 0.85
+    },
+    {
+      "source_label": "Protocol",
+      "target_label": "API",
+      "relation_type": "related-to",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Compiler",
+      "target_label": "Operating System",
+      "relation_type": "related-to",
+      "weight": 0.7
+    },
+    {
+      "source_label": "Operating System",
+      "target_label": "API",
+      "relation_type": "related-to",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Machine Learning",
+      "target_label": "Algorithm",
+      "relation_type": "related-to",
+      "weight": 0.85
+    },
+    {
+      "source_label": "Turing Machine",
+      "target_label": "Algorithm",
+      "relation_type": "related-to",
+      "weight": 0.8
+    },
+    {
+      "source_label": "TCP",
+      "target_label": "IP",
+      "relation_type": "related-to",
+      "weight": 0.95
+    },
+    {
+      "source_label": "TCP",
+      "target_label": "Protocol",
+      "relation_type": "related-to",
+      "weight": 0.9
+    },
+    {
+      "source_label": "IP",
+      "target_label": "Router",
+      "relation_type": "related-to",
+      "weight": 0.9
+    },
+    {
+      "source_label": "HTTP",
+      "target_label": "TCP",
+      "relation_type": "related-to",
+      "weight": 0.85
+    },
+    {
+      "source_label": "HTTP",
+      "target_label": "REST",
+      "relation_type": "related-to",
+      "weight": 0.9
+    },
+    {
+      "source_label": "DNS",
+      "target_label": "IP",
+      "relation_type": "related-to",
+      "weight": 0.85
+    },
+    {
+      "source_label": "Firewall",
+      "target_label": "Router",
+      "relation_type": "related-to",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Router",
+      "target_label": "Packet",
+      "relation_type": "related-to",
+      "weight": 0.9
+    },
+    {
+      "source_label": "Packet",
+      "target_label": "Latency",
+      "relation_type": "related-to",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Kernel",
+      "target_label": "Operating System",
+      "relation_type": "related-to",
+      "weight": 0.95
+    },
+    {
+      "source_label": "Virtual Memory",
+      "target_label": "Memory",
+      "relation_type": "related-to",
+      "weight": 0.9
+    },
+    {
+      "source_label": "Virtual Memory",
+      "target_label": "Kernel",
+      "relation_type": "related-to",
+      "weight": 0.85
+    },
+    {
+      "source_label": "File System",
+      "target_label": "Operating System",
+      "relation_type": "related-to",
+      "weight": 0.9
+    },
+    {
+      "source_label": "Scheduling",
+      "target_label": "Process",
+      "relation_type": "related-to",
+      "weight": 0.9
+    },
+    {
+      "source_label": "Scheduling",
+      "target_label": "Thread",
+      "relation_type": "related-to",
+      "weight": 0.85
+    },
+    {
+      "source_label": "Deadlock",
+      "target_label": "Process",
+      "relation_type": "related-to",
+      "weight": 0.85
+    },
+    {
+      "source_label": "Deadlock",
+      "target_label": "Mutex",
+      "relation_type": "related-to",
+      "weight": 0.9
+    },
+    {
+      "source_label": "SQL",
+      "target_label": "Database",
+      "relation_type": "related-to",
+      "weight": 0.95
+    },
+    {
+      "source_label": "NoSQL",
+      "target_label": "Database",
+      "relation_type": "related-to",
+      "weight": 0.9
+    },
+    {
+      "source_label": "Index",
+      "target_label": "Database",
+      "relation_type": "related-to",
+      "weight": 0.9
+    },
+    {
+      "source_label": "Transaction",
+      "target_label": "ACID",
+      "relation_type": "related-to",
+      "weight": 0.95
+    },
+    {
+      "source_label": "Transaction",
+      "target_label": "Database",
+      "relation_type": "related-to",
+      "weight": 0.9
+    },
+    {
+      "source_label": "ACID",
+      "target_label": "Database",
+      "relation_type": "related-to",
+      "weight": 0.9
+    },
+    {
+      "source_label": "Normalization",
+      "target_label": "SQL",
+      "relation_type": "related-to",
+      "weight": 0.85
+    },
+    {
+      "source_label": "Gradient Descent",
+      "target_label": "Machine Learning",
+      "relation_type": "related-to",
+      "weight": 0.95
+    },
+    {
+      "source_label": "Backpropagation",
+      "target_label": "Neural Network",
+      "relation_type": "related-to",
+      "weight": 0.95
+    },
+    {
+      "source_label": "Backpropagation",
+      "target_label": "Gradient Descent",
+      "relation_type": "related-to",
+      "weight": 0.9
+    },
+    {
+      "source_label": "CNN",
+      "target_label": "Neural Network",
+      "relation_type": "related-to",
+      "weight": 0.9
+    },
+    {
+      "source_label": "RNN",
+      "target_label": "Neural Network",
+      "relation_type": "related-to",
+      "weight": 0.9
+    },
+    {
+      "source_label": "Transformer",
+      "target_label": "Neural Network",
+      "relation_type": "related-to",
+      "weight": 0.9
+    },
+    {
+      "source_label": "Reinforcement Learning",
+      "target_label": "Machine Learning",
+      "relation_type": "related-to",
+      "weight": 0.9
+    },
+    {
+      "source_label": "GAN",
+      "target_label": "Neural Network",
+      "relation_type": "related-to",
+      "weight": 0.9
+    },
+    {
+      "source_label": "Design Pattern",
+      "target_label": "API",
+      "relation_type": "related-to",
+      "weight": 0.75
+    },
+    {
+      "source_label": "Version Control",
+      "target_label": "CI/CD",
+      "relation_type": "related-to",
+      "weight": 0.85
+    },
+    {
+      "source_label": "Testing",
+      "target_label": "CI/CD",
+      "relation_type": "related-to",
+      "weight": 0.9
+    },
+    {
+      "source_label": "CI/CD",
+      "target_label": "Docker",
+      "relation_type": "related-to",
+      "weight": 0.85
+    },
+    {
+      "source_label": "Microservice",
+      "target_label": "REST",
+      "relation_type": "related-to",
+      "weight": 0.9
+    },
+    {
+      "source_label": "REST",
+      "target_label": "API",
+      "relation_type": "related-to",
+      "weight": 0.95
+    },
+    {
+      "source_label": "Docker",
+      "target_label": "Kubernetes",
+      "relation_type": "related-to",
+      "weight": 0.9
+    },
+    {
+      "source_label": "Load Balancer",
+      "target_label": "Router",
+      "relation_type": "related-to",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Cache",
+      "target_label": "Memory",
+      "relation_type": "related-to",
+      "weight": 0.85
+    },
+    {
+      "source_label": "Cache",
+      "target_label": "Database",
+      "relation_type": "related-to",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Mutex",
+      "target_label": "Thread",
+      "relation_type": "related-to",
+      "weight": 0.9
+    },
+    {
+      "source_label": "Big O Notation",
+      "target_label": "Algorithm",
+      "relation_type": "related-to",
+      "weight": 0.9
+    },
+    {
+      "source_label": "Blockchain",
+      "target_label": "Hash Function",
+      "relation_type": "related-to",
+      "weight": 0.85
+    },
+    {
+      "source_label": "MapReduce",
+      "target_label": "Algorithm",
+      "relation_type": "related-to",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Kubernetes",
+      "target_label": "Microservice",
+      "relation_type": "related-to",
+      "weight": 0.85
+    },
+    {
+      "source_label": "OAuth",
+      "target_label": "REST",
+      "relation_type": "related-to",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Firewall",
+      "target_label": "Packet",
+      "relation_type": "related-to",
+      "weight": 0.85
+    },
+    {
+      "source_label": "Latency",
+      "target_label": "Load Balancer",
+      "relation_type": "related-to",
+      "weight": 0.75
+    },
+    {
+      "source_label": "File System",
+      "target_label": "Index",
+      "relation_type": "related-to",
+      "weight": 0.7
+    },
+    {
+      "source_label": "Scheduling",
+      "target_label": "Kernel",
+      "relation_type": "related-to",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Index",
+      "target_label": "Hash Function",
+      "relation_type": "related-to",
+      "weight": 0.8
+    },
+    {
+      "source_label": "CNN",
+      "target_label": "Backpropagation",
+      "relation_type": "related-to",
+      "weight": 0.85
+    },
+    {
+      "source_label": "RNN",
+      "target_label": "Backpropagation",
+      "relation_type": "related-to",
+      "weight": 0.85
+    },
+    {
+      "source_label": "Transformer",
+      "target_label": "Backpropagation",
+      "relation_type": "related-to",
+      "weight": 0.8
+    },
+    {
+      "source_label": "GAN",
+      "target_label": "Gradient Descent",
+      "relation_type": "related-to",
+      "weight": 0.85
+    },
+    {
+      "source_label": "Microservice",
+      "target_label": "Docker",
+      "relation_type": "related-to",
+      "weight": 0.9
+    },
+    {
+      "source_label": "Testing",
+      "target_label": "Version Control",
+      "relation_type": "related-to",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Load Balancer",
+      "target_label": "Microservice",
+      "relation_type": "related-to",
+      "weight": 0.8
+    },
+    {
+      "source_label": "OAuth",
+      "target_label": "Encryption",
+      "relation_type": "related-to",
+      "weight": 0.75
+    },
+    {
+      "source_label": "Blockchain",
+      "target_label": "Encryption",
+      "relation_type": "related-to",
+      "weight": 0.8
+    }
+  ]
+}

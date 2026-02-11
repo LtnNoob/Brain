@@ -42,49 +42,58 @@ bool SystemOrchestrator::initialize() {
 
     try {
         // ── Stage 1: LTM ────────────────────────────────────────────────
-        log("  [1/14] LTM...");
+        log("  [1/15] LTM...");
         ltm_ = std::make_unique<LongTermMemory>();
         init_stage_ = 1;
 
-        // ── Stage 2: WAL + Checkpoint Restore ───────────────────────────
+        // ── Stage 2: WAL + Persistence ────────────────────────────────
         if (config_.enable_persistence) {
-            log("  [2/14] Persistence...");
+            log("  [2/15] Persistence...");
             std::filesystem::create_directories(config_.data_dir);
-            // Note: PersistentLTM is an alternative backend.
-            // For now we use in-memory LTM with checkpoint save/restore.
+
+            if (config_.enable_wal) {
+                auto wal_path = config_.data_dir + "/brain19.wal";
+                wal_ = std::make_unique<persistent::WALWriter>(wal_path);
+                if (wal_->is_open()) {
+                    log("    WAL opened: " + wal_path);
+                } else {
+                    log("    WAL failed to open (continuing without WAL)");
+                    wal_.reset();
+                }
+            }
         }
         init_stage_ = 2;
 
         // ── Stage 3: BrainController + STM ──────────────────────────────
-        log("  [3/14] BrainController...");
+        log("  [3/15] BrainController...");
         brain_ = std::make_unique<BrainController>();
         brain_->initialize();
         init_stage_ = 3;
 
         // ── Stage 4: MicroModels ────────────────────────────────────────
-        log("  [4/14] MicroModels...");
+        log("  [4/15] MicroModels...");
         embeddings_ = std::make_unique<EmbeddingManager>();
         registry_ = std::make_unique<MicroModelRegistry>();
         trainer_ = std::make_unique<MicroTrainer>();
         init_stage_ = 4;
 
         // ── Stage 5: CognitiveDynamics ──────────────────────────────────
-        log("  [5/14] CognitiveDynamics...");
+        log("  [5/15] CognitiveDynamics...");
         cognitive_ = std::make_unique<CognitiveDynamics>();
         init_stage_ = 5;
 
         // ── Stage 6: CuriosityEngine ────────────────────────────────────
-        log("  [6/14] CuriosityEngine...");
+        log("  [6/15] CuriosityEngine...");
         curiosity_ = std::make_unique<CuriosityEngine>();
         init_stage_ = 6;
 
         // ── Stage 7: KANAdapter ─────────────────────────────────────────
-        log("  [7/14] KANAdapter...");
+        log("  [7/15] KANAdapter...");
         kan_adapter_ = std::make_unique<KANAdapter>();
         init_stage_ = 7;
 
         // ── Stage 8: UnderstandingLayer + MiniLLMs ──────────────────────
-        log("  [8/14] UnderstandingLayer...");
+        log("  [8/15] UnderstandingLayer...");
         understanding_ = std::make_unique<UnderstandingLayer>();
         // Register a stub MiniLLM (always available)
         understanding_->register_mini_llm(std::make_unique<StubMiniLLM>());
@@ -104,20 +113,20 @@ bool SystemOrchestrator::initialize() {
         init_stage_ = 8;
 
         // ── Stage 9: KAN-LLM Hybrid ────────────────────────────────────
-        log("  [9/14] KAN-LLM Hybrid...");
+        log("  [9/15] KAN-LLM Hybrid...");
         kan_validator_ = std::make_unique<KanValidator>();
         domain_manager_ = std::make_unique<DomainManager>();
         refinement_loop_ = std::make_unique<RefinementLoop>(*kan_validator_);
         init_stage_ = 9;
 
         // ── Stage 10: IngestionPipeline ─────────────────────────────────
-        log("  [10/14] IngestionPipeline...");
+        log("  [10/15] IngestionPipeline...");
         ingestion_ = std::make_unique<IngestionPipeline>(*ltm_);
         wiki_importer_ = std::make_unique<WikipediaImporter>();
         init_stage_ = 10;
 
         // ── Stage 11: ChatInterface + OllamaClient ──────────────────────
-        log("  [11/14] ChatInterface...");
+        log("  [11/15] ChatInterface...");
         chat_ = std::make_unique<ChatInterface>();
         {
             OllamaConfig chat_cfg;
@@ -132,7 +141,7 @@ bool SystemOrchestrator::initialize() {
         init_stage_ = 11;
 
         // ── Stage 12: Shared Wrappers ───────────────────────────────────
-        log("  [12/14] Shared wrappers...");
+        log("  [12/15] Shared wrappers...");
         shared_ltm_ = std::make_unique<SharedLTM>(*ltm_);
         shared_stm_ = std::make_unique<SharedSTM>(*brain_->get_stm_mutable());
         shared_registry_ = std::make_unique<SharedRegistry>(*registry_);
@@ -140,7 +149,7 @@ bool SystemOrchestrator::initialize() {
         init_stage_ = 12;
 
         // ── Stage 13: Streams ───────────────────────────────────────────
-        log("  [13/14] Streams...");
+        log("  [13/15] Streams...");
         {
             StreamConfig scfg;
             if (config_.max_streams > 0) {
@@ -161,14 +170,21 @@ bool SystemOrchestrator::initialize() {
         }
         init_stage_ = 13;
 
-        // ── Stage 14: Bootstrap Foundation ──────────────────────────────
+        // ── Stage 14: Evolution ─────────────────────────────────────────
+        log("  [14/15] Evolution...");
+        pattern_discovery_ = std::make_unique<PatternDiscovery>(*ltm_);
+        epistemic_promotion_ = std::make_unique<EpistemicPromotion>(*ltm_);
+        concept_proposer_ = std::make_unique<ConceptProposer>(*ltm_);
+        init_stage_ = 14;
+
+        // ── Stage 15: Bootstrap Foundation ──────────────────────────────
         if (config_.seed_foundation && ltm_->get_all_concept_ids().empty()) {
-            log("  [14/14] Seeding foundation concepts...");
+            log("  [15/15] Seeding foundation concepts...");
             seed_foundation();
         } else {
-            log("  [14/14] Foundation already present or disabled");
+            log("  [15/15] Foundation already present or disabled");
         }
-        init_stage_ = 14;
+        init_stage_ = 15;
 
         // ── ThinkingPipeline ────────────────────────────────────────────
         thinking_ = std::make_unique<ThinkingPipeline>();
@@ -185,7 +201,21 @@ bool SystemOrchestrator::initialize() {
             stream_monitor_->start();
         }
 
+        // Wire stream alert callback
+        if (stream_orch_) {
+            stream_orch_->set_alert_callback([this](const std::string& msg) {
+                std::lock_guard<std::mutex> lock(alert_log_mtx_);
+                stream_alerts_.push_back(msg);
+                log("  [Stream Alert] " + msg);
+            });
+        }
+
         running_ = true;
+
+        // Start periodic task thread
+        periodic_running_ = true;
+        periodic_thread_ = std::thread([this]() { periodic_task_loop(); });
+
         log("Brain19 initialized successfully!");
         log("  Concepts: " + std::to_string(concept_count()));
         log("  Relations: " + std::to_string(relation_count()));
@@ -206,6 +236,20 @@ void SystemOrchestrator::shutdown() {
     log("Shutting down Brain19...");
 
     running_ = false;
+
+    // Stop periodic task thread
+    periodic_running_ = false;
+    if (periodic_thread_.joinable()) {
+        log("  Stopping periodic tasks...");
+        periodic_thread_.join();
+    }
+
+    // Auto-checkpoint on shutdown
+    if (config_.enable_persistence && wal_) {
+        log("  Final checkpoint on shutdown...");
+        create_checkpoint("shutdown");
+        wal_->checkpoint();
+    }
 
     // Reverse order of initialization
     // 13: Streams
@@ -234,6 +278,9 @@ void SystemOrchestrator::shutdown() {
     }
 
     // Reset all in reverse order
+    concept_proposer_.reset();
+    epistemic_promotion_.reset();
+    pattern_discovery_.reset();
     stream_monitor_.reset();
     stream_sched_.reset();
     stream_orch_.reset();
@@ -255,6 +302,7 @@ void SystemOrchestrator::shutdown() {
     registry_.reset();
     embeddings_.reset();
     brain_.reset();
+    wal_.reset();
     persistent_ltm_.reset();
     ltm_.reset();
     thinking_.reset();
@@ -267,6 +315,7 @@ void SystemOrchestrator::shutdown() {
 
 void SystemOrchestrator::cleanup_from_stage(int stage) {
     // Clean up in reverse from the stage that succeeded
+    if (stage >= 14) { concept_proposer_.reset(); epistemic_promotion_.reset(); pattern_discovery_.reset(); }
     if (stage >= 13) { stream_monitor_.reset(); stream_sched_.reset(); stream_orch_.reset(); }
     if (stage >= 12) { shared_embeddings_.reset(); shared_registry_.reset(); shared_stm_.reset(); shared_ltm_.reset(); }
     if (stage >= 11) { chat_.reset(); }
@@ -278,6 +327,7 @@ void SystemOrchestrator::cleanup_from_stage(int stage) {
     if (stage >= 5)  { cognitive_.reset(); }
     if (stage >= 4)  { trainer_.reset(); registry_.reset(); embeddings_.reset(); }
     if (stage >= 3)  { if (brain_) brain_->shutdown(); brain_.reset(); }
+    if (stage >= 2)  { wal_.reset(); }
     if (stage >= 1)  { persistent_ltm_.reset(); ltm_.reset(); }
     init_stage_ = 0;
 }
@@ -483,7 +533,7 @@ size_t SystemOrchestrator::relation_count() const {
 ThinkingResult SystemOrchestrator::run_thinking_cycle(const std::vector<ConceptId>& seeds) {
     if (!running_ || !thinking_) return {};
 
-    return thinking_->execute(
+    auto result = thinking_->execute(
         seeds, active_context_,
         *ltm_, *brain_->get_stm_mutable(), *brain_,
         *cognitive_, *curiosity_,
@@ -491,6 +541,147 @@ ThinkingResult SystemOrchestrator::run_thinking_cycle(const std::vector<ConceptI
         understanding_.get(),
         kan_validator_.get()
     );
+
+    // Feed thinking results into evolution pipeline
+    run_evolution_after_thinking(result);
+
+    return result;
+}
+
+// ─── Evolution ──────────────────────────────────────────────────────────────
+
+void SystemOrchestrator::run_periodic_maintenance() {
+    if (!running_ || !epistemic_promotion_ || !pattern_discovery_ || !curiosity_) return;
+
+    log("Running periodic maintenance...");
+    
+    // Run epistemic promotion maintenance
+    auto maintenance_result = epistemic_promotion_->run_maintenance();
+    
+    if (maintenance_result.promotions > 0 || maintenance_result.demotions > 0) {
+        log("  Epistemic maintenance: " + 
+            std::to_string(maintenance_result.promotions) + " promotions, " +
+            std::to_string(maintenance_result.demotions) + " demotions");
+            
+        // Update MicroModels for promoted/demoted concepts
+        if (registry_ && (maintenance_result.promotions > 0 || maintenance_result.demotions > 0)) {
+            // For now, ensure all concepts have models (could be optimized)
+            registry_->ensure_models_for(*ltm_);
+        }
+    }
+    
+    if (!maintenance_result.pending_human_review.empty()) {
+        log("  " + std::to_string(maintenance_result.pending_human_review.size()) + 
+            " concepts pending human review for FACT promotion");
+    }
+    
+    // Run pattern discovery and feed gaps to CuriosityEngine
+    auto patterns = pattern_discovery_->discover_all();
+    
+    size_t gap_count = 0;
+    for (const auto& pattern : patterns) {
+        if (pattern.pattern_type == "gap") {
+            // Create curiosity trigger for knowledge gaps
+            CuriosityTrigger trigger(
+                TriggerType::SHALLOW_RELATIONS,
+                active_context_,
+                pattern.involved_concepts,
+                "Pattern discovery gap: " + pattern.description
+            );
+            
+            // Add trigger to curiosity engine (this would need a method in CuriosityEngine)
+            // For now, just count the gaps
+            gap_count++;
+        }
+    }
+    
+    if (gap_count > 0) {
+        log("  Pattern discovery: found " + std::to_string(gap_count) +
+            " knowledge gaps, " + std::to_string(patterns.size()) + " total patterns");
+    }
+}
+
+// ─── Periodic Task Loop ──────────────────────────────────────────────────────
+
+void SystemOrchestrator::periodic_task_loop() {
+    using clock = std::chrono::steady_clock;
+
+    auto last_checkpoint = clock::now();
+    auto last_maintenance = clock::now();
+    const auto checkpoint_interval = std::chrono::minutes(config_.checkpoint_interval_minutes);
+    const auto maintenance_interval = std::chrono::minutes(5);
+
+    while (periodic_running_.load(std::memory_order_relaxed)) {
+        // Sleep in 1-second intervals so we can respond to shutdown quickly
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+
+        if (!periodic_running_.load(std::memory_order_relaxed)) break;
+
+        auto now = clock::now();
+
+        // Auto-checkpoint
+        if (config_.enable_persistence && (now - last_checkpoint) >= checkpoint_interval) {
+            try {
+                create_checkpoint("auto");
+                if (wal_) wal_->checkpoint();
+            } catch (const std::exception& e) {
+                log("  Auto-checkpoint failed: " + std::string(e.what()));
+            }
+            last_checkpoint = now;
+        }
+
+        // Epistemic promotion + pattern discovery
+        if ((now - last_maintenance) >= maintenance_interval) {
+            try {
+                run_periodic_maintenance();
+            } catch (const std::exception& e) {
+                log("  Periodic maintenance failed: " + std::string(e.what()));
+            }
+            last_maintenance = now;
+        }
+    }
+}
+
+// ─── Evolution After Thinking ────────────────────────────────────────────────
+
+void SystemOrchestrator::run_evolution_after_thinking(const ThinkingResult& result) {
+    if (!concept_proposer_) return;
+
+    // Generate proposals from curiosity triggers
+    if (!result.curiosity_triggers.empty()) {
+        auto proposals = concept_proposer_->from_curiosity(result.curiosity_triggers);
+        auto ranked = concept_proposer_->rank_proposals(proposals, 3);
+
+        for (const auto& proposal : ranked) {
+            EpistemicMetadata meta(
+                proposal.initial_type,
+                EpistemicStatus::ACTIVE,
+                proposal.initial_trust
+            );
+            auto new_id = ltm_->store_concept(
+                proposal.label, proposal.description, meta
+            );
+            if (registry_) registry_->create_model(new_id);
+        }
+    }
+
+    // Generate proposals from relevance anomalies
+    if (result.combined_relevance.size() > 0) {
+        auto proposals = concept_proposer_->from_relevance_anomalies(result.combined_relevance);
+        auto ranked = concept_proposer_->rank_proposals(proposals, 2);
+
+        for (const auto& proposal : ranked) {
+            EpistemicMetadata meta(
+                proposal.initial_type,
+                EpistemicStatus::ACTIVE,
+                proposal.initial_trust
+            );
+            auto new_id = ltm_->store_concept(
+                proposal.label, proposal.description, meta
+            );
+            if (registry_) registry_->create_model(new_id);
+        }
+    }
 }
 
 } // namespace brain19

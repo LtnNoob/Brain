@@ -1,1929 +1,937 @@
 {
-  "source": "training-data:mathematics-v1",
+  "source": "training-data:math-v2-expanded",
   "concepts": [
     {
       "label": "Number",
-      "definition": "A mathematical object used to count, measure, and label",
+      "definition": "A mathematical object used to count, measure, and label. Numbers include natural numbers, integers, rationals, reals, and complex numbers.",
       "trust_category": "FACT",
       "trust_value": 0.99,
-      "tags": ["fundamental", "quantity", "abstract"]
-    },
-    {
-      "label": "Natural Number",
-      "definition": "The positive integers used for counting: 1, 2, 3, ...",
-      "trust_category": "FACT",
-      "trust_value": 0.99,
-      "tags": ["counting", "positive", "integer"]
-    },
-    {
-      "label": "Integer",
-      "definition": "Whole numbers including positive, negative, and zero",
-      "trust_category": "FACT",
-      "trust_value": 0.99,
-      "tags": ["whole", "positive", "negative", "zero"]
-    },
-    {
-      "label": "Rational Number",
-      "definition": "Numbers that can be expressed as fractions p/q where p and q are integers",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["fraction", "quotient", "ratio"]
-    },
-    {
-      "label": "Irrational Number",
-      "definition": "Numbers that cannot be expressed as simple fractions",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["non-fraction", "infinite-decimal", "non-repeating"]
-    },
-    {
-      "label": "Real Number",
-      "definition": "All rational and irrational numbers combined",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["continuous", "number-line", "complete"]
-    },
-    {
-      "label": "Complex Number",
-      "definition": "Numbers of the form a + bi where i is the imaginary unit",
-      "trust_category": "FACT",
-      "trust_value": 0.97,
-      "tags": ["imaginary", "complex-plane", "extension"]
-    },
-    {
-      "label": "Prime Number",
-      "definition": "A natural number greater than 1 with exactly two divisors: 1 and itself",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["divisors", "fundamental", "indivisible"]
-    },
-    {
-      "label": "Composite Number",
-      "definition": "A natural number with more than two divisors",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["multiple-divisors", "factorizable", "non-prime"]
-    },
-    {
-      "label": "Variable",
-      "definition": "A symbol representing an unknown or changing quantity",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["symbol", "unknown", "placeholder"]
-    },
-    {
-      "label": "Constant",
-      "definition": "A fixed value that does not change",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["fixed", "unchanging", "value"]
-    },
-    {
-      "label": "Expression",
-      "definition": "A mathematical phrase combining numbers, variables, and operations",
-      "trust_category": "FACT",
-      "trust_value": 0.97,
-      "tags": ["phrase", "combination", "operations"]
-    },
-    {
-      "label": "Equation",
-      "definition": "A statement that two expressions are equal",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["equality", "statement", "balance"]
-    },
-    {
-      "label": "Inequality",
-      "definition": "A statement comparing two expressions using <, >, ≤, or ≥",
-      "trust_category": "FACT",
-      "trust_value": 0.97,
-      "tags": ["comparison", "ordering", "relationship"]
+      "tags": ["arithmetic", "algebra", "fundamental", "counting"]
     },
     {
       "label": "Function",
-      "definition": "A relation that assigns exactly one output to each input",
+      "definition": "A mathematical relationship that assigns exactly one output value to each input value from a specified domain.",
       "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["relation", "mapping", "unique-output"]
-    },
-    {
-      "label": "Domain",
-      "definition": "The set of all possible input values for a function",
-      "trust_category": "FACT",
-      "trust_value": 0.97,
-      "tags": ["input", "set", "function"]
-    },
-    {
-      "label": "Range",
-      "definition": "The set of all possible output values for a function",
-      "trust_category": "FACT",
-      "trust_value": 0.97,
-      "tags": ["output", "set", "function"]
-    },
-    {
-      "label": "Linear Function",
-      "definition": "A function of the form f(x) = mx + b forming a straight line",
-      "trust_category": "FACT",
-      "trust_value": 0.97,
-      "tags": ["straight-line", "first-degree", "proportional"]
-    },
-    {
-      "label": "Quadratic Function",
-      "definition": "A function of the form f(x) = ax² + bx + c forming a parabola",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["parabola", "second-degree", "curved"]
-    },
-    {
-      "label": "Exponential Function",
-      "definition": "A function of the form f(x) = a^x where a is a positive constant",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["exponential-growth", "base", "rapid-change"]
-    },
-    {
-      "label": "Logarithmic Function",
-      "definition": "The inverse of an exponential function",
-      "trust_category": "FACT",
-      "trust_value": 0.94,
-      "tags": ["inverse", "logarithm", "scaling"]
-    },
-    {
-      "label": "Polynomial",
-      "definition": "An expression consisting of variables and coefficients using addition, subtraction, and multiplication",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["terms", "coefficients", "degree"]
-    },
-    {
-      "label": "Degree",
-      "definition": "The highest power of the variable in a polynomial",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["highest-power", "polynomial", "order"]
-    },
-    {
-      "label": "Coefficient",
-      "definition": "The numerical factor of a term containing variables",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["numerical", "factor", "multiplier"]
-    },
-    {
-      "label": "Root",
-      "definition": "A value that makes an equation equal to zero",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["zero", "solution", "x-intercept"]
-    },
-    {
-      "label": "Slope",
-      "definition": "The rate of change of a line, calculated as rise over run",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["rate-of-change", "steepness", "gradient"]
-    },
-    {
-      "label": "Y-intercept",
-      "definition": "The point where a line crosses the y-axis",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["y-axis", "crossing", "vertical-intercept"]
-    },
-    {
-      "label": "System of Equations",
-      "definition": "A collection of equations with the same variables",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["multiple-equations", "common-variables", "simultaneous"]
-    },
-    {
-      "label": "Matrix",
-      "definition": "A rectangular array of numbers arranged in rows and columns",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["array", "rows", "columns"]
-    },
-    {
-      "label": "Determinant",
-      "definition": "A scalar value calculated from a square matrix",
-      "trust_category": "FACT",
-      "trust_value": 0.94,
-      "tags": ["scalar", "square-matrix", "calculation"]
-    },
-    {
-      "label": "Vector",
-      "definition": "A quantity having both magnitude and direction",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["magnitude", "direction", "quantity"]
-    },
-    {
-      "label": "Scalar",
-      "definition": "A quantity having only magnitude, no direction",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["magnitude", "no-direction", "single-value"]
-    },
-    {
-      "label": "Dot Product",
-      "definition": "A scalar product of two vectors",
-      "trust_category": "FACT",
-      "trust_value": 0.94,
-      "tags": ["scalar-product", "vectors", "projection"]
-    },
-    {
-      "label": "Cross Product",
-      "definition": "A vector product of two vectors perpendicular to both",
-      "trust_category": "FACT",
-      "trust_value": 0.93,
-      "tags": ["vector-product", "perpendicular", "3D"]
-    },
-    {
-      "label": "Limit",
-      "definition": "The value that a function approaches as input approaches some value",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["approach", "tendency", "convergence"]
-    },
-    {
-      "label": "Continuity",
-      "definition": "A property where a function has no breaks, jumps, or holes",
-      "trust_category": "FACT",
-      "trust_value": 0.94,
-      "tags": ["no-breaks", "smooth", "connected"]
+      "trust_value": 0.99,
+      "tags": ["mapping", "relation", "calculus", "algebra"]
     },
     {
       "label": "Derivative",
-      "definition": "The rate of change of a function at a specific point",
+      "definition": "The instantaneous rate of change of a function at a given point, representing the slope of the tangent line to the function's graph at that point.",
       "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["rate-of-change", "slope", "instantaneous"]
+      "trust_value": 0.99,
+      "tags": ["calculus", "rate-of-change", "differentiation", "slope"]
     },
     {
       "label": "Integral",
-      "definition": "The accumulation of quantities, the reverse process of differentiation",
+      "definition": "A mathematical operation that represents the area under a curve or the antiderivative of a function, fundamental to calculus.",
       "trust_category": "FACT",
-      "trust_value": 0.94,
-      "tags": ["accumulation", "area", "antiderivative"]
+      "trust_value": 0.99,
+      "tags": ["calculus", "area", "antiderivative", "integration"]
     },
     {
-      "label": "Definite Integral",
-      "definition": "An integral with specific upper and lower bounds",
+      "label": "Matrix",
+      "definition": "A rectangular array of numbers, symbols, or expressions arranged in rows and columns, used in linear algebra for transformations and solving systems of equations.",
       "trust_category": "FACT",
-      "trust_value": 0.93,
-      "tags": ["bounds", "area-under-curve", "numerical-value"]
+      "trust_value": 0.99,
+      "tags": ["linear-algebra", "array", "transformation", "system-solving"]
     },
     {
-      "label": "Indefinite Integral",
-      "definition": "An integral without specified bounds, representing a family of functions",
+      "label": "Vector",
+      "definition": "A mathematical object that has both magnitude and direction, represented as an ordered list of numbers and fundamental to linear algebra and physics.",
       "trust_category": "FACT",
-      "trust_value": 0.93,
-      "tags": ["no-bounds", "antiderivative", "family-of-functions"]
-    },
-    {
-      "label": "Fundamental Theorem of Calculus",
-      "definition": "The theorem connecting differentiation and integration",
-      "trust_category": "THEORY",
-      "trust_value": 0.96,
-      "tags": ["connection", "differentiation", "integration"]
-    },
-    {
-      "label": "Chain Rule",
-      "definition": "A formula for computing the derivative of composite functions",
-      "trust_category": "FACT",
-      "trust_value": 0.94,
-      "tags": ["composite-functions", "derivative", "formula"]
-    },
-    {
-      "label": "Product Rule",
-      "definition": "A formula for finding the derivative of a product of functions",
-      "trust_category": "FACT",
-      "trust_value": 0.94,
-      "tags": ["product", "derivative", "formula"]
-    },
-    {
-      "label": "Quotient Rule",
-      "definition": "A formula for finding the derivative of a quotient of functions",
-      "trust_category": "FACT",
-      "trust_value": 0.93,
-      "tags": ["quotient", "derivative", "formula"]
-    },
-    {
-      "label": "Critical Point",
-      "definition": "A point where the derivative is zero or undefined",
-      "trust_category": "FACT",
-      "trust_value": 0.92,
-      "tags": ["derivative-zero", "extremum", "stationary"]
-    },
-    {
-      "label": "Maximum",
-      "definition": "The largest value of a function in a given interval",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["largest", "peak", "highest"]
-    },
-    {
-      "label": "Minimum",
-      "definition": "The smallest value of a function in a given interval",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["smallest", "valley", "lowest"]
-    },
-    {
-      "label": "Inflection Point",
-      "definition": "A point where the concavity of a curve changes",
-      "trust_category": "FACT",
-      "trust_value": 0.91,
-      "tags": ["concavity-change", "curve", "bending"]
-    },
-    {
-      "label": "Series",
-      "definition": "The sum of terms in a sequence",
-      "trust_category": "FACT",
-      "trust_value": 0.94,
-      "tags": ["sum", "sequence", "infinite"]
-    },
-    {
-      "label": "Sequence",
-      "definition": "An ordered list of numbers following a pattern",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["ordered", "pattern", "list"]
-    },
-    {
-      "label": "Convergence",
-      "definition": "The property of a sequence or series approaching a finite limit",
-      "trust_category": "FACT",
-      "trust_value": 0.92,
-      "tags": ["approach", "limit", "finite"]
-    },
-    {
-      "label": "Divergence",
-      "definition": "The property of a sequence or series not approaching a finite limit",
-      "trust_category": "FACT",
-      "trust_value": 0.92,
-      "tags": ["no-limit", "infinite", "unbounded"]
-    },
-    {
-      "label": "Taylor Series",
-      "definition": "An infinite series representation of a function using derivatives",
-      "trust_category": "FACT",
-      "trust_value": 0.90,
-      "tags": ["infinite-series", "derivatives", "approximation"]
-    },
-    {
-      "label": "Point",
-      "definition": "A location in space with no dimensions",
-      "trust_category": "FACT",
-      "trust_value": 0.97,
-      "tags": ["location", "zero-dimensional", "position"]
-    },
-    {
-      "label": "Line",
-      "definition": "A straight path extending infinitely in both directions",
-      "trust_category": "FACT",
-      "trust_value": 0.97,
-      "tags": ["straight", "infinite", "one-dimensional"]
-    },
-    {
-      "label": "Plane",
-      "definition": "A flat surface extending infinitely in all directions",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["flat", "two-dimensional", "surface"]
-    },
-    {
-      "label": "Angle",
-      "definition": "The space between two intersecting lines measured in degrees or radians",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["intersection", "measurement", "rotation"]
-    },
-    {
-      "label": "Triangle",
-      "definition": "A polygon with three sides and three angles",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["polygon", "three-sides", "three-angles"]
-    },
-    {
-      "label": "Square",
-      "definition": "A quadrilateral with four equal sides and four right angles",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["quadrilateral", "equal-sides", "right-angles"]
-    },
-    {
-      "label": "Rectangle",
-      "definition": "A quadrilateral with four right angles and opposite sides equal",
-      "trust_category": "FACT",
-      "trust_value": 0.97,
-      "tags": ["quadrilateral", "right-angles", "opposite-equal"]
-    },
-    {
-      "label": "Circle",
-      "definition": "The set of all points equidistant from a center point",
-      "trust_category": "FACT",
-      "trust_value": 0.97,
-      "tags": ["equidistant", "center", "curved"]
-    },
-    {
-      "label": "Radius",
-      "definition": "The distance from the center of a circle to any point on the circle",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["center-to-edge", "distance", "circle"]
-    },
-    {
-      "label": "Diameter",
-      "definition": "A straight line passing through the center of a circle, twice the radius",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["through-center", "twice-radius", "circle"]
-    },
-    {
-      "label": "Circumference",
-      "definition": "The perimeter of a circle",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["perimeter", "circle", "boundary"]
-    },
-    {
-      "label": "Area",
-      "definition": "The measure of the surface enclosed by a shape",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["surface", "enclosed", "measure"]
-    },
-    {
-      "label": "Perimeter",
-      "definition": "The distance around the boundary of a shape",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["boundary", "distance-around", "edge"]
-    },
-    {
-      "label": "Volume",
-      "definition": "The amount of space occupied by a three-dimensional object",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["space", "three-dimensional", "capacity"]
-    },
-    {
-      "label": "Surface Area",
-      "definition": "The total area of all faces of a three-dimensional object",
-      "trust_category": "FACT",
-      "trust_value": 0.94,
-      "tags": ["total-area", "all-faces", "three-dimensional"]
-    },
-    {
-      "label": "Cube",
-      "definition": "A three-dimensional shape with six equal square faces",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["six-faces", "equal-squares", "three-dimensional"]
-    },
-    {
-      "label": "Sphere",
-      "definition": "A three-dimensional shape where all points are equidistant from the center",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["equidistant", "center", "three-dimensional"]
-    },
-    {
-      "label": "Cylinder",
-      "definition": "A three-dimensional shape with circular bases and straight sides",
-      "trust_category": "FACT",
-      "trust_value": 0.94,
-      "tags": ["circular-bases", "straight-sides", "three-dimensional"]
-    },
-    {
-      "label": "Cone",
-      "definition": "A three-dimensional shape with a circular base tapering to a point",
-      "trust_category": "FACT",
-      "trust_value": 0.94,
-      "tags": ["circular-base", "tapering", "point"]
-    },
-    {
-      "label": "Pythagorean Theorem",
-      "definition": "In a right triangle, a² + b² = c² where c is the hypotenuse",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["right-triangle", "hypotenuse", "squares"]
-    },
-    {
-      "label": "Trigonometry",
-      "definition": "The study of relationships between angles and sides in triangles",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["angles", "sides", "triangles"]
-    },
-    {
-      "label": "Sine",
-      "definition": "The ratio of opposite side to hypotenuse in a right triangle",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["opposite", "hypotenuse", "ratio"]
-    },
-    {
-      "label": "Cosine",
-      "definition": "The ratio of adjacent side to hypotenuse in a right triangle",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["adjacent", "hypotenuse", "ratio"]
-    },
-    {
-      "label": "Tangent",
-      "definition": "The ratio of opposite side to adjacent side in a right triangle",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["opposite", "adjacent", "ratio"]
-    },
-    {
-      "label": "Unit Circle",
-      "definition": "A circle with radius 1 centered at the origin",
-      "trust_category": "FACT",
-      "trust_value": 0.94,
-      "tags": ["radius-one", "origin", "trigonometry"]
-    },
-    {
-      "label": "Radian",
-      "definition": "A unit of angular measurement where 2π radians = 360 degrees",
-      "trust_category": "FACT",
-      "trust_value": 0.93,
-      "tags": ["angular-measurement", "arc-length", "circular"]
-    },
-    {
-      "label": "Pi",
-      "definition": "The ratio of a circle's circumference to its diameter, approximately 3.14159",
-      "trust_category": "FACT",
-      "trust_value": 0.98,
-      "tags": ["ratio", "circumference", "diameter", "irrational"]
-    },
-    {
-      "label": "Euler's Number",
-      "definition": "The base of natural logarithms, approximately 2.71828",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["natural-logarithm", "base", "transcendental"]
-    },
-    {
-      "label": "Set",
-      "definition": "A collection of distinct objects considered as a whole",
-      "trust_category": "FACT",
-      "trust_value": 0.97,
-      "tags": ["collection", "distinct", "objects"]
-    },
-    {
-      "label": "Element",
-      "definition": "A member of a set",
-      "trust_category": "FACT",
-      "trust_value": 0.97,
-      "tags": ["member", "belongs-to", "set"]
-    },
-    {
-      "label": "Subset",
-      "definition": "A set whose elements are all contained in another set",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["contained", "part-of", "inclusion"]
-    },
-    {
-      "label": "Union",
-      "definition": "The combination of all elements from two or more sets",
-      "trust_category": "FACT",
-      "trust_value": 0.94,
-      "tags": ["combination", "all-elements", "join"]
-    },
-    {
-      "label": "Intersection",
-      "definition": "The set of elements common to two or more sets",
-      "trust_category": "FACT",
-      "trust_value": 0.94,
-      "tags": ["common", "overlap", "shared"]
-    },
-    {
-      "label": "Empty Set",
-      "definition": "A set containing no elements",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["no-elements", "null", "void"]
-    },
-    {
-      "label": "Cardinality",
-      "definition": "The number of elements in a set",
-      "trust_category": "FACT",
-      "trust_value": 0.94,
-      "tags": ["count", "size", "number-of-elements"]
-    },
-    {
-      "label": "Permutation",
-      "definition": "An arrangement of objects where order matters",
-      "trust_category": "FACT",
-      "trust_value": 0.93,
-      "tags": ["arrangement", "order-matters", "sequence"]
-    },
-    {
-      "label": "Combination",
-      "definition": "A selection of objects where order doesn't matter",
-      "trust_category": "FACT",
-      "trust_value": 0.93,
-      "tags": ["selection", "order-irrelevant", "choose"]
-    },
-    {
-      "label": "Factorial",
-      "definition": "The product of all positive integers less than or equal to n",
-      "trust_category": "FACT",
-      "trust_value": 0.94,
-      "tags": ["product", "consecutive", "counting"]
+      "trust_value": 0.99,
+      "tags": ["linear-algebra", "direction", "magnitude", "geometry"]
     },
     {
       "label": "Probability",
-      "definition": "A measure of the likelihood of an event occurring",
+      "definition": "A measure of the likelihood that an event will occur, expressed as a number between 0 and 1, fundamental to statistics and probability theory.",
       "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["likelihood", "chance", "event"]
+      "trust_value": 0.99,
+      "tags": ["statistics", "likelihood", "chance", "random"]
     },
     {
-      "label": "Sample Space",
-      "definition": "The set of all possible outcomes of an experiment",
+      "label": "Set",
+      "definition": "A well-defined collection of distinct objects, fundamental to mathematics and the foundation for many mathematical structures and proofs.",
       "trust_category": "FACT",
-      "trust_value": 0.93,
-      "tags": ["all-outcomes", "experiment", "possibilities"]
-    },
-    {
-      "label": "Event",
-      "definition": "A subset of the sample space",
-      "trust_category": "FACT",
-      "trust_value": 0.93,
-      "tags": ["subset", "outcome", "occurrence"]
-    },
-    {
-      "label": "Independent Events",
-      "definition": "Events where the occurrence of one doesn't affect the other",
-      "trust_category": "FACT",
-      "trust_value": 0.92,
-      "tags": ["unaffected", "separate", "no-influence"]
-    },
-    {
-      "label": "Conditional Probability",
-      "definition": "The probability of an event given that another event has occurred",
-      "trust_category": "FACT",
-      "trust_value": 0.91,
-      "tags": ["given", "dependent", "updated"]
-    },
-    {
-      "label": "Random Variable",
-      "definition": "A function that assigns numerical values to outcomes of an experiment",
-      "trust_category": "FACT",
-      "trust_value": 0.90,
-      "tags": ["function", "numerical", "outcomes"]
-    },
-    {
-      "label": "Expected Value",
-      "definition": "The average value of a random variable over many trials",
-      "trust_category": "FACT",
-      "trust_value": 0.89,
-      "tags": ["average", "long-term", "mean"]
-    },
-    {
-      "label": "Variance",
-      "definition": "A measure of how spread out values are from the mean",
-      "trust_category": "FACT",
-      "trust_value": 0.88,
-      "tags": ["spread", "deviation", "dispersion"]
-    },
-    {
-      "label": "Standard Deviation",
-      "definition": "The square root of variance, measuring spread in original units",
-      "trust_category": "FACT",
-      "trust_value": 0.88,
-      "tags": ["square-root-variance", "spread", "units"]
-    },
-    {
-      "label": "Normal Distribution",
-      "definition": "A bell-shaped probability distribution symmetric about the mean",
-      "trust_category": "FACT",
-      "trust_value": 0.87,
-      "tags": ["bell-shaped", "symmetric", "gaussian"]
-    },
-    {
-      "label": "Mean",
-      "definition": "The arithmetic average of a set of values",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["average", "sum-divided", "central-tendency"]
-    },
-    {
-      "label": "Median",
-      "definition": "The middle value when data is arranged in order",
-      "trust_category": "FACT",
-      "trust_value": 0.94,
-      "tags": ["middle", "ordered", "50th-percentile"]
-    },
-    {
-      "label": "Mode",
-      "definition": "The most frequently occurring value in a dataset",
-      "trust_category": "FACT",
-      "trust_value": 0.93,
-      "tags": ["most-frequent", "peak", "common"]
+      "trust_value": 0.99,
+      "tags": ["collection", "foundation", "discrete", "logic"]
     },
     {
       "label": "Graph",
-      "definition": "A collection of vertices connected by edges",
+      "definition": "A visual representation of mathematical relationships, consisting of points (vertices) connected by lines (edges), or the plot of a function on a coordinate system.",
       "trust_category": "FACT",
-      "trust_value": 0.94,
-      "tags": ["vertices", "edges", "network"]
+      "trust_value": 0.99,
+      "tags": ["visualization", "network", "function-plot", "geometry"]
     },
     {
-      "label": "Vertex",
-      "definition": "A node or point in a graph",
+      "label": "Equation",
+      "definition": "A mathematical statement that asserts the equality of two expressions, often used to find unknown values or describe relationships between variables.",
       "trust_category": "FACT",
-      "trust_value": 0.94,
-      "tags": ["node", "point", "junction"]
+      "trust_value": 0.99,
+      "tags": ["equality", "solving", "algebra", "relationship"]
     },
     {
-      "label": "Edge",
-      "definition": "A connection between two vertices in a graph",
+      "label": "Polynomial",
+      "definition": "A mathematical expression consisting of variables and coefficients combined using addition, subtraction, and multiplication, with non-negative integer exponents.",
       "trust_category": "FACT",
-      "trust_value": 0.94,
-      "tags": ["connection", "link", "arc"]
+      "trust_value": 0.99,
+      "tags": ["algebra", "expression", "coefficients", "exponents"]
     },
     {
-      "label": "Tree",
-      "definition": "A connected graph with no cycles",
+      "label": "Logarithm",
+      "definition": "The inverse operation to exponentiation, indicating the power to which a base number must be raised to produce a given number.",
       "trust_category": "FACT",
-      "trust_value": 0.92,
-      "tags": ["connected", "no-cycles", "hierarchical"]
+      "trust_value": 0.99,
+      "tags": ["exponentiation", "inverse", "power", "scaling"]
     },
     {
-      "label": "Path",
-      "definition": "A sequence of vertices where each adjacent pair is connected by an edge",
+      "label": "Limit",
+      "definition": "A fundamental concept in calculus describing the value that a function approaches as the input approaches some value, essential for defining continuity and derivatives.",
       "trust_category": "FACT",
-      "trust_value": 0.91,
-      "tags": ["sequence", "connected", "route"]
+      "trust_value": 0.99,
+      "tags": ["calculus", "approach", "continuity", "convergence"]
     },
     {
-      "label": "Cycle",
-      "definition": "A path that starts and ends at the same vertex",
+      "label": "Series",
+      "definition": "The sum of terms in a sequence, which may be finite or infinite, fundamental to analysis and often used to represent functions.",
       "trust_category": "FACT",
-      "trust_value": 0.91,
-      "tags": ["closed-path", "loop", "circuit"]
-    },
-    {
-      "label": "Algorithm",
-      "definition": "A step-by-step procedure for solving a problem",
-      "trust_category": "FACT",
-      "trust_value": 0.94,
-      "tags": ["procedure", "steps", "problem-solving"]
-    },
-    {
-      "label": "Proof",
-      "definition": "A logical argument demonstrating the truth of a mathematical statement",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["logical", "demonstration", "truth"]
-    },
-    {
-      "label": "Theorem",
-      "definition": "A mathematical statement that has been proven true",
-      "trust_category": "FACT",
-      "trust_value": 0.96,
-      "tags": ["proven", "statement", "true"]
-    },
-    {
-      "label": "Lemma",
-      "definition": "A proven statement used as a stepping stone to prove a theorem",
-      "trust_category": "FACT",
-      "trust_value": 0.94,
-      "tags": ["stepping-stone", "auxiliary", "helper"]
-    },
-    {
-      "label": "Axiom",
-      "definition": "A statement accepted as true without proof",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["accepted", "no-proof", "foundation"]
-    },
-    {
-      "label": "Conjecture",
-      "definition": "A mathematical statement believed to be true but not yet proven",
-      "trust_category": "FACT",
-      "trust_value": 0.92,
-      "tags": ["believed", "unproven", "hypothesis"]
-    },
-    {
-      "label": "Infinity",
-      "definition": "A concept describing something without bound or end",
-      "trust_category": "FACT",
-      "trust_value": 0.93,
-      "tags": ["unbounded", "limitless", "endless"]
-    },
-    {
-      "label": "Countable",
-      "definition": "A set that can be put in one-to-one correspondence with natural numbers",
-      "trust_category": "FACT",
-      "trust_value": 0.89,
-      "tags": ["enumerable", "listable", "correspondence"]
-    },
-    {
-      "label": "Uncountable",
-      "definition": "A set that cannot be put in one-to-one correspondence with natural numbers",
-      "trust_category": "FACT",
-      "trust_value": 0.88,
-      "tags": ["non-enumerable", "larger", "continuum"]
+      "trust_value": 0.99,
+      "tags": ["sequence", "sum", "analysis", "convergence"]
     },
     {
       "label": "Topology",
-      "definition": "The study of properties preserved under continuous deformation",
+      "definition": "A branch of mathematics studying properties of space that are preserved under continuous deformations, focusing on concepts like continuity, compactness, and connectedness.",
       "trust_category": "FACT",
-      "trust_value": 0.85,
-      "tags": ["continuous", "deformation", "shape"]
+      "trust_value": 0.99,
+      "tags": ["space", "continuity", "deformation", "geometry"]
     },
     {
-      "label": "Open Set",
-      "definition": "A set where every point has a neighborhood contained in the set",
+      "label": "Prime Number",
+      "definition": "A natural number greater than 1 that has no positive divisors other than 1 and itself, fundamental to number theory and cryptography.",
       "trust_category": "FACT",
-      "trust_value": 0.83,
-      "tags": ["neighborhood", "interior", "boundary-excluded"]
+      "trust_value": 0.99,
+      "tags": ["number-theory", "divisibility", "cryptography", "fundamental"]
     },
     {
-      "label": "Closed Set",
-      "definition": "A set that contains all its limit points",
+      "label": "Complex Number",
+      "definition": "A number that can be expressed in the form a + bi, where a and b are real numbers and i is the imaginary unit, extending the real number system.",
       "trust_category": "FACT",
-      "trust_value": 0.83,
-      "tags": ["limit-points", "complement-open", "boundary-included"]
-    },
-    {
-      "label": "Metric",
-      "definition": "A function that defines distance between points in a space",
-      "trust_category": "FACT",
-      "trust_value": 0.84,
-      "tags": ["distance", "function", "space"]
-    },
-    {
-      "label": "Norm",
-      "definition": "A function that assigns a length to vectors",
-      "trust_category": "FACT",
-      "trust_value": 0.85,
-      "tags": ["length", "vector", "magnitude"]
-    },
-    {
-      "label": "Inner Product",
-      "definition": "A generalization of dot product that defines angles and lengths",
-      "trust_category": "FACT",
-      "trust_value": 0.84,
-      "tags": ["generalized", "angles", "lengths"]
+      "trust_value": 0.99,
+      "tags": ["imaginary", "real-extension", "algebra", "analysis"]
     },
     {
       "label": "Eigenvalue",
-      "definition": "A scalar that represents how much an eigenvector is scaled by a transformation",
+      "definition": "A scalar value λ such that for a linear transformation represented by matrix A and vector v, Av = λv, fundamental to linear algebra and many applications.",
       "trust_category": "FACT",
-      "trust_value": 0.86,
-      "tags": ["scalar", "scaling", "transformation"]
+      "trust_value": 0.99,
+      "tags": ["linear-algebra", "transformation", "scalar", "matrix-analysis"]
     },
     {
-      "label": "Eigenvector",
-      "definition": "A vector that maintains its direction under a linear transformation",
+      "label": "Theorem",
+      "definition": "A mathematical statement that has been proven to be true based on previously established statements such as axioms and other theorems.",
       "trust_category": "FACT",
-      "trust_value": 0.85,
-      "tags": ["direction-preserved", "transformation", "characteristic"]
+      "trust_value": 0.99,
+      "tags": ["proof", "statement", "logic", "foundation"]
     },
     {
-      "label": "Linear Transformation",
-      "definition": "A function that preserves vector addition and scalar multiplication",
+      "label": "Proof",
+      "definition": "A logical argument demonstrating the truth of a mathematical statement through a sequence of valid deductions from axioms and previously proven theorems.",
       "trust_category": "FACT",
-      "trust_value": 0.87,
-      "tags": ["preserves", "addition", "multiplication"]
+      "trust_value": 0.99,
+      "tags": ["logic", "reasoning", "verification", "mathematics"]
     },
     {
-      "label": "Basis",
-      "definition": "A linearly independent set that spans a vector space",
+      "label": "Taylor Series",
+      "definition": "An infinite series expansion of a function about a point, expressing the function as a sum of terms calculated from the function's derivatives at that point.",
       "trust_category": "FACT",
-      "trust_value": 0.86,
-      "tags": ["independent", "spans", "foundation"]
+      "trust_value": 0.99,
+      "tags": ["analysis", "series", "approximation", "derivatives"]
     },
     {
-      "label": "Dimension",
-      "definition": "The number of vectors in a basis for a vector space",
+      "label": "Fourier Transform",
+      "definition": "A mathematical operation that decomposes a function into its constituent frequencies, transforming from time domain to frequency domain.",
       "trust_category": "FACT",
-      "trust_value": 0.87,
-      "tags": ["basis-size", "coordinates", "degrees-of-freedom"]
+      "trust_value": 0.99,
+      "tags": ["analysis", "frequency", "transform", "decomposition"]
     },
     {
-      "label": "Span",
-      "definition": "The set of all linear combinations of a collection of vectors",
+      "label": "Differential Equation",
+      "definition": "An equation that relates a function with its derivatives, describing how a quantity changes with respect to one or more variables.",
       "trust_category": "FACT",
-      "trust_value": 0.85,
-      "tags": ["linear-combinations", "generated", "subspace"]
+      "trust_value": 0.99,
+      "tags": ["analysis", "differential", "equation", "modeling"]
     },
     {
-      "label": "Linear Independence",
-      "definition": "Vectors where no vector can be written as a combination of others",
+      "label": "Laplace Transform",
+      "definition": "An integral transform that converts a function of time into a function of complex frequency, widely used in solving differential equations.",
       "trust_category": "FACT",
-      "trust_value": 0.84,
-      "tags": ["no-redundancy", "essential", "minimal"]
+      "trust_value": 0.99,
+      "tags": ["analysis", "transform", "complex", "differential-equations"]
+    },
+    {
+      "label": "Convergence",
+      "definition": "The property of a sequence or series approaching a limiting value as the number of terms increases, fundamental to analysis and infinite processes.",
+      "trust_category": "FACT",
+      "trust_value": 0.99,
+      "tags": ["analysis", "limit", "sequence", "approach"]
+    },
+    {
+      "label": "Determinant",
+      "definition": "A scalar value computed from the entries of a square matrix that provides important information about the matrix's properties and invertibility.",
+      "trust_category": "FACT",
+      "trust_value": 0.99,
+      "tags": ["linear-algebra", "matrix", "scalar", "invertibility"]
     },
     {
       "label": "Rank",
-      "definition": "The dimension of the column space of a matrix",
+      "definition": "The dimension of the vector space spanned by the rows or columns of a matrix, indicating the number of linearly independent vectors.",
       "trust_category": "FACT",
-      "trust_value": 0.83,
-      "tags": ["column-space", "dimension", "matrix"]
+      "trust_value": 0.99,
+      "tags": ["linear-algebra", "dimension", "independence", "matrix"]
     },
     {
       "label": "Null Space",
-      "definition": "The set of vectors that map to zero under a linear transformation",
+      "definition": "The set of all vectors that are mapped to the zero vector by a linear transformation, also known as the kernel of the transformation.",
       "trust_category": "FACT",
-      "trust_value": 0.82,
-      "tags": ["maps-to-zero", "kernel", "homogeneous"]
+      "trust_value": 0.99,
+      "tags": ["linear-algebra", "kernel", "transformation", "vector-space"]
     },
     {
-      "label": "Inverse",
-      "definition": "A function that undoes the operation of another function",
+      "label": "Basis",
+      "definition": "A set of linearly independent vectors that spans a vector space, providing a coordinate system for representing any vector in the space.",
       "trust_category": "FACT",
-      "trust_value": 0.87,
-      "tags": ["undoes", "reverses", "opposite"]
+      "trust_value": 0.99,
+      "tags": ["linear-algebra", "independence", "span", "coordinates"]
     },
     {
-      "label": "Bijection",
-      "definition": "A function that is both one-to-one and onto",
+      "label": "Orthogonality",
+      "definition": "The property of being perpendicular, where two vectors are orthogonal if their dot product equals zero, fundamental to many areas of mathematics.",
       "trust_category": "FACT",
-      "trust_value": 0.84,
-      "tags": ["one-to-one", "onto", "reversible"]
+      "trust_value": 0.99,
+      "tags": ["linear-algebra", "perpendicular", "dot-product", "geometry"]
     },
     {
-      "label": "Injection",
-      "definition": "A function where different inputs give different outputs",
+      "label": "SVD",
+      "definition": "Singular Value Decomposition: a factorization of a matrix into three matrices, revealing important geometric and algebraic properties of linear transformations.",
       "trust_category": "FACT",
-      "trust_value": 0.85,
-      "tags": ["one-to-one", "distinct", "no-collision"]
+      "trust_value": 0.99,
+      "tags": ["linear-algebra", "decomposition", "factorization", "transformation"]
     },
     {
-      "label": "Surjection",
-      "definition": "A function where every element in the codomain is mapped to",
+      "label": "Combinatorics",
+      "definition": "The branch of mathematics concerned with counting, arrangement, and combination of objects, fundamental to discrete mathematics and probability.",
       "trust_category": "FACT",
-      "trust_value": 0.84,
-      "tags": ["onto", "covers", "codomain"]
+      "trust_value": 0.99,
+      "tags": ["discrete-math", "counting", "arrangement", "combination"]
     },
     {
-      "label": "Composition",
-      "definition": "The operation of applying one function to the result of another",
+      "label": "Permutation",
+      "definition": "An arrangement of objects in a specific order, where the order matters, fundamental to combinatorics and group theory.",
       "trust_category": "FACT",
-      "trust_value": 0.86,
-      "tags": ["chaining", "nested", "sequential"]
+      "trust_value": 0.99,
+      "tags": ["discrete-math", "arrangement", "order", "combinatorics"]
     },
     {
-      "label": "Isomorphism",
-      "definition": "A bijective function that preserves mathematical structure",
+      "label": "Graph Theory",
+      "definition": "The study of graphs as mathematical structures consisting of vertices connected by edges, with applications in computer science and network analysis.",
       "trust_category": "FACT",
-      "trust_value": 0.81,
-      "tags": ["structure-preserving", "bijective", "equivalence"]
+      "trust_value": 0.99,
+      "tags": ["discrete-math", "vertices", "edges", "networks"]
     },
     {
-      "label": "Homomorphism",
-      "definition": "A function that preserves mathematical operations",
+      "label": "Boolean Algebra",
+      "definition": "A branch of algebra where variables can only take two values (true/false or 1/0), fundamental to logic, computer science, and digital circuits.",
       "trust_category": "FACT",
-      "trust_value": 0.80,
-      "tags": ["operation-preserving", "structure", "mapping"]
-    },
-    {
-      "label": "Group",
-      "definition": "A set with an operation satisfying closure, associativity, identity, and inverses",
-      "trust_category": "FACT",
-      "trust_value": 0.82,
-      "tags": ["closure", "associative", "identity", "inverses"]
-    },
-    {
-      "label": "Ring",
-      "definition": "A set with two operations (addition and multiplication) satisfying certain axioms",
-      "trust_category": "FACT",
-      "trust_value": 0.79,
-      "tags": ["two-operations", "addition", "multiplication"]
-    },
-    {
-      "label": "Field",
-      "definition": "A ring where every non-zero element has a multiplicative inverse",
-      "trust_category": "FACT",
-      "trust_value": 0.78,
-      "tags": ["ring", "multiplicative-inverses", "division"]
-    },
-    {
-      "label": "Vector Space",
-      "definition": "A set of vectors with operations of addition and scalar multiplication",
-      "trust_category": "FACT",
-      "trust_value": 0.83,
-      "tags": ["vectors", "addition", "scalar-multiplication"]
-    },
-    {
-      "label": "Subspace",
-      "definition": "A subset of a vector space that is closed under vector operations",
-      "trust_category": "FACT",
-      "trust_value": 0.81,
-      "tags": ["subset", "closed", "vector-space"]
-    },
-    {
-      "label": "Quotient",
-      "definition": "The result of division",
-      "trust_category": "FACT",
-      "trust_value": 0.95,
-      "tags": ["division", "result", "ratio"]
-    },
-    {
-      "label": "Remainder",
-      "definition": "What's left after division when the divisor doesn't divide evenly",
-      "trust_category": "FACT",
-      "trust_value": 0.94,
-      "tags": ["leftover", "modulo", "residue"]
-    },
-    {
-      "label": "GCD",
-      "definition": "Greatest Common Divisor, the largest number that divides two or more numbers",
-      "trust_category": "FACT",
-      "trust_value": 0.93,
-      "tags": ["greatest", "common", "divisor"]
-    },
-    {
-      "label": "LCM",
-      "definition": "Least Common Multiple, the smallest positive number divisible by two or more numbers",
-      "trust_category": "FACT",
-      "trust_value": 0.93,
-      "tags": ["least", "common", "multiple"]
+      "trust_value": 0.99,
+      "tags": ["discrete-math", "logic", "binary", "computer-science"]
     },
     {
       "label": "Modular Arithmetic",
-      "definition": "Arithmetic where numbers wrap around after reaching a certain value",
+      "definition": "A system of arithmetic for integers where numbers wrap around after reaching a certain value called the modulus, fundamental to number theory and cryptography.",
       "trust_category": "FACT",
-      "trust_value": 0.90,
-      "tags": ["wrap-around", "clock", "residue"]
+      "trust_value": 0.99,
+      "tags": ["discrete-math", "arithmetic", "modulus", "cryptography"]
     },
     {
-      "label": "Congruence",
-      "definition": "Two numbers having the same remainder when divided by a modulus",
+      "label": "Mean",
+      "definition": "The average value of a dataset, calculated by summing all values and dividing by the number of observations, a fundamental measure of central tendency.",
       "trust_category": "FACT",
-      "trust_value": 0.89,
-      "tags": ["same-remainder", "modulus", "equivalence"]
+      "trust_value": 0.99,
+      "tags": ["statistics", "average", "central-tendency", "data"]
+    },
+    {
+      "label": "Variance",
+      "definition": "A measure of how spread out data points are from the mean, calculated as the average of squared differences from the mean.",
+      "trust_category": "FACT",
+      "trust_value": 0.99,
+      "tags": ["statistics", "spread", "dispersion", "data"]
+    },
+    {
+      "label": "Standard Deviation",
+      "definition": "The square root of variance, providing a measure of data spread in the same units as the original data, fundamental to statistical analysis.",
+      "trust_category": "FACT",
+      "trust_value": 0.99,
+      "tags": ["statistics", "spread", "variance", "data"]
+    },
+    {
+      "label": "Normal Distribution",
+      "definition": "A continuous probability distribution that is symmetric and bell-shaped, characterized by its mean and standard deviation, central to statistics.",
+      "trust_category": "FACT",
+      "trust_value": 0.99,
+      "tags": ["statistics", "bell-curve", "gaussian", "probability"]
+    },
+    {
+      "label": "Regression",
+      "definition": "A statistical method for modeling the relationship between a dependent variable and one or more independent variables, used for prediction and analysis.",
+      "trust_category": "FACT",
+      "trust_value": 0.99,
+      "tags": ["statistics", "modeling", "prediction", "relationship"]
+    },
+    {
+      "label": "Correlation",
+      "definition": "A statistical measure that describes the strength and direction of a linear relationship between two variables, ranging from -1 to 1.",
+      "trust_category": "FACT",
+      "trust_value": 0.99,
+      "tags": ["statistics", "relationship", "linear", "association"]
+    },
+    {
+      "label": "Bayesian",
+      "definition": "A statistical approach based on Bayes' theorem, updating probability estimates as new evidence becomes available, fundamental to modern statistics.",
+      "trust_category": "FACT",
+      "trust_value": 0.99,
+      "tags": ["statistics", "probability", "bayes-theorem", "inference"]
+    },
+    {
+      "label": "Triangle",
+      "definition": "A three-sided polygon, one of the basic shapes in geometry, with properties including angles that sum to 180 degrees and various classifications.",
+      "trust_category": "FACT",
+      "trust_value": 0.99,
+      "tags": ["geometry", "polygon", "angles", "shape"]
+    },
+    {
+      "label": "Circle",
+      "definition": "A geometric shape consisting of all points in a plane that are equidistant from a fixed center point, fundamental to geometry and trigonometry.",
+      "trust_category": "FACT",
+      "trust_value": 0.99,
+      "tags": ["geometry", "shape", "radius", "circumference"]
+    },
+    {
+      "label": "Ellipse",
+      "definition": "A geometric curve that is the locus of all points for which the sum of distances to two fixed points (foci) is constant, generalizing the circle.",
+      "trust_category": "FACT",
+      "trust_value": 0.99,
+      "tags": ["geometry", "conic-section", "foci", "curve"]
+    },
+    {
+      "label": "Hyperbola",
+      "definition": "A conic section formed by intersecting a cone with a plane, consisting of two separate curves where the difference of distances to two foci is constant.",
+      "trust_category": "FACT",
+      "trust_value": 0.99,
+      "tags": ["geometry", "conic-section", "foci", "curve"]
+    },
+    {
+      "label": "Manifold",
+      "definition": "A topological space that locally resembles Euclidean space, providing a framework for studying curved spaces in higher dimensions.",
+      "trust_category": "FACT",
+      "trust_value": 0.99,
+      "tags": ["geometry", "topology", "curved-space", "differential-geometry"]
+    },
+    {
+      "label": "Algorithm",
+      "definition": "A finite sequence of well-defined instructions for solving a problem or performing a computation, fundamental to computer science and mathematics.",
+      "trust_category": "FACT",
+      "trust_value": 0.99,
+      "tags": ["computation", "procedure", "problem-solving", "discrete-math"]
+    },
+    {
+      "label": "Optimization",
+      "definition": "The mathematical process of finding the best solution from all feasible solutions, involving maximization or minimization of objective functions.",
+      "trust_category": "FACT",
+      "trust_value": 0.99,
+      "tags": ["calculus", "maximum", "minimum", "constraint"]
+    },
+    {
+      "label": "Sequence",
+      "definition": "An ordered collection of mathematical objects, typically numbers, where each element has a specific position, fundamental to analysis and discrete mathematics.",
+      "trust_category": "FACT",
+      "trust_value": 0.99,
+      "tags": ["order", "collection", "analysis", "discrete-math"]
+    },
+    {
+      "label": "Symmetry",
+      "definition": "A property where an object remains invariant under certain transformations, fundamental to geometry, algebra, and mathematical beauty.",
+      "trust_category": "FACT",
+      "trust_value": 0.99,
+      "tags": ["geometry", "invariance", "transformation", "algebra"]
+    },
+    {
+      "label": "Infinity",
+      "definition": "A concept describing something without bound or limit, fundamental to calculus, set theory, and mathematical analysis of infinite processes.",
+      "trust_category": "FACT",
+      "trust_value": 0.99,
+      "tags": ["analysis", "limit", "boundless", "philosophy"]
+    },
+    {
+      "label": "Dimension",
+      "definition": "The number of coordinates needed to specify a point in a mathematical space, fundamental to geometry, linear algebra, and physics.",
+      "trust_category": "FACT",
+      "trust_value": 0.99,
+      "tags": ["geometry", "coordinates", "space", "linear-algebra"]
+    },
+    {
+      "label": "Transformation",
+      "definition": "A mathematical operation that maps elements from one set to another, preserving certain properties, fundamental to geometry and algebra.",
+      "trust_category": "FACT",
+      "trust_value": 0.99,
+      "tags": ["mapping", "operation", "geometry", "algebra"]
+    },
+    {
+      "label": "Continuity",
+      "definition": "A property of functions where small changes in input result in small changes in output, fundamental to calculus and analysis.",
+      "trust_category": "FACT",
+      "trust_value": 0.99,
+      "tags": ["calculus", "function", "smooth", "analysis"]
+    },
+    {
+      "label": "Field",
+      "definition": "An algebraic structure with two operations (addition and multiplication) that satisfy certain axioms, generalizing the properties of rational and real numbers.",
+      "trust_category": "FACT",
+      "trust_value": 0.99,
+      "tags": ["algebra", "structure", "axioms", "operations"]
+    },
+    {
+      "label": "Group",
+      "definition": "An algebraic structure consisting of a set with one binary operation that satisfies four axioms: closure, associativity, identity, and invertibility.",
+      "trust_category": "FACT",
+      "trust_value": 0.99,
+      "tags": ["algebra", "structure", "axioms", "operation"]
+    },
+    {
+      "label": "Ring",
+      "definition": "An algebraic structure with two binary operations (addition and multiplication) that generalizes properties of integers, fundamental to abstract algebra.",
+      "trust_category": "FACT",
+      "trust_value": 0.99,
+      "tags": ["algebra", "structure", "operations", "integers"]
+    },
+    {
+      "label": "Logic",
+      "definition": "The systematic study of the principles of valid inference and correct reasoning, providing the foundation for mathematical proof and computer science.",
+      "trust_category": "FACT",
+      "trust_value": 0.99,
+      "tags": ["reasoning", "inference", "foundation", "proof"]
     }
   ],
   "relations": [
     {
-      "source_label": "Natural Number",
-      "target_label": "Integer",
-      "relation_type": "subset-of",
-      "weight": 0.98
-    },
-    {
-      "source_label": "Integer",
-      "target_label": "Rational Number",
-      "relation_type": "subset-of",
-      "weight": 0.97
-    },
-    {
-      "source_label": "Rational Number",
-      "target_label": "Real Number",
-      "relation_type": "subset-of",
-      "weight": 0.96
-    },
-    {
-      "source_label": "Irrational Number",
-      "target_label": "Real Number",
-      "relation_type": "subset-of",
-      "weight": 0.96
-    },
-    {
-      "source_label": "Real Number",
-      "target_label": "Complex Number",
-      "relation_type": "subset-of",
-      "weight": 0.95
-    },
-    {
-      "source_label": "Prime Number",
-      "target_label": "Natural Number",
-      "relation_type": "subset-of",
-      "weight": 0.96
-    },
-    {
-      "source_label": "Composite Number",
-      "target_label": "Natural Number",
-      "relation_type": "subset-of",
-      "weight": 0.95
-    },
-    {
-      "source_label": "Prime Number",
-      "target_label": "Composite Number",
-      "relation_type": "mutually-exclusive-with",
-      "weight": 0.94
-    },
-    {
-      "source_label": "Variable",
-      "target_label": "Expression",
-      "relation_type": "component-of",
-      "weight": 0.94
-    },
-    {
-      "source_label": "Constant",
-      "target_label": "Expression",
-      "relation_type": "component-of",
-      "weight": 0.93
-    },
-    {
-      "source_label": "Expression",
-      "target_label": "Equation",
-      "relation_type": "part-of",
-      "weight": 0.95
-    },
-    {
-      "source_label": "Expression",
-      "target_label": "Inequality",
-      "relation_type": "part-of",
-      "weight": 0.93
-    },
-    {
-      "source_label": "Function",
-      "target_label": "Domain",
-      "relation_type": "has-input",
-      "weight": 0.96
-    },
-    {
-      "source_label": "Function",
-      "target_label": "Range",
-      "relation_type": "has-output",
-      "weight": 0.96
-    },
-    {
-      "source_label": "Linear Function",
-      "target_label": "Function",
-      "relation_type": "type-of",
-      "weight": 0.94
-    },
-    {
-      "source_label": "Quadratic Function",
-      "target_label": "Function",
-      "relation_type": "type-of",
-      "weight": 0.93
-    },
-    {
-      "source_label": "Exponential Function",
-      "target_label": "Function",
-      "relation_type": "type-of",
-      "weight": 0.92
-    },
-    {
-      "source_label": "Logarithmic Function",
-      "target_label": "Exponential Function",
-      "relation_type": "inverse-of",
-      "weight": 0.91
-    },
-    {
-      "source_label": "Polynomial",
-      "target_label": "Function",
-      "relation_type": "type-of",
-      "weight": 0.93
-    },
-    {
-      "source_label": "Degree",
-      "target_label": "Polynomial",
-      "relation_type": "property-of",
-      "weight": 0.94
-    },
-    {
-      "source_label": "Coefficient",
-      "target_label": "Polynomial",
-      "relation_type": "component-of",
-      "weight": 0.93
-    },
-    {
-      "source_label": "Root",
-      "target_label": "Equation",
-      "relation_type": "solution-of",
-      "weight": 0.95
-    },
-    {
-      "source_label": "Slope",
-      "target_label": "Linear Function",
-      "relation_type": "property-of",
-      "weight": 0.94
-    },
-    {
-      "source_label": "Y-intercept",
-      "target_label": "Linear Function",
-      "relation_type": "property-of",
-      "weight": 0.93
-    },
-    {
-      "source_label": "System of Equations",
-      "target_label": "Equation",
-      "relation_type": "collection-of",
-      "weight": 0.92
-    },
-    {
-      "source_label": "Matrix",
-      "target_label": "System of Equations",
-      "relation_type": "represents",
-      "weight": 0.88
-    },
-    {
-      "source_label": "Determinant",
-      "target_label": "Matrix",
-      "relation_type": "property-of",
-      "weight": 0.90
-    },
-    {
-      "source_label": "Vector",
-      "target_label": "Matrix",
-      "relation_type": "special-case-of",
-      "weight": 0.85
-    },
-    {
-      "source_label": "Vector",
-      "target_label": "Scalar",
-      "relation_type": "different-from",
-      "weight": 0.90
-    },
-    {
-      "source_label": "Dot Product",
-      "target_label": "Vector",
-      "relation_type": "operation-on",
-      "weight": 0.91
-    },
-    {
-      "source_label": "Cross Product",
-      "target_label": "Vector",
-      "relation_type": "operation-on",
-      "weight": 0.89
-    },
-    {
       "source_label": "Derivative",
       "target_label": "Function",
-      "relation_type": "operation-on",
-      "weight": 0.93
+      "relation_type": "related-to",
+      "weight": 0.95
     },
     {
       "source_label": "Integral",
       "target_label": "Function",
-      "relation_type": "operation-on",
-      "weight": 0.92
+      "relation_type": "related-to",
+      "weight": 0.95
     },
     {
       "source_label": "Derivative",
       "target_label": "Integral",
-      "relation_type": "inverse-of",
-      "weight": 0.91
+      "relation_type": "related-to",
+      "weight": 0.9
     },
     {
-      "source_label": "Fundamental Theorem of Calculus",
-      "target_label": "Derivative",
-      "relation_type": "connects",
-      "weight": 0.93
+      "source_label": "Matrix",
+      "target_label": "Vector",
+      "relation_type": "related-to",
+      "weight": 0.9
     },
     {
-      "source_label": "Fundamental Theorem of Calculus",
-      "target_label": "Integral",
-      "relation_type": "connects",
-      "weight": 0.93
+      "source_label": "Eigenvalue",
+      "target_label": "Matrix",
+      "relation_type": "related-to",
+      "weight": 0.95
+    },
+    {
+      "source_label": "Eigenvalue",
+      "target_label": "Vector",
+      "relation_type": "related-to",
+      "weight": 0.85
+    },
+    {
+      "source_label": "Prime Number",
+      "target_label": "Number",
+      "relation_type": "related-to",
+      "weight": 0.9
+    },
+    {
+      "source_label": "Complex Number",
+      "target_label": "Number",
+      "relation_type": "related-to",
+      "weight": 0.85
+    },
+    {
+      "source_label": "Limit",
+      "target_label": "Function",
+      "relation_type": "related-to",
+      "weight": 0.9
     },
     {
       "source_label": "Limit",
       "target_label": "Derivative",
-      "relation_type": "defines",
-      "weight": 0.92
-    },
-    {
-      "source_label": "Continuity",
-      "target_label": "Limit",
-      "relation_type": "defined-by",
-      "weight": 0.90
-    },
-    {
-      "source_label": "Chain Rule",
-      "target_label": "Derivative",
-      "relation_type": "rule-for",
-      "weight": 0.91
-    },
-    {
-      "source_label": "Product Rule",
-      "target_label": "Derivative",
-      "relation_type": "rule-for",
-      "weight": 0.90
-    },
-    {
-      "source_label": "Quotient Rule",
-      "target_label": "Derivative",
-      "relation_type": "rule-for",
-      "weight": 0.89
-    },
-    {
-      "source_label": "Critical Point",
-      "target_label": "Derivative",
-      "relation_type": "where-zero",
-      "weight": 0.89
-    },
-    {
-      "source_label": "Maximum",
-      "target_label": "Critical Point",
-      "relation_type": "type-of",
-      "weight": 0.87
-    },
-    {
-      "source_label": "Minimum",
-      "target_label": "Critical Point",
-      "relation_type": "type-of",
-      "weight": 0.87
-    },
-    {
-      "source_label": "Definite Integral",
-      "target_label": "Integral",
-      "relation_type": "type-of",
-      "weight": 0.91
-    },
-    {
-      "source_label": "Indefinite Integral",
-      "target_label": "Integral",
-      "relation_type": "type-of",
-      "weight": 0.91
+      "relation_type": "related-to",
+      "weight": 0.85
     },
     {
       "source_label": "Series",
-      "target_label": "Sequence",
-      "relation_type": "sum-of",
-      "weight": 0.92
+      "target_label": "Limit",
+      "relation_type": "related-to",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Series",
+      "target_label": "Function",
+      "relation_type": "related-to",
+      "weight": 0.75
+    },
+    {
+      "source_label": "Polynomial",
+      "target_label": "Function",
+      "relation_type": "related-to",
+      "weight": 0.9
+    },
+    {
+      "source_label": "Equation",
+      "target_label": "Function",
+      "relation_type": "related-to",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Graph",
+      "target_label": "Function",
+      "relation_type": "related-to",
+      "weight": 0.85
+    },
+    {
+      "source_label": "Logarithm",
+      "target_label": "Function",
+      "relation_type": "related-to",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Set",
+      "target_label": "Topology",
+      "relation_type": "related-to",
+      "weight": 0.85
+    },
+    {
+      "source_label": "Theorem",
+      "target_label": "Proof",
+      "relation_type": "related-to",
+      "weight": 0.95
+    },
+    {
+      "source_label": "Number",
+      "target_label": "Set",
+      "relation_type": "related-to",
+      "weight": 0.75
+    },
+    {
+      "source_label": "Probability",
+      "target_label": "Number",
+      "relation_type": "related-to",
+      "weight": 0.7
+    },
+    {
+      "source_label": "Taylor Series",
+      "target_label": "Series",
+      "relation_type": "related-to",
+      "weight": 0.95
+    },
+    {
+      "source_label": "Taylor Series",
+      "target_label": "Derivative",
+      "relation_type": "related-to",
+      "weight": 0.9
+    },
+    {
+      "source_label": "Taylor Series",
+      "target_label": "Function",
+      "relation_type": "related-to",
+      "weight": 0.9
+    },
+    {
+      "source_label": "Fourier Transform",
+      "target_label": "Function",
+      "relation_type": "related-to",
+      "weight": 0.9
+    },
+    {
+      "source_label": "Fourier Transform",
+      "target_label": "Integral",
+      "relation_type": "related-to",
+      "weight": 0.85
+    },
+    {
+      "source_label": "Differential Equation",
+      "target_label": "Derivative",
+      "relation_type": "related-to",
+      "weight": 0.95
+    },
+    {
+      "source_label": "Differential Equation",
+      "target_label": "Function",
+      "relation_type": "related-to",
+      "weight": 0.9
+    },
+    {
+      "source_label": "Laplace Transform",
+      "target_label": "Integral",
+      "relation_type": "related-to",
+      "weight": 0.9
+    },
+    {
+      "source_label": "Laplace Transform",
+      "target_label": "Differential Equation",
+      "relation_type": "related-to",
+      "weight": 0.9
+    },
+    {
+      "source_label": "Laplace Transform",
+      "target_label": "Complex Number",
+      "relation_type": "related-to",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Convergence",
+      "target_label": "Limit",
+      "relation_type": "related-to",
+      "weight": 0.95
     },
     {
       "source_label": "Convergence",
       "target_label": "Series",
-      "relation_type": "property-of",
-      "weight": 0.89
+      "relation_type": "related-to",
+      "weight": 0.9
     },
     {
-      "source_label": "Divergence",
-      "target_label": "Series",
-      "relation_type": "property-of",
-      "weight": 0.88
-    },
-    {
-      "source_label": "Taylor Series",
-      "target_label": "Series",
-      "relation_type": "type-of",
-      "weight": 0.86
-    },
-    {
-      "source_label": "Taylor Series",
-      "target_label": "Derivative",
-      "relation_type": "uses",
-      "weight": 0.84
-    },
-    {
-      "source_label": "Line",
-      "target_label": "Point",
-      "relation_type": "contains",
-      "weight": 0.93
-    },
-    {
-      "source_label": "Plane",
-      "target_label": "Line",
-      "relation_type": "contains",
-      "weight": 0.91
-    },
-    {
-      "source_label": "Angle",
-      "target_label": "Line",
-      "relation_type": "formed-by",
-      "weight": 0.90
-    },
-    {
-      "source_label": "Triangle",
-      "target_label": "Angle",
-      "relation_type": "has-three",
-      "weight": 0.94
-    },
-    {
-      "source_label": "Square",
-      "target_label": "Rectangle",
-      "relation_type": "special-case-of",
-      "weight": 0.92
-    },
-    {
-      "source_label": "Circle",
-      "target_label": "Radius",
-      "relation_type": "defined-by",
-      "weight": 0.94
-    },
-    {
-      "source_label": "Diameter",
-      "target_label": "Radius",
-      "relation_type": "twice",
-      "weight": 0.93
-    },
-    {
-      "source_label": "Circumference",
-      "target_label": "Circle",
-      "relation_type": "perimeter-of",
-      "weight": 0.92
-    },
-    {
-      "source_label": "Area",
-      "target_label": "Circle",
-      "relation_type": "measure-of",
-      "weight": 0.90
-    },
-    {
-      "source_label": "Perimeter",
-      "target_label": "Area",
-      "relation_type": "different-from",
+      "source_label": "Convergence",
+      "target_label": "Sequence",
+      "relation_type": "related-to",
       "weight": 0.85
     },
     {
-      "source_label": "Volume",
-      "target_label": "Area",
-      "relation_type": "extends",
-      "weight": 0.88
-    },
-    {
-      "source_label": "Surface Area",
-      "target_label": "Volume",
-      "relation_type": "boundary-of",
-      "weight": 0.87
-    },
-    {
-      "source_label": "Cube",
-      "target_label": "Square",
-      "relation_type": "3d-extension-of",
-      "weight": 0.89
-    },
-    {
-      "source_label": "Sphere",
-      "target_label": "Circle",
-      "relation_type": "3d-extension-of",
-      "weight": 0.90
-    },
-    {
-      "source_label": "Pythagorean Theorem",
-      "target_label": "Triangle",
-      "relation_type": "applies-to",
-      "weight": 0.92
-    },
-    {
-      "source_label": "Trigonometry",
-      "target_label": "Triangle",
-      "relation_type": "studies",
-      "weight": 0.93
-    },
-    {
-      "source_label": "Sine",
-      "target_label": "Trigonometry",
-      "relation_type": "function-in",
-      "weight": 0.91
-    },
-    {
-      "source_label": "Cosine",
-      "target_label": "Trigonometry",
-      "relation_type": "function-in",
-      "weight": 0.91
-    },
-    {
-      "source_label": "Tangent",
-      "target_label": "Trigonometry",
-      "relation_type": "function-in",
-      "weight": 0.90
-    },
-    {
-      "source_label": "Unit Circle",
-      "target_label": "Sine",
-      "relation_type": "defines",
-      "weight": 0.89
-    },
-    {
-      "source_label": "Unit Circle",
-      "target_label": "Cosine",
-      "relation_type": "defines",
-      "weight": 0.89
-    },
-    {
-      "source_label": "Radian",
-      "target_label": "Unit Circle",
-      "relation_type": "measurement-on",
-      "weight": 0.87
-    },
-    {
-      "source_label": "Pi",
-      "target_label": "Circle",
-      "relation_type": "ratio-in",
-      "weight": 0.93
-    },
-    {
-      "source_label": "Pi",
-      "target_label": "Irrational Number",
-      "relation_type": "type-of",
-      "weight": 0.91
-    },
-    {
-      "source_label": "Euler's Number",
-      "target_label": "Exponential Function",
-      "relation_type": "base-of",
-      "weight": 0.89
-    },
-    {
-      "source_label": "Element",
-      "target_label": "Set",
-      "relation_type": "member-of",
-      "weight": 0.95
-    },
-    {
-      "source_label": "Subset",
-      "target_label": "Set",
-      "relation_type": "contained-in",
-      "weight": 0.93
-    },
-    {
-      "source_label": "Union",
-      "target_label": "Set",
-      "relation_type": "operation-on",
-      "weight": 0.90
-    },
-    {
-      "source_label": "Intersection",
-      "target_label": "Set",
-      "relation_type": "operation-on",
-      "weight": 0.90
-    },
-    {
-      "source_label": "Empty Set",
-      "target_label": "Set",
-      "relation_type": "special-case-of",
-      "weight": 0.91
-    },
-    {
-      "source_label": "Cardinality",
-      "target_label": "Set",
-      "relation_type": "property-of",
-      "weight": 0.88
-    },
-    {
-      "source_label": "Permutation",
-      "target_label": "Factorial",
-      "relation_type": "calculated-using",
-      "weight": 0.87
-    },
-    {
-      "source_label": "Combination",
-      "target_label": "Factorial",
-      "relation_type": "calculated-using",
-      "weight": 0.86
-    },
-    {
-      "source_label": "Permutation",
-      "target_label": "Combination",
-      "relation_type": "different-from",
-      "weight": 0.84
-    },
-    {
-      "source_label": "Probability",
-      "target_label": "Event",
-      "relation_type": "measure-of",
-      "weight": 0.91
-    },
-    {
-      "source_label": "Event",
-      "target_label": "Sample Space",
-      "relation_type": "subset-of",
-      "weight": 0.89
-    },
-    {
-      "source_label": "Conditional Probability",
-      "target_label": "Probability",
-      "relation_type": "type-of",
-      "weight": 0.86
-    },
-    {
-      "source_label": "Independent Events",
-      "target_label": "Event",
-      "relation_type": "type-of",
-      "weight": 0.85
-    },
-    {
-      "source_label": "Random Variable",
-      "target_label": "Probability",
-      "relation_type": "used-in",
-      "weight": 0.84
-    },
-    {
-      "source_label": "Expected Value",
-      "target_label": "Random Variable",
-      "relation_type": "property-of",
-      "weight": 0.83
-    },
-    {
-      "source_label": "Variance",
-      "target_label": "Random Variable",
-      "relation_type": "property-of",
-      "weight": 0.82
-    },
-    {
-      "source_label": "Standard Deviation",
-      "target_label": "Variance",
-      "relation_type": "square-root-of",
-      "weight": 0.85
-    },
-    {
-      "source_label": "Normal Distribution",
-      "target_label": "Mean",
-      "relation_type": "centered-on",
-      "weight": 0.81
-    },
-    {
-      "source_label": "Normal Distribution",
-      "target_label": "Standard Deviation",
-      "relation_type": "characterized-by",
-      "weight": 0.80
-    },
-    {
-      "source_label": "Median",
-      "target_label": "Mean",
-      "relation_type": "alternative-to",
-      "weight": 0.82
-    },
-    {
-      "source_label": "Mode",
-      "target_label": "Mean",
-      "relation_type": "alternative-to",
-      "weight": 0.81
-    },
-    {
-      "source_label": "Vertex",
-      "target_label": "Graph",
-      "relation_type": "component-of",
-      "weight": 0.92
-    },
-    {
-      "source_label": "Edge",
-      "target_label": "Graph",
-      "relation_type": "component-of",
-      "weight": 0.91
-    },
-    {
-      "source_label": "Edge",
-      "target_label": "Vertex",
-      "relation_type": "connects",
-      "weight": 0.90
-    },
-    {
-      "source_label": "Tree",
-      "target_label": "Graph",
-      "relation_type": "special-case-of",
-      "weight": 0.87
-    },
-    {
-      "source_label": "Path",
-      "target_label": "Graph",
-      "relation_type": "sequence-in",
-      "weight": 0.85
-    },
-    {
-      "source_label": "Cycle",
-      "target_label": "Path",
-      "relation_type": "special-case-of",
-      "weight": 0.84
-    },
-    {
-      "source_label": "Tree",
-      "target_label": "Cycle",
-      "relation_type": "has-no",
-      "weight": 0.86
-    },
-    {
-      "source_label": "Proof",
-      "target_label": "Theorem",
-      "relation_type": "establishes",
-      "weight": 0.93
-    },
-    {
-      "source_label": "Lemma",
-      "target_label": "Theorem",
-      "relation_type": "helps-prove",
-      "weight": 0.90
-    },
-    {
-      "source_label": "Theorem",
-      "target_label": "Axiom",
-      "relation_type": "derived-from",
-      "weight": 0.88
-    },
-    {
-      "source_label": "Conjecture",
-      "target_label": "Theorem",
-      "relation_type": "may-become",
-      "weight": 0.85
-    },
-    {
-      "source_label": "Countable",
-      "target_label": "Infinity",
-      "relation_type": "type-of",
-      "weight": 0.82
-    },
-    {
-      "source_label": "Uncountable",
-      "target_label": "Infinity",
-      "relation_type": "type-of",
-      "weight": 0.81
-    },
-    {
-      "source_label": "Real Number",
-      "target_label": "Uncountable",
-      "relation_type": "example-of",
-      "weight": 0.79
-    },
-    {
-      "source_label": "Natural Number",
-      "target_label": "Countable",
-      "relation_type": "example-of",
-      "weight": 0.83
-    },
-    {
-      "source_label": "Open Set",
-      "target_label": "Topology",
-      "relation_type": "concept-in",
-      "weight": 0.80
-    },
-    {
-      "source_label": "Closed Set",
-      "target_label": "Topology",
-      "relation_type": "concept-in",
-      "weight": 0.79
-    },
-    {
-      "source_label": "Metric",
-      "target_label": "Topology",
-      "relation_type": "induces",
-      "weight": 0.78
-    },
-    {
-      "source_label": "Norm",
-      "target_label": "Vector",
-      "relation_type": "measure-of",
-      "weight": 0.83
-    },
-    {
-      "source_label": "Inner Product",
-      "target_label": "Norm",
-      "relation_type": "induces",
-      "weight": 0.81
-    },
-    {
-      "source_label": "Eigenvector",
-      "target_label": "Eigenvalue",
-      "relation_type": "paired-with",
-      "weight": 0.84
-    },
-    {
-      "source_label": "Linear Transformation",
+      "source_label": "Determinant",
       "target_label": "Matrix",
-      "relation_type": "represented-by",
-      "weight": 0.85
-    },
-    {
-      "source_label": "Eigenvalue",
-      "target_label": "Linear Transformation",
-      "relation_type": "property-of",
-      "weight": 0.82
-    },
-    {
-      "source_label": "Basis",
-      "target_label": "Vector Space",
-      "relation_type": "spans",
-      "weight": 0.84
-    },
-    {
-      "source_label": "Dimension",
-      "target_label": "Basis",
-      "relation_type": "size-of",
-      "weight": 0.85
-    },
-    {
-      "source_label": "Span",
-      "target_label": "Vector",
-      "relation_type": "generated-by",
-      "weight": 0.82
-    },
-    {
-      "source_label": "Linear Independence",
-      "target_label": "Basis",
-      "relation_type": "property-of",
-      "weight": 0.83
+      "relation_type": "related-to",
+      "weight": 0.95
     },
     {
       "source_label": "Rank",
       "target_label": "Matrix",
-      "relation_type": "property-of",
-      "weight": 0.81
+      "relation_type": "related-to",
+      "weight": 0.9
+    },
+    {
+      "source_label": "Rank",
+      "target_label": "Vector",
+      "relation_type": "related-to",
+      "weight": 0.85
     },
     {
       "source_label": "Null Space",
       "target_label": "Matrix",
-      "relation_type": "associated-with",
-      "weight": 0.80
+      "relation_type": "related-to",
+      "weight": 0.9
     },
     {
-      "source_label": "Inverse",
-      "target_label": "Function",
-      "relation_type": "property-of",
+      "source_label": "Null Space",
+      "target_label": "Vector",
+      "relation_type": "related-to",
+      "weight": 0.9
+    },
+    {
+      "source_label": "Basis",
+      "target_label": "Vector",
+      "relation_type": "related-to",
+      "weight": 0.95
+    },
+    {
+      "source_label": "Basis",
+      "target_label": "Dimension",
+      "relation_type": "related-to",
+      "weight": 0.9
+    },
+    {
+      "source_label": "Orthogonality",
+      "target_label": "Vector",
+      "relation_type": "related-to",
+      "weight": 0.9
+    },
+    {
+      "source_label": "SVD",
+      "target_label": "Matrix",
+      "relation_type": "related-to",
+      "weight": 0.95
+    },
+    {
+      "source_label": "SVD",
+      "target_label": "Eigenvalue",
+      "relation_type": "related-to",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Combinatorics",
+      "target_label": "Permutation",
+      "relation_type": "related-to",
+      "weight": 0.9
+    },
+    {
+      "source_label": "Combinatorics",
+      "target_label": "Number",
+      "relation_type": "related-to",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Permutation",
+      "target_label": "Group",
+      "relation_type": "related-to",
       "weight": 0.85
     },
     {
-      "source_label": "Bijection",
-      "target_label": "Inverse",
-      "relation_type": "has",
-      "weight": 0.82
+      "source_label": "Graph Theory",
+      "target_label": "Graph",
+      "relation_type": "related-to",
+      "weight": 0.9
     },
     {
-      "source_label": "Injection",
-      "target_label": "Bijection",
-      "relation_type": "component-of",
-      "weight": 0.81
+      "source_label": "Graph Theory",
+      "target_label": "Set",
+      "relation_type": "related-to",
+      "weight": 0.8
     },
     {
-      "source_label": "Surjection",
-      "target_label": "Bijection",
-      "relation_type": "component-of",
-      "weight": 0.80
+      "source_label": "Boolean Algebra",
+      "target_label": "Logic",
+      "relation_type": "related-to",
+      "weight": 0.9
     },
     {
-      "source_label": "Composition",
-      "target_label": "Function",
-      "relation_type": "operation-on",
-      "weight": 0.83
+      "source_label": "Boolean Algebra",
+      "target_label": "Set",
+      "relation_type": "related-to",
+      "weight": 0.8
     },
     {
-      "source_label": "Isomorphism",
-      "target_label": "Bijection",
-      "relation_type": "special-type-of",
-      "weight": 0.79
+      "source_label": "Modular Arithmetic",
+      "target_label": "Number",
+      "relation_type": "related-to",
+      "weight": 0.85
     },
     {
-      "source_label": "Homomorphism",
-      "target_label": "Function",
-      "relation_type": "special-type-of",
-      "weight": 0.78
-    },
-    {
-      "source_label": "Ring",
+      "source_label": "Modular Arithmetic",
       "target_label": "Group",
-      "relation_type": "extends",
-      "weight": 0.76
+      "relation_type": "related-to",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Mean",
+      "target_label": "Number",
+      "relation_type": "related-to",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Variance",
+      "target_label": "Mean",
+      "relation_type": "related-to",
+      "weight": 0.9
+    },
+    {
+      "source_label": "Standard Deviation",
+      "target_label": "Variance",
+      "relation_type": "related-to",
+      "weight": 0.95
+    },
+    {
+      "source_label": "Normal Distribution",
+      "target_label": "Mean",
+      "relation_type": "related-to",
+      "weight": 0.9
+    },
+    {
+      "source_label": "Normal Distribution",
+      "target_label": "Standard Deviation",
+      "relation_type": "related-to",
+      "weight": 0.9
+    },
+    {
+      "source_label": "Normal Distribution",
+      "target_label": "Probability",
+      "relation_type": "related-to",
+      "weight": 0.85
+    },
+    {
+      "source_label": "Regression",
+      "target_label": "Function",
+      "relation_type": "related-to",
+      "weight": 0.85
+    },
+    {
+      "source_label": "Regression",
+      "target_label": "Correlation",
+      "relation_type": "related-to",
+      "weight": 0.9
+    },
+    {
+      "source_label": "Correlation",
+      "target_label": "Number",
+      "relation_type": "related-to",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Bayesian",
+      "target_label": "Probability",
+      "relation_type": "related-to",
+      "weight": 0.95
+    },
+    {
+      "source_label": "Triangle",
+      "target_label": "Angle",
+      "relation_type": "related-to",
+      "weight": 0.9
+    },
+    {
+      "source_label": "Circle",
+      "target_label": "Geometry",
+      "relation_type": "related-to",
+      "weight": 0.9
+    },
+    {
+      "source_label": "Ellipse",
+      "target_label": "Circle",
+      "relation_type": "related-to",
+      "weight": 0.85
+    },
+    {
+      "source_label": "Hyperbola",
+      "target_label": "Ellipse",
+      "relation_type": "related-to",
+      "weight": 0.8
+    },
+    {
+      "source_label": "Manifold",
+      "target_label": "Topology",
+      "relation_type": "related-to",
+      "weight": 0.9
+    },
+    {
+      "source_label": "Manifold",
+      "target_label": "Dimension",
+      "relation_type": "related-to",
+      "weight": 0.85
+    },
+    {
+      "source_label": "Algorithm",
+      "target_label": "Logic",
+      "relation_type": "related-to",
+      "weight": 0.85
+    },
+    {
+      "source_label": "Optimization",
+      "target_label": "Derivative",
+      "relation_type": "related-to",
+      "weight": 0.9
+    },
+    {
+      "source_label": "Optimization",
+      "target_label": "Function",
+      "relation_type": "related-to",
+      "weight": 0.85
+    },
+    {
+      "source_label": "Sequence",
+      "target_label": "Series",
+      "relation_type": "related-to",
+      "weight": 0.9
+    },
+    {
+      "source_label": "Symmetry",
+      "target_label": "Transformation",
+      "relation_type": "related-to",
+      "weight": 0.9
+    },
+    {
+      "source_label": "Symmetry",
+      "target_label": "Group",
+      "relation_type": "related-to",
+      "weight": 0.85
+    },
+    {
+      "source_label": "Infinity",
+      "target_label": "Limit",
+      "relation_type": "related-to",
+      "weight": 0.9
+    },
+    {
+      "source_label": "Dimension",
+      "target_label": "Vector",
+      "relation_type": "related-to",
+      "weight": 0.85
+    },
+    {
+      "source_label": "Transformation",
+      "target_label": "Matrix",
+      "relation_type": "related-to",
+      "weight": 0.9
+    },
+    {
+      "source_label": "Transformation",
+      "target_label": "Function",
+      "relation_type": "related-to",
+      "weight": 0.85
+    },
+    {
+      "source_label": "Continuity",
+      "target_label": "Function",
+      "relation_type": "related-to",
+      "weight": 0.95
+    },
+    {
+      "source_label": "Continuity",
+      "target_label": "Limit",
+      "relation_type": "related-to",
+      "weight": 0.9
     },
     {
       "source_label": "Field",
       "target_label": "Ring",
-      "relation_type": "special-type-of",
-      "weight": 0.75
-    },
-    {
-      "source_label": "Vector Space",
-      "target_label": "Field",
-      "relation_type": "defined-over",
-      "weight": 0.77
-    },
-    {
-      "source_label": "Subspace",
-      "target_label": "Vector Space",
-      "relation_type": "subset-of",
-      "weight": 0.79
-    },
-    {
-      "source_label": "Quotient",
-      "target_label": "Remainder",
-      "relation_type": "paired-with",
-      "weight": 0.89
-    },
-    {
-      "source_label": "GCD",
-      "target_label": "Integer",
-      "relation_type": "property-of",
-      "weight": 0.87
-    },
-    {
-      "source_label": "LCM",
-      "target_label": "Integer",
-      "relation_type": "property-of",
-      "weight": 0.86
-    },
-    {
-      "source_label": "GCD",
-      "target_label": "LCM",
       "relation_type": "related-to",
-      "weight": 0.84
+      "weight": 0.9
     },
     {
-      "source_label": "Modular Arithmetic",
-      "target_label": "Remainder",
-      "relation_type": "based-on",
+      "source_label": "Field",
+      "target_label": "Number",
+      "relation_type": "related-to",
       "weight": 0.85
     },
     {
-      "source_label": "Congruence",
-      "target_label": "Modular Arithmetic",
-      "relation_type": "concept-in",
-      "weight": 0.83
+      "source_label": "Group",
+      "target_label": "Set",
+      "relation_type": "related-to",
+      "weight": 0.85
+    },
+    {
+      "source_label": "Ring",
+      "target_label": "Group",
+      "relation_type": "related-to",
+      "weight": 0.85
+    },
+    {
+      "source_label": "Logic",
+      "target_label": "Proof",
+      "relation_type": "related-to",
+      "weight": 0.9
     }
   ]
 }

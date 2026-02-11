@@ -337,7 +337,12 @@ std::string CheckpointManager::make_timestamp_dirname(const std::string& tag) {
     std::strftime(buf, sizeof(buf), "checkpoint_%Y%m%d_%H%M%S", &tm);
     std::string name(buf);
     if (!tag.empty()) {
-        name += "_" + tag;
+        // Sanitize tag: remove path separators to prevent directory traversal
+        std::string safe_tag;
+        for (char c : tag) {
+            if (c != '/' && c != '\\' && c != '\0') safe_tag += c;
+        }
+        if (!safe_tag.empty()) name += "_" + safe_tag;
     }
     return name;
 }

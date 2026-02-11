@@ -57,18 +57,25 @@ void StreamOrchestrator::stop_stream(ThinkStream::StreamId id) {
 
 void StreamOrchestrator::destroy_stream(ThinkStream::StreamId id) {
     std::unique_ptr<ThinkStream> stream;
+    bool was_active = false;
     {
         std::lock_guard lock(streams_mtx_);
         auto it = streams_.find(id);
         if (it == streams_.end()) return;
+        // Only decrement if stream is still Running/Starting
+        // (stop_stream may have already decremented)
+        auto st = it->second->state();
+        was_active = (st == StreamState::Running || st == StreamState::Starting);
         stream = std::move(it->second);
         streams_.erase(it);
     }
     // Stop and join outside lock
     stream->stop();
     stream->join(std::chrono::milliseconds(config_.shutdown_timeout));
-    auto prev = metrics_.active_streams.load(std::memory_order_relaxed);
-    if (prev > 0) metrics_.active_streams.fetch_sub(1, std::memory_order_relaxed);
+    if (was_active) {
+        auto prev = metrics_.active_streams.load(std::memory_order_relaxed);
+        if (prev > 0) metrics_.active_streams.fetch_sub(1, std::memory_order_relaxed);
+    }
     // stream destroyed here by unique_ptr
 }
 
@@ -118,7 +125,8 @@ bool StreamOrchestrator::shutdown(std::chrono::milliseconds timeout) {
 
 void StreamOrchestrator::auto_scale() {
     uint32_t n = config_.effective_max_streams();
-    // Don't create more than we already have
+    // NOTE: TOCTOU between stream_count() and create_stream() is benign —
+    // worst case we create slightly more streams than max, harmless at startup.
     uint32_t current = stream_count();
     for (uint32_t i = current; i < n; ++i) {
         auto id = create_stream();

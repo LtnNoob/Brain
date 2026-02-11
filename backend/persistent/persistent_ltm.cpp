@@ -325,6 +325,7 @@ bool PersistentLTM::remove_relation(RelationId id) {
     
     if (wal_) {
         WALRemoveRelationPayload wp;
+        std::memset(&wp, 0, sizeof(wp));
         wp.relation_id = id;
         wal_->append(WALOpType::REMOVE_RELATION, &wp, sizeof(wp));
     }

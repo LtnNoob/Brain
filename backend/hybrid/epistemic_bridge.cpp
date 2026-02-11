@@ -61,16 +61,16 @@ double EpistemicBridge::compute_trust(
 
     double base_trust;
     if (mse < config_.theory_mse_threshold) {
-        double mse_ratio = mse / config_.theory_mse_threshold;
+        double mse_ratio = (config_.theory_mse_threshold > 1e-12) ? mse / config_.theory_mse_threshold : 0.0;
         base_trust = 0.9 - 0.2 * mse_ratio;
     } else if (mse < config_.hypothesis_mse_threshold) {
-        double mse_ratio = (mse - config_.theory_mse_threshold) 
-                         / (config_.hypothesis_mse_threshold - config_.theory_mse_threshold);
+        double denom = config_.hypothesis_mse_threshold - config_.theory_mse_threshold;
+        double mse_ratio = (denom > 1e-12) ? (mse - config_.theory_mse_threshold) / denom : 0.5;
         base_trust = 0.6 - 0.2 * mse_ratio;
     } else {
         double mse_capped = std::min(mse, 1.0);
-        double mse_ratio = (mse_capped - config_.hypothesis_mse_threshold)
-                         / (1.0 - config_.hypothesis_mse_threshold);
+        double denom = 1.0 - config_.hypothesis_mse_threshold;
+        double mse_ratio = (denom > 1e-12) ? (mse_capped - config_.hypothesis_mse_threshold) / denom : 0.5;
         base_trust = 0.3 - 0.2 * mse_ratio;
     }
 

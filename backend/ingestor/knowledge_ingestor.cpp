@@ -81,17 +81,19 @@ std::string KnowledgeIngestor::json_extract_string(
         bool in_str = false;
         for (size_t i = 0; i < json.size(); ++i) {
             char c = json[i];
+            // Check for key match BEFORE toggling string state,
+            // because keys start with '"' which would toggle in_str
+            if (!in_str && depth == 1 && i + search.size() <= json.size() &&
+                json.compare(i, search.size(), search) == 0) {
+                key_pos = i;
+                break;
+            }
             if (c == '"' && (i == 0 || json[i - 1] != '\\')) {
                 in_str = !in_str;
             }
             if (in_str) continue;
             if (c == '{') ++depth;
             else if (c == '}') --depth;
-            // Match key only at depth == 1 (top-level object)
-            if (depth == 1 && !in_str && i + search.size() <= json.size() && json.compare(i, search.size(), search) == 0) {
-                key_pos = i;
-                break;
-            }
         }
     }
     if (key_pos == std::string::npos) return "";
@@ -147,16 +149,18 @@ std::string KnowledgeIngestor::json_extract_array(
         bool in_str = false;
         for (size_t i = 0; i < json.size(); ++i) {
             char c = json[i];
+            // Check for key match BEFORE toggling string state
+            if (!in_str && depth == 1 && i + search.size() <= json.size() &&
+                json.compare(i, search.size(), search) == 0) {
+                key_pos = i;
+                break;
+            }
             if (c == '"' && (i == 0 || json[i - 1] != '\\')) {
                 in_str = !in_str;
             }
             if (in_str) continue;
             if (c == '{') ++depth;
             else if (c == '}') --depth;
-            if (depth == 1 && !in_str && i + search.size() <= json.size() && json.compare(i, search.size(), search) == 0) {
-                key_pos = i;
-                break;
-            }
         }
     }
     if (key_pos == std::string::npos) return "";
@@ -232,16 +236,18 @@ double KnowledgeIngestor::json_extract_number(
         bool in_str = false;
         for (size_t i = 0; i < json.size(); ++i) {
             char c = json[i];
+            // Check for key match BEFORE toggling string state
+            if (!in_str && depth == 1 && i + search.size() <= json.size() &&
+                json.compare(i, search.size(), search) == 0) {
+                key_pos = i;
+                break;
+            }
             if (c == '"' && (i == 0 || json[i - 1] != '\\')) {
                 in_str = !in_str;
             }
             if (in_str) continue;
             if (c == '{') ++depth;
             else if (c == '}') --depth;
-            if (depth == 1 && !in_str && i + search.size() <= json.size() && json.compare(i, search.size(), search) == 0) {
-                key_pos = i;
-                break;
-            }
         }
     }
     if (key_pos == std::string::npos) return default_val;

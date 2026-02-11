@@ -125,10 +125,13 @@ RelevanceMap RelevanceMap::combine(
     RelevanceMap result(maps[0].source_cid_);
     result.scores_ = maps[0].scores_;
 
-    // Apply weights[0] to the copied base map
-    double w0 = (0 < weights.size()) ? weights[0] : (1.0 / static_cast<double>(maps.size()));
-    for (auto& [cid, s] : result.scores_) {
-        s *= w0;
+    // Only apply base-map weighting for WEIGHTED_AVERAGE mode.
+    // ADDITION and MAX operate on raw scores.
+    if (mode == OverlayMode::WEIGHTED_AVERAGE) {
+        double w0 = (0 < weights.size()) ? weights[0] : (1.0 / static_cast<double>(maps.size()));
+        for (auto& [cid, s] : result.scores_) {
+            s *= w0;
+        }
     }
 
     for (size_t i = 1; i < maps.size(); ++i) {

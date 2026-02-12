@@ -1,11 +1,12 @@
 #pragma once
 
 #include "micro_model.hpp"
+#include "concept_embedding_store.hpp"
 #include "../memory/active_relation.hpp"
 
-#include <array>
 #include <string>
 #include <unordered_map>
+#include <vector>
 
 namespace brain19 {
 
@@ -14,21 +15,18 @@ namespace brain19 {
 // =============================================================================
 //
 // Provides 10D embeddings for:
-//   - Relation types (one per RelationType, 10 total)
+//   - Relation types (delegated to RelationTypeRegistry — supports dynamic types)
 //   - Named contexts (auto-created on first access)
 //
-// Relation embeddings are initialized with heuristic patterns that encode
-// semantic character (hierarchical, causal, etc.). Context embeddings are
-// initialized with small random values for symmetry breaking.
+// Relation embeddings are managed by the RelationTypeRegistry singleton.
+// Context embeddings are initialized with small random values for symmetry breaking.
 //
-
-static constexpr size_t NUM_RELATION_TYPES = 10;
 
 class EmbeddingManager {
 public:
     EmbeddingManager();
 
-    // Relation type embeddings (fixed set of 10)
+    // Relation type embeddings (delegates to RelationTypeRegistry)
     const Vec10& get_relation_embedding(RelationType type) const;
 
     // Context embeddings (auto-created on first access)
@@ -51,18 +49,17 @@ public:
     // Get all context names
     std::vector<std::string> get_context_names() const;
 
-    // Direct access for persistence
-    const std::array<Vec10, NUM_RELATION_TYPES>& relation_embeddings() const { return relation_embeddings_; }
-    std::array<Vec10, NUM_RELATION_TYPES>& relation_embeddings_mut() { return relation_embeddings_; }
-
+    // Context embedding direct access for persistence
     const std::unordered_map<std::string, Vec10>& context_embeddings() const { return context_embeddings_; }
     std::unordered_map<std::string, Vec10>& context_embeddings_mut() { return context_embeddings_; }
 
-private:
-    void init_relation_embeddings();
+    // Concept embeddings
+    ConceptEmbeddingStore& concept_embeddings() { return concept_embeddings_; }
+    const ConceptEmbeddingStore& concept_embeddings() const { return concept_embeddings_; }
 
-    std::array<Vec10, NUM_RELATION_TYPES> relation_embeddings_;
+private:
     std::unordered_map<std::string, Vec10> context_embeddings_;
+    ConceptEmbeddingStore concept_embeddings_;
 };
 
 } // namespace brain19

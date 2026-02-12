@@ -70,16 +70,10 @@ public:
 
     // === Direct access (unique_lock — for persistence) ===
 
-    const std::array<Vec10, NUM_RELATION_TYPES>& relation_embeddings() const {
+    // Relation embedding access — delegates to registry via EmbeddingManager
+    const Vec10& get_relation_embedding_locked(RelationType type) const {
         std::shared_lock lock(mtx_);
-        return em_.relation_embeddings();
-    }
-
-    // Callback-based mutable access — lock held for duration of callback
-    template<typename Fn>
-    void with_relation_embeddings_mut(Fn&& fn) {
-        std::unique_lock lock(mtx_);
-        fn(em_.relation_embeddings_mut());
+        return em_.get_relation_embedding(type);
     }
 
     const std::unordered_map<std::string, Vec10>& context_embeddings() const {

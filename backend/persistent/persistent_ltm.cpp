@@ -249,10 +249,10 @@ std::optional<RelationId> PersistentLTM::add_relation(
     rec.relation_id = id;
     rec.source = source;
     rec.target = target;
-    rec.type = static_cast<uint8_t>(type);
+    rec.set_type_id(static_cast<uint16_t>(type));
     rec.weight = weight;
     rec.flags = 0;
-    
+
     // WAL: log before mmap write
     if (wal_) {
         WALAddRelationPayload wp;
@@ -260,7 +260,7 @@ std::optional<RelationId> PersistentLTM::add_relation(
         wp.relation_id = id;
         wp.source = source;
         wp.target = target;
-        wp.type = rec.type;
+        wp.type = static_cast<uint16_t>(type);
         wp.weight = rec.weight;
         wal_->append(WALOpType::ADD_RELATION, &wp, sizeof(wp));
     }
@@ -282,7 +282,7 @@ std::optional<RelationInfo> PersistentLTM::get_relation(RelationId id) const {
     
     RelationInfo info(
         rec->relation_id, rec->source, rec->target,
-        static_cast<RelationType>(rec->type), rec->weight
+        static_cast<RelationType>(rec->get_type_id()), rec->weight
     );
     info.dynamic_weight = rec->dynamic_weight;
     info.inhibition_factor = rec->inhibition_factor;
@@ -424,21 +424,21 @@ void PersistentLTM::replay_store_concept(
 
 void PersistentLTM::replay_add_relation(
     uint64_t relation_id, uint64_t source, uint64_t target,
-    uint8_t type, double weight
+    uint16_t type, double weight
 ) {
     // Idempotent: skip if already exists
     if (relation_index_.count(relation_id)) return;
-    
+
     if (relations_->next_id() <= relation_id) {
         relations_->set_next_id(relation_id + 1);
     }
-    
+
     PersistentRelationRecord rec;
     rec.clear();
     rec.relation_id = relation_id;
     rec.source = source;
     rec.target = target;
-    rec.type = type;
+    rec.set_type_id(type);
     rec.weight = weight;
     rec.flags = 0;
     

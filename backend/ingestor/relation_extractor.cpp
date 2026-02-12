@@ -1,4 +1,5 @@
 #include "relation_extractor.hpp"
+#include "../memory/relation_type_registry.hpp"
 #include <algorithm>
 #include <regex>
 #include <set>
@@ -275,19 +276,7 @@ std::vector<SuggestedRelation> RelationExtractor::to_suggested_relations(
 }
 
 std::string RelationExtractor::relation_type_to_str(RelationType type) {
-    switch (type) {
-        case RelationType::IS_A: return "is-a";
-        case RelationType::HAS_PROPERTY: return "has-property";
-        case RelationType::CAUSES: return "causes";
-        case RelationType::ENABLES: return "enables";
-        case RelationType::PART_OF: return "part-of";
-        case RelationType::SIMILAR_TO: return "similar-to";
-        case RelationType::CONTRADICTS: return "contradicts";
-        case RelationType::SUPPORTS: return "supports";
-        case RelationType::TEMPORAL_BEFORE: return "temporal-before";
-        case RelationType::CUSTOM: return "custom";
-        default: return "unknown";
-    }
+    return RelationTypeRegistry::instance().get_slug(type);
 }
 
 } // namespace brain19

@@ -3,6 +3,7 @@
 #include "../common/types.hpp"
 #include "../cognitive/cognitive_dynamics.hpp"
 #include "../curiosity/curiosity_engine.hpp"
+#include "../curiosity/goal_generator.hpp"
 #include "../micromodel/relevance_map.hpp"
 #include "../micromodel/micro_model_registry.hpp"
 #include "../micromodel/embedding_manager.hpp"
@@ -41,6 +42,9 @@ struct ThinkingResult {
     // --- FocusCursor results ---
     std::optional<TraversalResult> cursor_result;
     std::optional<GoalState> final_goal_state;
+
+    // --- Generated goals from curiosity ---
+    std::vector<GoalState> generated_goals;
 };
 
 // =============================================================================

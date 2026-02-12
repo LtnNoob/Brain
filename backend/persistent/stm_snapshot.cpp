@@ -100,7 +100,7 @@ bool STMSnapshotManager::create_snapshot(ShortTermMemory& stm, const std::string
         for (auto& r : ctx.relations) {
             write_pod(out, r.source);
             write_pod(out, r.target);
-            uint8_t t = static_cast<uint8_t>(r.type);
+            uint16_t t = static_cast<uint16_t>(r.type);
             write_pod(out, t);
             write_pod(out, r.activation);
         }
@@ -163,7 +163,7 @@ bool STMSnapshotManager::load_snapshot(const std::string& path, STMSnapshotData&
             auto& r = ctx.relations[j];
             if (!read_pod(in, r.source)) return false;
             if (!read_pod(in, r.target)) return false;
-            uint8_t t;
+            uint16_t t;
             if (!read_pod(in, t)) return false;
             r.type = static_cast<RelationType>(t);
             if (!read_pod(in, r.activation)) return false;

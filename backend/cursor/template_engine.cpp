@@ -1,4 +1,5 @@
 #include "template_engine.hpp"
+#include "../memory/relation_type_registry.hpp"
 #include <sstream>
 #include <algorithm>
 
@@ -16,19 +17,7 @@ std::string TemplateEngine::concept_label(ConceptId id) const {
 }
 
 std::string TemplateEngine::relation_name_de(RelationType type) {
-    switch (type) {
-        case RelationType::IS_A:            return "ist ein(e)";
-        case RelationType::HAS_PROPERTY:    return "hat die Eigenschaft";
-        case RelationType::CAUSES:          return "verursacht";
-        case RelationType::ENABLES:         return "ermoeglicht";
-        case RelationType::PART_OF:         return "ist Teil von";
-        case RelationType::SIMILAR_TO:      return "ist aehnlich wie";
-        case RelationType::CONTRADICTS:     return "widerspricht";
-        case RelationType::SUPPORTS:        return "unterstuetzt";
-        case RelationType::TEMPORAL_BEFORE: return "geschieht vor";
-        case RelationType::CUSTOM:          return "steht in Beziehung zu";
-    }
-    return "steht in Beziehung zu";
+    return RelationTypeRegistry::instance().get_name_de(type);
 }
 
 std::string TemplateEngine::relation_sentence(
@@ -46,20 +35,20 @@ TemplateType TemplateEngine::classify(const std::vector<RelationType>& relations
     size_t def_count = 0;
     size_t compare_count = 0;
 
+    auto& reg = RelationTypeRegistry::instance();
     for (RelationType r : relations) {
-        switch (r) {
-            case RelationType::CAUSES:
-            case RelationType::ENABLES:
-            case RelationType::TEMPORAL_BEFORE:
+        auto cat = reg.get_category(r);
+        switch (cat) {
+            case RelationCategory::CAUSAL:
+            case RelationCategory::TEMPORAL:
                 ++causal_count;
                 break;
-            case RelationType::IS_A:
-            case RelationType::HAS_PROPERTY:
-            case RelationType::PART_OF:
+            case RelationCategory::HIERARCHICAL:
+            case RelationCategory::COMPOSITIONAL:
                 ++def_count;
                 break;
-            case RelationType::SIMILAR_TO:
-            case RelationType::CONTRADICTS:
+            case RelationCategory::SIMILARITY:
+            case RelationCategory::OPPOSITION:
                 ++compare_count;
                 break;
             default:

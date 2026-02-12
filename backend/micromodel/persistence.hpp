@@ -33,6 +33,12 @@ namespace persistence {
 //     name        name_len bytes
 //     embedding   Vec10 (80 bytes)
 //
+//   Concept embeddings (v2+):
+//     concept_emb_count uint32 (4 bytes)
+//     Per concept embedding:
+//       concept_id    uint64 (8 bytes)
+//       embedding     Vec10 (80 bytes)
+//
 //   Footer:
 //     checksum    uint64 (8 bytes) - XOR of all preceding 8-byte blocks
 //

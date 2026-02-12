@@ -82,6 +82,9 @@ bool SystemOrchestrator::initialize() {
         // ── Stage 5: CognitiveDynamics ──────────────────────────────────
         log("  [5/15] CognitiveDynamics...");
         cognitive_ = std::make_unique<CognitiveDynamics>();
+        if (config_.enable_gdo) {
+            gdo_ = std::make_unique<GlobalDynamicsOperator>(config_.gdo_config);
+        }
         init_stage_ = 5;
 
         // ── Stage 6: CuriosityEngine ────────────────────────────────────
@@ -175,6 +178,26 @@ bool SystemOrchestrator::initialize() {
         // Ensure MicroModels for all concepts
         registry_->ensure_models_for(*ltm_);
 
+        // Start GDO
+        if (gdo_) {
+            gdo_->set_thinking_callback([this](const std::vector<ConceptId>& seeds) {
+                std::lock_guard<std::recursive_mutex> lock(subsystem_mtx_);
+                if (running_ && thinking_) {
+                    auto result = thinking_->execute(
+                        seeds, active_context_,
+                        *ltm_, *brain_->get_stm_mutable(), *brain_,
+                        *cognitive_, *curiosity_,
+                        *registry_, *embeddings_,
+                        understanding_.get(),
+                        kan_validator_.get()
+                    );
+                    run_evolution_after_thinking(result);
+                }
+            });
+            gdo_->start();
+            log("    GDO started");
+        }
+
         // Start streams
         stream_sched_->start();
         if (stream_monitor_) {
@@ -231,6 +254,13 @@ void SystemOrchestrator::shutdown() {
 
     running_ = false;
 
+    // Stop GDO before clearing callbacks
+    if (gdo_) {
+        log("  Stopping GDO...");
+        gdo_->set_thinking_callback(nullptr);
+        gdo_->stop();
+    }
+
     // Clear stream alert callback before stopping (prevents use-after-free)
     if (stream_orch_) {
         stream_orch_->set_alert_callback(nullptr);
@@ -283,6 +313,7 @@ void SystemOrchestrator::shutdown() {
     understanding_.reset();
     kan_adapter_.reset();
     curiosity_.reset();
+    gdo_.reset();
     cognitive_.reset();
     trainer_.reset();
     registry_.reset();
@@ -310,7 +341,7 @@ void SystemOrchestrator::cleanup_from_stage(int stage) {
     if (stage >= 8)  { understanding_.reset(); }
     if (stage >= 7)  { kan_adapter_.reset(); }
     if (stage >= 6)  { curiosity_.reset(); }
-    if (stage >= 5)  { cognitive_.reset(); }
+    if (stage >= 5)  { if (gdo_) { gdo_->stop(); gdo_.reset(); } cognitive_.reset(); }
     if (stage >= 4)  { trainer_.reset(); registry_.reset(); embeddings_.reset(); }
     if (stage >= 3)  { if (brain_) brain_->shutdown(); brain_.reset(); }
     if (stage >= 2)  { wal_.reset(); }
@@ -321,6 +352,15 @@ void SystemOrchestrator::cleanup_from_stage(int stage) {
 // ─── Foundation Seeding ──────────────────────────────────────────────────────
 
 void SystemOrchestrator::seed_foundation() {
+    if (!config_.foundation_file.empty()) {
+        if (FoundationConcepts::seed_from_file(*ltm_, config_.foundation_file)) {
+            log("    Seeded from file: " + config_.foundation_file);
+            log("    Concepts: " + std::to_string(ltm_->get_all_concept_ids().size()) +
+                ", Relations: " + std::to_string(ltm_->total_relation_count()));
+            return;
+        }
+        log("    File not found or invalid, falling back to hardcoded");
+    }
     FoundationConcepts::seed_all(*ltm_);
     log("    Seeded " + std::to_string(FoundationConcepts::concept_count()) +
         " concepts, " + std::to_string(FoundationConcepts::relation_count()) + " relations");
@@ -354,6 +394,12 @@ ChatResponse SystemOrchestrator::ask(const std::string& question) {
             seeds.push_back(cid);
             if (seeds.size() >= 5) break;
         }
+    }
+
+    // Inject energy into GDO from user query
+    if (gdo_ && !seeds.empty()) {
+        gdo_->inject_energy(config_.gdo_config.injection_boost);
+        gdo_->inject_seeds(seeds, 0.8);
     }
 
     // Run thinking cycle and pass results to ChatInterface
@@ -565,6 +611,11 @@ ThinkingResult SystemOrchestrator::run_thinking_cycle(const std::vector<ConceptI
         understanding_.get(),
         kan_validator_.get()
     );
+
+    // Feed cursor results into GDO
+    if (gdo_ && result.cursor_result) {
+        gdo_->feed_traversal_result(*result.cursor_result);
+    }
 
     // Feed thinking results into evolution pipeline
     run_evolution_after_thinking(result);

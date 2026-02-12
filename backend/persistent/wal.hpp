@@ -62,8 +62,8 @@ struct WALAddRelationPayload {
     uint64_t relation_id;
     uint64_t source;
     uint64_t target;
-    uint8_t  type;
-    uint8_t  _pad[7];
+    uint16_t type;
+    uint8_t  _pad[6];
     double   weight;
 };
 

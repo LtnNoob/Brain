@@ -6,6 +6,7 @@
 #include "../memory/stm.hpp"
 #include "../epistemic/epistemic_metadata.hpp"
 #include "../cognitive/cognitive_dynamics.hpp"
+#include "../cognitive/global_dynamics_operator.hpp"
 #include "../curiosity/curiosity_engine.hpp"
 #include "../micromodel/micro_model_registry.hpp"
 #include "../micromodel/embedding_manager.hpp"
@@ -65,6 +66,11 @@ public:
 
         // Bootstrap
         bool seed_foundation = true;
+        std::string foundation_file = "data/foundation.json";
+
+        // GlobalDynamicsOperator
+        bool enable_gdo = false;
+        GDOConfig gdo_config{};
 
         // ThinkingPipeline
         ThinkingPipeline::Config thinking_config{};
@@ -158,6 +164,7 @@ private:
 
     // 5. Cognitive
     std::unique_ptr<CognitiveDynamics> cognitive_;
+    std::unique_ptr<GlobalDynamicsOperator> gdo_;
 
     // 6. Curiosity
     std::unique_ptr<CuriosityEngine> curiosity_;

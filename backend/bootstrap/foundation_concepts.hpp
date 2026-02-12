@@ -33,6 +33,9 @@ public:
     static void seed_tier3_relations(LongTermMemory& ltm);
     static void seed_tier4_science(LongTermMemory& ltm);
 
+    // Seed from JSON file (returns true on success, false = fallback to hardcoded)
+    static bool seed_from_file(LongTermMemory& ltm, const std::string& path);
+
     // Counts (available before seeding — these are compile-time constants)
     static size_t concept_count();
     static size_t relation_count();

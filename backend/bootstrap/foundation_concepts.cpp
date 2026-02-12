@@ -1,4 +1,6 @@
 #include "foundation_concepts.hpp"
+#include "json_parser.hpp"
+#include "../memory/relation_type_registry.hpp"
 #include <vector>
 #include <string>
 #include <unordered_map>
@@ -434,6 +436,73 @@ const std::vector<RelationSeed> R3 = {
 };
 
 } // anonymous namespace
+
+static EpistemicType parse_epistemic_type(const std::string& s) {
+    if (s == "FACT") return EpistemicType::FACT;
+    if (s == "THEORY") return EpistemicType::THEORY;
+    if (s == "HYPOTHESIS") return EpistemicType::HYPOTHESIS;
+    if (s == "INFERENCE") return EpistemicType::INFERENCE;
+    if (s == "SPECULATION") return EpistemicType::SPECULATION;
+    return EpistemicType::DEFINITION;  // default
+}
+
+bool FoundationConcepts::seed_from_file(LongTermMemory& ltm, const std::string& path) {
+    auto root = JsonParser::parse_file(path);
+    if (!root || !root->is_object()) return false;
+
+    auto concepts_val = root->get("concepts");
+    if (!concepts_val || !concepts_val->is_array()) return false;
+
+    auto relations_val = root->get("relations");
+    if (!relations_val || !relations_val->is_array()) return false;
+
+    auto& reg = RelationTypeRegistry::instance();
+    std::unordered_map<std::string, ConceptId> label_map;
+
+    // Load concepts
+    for (const auto& c : concepts_val->as_array()) {
+        if (!c.is_object()) continue;
+        auto* lbl = c.get("label");
+        auto* def = c.get("definition");
+        if (!lbl || !lbl->is_string() || !def || !def->is_string()) continue;
+
+        auto* et = c.get("epistemic_type");
+        EpistemicType etype = EpistemicType::DEFINITION;
+        if (et && et->is_string()) etype = parse_epistemic_type(et->as_string());
+
+        double trust = 0.95;
+        auto* tr = c.get("trust");
+        if (tr && tr->is_number()) trust = tr->as_number();
+
+        auto cid = ltm.store_concept(lbl->as_string(), def->as_string(),
+            EpistemicMetadata(etype, EpistemicStatus::ACTIVE, trust));
+        label_map[lbl->as_string()] = cid;
+    }
+
+    // Load relations
+    for (const auto& r : relations_val->as_array()) {
+        if (!r.is_object()) continue;
+        auto* src = r.get("source");
+        auto* tgt = r.get("target");
+        auto* tp = r.get("type");
+        if (!src || !src->is_string() || !tgt || !tgt->is_string() || !tp || !tp->is_string()) continue;
+
+        auto si = label_map.find(src->as_string());
+        auto ti = label_map.find(tgt->as_string());
+        if (si == label_map.end() || ti == label_map.end()) continue;
+
+        auto rel_type = reg.find_by_name(tp->as_string());
+        if (!rel_type) continue;
+
+        double weight = 0.8;
+        auto* wt = r.get("weight");
+        if (wt && wt->is_number()) weight = wt->as_number();
+
+        ltm.add_relation(si->second, ti->second, *rel_type, weight);
+    }
+
+    return true;
+}
 
 void FoundationConcepts::seed_all(LongTermMemory& ltm) {
     g_lmap.clear();

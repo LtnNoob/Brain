@@ -70,7 +70,8 @@ std::vector<TrainingSample> MicroTrainer::generate_samples(
         }
 
         // Use a varied relation type for negatives (cycle through types)
-        RelationType neg_type = static_cast<RelationType>(neg_count % NUM_RELATION_TYPES);
+        // Cycle through the original 10 builtin types for negative samples
+        RelationType neg_type = static_cast<RelationType>(neg_count % 10);
         TrainingSample sample;
         sample.relation_embedding = embeddings.get_relation_embedding(neg_type);
         sample.context_embedding = recall_ctx;

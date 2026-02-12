@@ -66,15 +66,25 @@ struct PersistentRelationRecord {
     uint64_t relation_id;       // 8B
     uint64_t source;            // 8B
     uint64_t target;            // 8B
-    uint8_t  type;              // 1B (RelationType)
+    uint8_t  type;              // 1B (RelationType low byte)
+    uint8_t  type_high;         // 1B (RelationType high byte — was _pad[0])
     uint8_t  flags;             // 1B (bit 0 = deleted)
-    uint8_t  _pad[6];          // 6B alignment
+    uint8_t  _pad[5];          // 5B alignment (was 6)
     double   weight;            // 8B
     // === Refactor: 3 doubles carved from _reserved (24B used, 0B remain) ===
     double   dynamic_weight;    // 8B — Runtime-adjusted weight [0,1]
     double   inhibition_factor; // 8B — Inhibition from conflict [0,1]
     double   structural_strength; // 8B — Graph-structural strength [0,1]
     // Total: 64 bytes (unchanged)
+
+    // Type accessor helpers (combines type + type_high into uint16_t)
+    uint16_t get_type_id() const {
+        return static_cast<uint16_t>(type) | (static_cast<uint16_t>(type_high) << 8);
+    }
+    void set_type_id(uint16_t val) {
+        type = static_cast<uint8_t>(val & 0xFF);
+        type_high = static_cast<uint8_t>((val >> 8) & 0xFF);
+    }
     
     bool is_deleted() const { return flags & 0x01; }
     void mark_deleted() { flags |= 0x01; }

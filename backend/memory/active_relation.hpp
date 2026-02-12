@@ -7,18 +7,36 @@
 namespace brain19 {
 
 
-// Relation types (must match LTM definition)
-enum class RelationType {
-    IS_A,
-    HAS_PROPERTY,
-    CAUSES,
-    ENABLES,
-    PART_OF,
-    SIMILAR_TO,
-    CONTRADICTS,
-    SUPPORTS,
-    TEMPORAL_BEFORE,
-    CUSTOM
+// Relation types — widened to uint16_t for runtime extensibility.
+// Original 10 values (0-9) are unchanged for binary compatibility.
+// New built-in types: 10-19. Runtime-registered types: >= 1000.
+enum class RelationType : uint16_t {
+    // === Original 10 (0-9) — backward compatible ===
+    IS_A            = 0,
+    HAS_PROPERTY    = 1,
+    CAUSES          = 2,
+    ENABLES         = 3,
+    PART_OF         = 4,
+    SIMILAR_TO      = 5,
+    CONTRADICTS     = 6,
+    SUPPORTS        = 7,
+    TEMPORAL_BEFORE = 8,
+    CUSTOM          = 9,
+
+    // === New built-in types (10-19) ===
+    PRODUCES        = 10,
+    REQUIRES        = 11,
+    USES            = 12,
+    SOURCE          = 13,
+    HAS_PART        = 14,   // inverse of PART_OF
+    TEMPORAL_AFTER  = 15,   // inverse of TEMPORAL_BEFORE
+    INSTANCE_OF     = 16,
+    DERIVED_FROM    = 17,
+    IMPLIES         = 18,
+    ASSOCIATED_WITH = 19,
+
+    // === Runtime-registered types start here ===
+    RUNTIME_BASE    = 1000,
 };
 
 // Active relation in STM

@@ -1,4 +1,5 @@
 #include "domain_manager.hpp"
+#include "../memory/relation_type_registry.hpp"
 #include <algorithm>
 #include <unordered_set>
 
@@ -33,32 +34,34 @@ DomainType DomainManager::classify_relations(
     int part_of_count = 0;
     int social_count = 0;  // SUPPORTS, CONTRADICTS
 
+    auto& reg = RelationTypeRegistry::instance();
     for (const auto& rel : relations) {
-        switch (rel.type) {
-            case RelationType::CAUSES:
-            case RelationType::ENABLES:
+        auto cat = reg.get_category(rel.type);
+        switch (cat) {
+            case RelationCategory::CAUSAL:
+            case RelationCategory::FUNCTIONAL:
                 causes_count++;
                 break;
-            case RelationType::TEMPORAL_BEFORE:
+            case RelationCategory::TEMPORAL:
                 temporal_count++;
                 break;
-            case RelationType::IS_A:
+            case RelationCategory::HIERARCHICAL:
                 is_a_count++;
                 break;
-            case RelationType::HAS_PROPERTY:
-                has_property_count++;
+            case RelationCategory::COMPOSITIONAL:
+                if (rel.type == RelationType::HAS_PROPERTY)
+                    has_property_count++;
+                else
+                    part_of_count++;
                 break;
-            case RelationType::SIMILAR_TO:
+            case RelationCategory::SIMILARITY:
                 similar_count++;
                 break;
-            case RelationType::PART_OF:
-                part_of_count++;
-                break;
-            case RelationType::SUPPORTS:
-            case RelationType::CONTRADICTS:
+            case RelationCategory::OPPOSITION:
+            case RelationCategory::EPISTEMIC:
                 social_count++;
                 break;
-            case RelationType::CUSTOM:
+            default:
                 break;
         }
     }

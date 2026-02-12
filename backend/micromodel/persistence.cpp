@@ -1,4 +1,5 @@
 #include "persistence.hpp"
+#include "../memory/relation_type_registry.hpp"
 
 #include <cstring>
 #include <fstream>
@@ -8,9 +9,11 @@ namespace brain19 {
 namespace persistence {
 
 static constexpr char MAGIC[4] = {'B', 'M', '1', '9'};
-static constexpr uint32_t VERSION = 1;
+static constexpr uint32_t VERSION = 2;  // v2: counted relation embeddings
+static constexpr uint32_t VERSION_V1 = 1;
 static constexpr size_t HEADER_SIZE = 32;
 static constexpr size_t MODEL_SIZE = 8 + FLAT_SIZE * 8;  // 3448 bytes
+static constexpr size_t V1_NUM_RELATION_TYPES = 10;
 
 // XOR checksum over 8-byte blocks
 static uint64_t compute_checksum(const std::vector<uint8_t>& data) {
@@ -71,10 +74,27 @@ bool save(const std::string& filepath,
         write_bytes(flat.data(), FLAT_SIZE * sizeof(double));
     }
 
-    // --- Relation embeddings ---
-    const auto& rel_embs = embeddings.relation_embeddings();
-    for (size_t i = 0; i < NUM_RELATION_TYPES; ++i) {
-        write_bytes(rel_embs[i].data(), EMBED_DIM * sizeof(double));
+    // --- Relation embeddings (v2: counted, with type IDs) ---
+    auto& reg = RelationTypeRegistry::instance();
+    auto all_types = reg.all_types();
+    uint32_t rel_emb_count = static_cast<uint32_t>(all_types.size());
+    write_bytes(&rel_emb_count, 4);
+
+    for (RelationType rt : all_types) {
+        uint16_t type_val = static_cast<uint16_t>(rt);
+        write_bytes(&type_val, 2);
+        const Vec10& emb = reg.get_embedding(rt);
+        write_bytes(emb.data(), EMBED_DIM * sizeof(double));
+    }
+
+    // --- Concept embeddings (v2) ---
+    const auto& concept_emb_data = embeddings.concept_embeddings().data();
+    uint32_t concept_emb_count = static_cast<uint32_t>(concept_emb_data.size());
+    write_bytes(&concept_emb_count, 4);
+    for (const auto& [cid, emb] : concept_emb_data) {
+        uint64_t id_val = cid;
+        write_bytes(&id_val, 8);
+        write_bytes(emb.data(), EMBED_DIM * sizeof(double));
     }
 
     // --- Context embeddings ---
@@ -129,7 +149,6 @@ bool load(const std::string& filepath,
     };
 
     // --- Verify checksum ---
-    // Checksum is last 8 bytes, computed over everything before it
     if (buffer.size() < 8) return false;
     size_t data_size = buffer.size() - 8;
     std::vector<uint8_t> data_portion(buffer.begin(), buffer.begin() + data_size);
@@ -145,7 +164,7 @@ bool load(const std::string& filepath,
 
     uint32_t version = 0;
     if (!read_bytes(&version, 4)) return false;
-    if (version != VERSION) return false;
+    if (version != VERSION && version != VERSION_V1) return false;
 
     uint64_t model_count = 0;
     if (!read_bytes(&model_count, 8)) return false;
@@ -172,9 +191,42 @@ bool load(const std::string& filepath,
     }
 
     // --- Relation embeddings ---
-    auto& rel_embs = embeddings.relation_embeddings_mut();
-    for (size_t i = 0; i < NUM_RELATION_TYPES; ++i) {
-        if (!read_bytes(rel_embs[i].data(), EMBED_DIM * sizeof(double))) return false;
+    if (version == VERSION_V1) {
+        // v1: fixed 10 relation embeddings (skip — registry has its own defaults)
+        Vec10 emb;
+        for (size_t i = 0; i < V1_NUM_RELATION_TYPES; ++i) {
+            if (!read_bytes(emb.data(), EMBED_DIM * sizeof(double))) return false;
+            // Discard: registry manages embeddings now
+        }
+    } else {
+        // v2: counted relation embeddings with type IDs
+        uint32_t rel_emb_count = 0;
+        if (!read_bytes(&rel_emb_count, 4)) return false;
+
+        for (uint32_t i = 0; i < rel_emb_count; ++i) {
+            uint16_t type_val = 0;
+            if (!read_bytes(&type_val, 2)) return false;
+            Vec10 emb;
+            if (!read_bytes(emb.data(), EMBED_DIM * sizeof(double))) return false;
+            // Note: we read but don't override registry defaults
+            // Future: could be used for learned embeddings
+        }
+    }
+
+    // --- Concept embeddings (v2) ---
+    if (version >= VERSION) {
+        uint32_t concept_emb_count = 0;
+        if (!read_bytes(&concept_emb_count, 4)) return false;
+
+        auto& concept_store = embeddings.concept_embeddings().data_mut();
+        concept_store.clear();
+        for (uint32_t i = 0; i < concept_emb_count; ++i) {
+            uint64_t id_val = 0;
+            if (!read_bytes(&id_val, 8)) return false;
+            Vec10 emb;
+            if (!read_bytes(emb.data(), EMBED_DIM * sizeof(double))) return false;
+            concept_store[static_cast<ConceptId>(id_val)] = emb;
+        }
     }
 
     // --- Context embeddings ---
@@ -219,15 +271,15 @@ bool validate(const std::string& filepath) {
     // Check version
     uint32_t version = 0;
     std::memcpy(&version, buffer.data() + 4, 4);
-    if (version != VERSION) return false;
+    if (version != VERSION && version != VERSION_V1) return false;
 
     // Verify checksum
     if (buffer.size() < 8) return false;
-    size_t data_size = buffer.size() - 8;
-    std::vector<uint8_t> data_portion(buffer.begin(), buffer.begin() + data_size);
+    size_t data_size_val = buffer.size() - 8;
+    std::vector<uint8_t> data_portion(buffer.begin(), buffer.begin() + data_size_val);
     uint64_t expected = compute_checksum(data_portion);
     uint64_t stored = 0;
-    std::memcpy(&stored, buffer.data() + data_size, 8);
+    std::memcpy(&stored, buffer.data() + data_size_val, 8);
 
     return expected == stored;
 }

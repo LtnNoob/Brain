@@ -5,16 +5,17 @@ CXXFLAGS = -std=c++20 -Wall -Wextra -Wpedantic -O2 -I.
 LDFLAGS = -lcurl -pthread
 
 # === Source Groups ===
-MEMORY_SOURCES = memory/stm.cpp memory/brain_controller.cpp
+MEMORY_SOURCES = memory/stm.cpp memory/brain_controller.cpp memory/relation_type_registry.cpp
 KAN_SOURCES = kan/kan_node.cpp kan/kan_layer.cpp kan/kan_module.cpp
 ADAPTER_SOURCES = adapter/kan_adapter.cpp
-CURIOSITY_SOURCES = curiosity/curiosity_engine.cpp
+CURIOSITY_SOURCES = curiosity/curiosity_engine.cpp curiosity/goal_generator.cpp
 SNAPSHOT_SOURCES = snapshot_generator.cpp
 LTM_SOURCES = ltm/long_term_memory.cpp
 MICROMODEL_SOURCES = micromodel/micro_model.cpp micromodel/micro_model_registry.cpp \
                      micromodel/embedding_manager.cpp micromodel/micro_trainer.cpp \
-                     micromodel/relevance_map.cpp micromodel/persistence.cpp
-COGNITIVE_SOURCES = cognitive/cognitive_dynamics.cpp
+                     micromodel/relevance_map.cpp micromodel/persistence.cpp \
+                     micromodel/concept_embedding_store.cpp
+COGNITIVE_SOURCES = cognitive/cognitive_dynamics.cpp cognitive/global_dynamics_operator.cpp
 UNDERSTANDING_SOURCES = understanding/understanding_layer.cpp understanding/mini_llm.cpp
 LLM_SOURCES = llm/chat_interface.cpp
 IMPORTER_SOURCES = importers/wikipedia_importer.cpp importers/scholar_importer.cpp \
@@ -32,7 +33,7 @@ HYBRID_SOURCES = hybrid/kan_validator.cpp hybrid/domain_manager.cpp \
 EVOLUTION_SOURCES = evolution/pattern_discovery.cpp evolution/epistemic_promotion.cpp \
                     evolution/concept_proposal.cpp
 BOOTSTRAP_SOURCES = bootstrap/foundation_concepts.cpp bootstrap/bootstrap_interface.cpp \
-                    bootstrap/context_accumulator.cpp
+                    bootstrap/context_accumulator.cpp bootstrap/json_parser.cpp
 STREAMS_SOURCES = streams/think_stream.cpp streams/stream_orchestrator.cpp \
                   streams/stream_scheduler.cpp streams/stream_monitor.cpp
 CURSOR_SOURCES = cursor/focus_cursor.cpp cursor/focus_cursor_manager.cpp \
@@ -60,7 +61,9 @@ TARGETS = brain19 \
           test_brain test_micromodel test_ingestor test_persistent_ltm \
           test_stm_snapshot brain19_cli \
           test_focus_cursor test_termination_conflict \
-          test_template_engine test_pipeline_cursor
+          test_template_engine test_pipeline_cursor \
+          test_relation_registry test_json_parser \
+          test_concept_embeddings test_gdo test_goal_generator
 
 .PHONY: all clean run
 
@@ -127,6 +130,21 @@ test_template_engine: cursor/test_template_engine.o $(CORE_OBJECTS)
 	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
 test_pipeline_cursor: core/test_pipeline_cursor.o $(CORE_OBJECTS)
+	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
+
+test_relation_registry: memory/test_relation_registry.o $(CORE_OBJECTS)
+	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
+
+test_json_parser: bootstrap/test_json_parser.o $(CORE_OBJECTS)
+	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
+
+test_concept_embeddings: micromodel/test_concept_embeddings.o $(CORE_OBJECTS)
+	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
+
+test_gdo: cognitive/test_gdo.o $(CORE_OBJECTS)
+	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
+
+test_goal_generator: curiosity/test_goal_generator.o $(CORE_OBJECTS)
 	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
 # --- Pattern Rule ---

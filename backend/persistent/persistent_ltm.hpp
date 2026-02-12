@@ -73,7 +73,7 @@ public:
     );
     void replay_add_relation(
         uint64_t relation_id, uint64_t source, uint64_t target,
-        uint8_t type, double weight
+        uint16_t type, double weight
     );
     
 private:

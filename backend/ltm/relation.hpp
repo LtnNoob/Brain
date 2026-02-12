@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../memory/active_relation.hpp"
+#include "../memory/relation_type_registry.hpp"
 #include <cstdint>
 #include <string>
 #include "../common/types.hpp"
@@ -71,21 +72,9 @@ private:
     }
 };
 
-// Convert RelationType to string (mirrors active_relation.hpp)
+// Convert RelationType to string — delegates to registry for dynamic type support
 inline const char* relation_type_to_string(RelationType type) {
-    switch (type) {
-        case RelationType::IS_A: return "IS_A";
-        case RelationType::HAS_PROPERTY: return "HAS_PROPERTY";
-        case RelationType::CAUSES: return "CAUSES";
-        case RelationType::ENABLES: return "ENABLES";
-        case RelationType::PART_OF: return "PART_OF";
-        case RelationType::SIMILAR_TO: return "SIMILAR_TO";
-        case RelationType::CONTRADICTS: return "CONTRADICTS";
-        case RelationType::SUPPORTS: return "SUPPORTS";
-        case RelationType::TEMPORAL_BEFORE: return "TEMPORAL_BEFORE";
-        case RelationType::CUSTOM: return "CUSTOM";
-        default: return "UNKNOWN";
-    }
+    return RelationTypeRegistry::instance().get_name(type).c_str();
 }
 
 } // namespace brain19

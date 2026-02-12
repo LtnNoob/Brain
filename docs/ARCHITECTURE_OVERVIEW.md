@@ -184,7 +184,7 @@ SystemOrchestrator owns all subsystems via `unique_ptr` and performs a 14-stage 
 | 8 | **Understanding** | UnderstandingLayer, MiniLLM | Semantic analysis via Mini-LLMs |
 | 9 | **Hybrid** | KanValidator, DomainManager, RefinementLoop, EpistemicBridge, HypothesisTranslator | KAN-LLM bidirectional validation |
 | 10 | **Ingestion** | IngestionPipeline (TextChunker → EntityExtractor → RelationExtractor → TrustTagger → ProposalQueue) | Knowledge import pipeline |
-| 11 | **Chat** | ChatInterface, OllamaClient | LLM verbalization (llama3.2:1b) |
+| 11 | **Chat** | ChatInterface, OllamaClient | LLM verbalization (llama3.2:3b) |
 | 12 | **Shared State** | SharedLTM, SharedSTM, SharedRegistry, SharedEmbeddings | Thread-safe wrappers for multi-stream access |
 | 13 | **Streams** | StreamOrchestrator, ThinkStreams, StreamScheduler, StreamMonitor | Parallel autonomous thinking threads |
 | 14 | **Evolution** | PatternDiscovery, EpistemicPromotion, ConceptProposer | Dynamic knowledge evolution |
@@ -284,7 +284,7 @@ Epistemic Values        →
 
 When the LLM is optionally used for creative hypothesis generation, these **always** pass through epistemic validation. LLM proposals receive a trust ceiling of 0.3–0.5 and are never automatically accepted.
 
-The LLM backend is Ollama (model: `llama3.2:1b` on port 11434), configured via `--ollama-host` and `--ollama-model` flags.
+The LLM backend is Ollama (model: `llama3.2:3b` on port 11434), configured via `--ollama-host` and `--ollama-model` flags.
 
 > See: [`backend/llm/chat_interface.hpp`](../backend/llm/chat_interface.hpp)
 

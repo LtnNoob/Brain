@@ -100,14 +100,14 @@ else
 fi
 
 # Check if model exists
-if ollama list | grep -q "llama3.2:1b"; then
-    echo -e "${GREEN}✓${NC} Model llama3.2:1b bereits vorhanden"
+if ollama list | grep -q "llama3.2:3b"; then
+    echo -e "${GREEN}✓${NC} Model llama3.2:3b bereits vorhanden"
 else
     echo "Lade Model herunter (kann einige Minuten dauern)..."
-    ollama pull llama3.2:1b
+    ollama pull llama3.2:3b
     
     if [ $? -eq 0 ]; then
-        echo -e "${GREEN}✓${NC} Model llama3.2:1b heruntergeladen"
+        echo -e "${GREEN}✓${NC} Model llama3.2:3b heruntergeladen"
     else
         echo -e "${RED}✗${NC} Model-Download fehlgeschlagen"
         exit 1

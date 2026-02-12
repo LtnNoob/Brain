@@ -1192,7 +1192,7 @@ flowchart TD
     end
 
     subgraph External["External Services"]
-        OLLAMA[Ollama<br/>:11434<br/>llama3.2:3b]
+        OLLAMA[Ollama<br/>:11434<br/>llama3.2:1b]
         WIKI[Wikipedia API<br/>Article import]
         SCHOLAR[Google Scholar<br/>Paper search]
     end

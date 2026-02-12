@@ -28,8 +28,8 @@ curl -fsSL https://ollama.com/install.sh | sh
 # Ollama starten (in separatem Terminal)
 ollama serve
 
-# Model herunterladen (empfohlen: llama3.2:3b)
-ollama pull llama3.2:3b
+# Model herunterladen (empfohlen: llama3.2:1b)
+ollama pull llama3.2:1b
 ```
 
 ### 3. Brain19 kompilieren & starten
@@ -46,7 +46,7 @@ make -f Makefile.ollama
 
 ### Klein & Schnell (empfohlen für Start)
 ```bash
-ollama pull llama3.2:3b      # 2GB RAM, schnell
+ollama pull llama3.2:1b      # 2GB RAM, schnell
 ollama pull phi3:mini         # 2GB RAM, sehr effizient
 ```
 
@@ -61,7 +61,7 @@ ollama pull llama3.1:8b       # 8GB RAM, sehr gut
 ollama pull llama3.1:70b      # 40GB RAM, exzellent
 ```
 
-**Tipp:** Start mit `llama3.2:3b` - klein, schnell, gut genug!
+**Tipp:** Start mit `llama3.2:1b` - klein, schnell, gut genug!
 
 ---
 
@@ -76,7 +76,7 @@ ollama pull llama3.1:70b      # 40GB RAM, exzellent
 Initialisiere Brain19...
 ✓ BrainController
 ✓ LongTermMemory
-✓ Ollama LLM initialized: llama3.2:3b
+✓ Ollama LLM initialized: llama3.2:1b
 ✓ ChatInterface (LLM aktiv)
 
 Lade Demo-Wissen...
@@ -272,7 +272,7 @@ ollama serve
 ollama list
 
 # Pull missing model
-ollama pull llama3.2:3b
+ollama pull llama3.2:1b
 ```
 
 ### Kompilierungsfehler
@@ -299,7 +299,7 @@ Das kann bei kleinen Modellen passieren. Versuchen Sie:
 
 | Model | RAM | Latenz | Qualität |
 |-------|-----|--------|----------|
-| llama3.2:3b | 2GB | ~1-2s | Gut |
+| llama3.2:1b | 2GB | ~1-2s | Gut |
 | phi3:mini | 2GB | ~1-2s | Gut |
 | mistral:7b | 5GB | ~2-4s | Sehr gut |
 | llama3.1:8b | 8GB | ~3-5s | Exzellent |

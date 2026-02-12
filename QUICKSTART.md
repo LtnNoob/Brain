@@ -24,7 +24,7 @@ cd backend
 1. ✅ Installiert libcurl & nlohmann-json
 2. ✅ Installiert Ollama
 3. ✅ Kompiliert Brain19
-4. ✅ Lädt llama3.2:3b Model herunter
+4. ✅ Lädt llama3.2:1b Model herunter
 5. ✅ Verifiziert Installation
 
 **Zeit:** ~5-10 Minuten (abhängig von Download-Geschwindigkeit)
@@ -47,7 +47,7 @@ sudo apt install -y libcurl4-openssl-dev nlohmann-json3-dev
 ```bash
 curl -fsSL https://ollama.com/install.sh | sh
 ollama serve &  # In Hintergrund starten
-ollama pull llama3.2:3b
+ollama pull llama3.2:1b
 ```
 
 ### 3. Brain19 kompilieren
@@ -173,7 +173,7 @@ ollama serve
 ### Model nicht gefunden
 ```bash
 ollama list  # Verfügbare Models
-ollama pull llama3.2:3b  # Model herunterladen
+ollama pull llama3.2:1b  # Model herunterladen
 ```
 
 ### Kompilierungsfehler

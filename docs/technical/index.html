@@ -567,49 +567,302 @@ summary:hover { text-decoration:underline; }
 <section id="understanding">
 <h2>Module: understanding</h2>
 <p><strong>Files:</strong> <code>understanding/understanding_proposals.hpp</code>, <code>mini_llm.hpp/.cpp</code>, <code>ollama_mini_llm.hpp/.cpp</code>, <code>mini_llm_factory.hpp</code>, <code>understanding_layer.hpp/.cpp</code></p>
-<p><strong>Purpose:</strong> Semantic analysis layer using Mini-LLMs. All outputs are HYPOTHESIS. READ-ONLY LTM access.</p>
+<p><strong>Purpose:</strong> Semantic analysis layer using Mini-LLMs. All outputs are HYPOTHESIS. READ-ONLY LTM access. Understanding marks patterns; Epistemic Core decides.</p>
+<p><strong>Dependencies:</strong> epistemic/, ltm/, memory/ (STM), cognitive/ (CognitiveDynamics), llm/ (OllamaClient)</p>
 
-<h3>Proposal Structs</h3>
-<p><strong>MeaningProposal:</strong> Semantic interpretation. epistemic_type ALWAYS HYPOTHESIS (immutable).</p>
-<p><strong>HypothesisProposal:</strong> Pattern-based hypothesis. SuggestedEpistemic enforces HYPOTHESIS type.</p>
-<p><strong>AnalogyProposal:</strong> Structural similarity detection (not semantic).</p>
-<p><strong>ContradictionProposal:</strong> Inconsistency marker. Understanding marks; Epistemic Core resolves.</p>
+<h3>Struct: MeaningProposal</h3>
+<table><tr><th>Name</th><th>Type</th><th>Description</th></tr>
+<tr><td><code>proposal_id</code></td><td><code>uint64_t</code></td><td>Unique proposal ID</td></tr>
+<tr><td><code>source_concepts</code></td><td><code>vector&lt;ConceptId&gt;</code></td><td>READ-ONLY concept references</td></tr>
+<tr><td><code>interpretation</code></td><td><code>string</code></td><td>Proposed semantic interpretation</td></tr>
+<tr><td><code>reasoning</code></td><td><code>string</code></td><td>Why this interpretation</td></tr>
+<tr><td><code>model_confidence</code></td><td><code>double</code></td><td>[0,1] model confidence (NOT epistemic trust)</td></tr>
+<tr><td><code>source_model</code></td><td><code>string</code></td><td>Mini-LLM identifier</td></tr>
+<tr><td><code>epistemic_type</code></td><td><code>EpistemicType</code></td><td>ALWAYS HYPOTHESIS (immutable, enforced in constructor)</td></tr>
+</table>
+
+<h3>Struct: HypothesisProposal</h3>
+<table><tr><th>Name</th><th>Type</th><th>Description</th></tr>
+<tr><td><code>proposal_id</code></td><td><code>uint64_t</code></td><td>Unique proposal ID</td></tr>
+<tr><td><code>evidence_concepts</code></td><td><code>vector&lt;ConceptId&gt;</code></td><td>READ-ONLY evidence references</td></tr>
+<tr><td><code>hypothesis_statement</code></td><td><code>string</code></td><td>Proposed hypothesis</td></tr>
+<tr><td><code>supporting_reasoning</code></td><td><code>string</code></td><td>Reasoning chain</td></tr>
+<tr><td><code>detected_patterns</code></td><td><code>vector&lt;string&gt;</code></td><td>Pattern names detected</td></tr>
+<tr><td><code>model_confidence</code></td><td><code>double</code></td><td>[0,1] clamped</td></tr>
+<tr><td><code>source_model</code></td><td><code>string</code></td><td>Mini-LLM identifier</td></tr>
+<tr><td><code>suggested_epistemic</code></td><td><code>SuggestedEpistemic</code></td><td>ALWAYS HYPOTHESIS (constructor enforces regardless of input type)</td></tr>
+</table>
+<p>Inner struct <code>SuggestedEpistemic</code>: <code>suggested_type</code> (ALWAYS HYPOTHESIS), <code>suggested_trust</code> (clamped [0,1], default 0.5). ENFORCEMENT: type is ALWAYS HYPOTHESIS regardless of constructor input.</p>
+
+<h3>Struct: AnalogyProposal</h3>
+<table><tr><th>Name</th><th>Type</th><th>Description</th></tr>
+<tr><td><code>proposal_id</code></td><td><code>uint64_t</code></td><td>Unique proposal ID</td></tr>
+<tr><td><code>source_domain / target_domain</code></td><td><code>vector&lt;ConceptId&gt;</code></td><td>Two concept domains being compared</td></tr>
+<tr><td><code>mapping_description</code></td><td><code>string</code></td><td>How source maps to target</td></tr>
+<tr><td><code>structural_similarity</code></td><td><code>double</code></td><td>[0,1] structural (not semantic) similarity</td></tr>
+<tr><td><code>model_confidence</code></td><td><code>double</code></td><td>[0,1] clamped</td></tr>
+</table>
+
+<h3>Struct: ContradictionProposal</h3>
+<table><tr><th>Name</th><th>Type</th><th>Description</th></tr>
+<tr><td><code>proposal_id</code></td><td><code>uint64_t</code></td><td>Unique proposal ID</td></tr>
+<tr><td><code>concept_a / concept_b</code></td><td><code>ConceptId</code></td><td>Potentially contradicting concepts</td></tr>
+<tr><td><code>contradiction_description</code></td><td><code>string</code></td><td>Description of inconsistency</td></tr>
+<tr><td><code>reasoning</code></td><td><code>string</code></td><td>Why this is contradictory</td></tr>
+<tr><td><code>severity</code></td><td><code>double</code></td><td>[0,1] model's severity assessment (NOT epistemic judgment)</td></tr>
+<tr><td><code>model_confidence</code></td><td><code>double</code></td><td>[0,1] confidence this IS a contradiction</td></tr>
+</table>
 
 <h3>Abstract Class: MiniLLM <span class="tag tag-ro">READ-ONLY</span></h3>
-<p>CAN: interpret texts, detect patterns, generate proposals. CANNOT: modify KG, set trust, make epistemic decisions, promote FACTs.</p>
-<details><summary>Pure Virtual Methods</summary>
+<p><strong>Architecture Contract:</strong> CAN: interpret texts, detect patterns, generate proposals. CANNOT: modify KG, set trust, make epistemic decisions, promote FACTs.</p>
+<details><summary>Pure Virtual Methods (5)</summary>
 <ul>
-<li><code>string get_model_id() const</code></li>
-<li><code>vector&lt;MeaningProposal&gt; extract_meaning(active_concepts, ltm, stm, context) const</code></li>
-<li><code>vector&lt;HypothesisProposal&gt; generate_hypotheses(evidence, ltm, stm, context) const</code></li>
-<li><code>vector&lt;AnalogyProposal&gt; detect_analogies(set_a, set_b, ltm, stm, context) const</code></li>
-<li><code>vector&lt;ContradictionProposal&gt; detect_contradictions(active, ltm, stm, context) const</code></li>
+<li><code>string get_model_id() const = 0</code></li>
+<li><code>vector&lt;MeaningProposal&gt; extract_meaning(active_concepts, ltm, stm, context) const = 0</code></li>
+<li><code>vector&lt;HypothesisProposal&gt; generate_hypotheses(evidence, ltm, stm, context) const = 0</code></li>
+<li><code>vector&lt;AnalogyProposal&gt; detect_analogies(set_a, set_b, ltm, stm, context) const = 0</code></li>
+<li><code>vector&lt;ContradictionProposal&gt; detect_contradictions(active, ltm, stm, context) const = 0</code></li>
 </ul>
 </details>
 
 <h3>Class: StubMiniLLM</h3>
-<p>Placeholder for testing. Conservative confidence (0.3-0.5). CRITICAL: throws if proposal not HYPOTHESIS.</p>
+<p>Placeholder for testing. Conservative confidence (0.3-0.5). Generates simple proposals based on concept labels and relation patterns. CRITICAL: throws if proposal type is not HYPOTHESIS.</p>
 
 <h3>Class: OllamaMiniLLM <span class="tag tag-ext">EXTERNAL</span></h3>
-<p>Real semantic analysis via Ollama API. Confidence estimated from hedging/certainty language markers.</p>
+<p>Real semantic analysis via Ollama API. Builds prompts with concept context, sends to LLM, parses responses. Confidence estimated from hedging ("maybe", "might") and certainty ("clearly", "definitely") language markers.</p>
 
-<h3>Class: UnderstandingLayer</h3>
-<p>Aggregates proposals from registered Mini-LLMs. Filters by confidence thresholds. Rate-limited (max_proposals_per_cycle).</p>
+<h3>Class: MiniLLMFactory</h3>
+<p>Factory: creates StubMiniLLM (always available) or OllamaMiniLLM (requires Ollama). Selection by string identifier.</p>
 
-<div class="invariant"><strong>Invariant:</strong> All proposals HYPOTHESIS-typed. All LTM access read-only. No state modification. Deterministic aggregation.</div>
-<div class="weak"><strong>Weak Point:</strong> Simple string-based parsing for Ollama responses (brittle). No retry logic. proposal_counter_ not thread-safe.</div>
+<h3>Struct: UnderstandingLayerConfig</h3>
+<table><tr><th>Name</th><th>Type</th><th>Default</th><th>Description</th></tr>
+<tr><td><code>enable_parallel_llms</code></td><td><code>bool</code></td><td>false</td><td>Conservative: run Mini-LLMs sequentially</td></tr>
+<tr><td><code>min_meaning_confidence</code></td><td><code>double</code></td><td>0.3</td><td>Filter threshold for meaning proposals</td></tr>
+<tr><td><code>min_hypothesis_confidence</code></td><td><code>double</code></td><td>0.2</td><td>Filter threshold for hypothesis proposals</td></tr>
+<tr><td><code>min_analogy_confidence</code></td><td><code>double</code></td><td>0.4</td><td>Filter threshold for analogy proposals</td></tr>
+<tr><td><code>min_contradiction_severity</code></td><td><code>double</code></td><td>0.5</td><td>Filter threshold for contradiction proposals</td></tr>
+<tr><td><code>max_proposals_per_cycle</code></td><td><code>size_t</code></td><td>10</td><td>Rate limit per understanding cycle</td></tr>
+<tr><td><code>verbose_logging</code></td><td><code>bool</code></td><td>false</td><td>Enable detailed logging</td></tr>
+</table>
+
+<h3>Class: UnderstandingLayer <span class="tag tag-ro">READ-ONLY</span></h3>
+<p><strong>Purpose:</strong> Aggregates proposals from registered Mini-LLMs. Filters by confidence thresholds. Rate-limited. All outputs HYPOTHESIS-typed.</p>
+<table><tr><th>Name</th><th>Type</th><th>Description</th></tr>
+<tr><td><code>config_</code></td><td><code>UnderstandingLayerConfig</code></td><td>Configuration</td></tr>
+<tr><td><code>mini_llms_</code></td><td><code>vector&lt;unique_ptr&lt;MiniLLM&gt;&gt;</code></td><td>Owned Mini-LLM instances</td></tr>
+<tr><td><code>stats_</code></td><td><code>Statistics</code></td><td>Cumulative proposal counts per type + cycle count</td></tr>
+</table>
+<h4>Struct: UnderstandingResult</h4>
+<p>Contains <code>meaning_proposals</code>, <code>hypothesis_proposals</code>, <code>analogy_proposals</code>, <code>contradiction_proposals</code>, <code>total_proposals_generated</code>, <code>proposals_filtered_by_threshold</code>.</p>
+<details><summary>All Methods (8)</summary>
+<ul>
+<li><code>void register_mini_llm(unique_ptr&lt;MiniLLM&gt;)</code> -- Takes ownership of Mini-LLM.</li>
+<li><code>vector&lt;MeaningProposal&gt; analyze_meaning(active_concepts, ltm, stm, context)</code> -- Iterates all Mini-LLMs, calls extract_meaning(), aggregates, filters by min_meaning_confidence.</li>
+<li><code>vector&lt;HypothesisProposal&gt; propose_hypotheses(evidence, ltm, stm, context)</code> -- Same pattern, filters by min_hypothesis_confidence.</li>
+<li><code>vector&lt;AnalogyProposal&gt; find_analogies(set_a, set_b, ltm, stm, context)</code> -- Filters by min_analogy_confidence.</li>
+<li><code>vector&lt;ContradictionProposal&gt; check_contradictions(active, ltm, stm, context)</code> -- Filters by min_contradiction_severity.</li>
+<li><code>UnderstandingResult perform_understanding_cycle(seed, cognitive, ltm, stm, context)</code> -- Full cycle: 1) Use CognitiveDynamics for salience/focus. 2) Run all four analysis types on salient concepts. 3) Filter + truncate to max_proposals_per_cycle. 4) Update statistics.</li>
+<li><code>const Statistics&amp; get_statistics() const</code> / <code>void reset_statistics()</code></li>
+<li>(private) <code>filter_proposals_by_confidence&lt;T&gt;(proposals, min_confidence)</code> -- Template filter. <code>log_message(msg)</code> -- Conditional logging.</li>
+</ul>
+</details>
+
+<div class="invariant"><strong>Invariant:</strong> ALL proposals are HYPOTHESIS-typed (constructor-enforced). All LTM access is const/read-only. No state modification outside statistics. Deterministic aggregation (sequential Mini-LLM iteration). Confidence clamped [0,1] in all proposal constructors.</div>
+<div class="weak"><strong>Weak Point:</strong> Simple string-based parsing for Ollama responses (brittle, no JSON). No retry logic for LLM failures. Statistics not thread-safe (single-threaded assumption). max_proposals_per_cycle applies globally, not per type. No deduplication of proposals from multiple Mini-LLMs.</div>
 </section>
 <section id="hybrid">
 <h2>Module: hybrid</h2>
-<p><strong>Files:</strong> <code>hybrid/kan_validator.hpp/.cpp</code>, <code>epistemic_bridge.hpp/.cpp</code>, <code>hypothesis_translator.hpp/.cpp</code>, <code>domain_manager.hpp/.cpp</code>, <code>refinement_loop.hpp/.cpp</code></p>
-<p><strong>Purpose:</strong> KAN-LLM hybrid validation pipeline. Translates LLM hypotheses to KAN-testable form, validates via function approximation, maps results to epistemic trust scores.</p>
+<p><strong>Files:</strong> <code>hybrid/hypothesis_translator.hpp/.cpp</code>, <code>epistemic_bridge.hpp/.cpp</code>, <code>kan_validator.hpp/.cpp</code>, <code>domain_manager.hpp/.cpp</code>, <code>refinement_loop.hpp/.cpp</code></p>
+<p><strong>Purpose:</strong> KAN-LLM hybrid validation pipeline. Translates LLM hypotheses to KAN-testable form, validates via function approximation, maps training results to epistemic trust scores, supports iterative refinement.</p>
+<p><strong>Dependencies:</strong> understanding/ (HypothesisProposal), kan/ (KANModule, FunctionHypothesis), adapter/ (KANAdapter), epistemic/, ltm/</p>
 
-<h3>Key Classes</h3>
-<p><strong>KanValidator:</strong> Validates hypothesis proposals using KAN function approximation.</p>
-<p><strong>EpistemicBridge:</strong> Maps KAN training results to epistemic trust scores.</p>
-<p><strong>HypothesisTranslator:</strong> Converts LLM hypotheses to KAN-testable DataPoint format.</p>
-<p><strong>DomainManager:</strong> Manages domain-specific KAN modules and routing.</p>
-<p><strong>RefinementLoop:</strong> Iterative hypothesis refinement cycle.</p>
+<h3>Enum: RelationshipPattern</h3>
+<table><tr><th>Value</th><th>Formula</th><th>Description</th></tr>
+<tr><td>LINEAR</td><td>y = ax + b</td><td>Linear relationship</td></tr>
+<tr><td>POLYNOMIAL</td><td>y = ax&sup2; + bx + c</td><td>Polynomial (quadratic or higher)</td></tr>
+<tr><td>EXPONENTIAL</td><td>y = a &middot; e^(bx)</td><td>Exponential growth/decay</td></tr>
+<tr><td>PERIODIC</td><td>y = a &middot; sin(bx + c)</td><td>Periodic/oscillatory</td></tr>
+<tr><td>THRESHOLD</td><td>sigmoid approx</td><td>Step function (0 if x&lt;t, else 1)</td></tr>
+<tr><td>CONDITIONAL</td><td>conditional dep</td><td>X increases when Y</td></tr>
+<tr><td>NOT_QUANTIFIABLE</td><td>--</td><td>Cannot be translated to numeric relationship</td></tr>
+</table>
+
+<h3>Enum: DataQuality</h3>
+<p><code>SYNTHETIC_CANONICAL</code> (generic canonical function), <code>SYNTHETIC_SPECIFIC</code> (hypothesis-specific parameters), <code>EXTRACTED</code> (real data from LTM/external). Used by EpistemicBridge for trust-inflation caps.</p>
+
+<h3>Struct: PatternDetectionResult</h3>
+<table><tr><th>Name</th><th>Type</th><th>Description</th></tr>
+<tr><td><code>pattern</code></td><td><code>RelationshipPattern</code></td><td>Detected pattern type</td></tr>
+<tr><td><code>confidence</code></td><td><code>double</code></td><td>[0.0, 1.0] confidence in detection</td></tr>
+<tr><td><code>negated</code></td><td><code>bool</code></td><td>true if "not exponential" etc.</td></tr>
+<tr><td><code>detected_variables</code></td><td><code>size_t</code></td><td>1=univariate, 2+=multivariate</td></tr>
+<tr><td><code>quantifier_modifier</code></td><td><code>double</code></td><td>1.0=certain, &lt;1.0=hedged ("sometimes")</td></tr>
+<tr><td><code>explanation</code></td><td><code>string</code></td><td>Human-readable detection explanation</td></tr>
+</table>
+<p><code>bool is_reliable(threshold=0.3)</code> -- Returns confidence &gt;= threshold &amp;&amp; !negated.</p>
+
+<h3>Struct: NumericHints</h3>
+<p>Extracted numeric parameters from hypothesis text: <code>numbers</code> (all found numbers), <code>slope</code>, <code>intercept</code>, <code>range_min</code>, <code>range_max</code>, <code>scale_factor</code> (all optional). <code>has_hints()</code> returns !numbers.empty().</p>
+
+<h3>Struct: KanTrainingProblem</h3>
+<table><tr><th>Name</th><th>Type</th><th>Description</th></tr>
+<tr><td><code>hypothesis_id</code></td><td><code>uint64_t</code></td><td>Source hypothesis ID</td></tr>
+<tr><td><code>pattern</code></td><td><code>RelationshipPattern</code></td><td>Detected relationship pattern</td></tr>
+<tr><td><code>input_dim / output_dim</code></td><td><code>size_t</code></td><td>KAN module dimensions</td></tr>
+<tr><td><code>training_data</code></td><td><code>vector&lt;DataPoint&gt;</code></td><td>Generated training samples</td></tr>
+<tr><td><code>suggested_topology</code></td><td><code>vector&lt;size_t&gt;</code></td><td>Suggested KAN layer dims</td></tr>
+<tr><td><code>suggested_config</code></td><td><code>KanTrainingConfig</code></td><td>Training hyperparameters</td></tr>
+<tr><td><code>data_quality</code></td><td><code>DataQuality</code></td><td>Data provenance tag</td></tr>
+<tr><td><code>pattern_confidence</code></td><td><code>double</code></td><td>Detection confidence</td></tr>
+</table>
+<p>No default constructor (= delete).</p>
+
+<h3>Class: HypothesisTranslator</h3>
+<p><strong>Purpose:</strong> Converts LLM-generated HypothesisProposals into KAN-testable KanTrainingProblems. Uses NLP-lite pattern detection with confidence scoring.</p>
+<h4>Config</h4>
+<table><tr><th>Name</th><th>Type</th><th>Default</th><th>Description</th></tr>
+<tr><td><code>min_data_points</code></td><td><code>size_t</code></td><td>20</td><td>Minimum training samples</td></tr>
+<tr><td><code>max_data_points</code></td><td><code>size_t</code></td><td>100</td><td>Maximum training samples</td></tr>
+<tr><td><code>default_num_knots</code></td><td><code>size_t</code></td><td>10</td><td>B-spline knot count</td></tr>
+<tr><td><code>data_range_min / data_range_max</code></td><td><code>double</code></td><td>0.0 / 1.0</td><td>Training data range</td></tr>
+<tr><td><code>default_hidden_dim</code></td><td><code>size_t</code></td><td>5</td><td>Hidden layer dimension</td></tr>
+<tr><td><code>confidence_threshold</code></td><td><code>double</code></td><td>0.3</td><td>Below this &rarr; NOT_QUANTIFIABLE</td></tr>
+</table>
+<details><summary>All Methods (13)</summary>
+<ul>
+<li><code>TranslationResult translate(const HypothesisProposal&amp;)</code> -- Full pipeline: detect pattern (detailed), check confidence &gt;= threshold, extract numeric hints, generate training data, suggest topology+config. Returns TranslationResult with KanTrainingProblem or not_quantifiable reason.</li>
+<li><code>RelationshipPattern detect_pattern(const string&amp; text)</code> -- Simplified: calls detect_pattern_detailed().pattern. Backward compat.</li>
+<li><code>PatternDetectionResult detect_pattern_detailed(const string&amp; text)</code> -- NLP-lite analysis: keyword matching for each pattern type, negation detection, variable counting, quantifier modifier estimation. Returns full PatternDetectionResult with confidence.</li>
+<li><code>vector&lt;DataPoint&gt; generate_training_data(pattern, num_points, range_min, range_max, hints)</code> -- Dispatches to pattern-specific generator. Uses hints for slope/intercept/scale if available.</li>
+<li><code>NumericHints extract_numeric_hints(const string&amp; text)</code> -- Regex extraction of numbers, slope/intercept patterns, range patterns from hypothesis text.</li>
+<li>(private) <code>generate_linear_data</code>, <code>generate_polynomial_data</code>, <code>generate_exponential_data</code>, <code>generate_periodic_data</code>, <code>generate_threshold_data</code>, <code>generate_conditional_data</code> -- Pattern-specific generators using hints or canonical defaults.</li>
+<li>(private) <code>suggest_topology(pattern, input_dim)</code> -- LINEAR: [1,1]. POLYNOMIAL: [1,5,1]. EXPONENTIAL: [1,8,1]. PERIODIC: [1,10,1]. THRESHOLD: [1,5,1]. CONDITIONAL: [1,5,1].</li>
+<li>(private) NLP helpers: <code>contains_any</code>, <code>to_lower</code>, <code>split_sentences</code>, <code>is_negated</code>, <code>count_variables</code>, <code>detect_quantifier_modifier</code>.</li>
+</ul>
+</details>
+
+<h3>Struct: EpistemicAssessment</h3>
+<table><tr><th>Name</th><th>Type</th><th>Description</th></tr>
+<tr><td><code>metadata</code></td><td><code>EpistemicMetadata</code></td><td>Computed epistemic metadata (type + status + trust)</td></tr>
+<tr><td><code>mse</code></td><td><code>double</code></td><td>Final training MSE</td></tr>
+<tr><td><code>converged</code></td><td><code>bool</code></td><td>Whether KAN training converged</td></tr>
+<tr><td><code>iterations_used</code></td><td><code>size_t</code></td><td>Training iterations performed</td></tr>
+<tr><td><code>convergence_speed</code></td><td><code>double</code></td><td>iterations_used / max_iterations</td></tr>
+<tr><td><code>explanation</code></td><td><code>string</code></td><td>Human-readable assessment</td></tr>
+<tr><td><code>is_interpretable</code></td><td><code>bool</code></td><td>KAN function is monotone or nearly linear</td></tr>
+<tr><td><code>data_quality</code></td><td><code>DataQuality</code></td><td>Data source tag</td></tr>
+</table>
+<p>No default constructor (= delete).</p>
+
+<h3>Class: EpistemicBridge <span class="tag tag-core">CORE</span></h3>
+<p><strong>Purpose:</strong> Maps KAN training results to epistemic trust scores. Applies H2 trust-inflation caps for synthetic data.</p>
+<h4>Trust Mapping Rules</h4>
+<table><tr><th>Condition</th><th>EpistemicType</th><th>Trust Range</th></tr>
+<tr><td>Not converged</td><td>SPECULATION (INVALIDATED status)</td><td>0.05</td></tr>
+<tr><td>MSE &lt; 0.01 (theory_mse_threshold)</td><td>THEORY</td><td>0.7 - 0.9</td></tr>
+<tr><td>MSE &lt; 0.1 (hypothesis_mse_threshold)</td><td>HYPOTHESIS</td><td>0.4 - 0.6</td></tr>
+<tr><td>MSE &gt;= 0.1</td><td>SPECULATION</td><td>0.1 - 0.3</td></tr>
+</table>
+<h4>H2 Trust-Inflation Caps</h4>
+<table><tr><th>Modifier</th><th>Effect</th></tr>
+<tr><td>SYNTHETIC data</td><td>trust *= 0.6, hard cap at 0.6</td></tr>
+<tr><td>EXTRACTED data</td><td>trust *= 1.0 (no cap)</td></tr>
+<tr><td>Trivial convergence (&lt;10 epochs)</td><td>trust -= 0.15 novelty penalty</td></tr>
+<tr><td>Insufficient data (&lt;50 points)</td><td>trust capped at 0.5</td></tr>
+<tr><td>Fast convergence (&lt;30% of max iters)</td><td>trust += 0.1 bonus</td></tr>
+<tr><td>Interpretable function</td><td>trust += 0.05 bonus</td></tr>
+</table>
+<details><summary>All Methods (5)</summary>
+<ul>
+<li><code>EpistemicAssessment assess(hypothesis, training_result, training_config, data_quality, num_data_points)</code> -- Full assessment: compute convergence speed, check interpretability (monotone or nearly-linear B-spline), determine type/status/trust, build explanation string.</li>
+<li><code>bool check_interpretability(const KANModule&amp; module)</code> -- Checks: 1-layer, 1-in/1-out, &gt;=3 coefficients. Computes first differences of B-spline coefficients. Interpretable if monotone (all diffs same sign within 1e-4 epsilon) OR nearly linear (variance of diffs &lt; 0.01).</li>
+<li><code>double compute_trust(...)</code> -- (private) Base trust from MSE thresholds + bonuses + H2 caps. Clamped [0.0, 1.0].</li>
+<li><code>EpistemicType determine_type(mse, converged)</code> -- (private) Maps MSE to THEORY/HYPOTHESIS/SPECULATION.</li>
+<li><code>string build_explanation(...)</code> -- (private) Builds "[FAST] [INTERPRETABLE] [Data: SYNTHETIC] [TRUST CAPPED at 0.6]" style explanation.</li>
+</ul>
+</details>
+
+<h3>Struct: ValidationResult</h3>
+<table><tr><th>Name</th><th>Type</th><th>Description</th></tr>
+<tr><td><code>validated</code></td><td><code>bool</code></td><td>true if KAN could model the hypothesis</td></tr>
+<tr><td><code>assessment</code></td><td><code>EpistemicAssessment</code></td><td>Full epistemic assessment</td></tr>
+<tr><td><code>pattern</code></td><td><code>RelationshipPattern</code></td><td>Detected pattern type</td></tr>
+<tr><td><code>trained_module</code></td><td><code>shared_ptr&lt;KANModule&gt;</code></td><td>Trained KAN (if successful)</td></tr>
+<tr><td><code>explanation</code></td><td><code>string</code></td><td>Human-readable validation result</td></tr>
+</table>
+<p>No default constructor (= delete).</p>
+
+<h3>Class: KanValidator</h3>
+<p><strong>Purpose:</strong> Orchestrates the full LLM &rarr; KAN validation flow: HypothesisProposal &rarr; HypothesisTranslator &rarr; KANModule::train() &rarr; EpistemicBridge &rarr; ValidationResult.</p>
+<table><tr><th>Name</th><th>Type</th><th>Description</th></tr>
+<tr><td><code>config_</code></td><td><code>Config</code></td><td>translator_config, bridge_config, max_epochs, convergence_threshold</td></tr>
+<tr><td><code>translator_</code></td><td><code>HypothesisTranslator</code></td><td>Owned translator</td></tr>
+<tr><td><code>bridge_</code></td><td><code>EpistemicBridge</code></td><td>Owned bridge</td></tr>
+</table>
+<p>Config has optional overrides: <code>max_epochs_override</code> and <code>convergence_threshold_override</code> (nullopt = use translator suggestion).</p>
+<details><summary>Methods</summary>
+<ul>
+<li><code>ValidationResult validate(const HypothesisProposal&amp; proposal)</code> -- 1) translator_.translate() 2) If not translatable: return not-validated with SPECULATION trust. 3) Create KANModule with suggested topology. 4) Train with suggested config (overridden if set). 5) bridge_.assess() for epistemic scoring. 6) Return ValidationResult.</li>
+</ul>
+</details>
+
+<h3>Enum: DomainType</h3>
+<p><code>PHYSICAL</code>, <code>BIOLOGICAL</code>, <code>SOCIAL</code>, <code>ABSTRACT</code>, <code>TEMPORAL</code>. Custom hash via DomainTypeHash.</p>
+
+<h3>Struct: DomainInfo</h3>
+<p>No default constructor. Each domain type has default knots and hidden dims: PHYSICAL (15/8), BIOLOGICAL (10/5), SOCIAL (8/5), ABSTRACT (12/6), TEMPORAL (10/6).</p>
+
+<h3>Struct: CrossDomainInsight</h3>
+<table><tr><th>Name</th><th>Type</th><th>Description</th></tr>
+<tr><td><code>domain_a / domain_b</code></td><td><code>DomainType</code></td><td>Two domains being bridged</td></tr>
+<tr><td><code>bridging_concepts</code></td><td><code>vector&lt;ConceptId&gt;</code></td><td>Concepts connecting the domains</td></tr>
+<tr><td><code>novelty_score</code></td><td><code>double</code></td><td>[0,1] higher = more creative. Clamped in constructor.</td></tr>
+</table>
+
+<h3>Class: DomainManager</h3>
+<p><strong>Purpose:</strong> Detects domains from RelationType clustering in LTM. Manages domain-specific KAN configs. Finds cross-domain creative opportunities.</p>
+<table><tr><th>Name</th><th>Type</th><th>Description</th></tr>
+<tr><td><code>config_</code></td><td><code>Config</code></td><td>min_concepts_per_domain=3, novelty scores (0.5/0.7/0.8)</td></tr>
+<tr><td><code>domains_</code></td><td><code>unordered_map&lt;DomainType, DomainInfo&gt;</code></td><td>Lazy-instantiated domain registry</td></tr>
+</table>
+<details><summary>Methods</summary>
+<ul>
+<li><code>DomainType detect_domain(ConceptId, const LTM&amp;)</code> -- Classifies concept based on its relation types.</li>
+<li><code>unordered_map&lt;DomainType, vector&lt;ConceptId&gt;&gt; cluster_by_domain(concepts, ltm)</code> -- Groups concepts by detected domain.</li>
+<li><code>const DomainInfo&amp; get_domain_info(DomainType)</code> -- Lazy creation with domain defaults.</li>
+<li><code>KanValidator::Config get_domain_validator_config(DomainType)</code> -- Returns domain-tuned validator config.</li>
+<li><code>vector&lt;CrossDomainInsight&gt; find_cross_domain_insights(active_concepts, ltm)</code> -- Finds concepts that appear in multiple domain clusters.</li>
+</ul>
+</details>
+
+<h3>Struct: RefinementIteration</h3>
+<table><tr><th>Name</th><th>Type</th><th>Description</th></tr>
+<tr><td><code>iteration_number</code></td><td><code>size_t</code></td><td>Iteration index (1-based)</td></tr>
+<tr><td><code>hypothesis</code></td><td><code>HypothesisProposal</code></td><td>Hypothesis for this iteration</td></tr>
+<tr><td><code>validation</code></td><td><code>ValidationResult</code></td><td>KAN validation result</td></tr>
+<tr><td><code>residual_feedback</code></td><td><code>string</code></td><td>Feedback sent back to LLM</td></tr>
+<tr><td><code>mse</code></td><td><code>double</code></td><td>Training MSE for this iteration</td></tr>
+</table>
+
+<h3>Struct: RefinementResult</h3>
+<p><code>converged</code> (bool), <code>iterations_performed</code> (size_t), <code>provenance_chain</code> (vector&lt;RefinementIteration&gt; -- full audit trail), <code>final_validation</code> (ValidationResult).</p>
+
+<h3>Class: RefinementLoop</h3>
+<p><strong>Purpose:</strong> Bidirectional dialog between LLM and KAN: 1) LLM generates hypothesis 2) KAN validates &rarr; computes residuum 3) Residuum fed back to LLM 4) LLM refines 5) Repeat until convergence or max iterations.</p>
+<table><tr><th>Name</th><th>Type</th><th>Description</th></tr>
+<tr><td><code>validator_</code></td><td><code>KanValidator</code></td><td>Owned KAN validator</td></tr>
+<tr><td><code>config_</code></td><td><code>Config</code></td><td>max_iterations=5, mse_threshold=0.01, improvement_threshold=0.001</td></tr>
+</table>
+<p><code>HypothesisRefinerFn</code> = <code>function&lt;HypothesisProposal(const HypothesisProposal&amp;, const string&amp; feedback)&gt;</code> -- Callback to LLM for refinement.</p>
+<details><summary>Methods</summary>
+<ul>
+<li><code>RefinementResult run(initial_hypothesis, refiner)</code> -- Loop: validate &rarr; check MSE &lt; threshold (converged) &rarr; check improvement &lt; threshold (stalled) &rarr; build_residual_feedback &rarr; refiner(prev, feedback) &rarr; repeat. Returns full provenance chain.</li>
+<li><code>string build_residual_feedback(result, iteration)</code> -- (private) Formats: MSE value, pattern type, convergence status, iteration number.</li>
+</ul>
+</details>
+
+<div class="invariant"><strong>Invariant:</strong> All ValidationResults contain valid EpistemicMetadata (no default constructor). Synthetic data trust capped at 0.6. THEORY-to-FACT promotion NOT done here (only assigns THEORY at most). Pattern detection confidence must exceed threshold. Provenance chain records complete audit trail.</div>
+<div class="weak"><strong>Weak Point:</strong> NLP-lite pattern detection is keyword-based (no NLU). Synthetic training data may not represent actual hypothesis. Interpretability check only for 1-layer 1D KAN. Domain detection is heuristic (relation type counting). RefinementLoop requires external LLM callback (no built-in retry).</div>
 </section>
 <section id="ingestor">
 <h2>Module: ingestor</h2>
@@ -658,67 +911,269 @@ LTM.store_concept() + LTM.add_relation()</code></pre>
 </section>
 <section id="importers">
 <h2>Module: importers</h2>
-<p><strong>Files:</strong> <code>importers/http_client.hpp/.cpp</code>, <code>wikipedia_importer.hpp/.cpp</code>, <code>scholar_importer.hpp/.cpp</code></p>
-<p><strong>Purpose:</strong> External data importers. WikipediaImporter fetches and cleans Wikipedia articles. ScholarImporter fetches Google Scholar data.</p>
+<p><strong>Files:</strong> <code>importers/knowledge_proposal.hpp</code>, <code>http_client.hpp/.cpp</code>, <code>wikipedia_importer.hpp/.cpp</code>, <code>scholar_importer.hpp/.cpp</code></p>
+<p><strong>Purpose:</strong> External data importers producing KnowledgeProposals for human review. CRITICAL: importers NEVER assign EpistemicType, Trust, or Status. Only suggestions allowed.</p>
+<p><strong>Dependencies:</strong> None (standalone module, proposals consumed by ingestor/)</p>
+
+<h3>Enum: SourceType</h3>
+<p><code>WIKIPEDIA</code>, <code>GOOGLE_SCHOLAR</code>, <code>UNKNOWN</code>.</p>
+
+<h3>Enum: SuggestedEpistemicType</h3>
+<p><code>FACT_CANDIDATE</code>, <code>THEORY_CANDIDATE</code>, <code>HYPOTHESIS_CANDIDATE</code>, <code>DEFINITION_CANDIDATE</code>, <code>UNKNOWN_CANDIDATE</code>.</p>
+<p>CRITICAL: These are SUGGESTIONS ONLY, not authoritative. Human MUST explicitly decide before LTM ingestion.</p>
+
+<h3>Struct: SuggestedConcept</h3>
+<table><tr><th>Name</th><th>Type</th><th>Description</th></tr>
+<tr><td><code>label</code></td><td><code>string</code></td><td>Concept label (e.g., "Machine Learning")</td></tr>
+<tr><td><code>context_snippet</code></td><td><code>string</code></td><td>Surrounding text where concept appeared</td></tr>
+</table>
+
+<h3>Struct: SuggestedRelation</h3>
+<table><tr><th>Name</th><th>Type</th><th>Description</th></tr>
+<tr><td><code>source_label</code></td><td><code>string</code></td><td>Source concept name</td></tr>
+<tr><td><code>target_label</code></td><td><code>string</code></td><td>Target concept name</td></tr>
+<tr><td><code>relation_type</code></td><td><code>string</code></td><td>"is-a", "part-of", etc.</td></tr>
+<tr><td><code>evidence_text</code></td><td><code>string</code></td><td>Text evidence for the relation</td></tr>
+</table>
+
+<h3>Struct: KnowledgeProposal <span class="tag tag-core">CORE</span></h3>
+<p><strong>Purpose:</strong> Pure data structure for proposals ONLY. NO epistemic metadata fields. Requires explicit human confirmation before entering LTM.</p>
+<table><tr><th>Name</th><th>Type</th><th>Description</th></tr>
+<tr><td><code>proposal_id</code></td><td><code>uint64_t</code></td><td>Unique proposal identifier</td></tr>
+<tr><td><code>source_type</code></td><td><code>SourceType</code></td><td>WIKIPEDIA, GOOGLE_SCHOLAR, UNKNOWN</td></tr>
+<tr><td><code>source_reference</code></td><td><code>string</code></td><td>URL or DOI</td></tr>
+<tr><td><code>import_timestamp</code></td><td><code>time_point</code></td><td>When import occurred</td></tr>
+<tr><td><code>extracted_text</code></td><td><code>string</code></td><td>Cleaned extracted content</td></tr>
+<tr><td><code>title</code></td><td><code>string</code></td><td>Article/paper title</td></tr>
+<tr><td><code>suggested_concepts</code></td><td><code>vector&lt;SuggestedConcept&gt;</code></td><td>Extracted concept candidates</td></tr>
+<tr><td><code>suggested_relations</code></td><td><code>vector&lt;SuggestedRelation&gt;</code></td><td>Extracted relation candidates</td></tr>
+<tr><td><code>suggested_epistemic_type</code></td><td><code>SuggestedEpistemicType</code></td><td>SUGGESTION ONLY</td></tr>
+<tr><td><code>notes_for_human_review</code></td><td><code>string</code></td><td>Guidance for human reviewer</td></tr>
+<tr><td><code>authors</code></td><td><code>vector&lt;string&gt;</code></td><td>Paper authors (if applicable)</td></tr>
+<tr><td><code>publication_venue / publication_year</code></td><td><code>string</code></td><td>Publication metadata</td></tr>
+<tr><td><code>is_preprint</code></td><td><code>bool</code></td><td>Whether paper is preprint</td></tr>
+</table>
 
 <h3>Class: HttpClient <span class="tag tag-ext">EXTERNAL</span></h3>
-<p>CURL-based HTTP client. GET/POST methods. Timeout: 30 seconds default.</p>
+<p><strong>Purpose:</strong> Static CURL-based HTTP client for GET requests.</p>
+<h4>Struct: HttpResponse</h4>
+<table><tr><th>Name</th><th>Type</th><th>Description</th></tr>
+<tr><td><code>status_code</code></td><td><code>long</code></td><td>HTTP status code</td></tr>
+<tr><td><code>body</code></td><td><code>string</code></td><td>Response body</td></tr>
+<tr><td><code>success</code></td><td><code>bool</code></td><td>true if 2xx status</td></tr>
+<tr><td><code>error</code></td><td><code>string</code></td><td>Error message (if failed)</td></tr>
+</table>
+<details><summary>Methods</summary>
+<ul>
+<li><code>static HttpResponse http_get(const string&amp; url)</code> -- CURL GET with 30s timeout. Global CURL init via call_once.</li>
+<li><code>static string url_encode(const string&amp; str)</code> -- Percent-encodes special characters for URLs.</li>
+</ul>
+</details>
 
 <h3>Class: WikipediaImporter</h3>
-<p>Fetches Wikipedia REST API. Cleans HTML: strips tags, decodes entities. Extracts plain text content.</p>
+<p><strong>Purpose:</strong> Extracts structured knowledge from Wikipedia articles. Produces proposals, NEVER writes to LTM.</p>
+<table><tr><th>Name</th><th>Type</th><th>Description</th></tr>
+<tr><td><code>next_proposal_id_</code></td><td><code>uint64_t</code></td><td>Auto-incrementing proposal ID (starts 1)</td></tr>
+</table>
+<details><summary>All Methods (9)</summary>
+<ul>
+<li><code>unique_ptr&lt;KnowledgeProposal&gt; import_article(const string&amp; title)</code> -- Stub (no HTTP). Creates basic proposal with DEFINITION_CANDIDATE suggestion.</li>
+<li><code>unique_ptr&lt;KnowledgeProposal&gt; import_article(const string&amp; title, const string&amp; lang)</code> -- Full HTTP: builds MediaWiki API URL, fetches JSON, parses pages object, handles not-found/empty cases. Delegates to parse_wikipedia_text() on success.</li>
+<li><code>unique_ptr&lt;KnowledgeProposal&gt; import_from_url(const string&amp; url)</code> -- Creates minimal proposal from URL.</li>
+<li><code>unique_ptr&lt;KnowledgeProposal&gt; parse_wikipedia_text(title, html_or_text)</code> -- Cleans HTML (remove_html_tags), normalizes whitespace, extracts lead section (first 500 chars or until double newline), extracts concepts and relations.</li>
+<li><code>string extract_lead_section(text)</code> -- (private) First paragraph up to 500 chars or first "\n\n".</li>
+<li><code>vector&lt;SuggestedConcept&gt; extract_concepts(text)</code> -- (private) Regex: capitalized multi-word phrases. 20 chars context. Max 20 concepts.</li>
+<li><code>vector&lt;SuggestedRelation&gt; extract_basic_relations(text)</code> -- (private) Regex: "X is a Y" patterns. Max 10 relations.</li>
+<li><code>string remove_html_tags(html)</code> -- (private) State machine: skip chars between &lt; and &gt;.</li>
+<li><code>string normalize_whitespace(text)</code> -- (private) Collapse multiple whitespace to single space.</li>
+</ul>
+</details>
+
+<h3>Enum: PaperSection</h3>
+<p><code>ABSTRACT</code>, <code>BODY</code>, <code>CONCLUSION</code>, <code>UNKNOWN</code>.</p>
 
 <h3>Class: ScholarImporter</h3>
-<p>Fetches Google Scholar search results. Parses title, authors, year, abstract. Creates THEORY-trust proposals.</p>
+<p><strong>Purpose:</strong> Extracts research-level knowledge from academic papers via Semantic Scholar API. NEVER writes to LTM.</p>
+<table><tr><th>Name</th><th>Type</th><th>Description</th></tr>
+<tr><td><code>next_proposal_id_</code></td><td><code>uint64_t</code></td><td>Auto-incrementing proposal ID (starts 1)</td></tr>
+</table>
+<details><summary>All Methods (11)</summary>
+<ul>
+<li><code>unique_ptr&lt;KnowledgeProposal&gt; import_paper_by_doi(const string&amp; doi)</code> -- Stub (no HTTP). Creates basic proposal.</li>
+<li><code>unique_ptr&lt;KnowledgeProposal&gt; import_paper_by_doi_online(const string&amp; doi)</code> -- Fetches via Semantic Scholar API. Parses JSON for title, abstract, authors, year, venue.</li>
+<li><code>vector&lt;unique_ptr&lt;KnowledgeProposal&gt;&gt; search_papers(query, limit=5)</code> -- Searches Semantic Scholar, returns multiple proposals.</li>
+<li><code>unique_ptr&lt;KnowledgeProposal&gt; import_paper_from_url(url)</code> -- Creates proposal from URL.</li>
+<li><code>unique_ptr&lt;KnowledgeProposal&gt; parse_paper_text(title, text, authors, year, venue, is_preprint)</code> -- Extracts abstract, conclusion, research concepts, claims, methods, citations. Sets suggested_epistemic_type = THEORY_CANDIDATE. Preserves hedging language via uncertainty detection.</li>
+<li>(private) <code>extract_abstract(text)</code>, <code>extract_conclusion(text)</code>, <code>extract_research_concepts(text)</code>, <code>extract_claims(text)</code>, <code>extract_methods(text)</code>, <code>extract_citations(text)</code></li>
+<li>(private) <code>contains_uncertainty_language(text)</code> -- Detects "may", "might", "suggests", etc.</li>
+<li>(private) <code>extract_hedging_language(text)</code> -- Extracts hedging phrases for notes_for_human_review.</li>
+</ul>
+</details>
+
+<div class="invariant"><strong>Invariant:</strong> Importers NEVER assign EpistemicType, Trust, or Status. Only SuggestedEpistemicType allowed. KnowledgeProposal has NO epistemic metadata fields. All proposals require human review before LTM ingestion.</div>
+<div class="weak"><strong>Weak Point:</strong> Concept extraction is regex-based (English capitalized words only). Relation extraction limited to "X is a Y" patterns. Max 20 concepts / 10 relations per article. HTML tag removal is naive (no entity decoding). Lead section heuristic (500 chars) may truncate important content. No rate limiting on API calls.</div>
 </section>
 <section id="bootstrap">
 <h2>Module: bootstrap</h2>
 <p><strong>Files:</strong> <code>bootstrap/foundation_concepts.hpp/.cpp</code>, <code>context_accumulator.hpp/.cpp</code>, <code>bootstrap_interface.hpp/.cpp</code></p>
-<p><strong>Purpose:</strong> Solves bootstrap "chicken-and-egg" problem by pre-seeding LTM with 500+ high-trust foundation concepts.</p>
+<p><strong>Purpose:</strong> Solves bootstrap "chicken-and-egg" problem: empty LTM has no context for meaningful human review. Seeds 500+ high-trust foundation concepts and provides guided onboarding.</p>
+<p><strong>Dependencies:</strong> ltm/ (LongTermMemory), epistemic/ (EpistemicMetadata)</p>
 
 <h3>Class: FoundationConcepts (Static)</h3>
-<p>4 tiers of seeding:</p>
+<p><strong>Purpose:</strong> Pre-seeded core knowledge providing minimal ontological scaffold. All concepts: EpistemicType::DEFINITION or FACT, Status::ACTIVE, Trust 0.95-0.99. Source: "bootstrap:foundation_v1".</p>
+<h4>Seeding Tiers</h4>
+<table><tr><th>Tier</th><th>Count</th><th>Category</th><th>Examples</th><th>Trust</th></tr>
+<tr><td>1</td><td>~50</td><td>Meta-Ontology</td><td>Entity, Object, Action, Property, Relation, Event, Knowledge, Definition, Fact</td><td>0.97-0.99</td></tr>
+<tr><td>2</td><td>~100</td><td>Basic Categories</td><td>Organism, Person, Place, Country, Science, Physics, Computer, Algorithm</td><td>&gt;= 0.95</td></tr>
+<tr><td>3</td><td>~200</td><td>Common Relations</td><td>IS_A chains, HAS_PROPERTY, CAUSES, ENABLES, SUPPORTS, SIMILAR_TO, PART_OF, TEMPORAL_BEFORE</td><td>--</td></tr>
+<tr><td>4</td><td>~150</td><td>Science Foundation</td><td>Atom, Molecule, Cell, DNA, Integer, Function, Turing_Machine, Gravity</td><td>&gt;= 0.95</td></tr>
+</table>
+<details><summary>Methods</summary>
 <ul>
-<li><strong>Tier 1 (48 concepts):</strong> Ontology -- Entity, Object, Action, Property, Relation, Event, Knowledge, Definition, Fact. All DEFINITION trust 0.97-0.99.</li>
-<li><strong>Tier 2 (100 concepts):</strong> Categories -- Organism, Person, Place, Country, Science, Physics, Computer, Algorithm. All trust &gt;= 0.95.</li>
-<li><strong>Tier 3 (145 relations):</strong> IS_A, PART_OF, HAS_PROPERTY, CAUSES, ENABLES, SUPPORTS, SIMILAR_TO, TEMPORAL_BEFORE chains.</li>
-<li><strong>Tier 4 (150 concepts):</strong> Science -- Atom, Molecule, Cell, DNA, Integer, Function, Turing_Machine. All trust &gt;= 0.95.</li>
+<li><code>static void seed_all(LongTermMemory&amp; ltm)</code> -- Seeds all 4 tiers in order. Must be called on empty LTM.</li>
+<li><code>static void seed_tier1_ontology(ltm)</code> -- Meta-ontology concepts.</li>
+<li><code>static void seed_tier2_categories(ltm)</code> -- Category concepts.</li>
+<li><code>static void seed_tier3_relations(ltm)</code> -- Connects tier 1+2 concepts with relations.</li>
+<li><code>static void seed_tier4_science(ltm)</code> -- Science-domain concepts.</li>
+<li><code>static size_t concept_count()</code> / <code>relation_count()</code> -- Compile-time constants.</li>
 </ul>
+</details>
 
 <h3>Class: ContextAccumulator</h3>
-<p>Tracks domain coverage across 10 domains. Finds knowledge gaps (coverage &lt; 0.3). Keyword-based domain classification.</p>
+<p><strong>Purpose:</strong> Tracks knowledge growth across 10 predefined domains. Detects underrepresented areas and suggests what to learn next.</p>
+<p>Domains: ontology, geography, biology, physics, chemistry, mathematics, technology, social, humanities, general.</p>
+<table><tr><th>Name</th><th>Type</th><th>Description</th></tr>
+<tr><td><code>concept_freq_</code></td><td><code>unordered_map&lt;string, size_t&gt;</code></td><td>Label &rarr; reference count</td></tr>
+<tr><td><code>concept_domain_</code></td><td><code>unordered_map&lt;string, string&gt;</code></td><td>Label &rarr; assigned domain</td></tr>
+<tr><td><code>domain_counts_</code></td><td><code>unordered_map&lt;string, size_t&gt;</code></td><td>Domain &rarr; concept count</td></tr>
+<tr><td><code>texts_processed_</code></td><td><code>size_t</code></td><td>Total texts processed</td></tr>
+</table>
+<h4>Struct: DomainStats</h4>
+<p><code>domain</code> (string), <code>concept_count</code> (size_t), <code>coverage_score</code> (0.0-1.0 relative to best domain).</p>
+<details><summary>Methods</summary>
+<ul>
+<li><code>void record_concept(label, domain="general")</code> -- Increments frequency and domain count.</li>
+<li><code>void record_text_processed(text)</code> -- Increments texts_processed_ counter.</li>
+<li><code>vector&lt;DomainStats&gt; get_domain_stats() const</code> -- Returns per-domain stats with coverage relative to largest domain.</li>
+<li><code>vector&lt;string&gt; find_knowledge_gaps() const</code> -- Domains with coverage &lt; 0.3 of best domain.</li>
+<li><code>vector&lt;string&gt; suggest_types(entity_name) const</code> -- Suggests types based on accumulated knowledge.</li>
+<li><code>size_t total_concepts() const</code> / <code>texts_processed() const</code> / <code>concept_frequency(label) const</code></li>
+<li>(private) <code>string classify_domain(label)</code> -- Keyword-based domain classification heuristic.</li>
+</ul>
+</details>
+
+<h3>Struct: BootstrapProposal</h3>
+<table><tr><th>Name</th><th>Type</th><th>Description</th></tr>
+<tr><td><code>entity_name</code></td><td><code>string</code></td><td>Extracted entity label</td></tr>
+<tr><td><code>context_text</code></td><td><code>string</code></td><td>Original text where found</td></tr>
+<tr><td><code>suggested_types</code></td><td><code>vector&lt;string&gt;</code></td><td>Type suggestions from existing knowledge</td></tr>
+<tr><td><code>similar_concepts</code></td><td><code>vector&lt;string&gt;</code></td><td>Similar concepts from LTM</td></tr>
+<tr><td><code>suggested_trust</code></td><td><code>double</code></td><td>Heuristic trust suggestion</td></tr>
+<tr><td><code>auto_description</code></td><td><code>string</code></td><td>Generated from context</td></tr>
+</table>
 
 <h3>Class: BootstrapInterface</h3>
-<p>Orchestrates: seed foundation -> extract entities -> propose to human -> accumulate feedback.</p>
+<p><strong>Purpose:</strong> Guided onboarding: 1) Seed foundation 2) Process text &rarr; extract candidates 3) Present proposals for human review 4) Accumulate context for progressively better suggestions.</p>
+<table><tr><th>Name</th><th>Type</th><th>Description</th></tr>
+<tr><td><code>ltm_</code></td><td><code>LongTermMemory&amp;</code></td><td>Mutable LTM reference</td></tr>
+<tr><td><code>accumulator_</code></td><td><code>ContextAccumulator</code></td><td>Knowledge growth tracker</td></tr>
+<tr><td><code>foundation_loaded_</code></td><td><code>bool</code></td><td>Whether foundation was seeded</td></tr>
+<tr><td><code>label_index_</code></td><td><code>unordered_map&lt;string, ConceptId&gt;</code></td><td>Fast duplicate/similarity check</td></tr>
+<tr><td><code>pending_</code></td><td><code>vector&lt;BootstrapProposal&gt;</code></td><td>Proposals awaiting review</td></tr>
+<tr><td><code>rejected_</code></td><td><code>unordered_set&lt;string&gt;</code></td><td>Rejected entity names (avoid re-proposing)</td></tr>
+</table>
+<details><summary>Methods</summary>
+<ul>
+<li><code>void initialize_foundation()</code> -- Calls FoundationConcepts::seed_all(), rebuilds label index.</li>
+<li><code>bool is_foundation_loaded() const</code></li>
+<li><code>vector&lt;BootstrapProposal&gt; process_text(text)</code> -- Extracts candidate entities, skips known/rejected, generates proposals with type suggestions and similar concepts.</li>
+<li><code>void accept_proposal(p, human_description, type, trust)</code> -- Stores concept in LTM with human-decided epistemic metadata. Updates label_index_ and accumulator.</li>
+<li><code>void reject_proposal(p, reason)</code> -- Adds to rejected_ set.</li>
+<li><code>vector&lt;string&gt; suggest_next_topics() const</code> -- Returns knowledge gaps from accumulator.</li>
+<li>(private) <code>rebuild_label_index()</code>, <code>find_similar(name)</code>, <code>extract_candidate_entities(text)</code>, <code>generate_description(entity, context)</code>, <code>is_known(label)</code></li>
+</ul>
+</details>
 
-<div class="invariant"><strong>Invariant:</strong> All foundation concepts ACTIVE status, trust &gt;= 0.95. Relations reference only concepts in same batch. Thread-local label map prevents race conditions.</div>
-<div class="weak"><strong>Weak Point:</strong> 500+ hardcoded definitions. No mechanism to update after seeding. Simple heuristic entity extraction.</div>
+<div class="invariant"><strong>Invariant:</strong> All foundation concepts ACTIVE status, trust &gt;= 0.95. Relations reference only concepts in same batch. Rejected entities never re-proposed. Foundation seeding is idempotent (checks if LTM empty).</div>
+<div class="weak"><strong>Weak Point:</strong> 500+ hardcoded definitions (no update mechanism after seeding). Simple heuristic entity extraction (capitalized words). Domain classification is keyword-based. No multilingual support. label_index_ may become stale if LTM modified externally.</div>
 </section>
 <section id="llm">
 <h2>Module: llm</h2>
 <p><strong>Files:</strong> <code>llm/ollama_client.hpp/.cpp</code>, <code>chat_interface.hpp/.cpp</code></p>
-<p><strong>Purpose:</strong> LLM integration via Ollama REST API. ChatInterface is a TOOL (read-only), not an AGENT.</p>
+<p><strong>Purpose:</strong> LLM integration via Ollama REST API. ChatInterface is a TOOL (read-only), not an AGENT. LLM verbalizes existing LTM knowledge -- never modifies it.</p>
+<p><strong>Dependencies:</strong> ltm/ (LongTermMemory, ConceptInfo), memory/ (BrainController), nlohmann/json</p>
 
-<h3>Class: OllamaClient <span class="tag tag-ext">EXTERNAL</span></h3>
-<table><tr><th>Name</th><th>Type</th><th>Description</th></tr>
-<tr><td><code>config_</code></td><td><code>OllamaConfig</code></td><td>host, model, temperature, num_predict</td></tr>
-<tr><td><code>initialized_</code></td><td><code>bool</code></td><td>Flag for initialize() call</td></tr>
+<h3>Struct: OllamaConfig</h3>
+<table><tr><th>Name</th><th>Type</th><th>Default</th><th>Description</th></tr>
+<tr><td><code>host</code></td><td><code>string</code></td><td>"http://localhost:11434"</td><td>Ollama API endpoint</td></tr>
+<tr><td><code>model</code></td><td><code>string</code></td><td>"llama3.2:3b"</td><td>Model name (fast &amp; small default)</td></tr>
+<tr><td><code>temperature</code></td><td><code>float</code></td><td>0.7</td><td>Sampling temperature</td></tr>
+<tr><td><code>num_predict</code></td><td><code>int</code></td><td>512</td><td>Max tokens to generate</td></tr>
+<tr><td><code>stream</code></td><td><code>bool</code></td><td>false</td><td>Streaming (disabled)</td></tr>
 </table>
 
-<p>CURL-based HTTP client. call_once global init. 5-minute timeout. JSON parsing via nlohmann::json.</p>
+<h3>Struct: OllamaMessage</h3>
+<p><code>role</code> ("system", "user", "assistant"), <code>content</code> (string).</p>
 
-<h3>Class: ChatInterface</h3>
-<p>LLM-powered verbalization. CRITICAL: LLM is read-only tool. Receives concepts+epistemic metadata, returns natural language preserving epistemic integrity.</p>
-<details><summary>Methods</summary>
+<h3>Struct: OllamaResponse</h3>
+<table><tr><th>Name</th><th>Type</th><th>Description</th></tr>
+<tr><td><code>content</code></td><td><code>string</code></td><td>Generated text</td></tr>
+<tr><td><code>success</code></td><td><code>bool</code></td><td>Whether generation succeeded</td></tr>
+<tr><td><code>error_message</code></td><td><code>string</code></td><td>Error description (if failed)</td></tr>
+<tr><td><code>tokens_generated</code></td><td><code>int</code></td><td>Token count of response</td></tr>
+<tr><td><code>total_duration_ms</code></td><td><code>double</code></td><td>Wall-clock time for generation</td></tr>
+</table>
+
+<h3>Class: OllamaClient <span class="tag tag-ext">EXTERNAL</span></h3>
+<p><strong>Purpose:</strong> HTTP client for Ollama REST API. Supports chat completion with context.</p>
+<table><tr><th>Name</th><th>Type</th><th>Description</th></tr>
+<tr><td><code>config_</code></td><td><code>OllamaConfig</code></td><td>Connection and generation config</td></tr>
+<tr><td><code>initialized_</code></td><td><code>bool</code></td><td>Flag for initialize() call</td></tr>
+</table>
+<details><summary>All Methods (7)</summary>
 <ul>
-<li><code>ChatResponse ask(const string&amp; question, const LTM&amp;)</code> -- Keyword-match relevant concepts. Build system prompt + epistemic context. Fallback mode without LLM.</li>
-<li><code>ChatResponse ask_with_context(question, ltm, salient_concepts, thought_paths)</code> -- With pre-computed thinking results.</li>
-<li><code>string explain_concept(ConceptId, const LTM&amp;)</code> -- Formatted concept explanation.</li>
-<li><code>string compare(ConceptId, ConceptId, const LTM&amp;)</code> -- Side-by-side comparison.</li>
+<li><code>bool initialize(const OllamaConfig&amp; config)</code> -- Sets config, marks initialized. CURL global init via call_once.</li>
+<li><code>bool is_available() const</code> -- Pings Ollama endpoint to check availability.</li>
+<li><code>vector&lt;string&gt; list_models() const</code> -- GET /api/tags, parses model names.</li>
+<li><code>OllamaResponse generate(prompt, context)</code> -- POST /api/generate. Single-turn with optional message history. 5-minute timeout.</li>
+<li><code>OllamaResponse chat(messages)</code> -- POST /api/chat. Multi-turn conversation.</li>
+<li><code>void set_model(const string&amp; model)</code> -- Runtime model change.</li>
+<li>(private) <code>string http_post(endpoint, json_body)</code> -- CURL POST helper. <code>OllamaResponse parse_response(json)</code> -- nlohmann::json parsing.</li>
 </ul>
 </details>
 
-<div class="invariant"><strong>Invariant:</strong> LLM never modifies LTM. Epistemic metadata always included in prompts. Fallback mode available without Ollama.</div>
-<div class="weak"><strong>Weak Point:</strong> Hardcoded German system prompt. Naive keyword matching O(n). No prompt caching. No retry logic.</div>
+<h3>Struct: ChatResponse</h3>
+<table><tr><th>Name</th><th>Type</th><th>Description</th></tr>
+<tr><td><code>answer</code></td><td><code>string</code></td><td>Natural language response</td></tr>
+<tr><td><code>referenced_concepts</code></td><td><code>vector&lt;ConceptId&gt;</code></td><td>Concepts used in answer</td></tr>
+<tr><td><code>contains_speculation</code></td><td><code>bool</code></td><td>Whether answer includes speculative knowledge</td></tr>
+<tr><td><code>epistemic_note</code></td><td><code>string</code></td><td>Epistemic integrity annotation</td></tr>
+<tr><td><code>used_llm</code></td><td><code>bool</code></td><td>Whether LLM was invoked (vs fallback)</td></tr>
+<tr><td><code>llm_time_ms</code></td><td><code>double</code></td><td>LLM generation time</td></tr>
+</table>
+
+<h3>Class: ChatInterface <span class="tag tag-ro">READ-ONLY</span></h3>
+<p><strong>Purpose:</strong> LLM-powered verbalization of Brain19 knowledge. CRITICAL: LLM is read-only tool. Receives concepts + epistemic metadata, returns natural language preserving epistemic integrity.</p>
+<table><tr><th>Name</th><th>Type</th><th>Description</th></tr>
+<tr><td><code>ollama_</code></td><td><code>unique_ptr&lt;OllamaClient&gt;</code></td><td>Owned Ollama client</td></tr>
+<tr><td><code>llm_available_</code></td><td><code>bool</code></td><td>Whether LLM is online</td></tr>
+</table>
+<details><summary>All Methods (9)</summary>
+<ul>
+<li><code>bool initialize(const OllamaConfig&amp; config)</code> -- Creates OllamaClient, checks availability.</li>
+<li><code>bool is_llm_available() const</code></li>
+<li><code>ChatResponse ask(question, ltm)</code> -- 1) find_relevant_concepts() via keyword matching. 2) build_system_prompt() with epistemic rules. 3) build_epistemic_context() with concept details + trust levels. 4) Call ollama_-&gt;chat(). 5) Fallback: returns formatted concept list without LLM.</li>
+<li><code>ChatResponse ask_with_context(question, ltm, salient_concepts, thought_paths_summary)</code> -- Uses pre-computed salient concepts and thought paths for richer context.</li>
+<li><code>string list_knowledge(ltm, type)</code> -- Formatted list of all concepts of given EpistemicType.</li>
+<li><code>string explain_concept(id, ltm)</code> -- Retrieves concept, formats with epistemic metadata, optionally asks LLM for natural language explanation.</li>
+<li><code>string compare(id1, id2, ltm)</code> -- Side-by-side concept comparison with LLM-generated analysis.</li>
+<li><code>string get_summary(ltm)</code> -- Overall knowledge base summary.</li>
+<li>(private) <code>build_epistemic_context(concepts)</code> -- Formats concept details with type/trust tags. <code>build_system_prompt()</code> -- German system prompt with epistemic rules. <code>find_relevant_concepts(question, ltm)</code> -- O(n) keyword substring matching.</li>
+</ul>
+</details>
+
+<div class="invariant"><strong>Invariant:</strong> LLM NEVER modifies LTM. Epistemic metadata ALWAYS included in prompts. Fallback mode available without Ollama. ChatResponse.epistemic_note always populated.</div>
+<div class="weak"><strong>Weak Point:</strong> Hardcoded German system prompt. Naive keyword matching O(n) scans all concepts. No prompt caching. No retry logic on LLM failures. 5-minute timeout may be too long for interactive use. No streaming support.</div>
 </section>
 <section id="persistent">
 <h2>Module: persistent</h2>
@@ -767,160 +1222,530 @@ LTM.store_concept() + LTM.add_relation()</code></pre>
 <section id="concurrent">
 <h2>Module: concurrent</h2>
 <p><strong>Files:</strong> <code>concurrent/shared_ltm.hpp</code>, <code>shared_stm.hpp</code>, <code>shared_registry.hpp</code>, <code>shared_embeddings.hpp</code>, <code>lock_hierarchy.hpp</code>, <code>deadlock_detector.hpp</code></p>
-<p><strong>Purpose:</strong> Thread-safe wrappers for all shared subsystems. Lock hierarchy enforcement.</p>
+<p><strong>Purpose:</strong> Thread-safe wrappers for all shared subsystems. Lock hierarchy enforcement. OPT-IN: single-threaded code can use raw subsystems directly.</p>
+<p><strong>Dependencies:</strong> ltm/, memory/, micromodel/ (wraps LongTermMemory, ShortTermMemory, MicroModelRegistry, EmbeddingManager)</p>
 
-<h3>Lock Hierarchy</h3>
-<p>LTM (1) &gt; STM (2) &gt; Registry (3) &gt; Embeddings (4). Never acquire lower-numbered lock while holding higher-numbered. Debug builds throw on violation.</p>
+<h3>Enum: LockLevel</h3>
+<p>Lock acquisition order (lower = acquire first): <code>LTM=1</code>, <code>STM=2</code>, <code>Registry=3</code>, <code>Embeddings=4</code>.</p>
+<p>Thread-local tracking: <code>detail::held_levels</code> (vector&lt;uint32_t&gt;) stores currently held levels per thread. <code>check_hierarchy(level)</code> throws in debug builds if acquiring a level lower than max_held. <code>release_hierarchy(level)</code> removes one instance. <code>reset_hierarchy()</code> clears for tests.</p>
 
 <h3>Class: SharedLTM <span class="tag tag-rw">READ-WRITE</span></h3>
-<p>shared_mutex wrapper. Multiple readers, single writer. All write ops use unique_lock, reads use shared_lock.</p>
+<p><strong>Purpose:</strong> Thread-safe wrapper around LongTermMemory using std::shared_mutex.</p>
+<table><tr><th>Name</th><th>Type</th><th>Description</th></tr>
+<tr><td><code>ltm_</code></td><td><code>LongTermMemory&amp;</code></td><td>Reference to wrapped LTM (not owned)</td></tr>
+<tr><td><code>mtx_</code></td><td><code>mutable shared_mutex</code></td><td>Reader-writer lock</td></tr>
+</table>
+<p>Non-copyable, non-movable (holds reference + mutex).</p>
+<details><summary>All Methods (15)</summary>
+<ul>
+<li><strong>WRITE (unique_lock):</strong> <code>store_concept(label, definition, epistemic)</code>, <code>update_epistemic_metadata(id, metadata)</code>, <code>invalidate_concept(id, trust=0.05)</code>, <code>add_relation(src, tgt, type, weight=1.0)</code>, <code>remove_relation(id)</code></li>
+<li><strong>READ (shared_lock):</strong> <code>retrieve_concept(id)</code>, <code>exists(id)</code>, <code>get_concepts_by_type(type)</code>, <code>get_concepts_by_status(status)</code>, <code>get_active_concepts()</code>, <code>get_relation(id)</code>, <code>get_outgoing_relations(src)</code>, <code>get_incoming_relations(tgt)</code>, <code>get_relations_between(src, tgt)</code>, <code>get_relation_count(cid)</code>, <code>get_all_concept_ids()</code></li>
+</ul>
+</details>
 
 <h3>Class: SharedSTM <span class="tag tag-rw">READ-WRITE</span></h3>
-<p>Per-context fine-grained locking. Global shared_mutex + per-context shared_mutex (stored as unique_ptr to prevent rehash invalidation). ContextMutexRef RAII pattern holds both locks.</p>
+<p><strong>Purpose:</strong> Thread-safe STM wrapper with per-context fine-grained locking. Allows parallel access to different contexts.</p>
+<table><tr><th>Name</th><th>Type</th><th>Description</th></tr>
+<tr><td><code>stm_</code></td><td><code>ShortTermMemory&amp;</code></td><td>Reference to wrapped STM</td></tr>
+<tr><td><code>global_mtx_</code></td><td><code>mutable shared_mutex</code></td><td>Guards context creation/destruction + config ops</td></tr>
+<tr><td><code>context_mutexes_</code></td><td><code>unordered_map&lt;ContextId, unique_ptr&lt;shared_mutex&gt;&gt;</code></td><td>Per-context locks (unique_ptr prevents rehash invalidation)</td></tr>
+</table>
+<h4>Internal: ContextMutexRef</h4>
+<p>RAII pattern returned by <code>get_context_mutex(cid)</code>: holds <code>shared_lock&lt;shared_mutex&gt;</code> on global (prevents context destruction) + reference to per-context mutex. Caller must keep the returned struct alive for the duration of use.</p>
+<details><summary>All Methods (18)</summary>
+<ul>
+<li><strong>Context (global unique_lock):</strong> <code>create_context()</code> (also creates per-context mutex), <code>destroy_context(cid)</code> (erases mutex)</li>
+<li><strong>WRITE (per-context unique_lock):</strong> <code>clear_context(cid)</code>, <code>activate_concept(cid, concept, activation, class)</code>, <code>activate_relation(cid, src, tgt, type, activation)</code>, <code>boost_concept(cid, concept, delta)</code>, <code>boost_relation(cid, src, tgt, delta)</code>, <code>decay_all(cid, time_delta)</code></li>
+<li><strong>READ (per-context shared_lock):</strong> <code>get_concept_activation(cid, concept)</code>, <code>get_relation_activation(cid, src, tgt)</code>, <code>get_concept_level(cid, concept)</code>, <code>get_active_concepts(cid, threshold)</code>, <code>get_active_relations(cid, threshold)</code></li>
+<li><strong>Config (global unique_lock):</strong> <code>set_core_decay_rate()</code>, <code>set_contextual_decay_rate()</code>, <code>set_relation_decay_rate()</code>, <code>set_relation_inactive_threshold()</code>, <code>set_relation_removal_threshold()</code>, <code>set_concept_removal_threshold()</code></li>
+</ul>
+</details>
 
 <h3>Class: SharedRegistry <span class="tag tag-rw">READ-WRITE</span></h3>
-<p>Registry-level + per-model locking. ModelGuard RAII pattern: holds registry shared_lock + per-model exclusive lock.</p>
+<p><strong>Purpose:</strong> Thread-safe wrapper for MicroModelRegistry with per-model mutexes for concurrent training.</p>
+<table><tr><th>Name</th><th>Type</th><th>Description</th></tr>
+<tr><td><code>reg_</code></td><td><code>MicroModelRegistry&amp;</code></td><td>Wrapped registry</td></tr>
+<tr><td><code>mtx_</code></td><td><code>mutable shared_mutex</code></td><td>Registry-level lock</td></tr>
+<tr><td><code>model_mutexes_</code></td><td><code>unordered_map&lt;ConceptId, unique_ptr&lt;mutex&gt;&gt;</code></td><td>Per-model exclusive locks</td></tr>
+</table>
+<h4>Inner Class: ModelGuard (RAII)</h4>
+<p>Holds registry shared_lock + per-model exclusive lock. Prevents use-after-free if remove_model() is called concurrently. Usage: <code>auto guard = registry.model_guard(cid); if (guard) { guard-&gt;train(...); }</code></p>
+<p><strong>Lock order:</strong> acquires registry shared_lock first, then per-model mutex. Release: model mutex first, then shared_lock.</p>
+<details><summary>Methods</summary>
+<ul>
+<li><strong>WRITE (unique_lock):</strong> <code>create_model(cid)</code> (creates per-model mutex), <code>remove_model(cid)</code> (erases mutex), <code>ensure_models_for(ltm)</code>, <code>clear()</code></li>
+<li><strong>READ (shared_lock):</strong> <code>get_model(cid)</code>, <code>has_model(cid)</code>, <code>get_model_ids()</code>, <code>size()</code></li>
+<li><code>ModelGuard model_guard(cid)</code> -- Returns RAII guard for per-model mutable access.</li>
+</ul>
+</details>
 
 <h3>Class: SharedEmbeddings <span class="tag tag-rw">READ-WRITE</span></h3>
-<p>shared_mutex with fast-path/slow-path optimization for lazy context creation. Callback-based mutable access.</p>
+<p><strong>Purpose:</strong> Thread-safe wrapper for EmbeddingManager. Uses fast-path/slow-path optimization for lazy context creation.</p>
+<table><tr><th>Name</th><th>Type</th><th>Description</th></tr>
+<tr><td><code>em_</code></td><td><code>EmbeddingManager&amp;</code></td><td>Wrapped embeddings</td></tr>
+<tr><td><code>mtx_</code></td><td><code>mutable shared_mutex</code></td><td>Reader-writer lock</td></tr>
+</table>
+<details><summary>Methods</summary>
+<ul>
+<li><strong>READ (shared_lock):</strong> <code>get_relation_embedding(type)</code>, <code>has_context(name)</code>, <code>get_context_names()</code>, <code>make_context_embedding(name)</code>, <code>make_target_embedding(hash, src, tgt)</code>, <code>relation_embeddings()</code>, <code>context_embeddings()</code></li>
+<li><strong>WRITE (unique_lock or fast-path):</strong> <code>get_context_embedding(name)</code> -- Fast path: shared_lock check has_context(), if exists return. Slow path: upgrade to unique_lock, auto-create.</li>
+<li><strong>Convenience:</strong> <code>query_context()</code>, <code>recall_context()</code>, <code>creative_context()</code>, <code>analytical_context()</code> -- Named context shortcuts.</li>
+<li><strong>Callback-based mutable:</strong> <code>with_relation_embeddings_mut(fn)</code>, <code>with_context_embeddings_mut(fn)</code> -- Holds unique_lock for duration of callback fn.</li>
+</ul>
+</details>
 
 <h3>Class: HierarchicalMutex</h3>
-<p>RAII wrapper enforcing lock hierarchy. check_hierarchy() in debug builds, no-op in release.</p>
+<p><strong>Purpose:</strong> RAII wrapper around shared_mutex that enforces lock hierarchy on every lock/unlock operation.</p>
+<table><tr><th>Name</th><th>Type</th><th>Description</th></tr>
+<tr><td><code>level_</code></td><td><code>LockLevel</code></td><td>Lock level (LTM/STM/Registry/Embeddings)</td></tr>
+<tr><td><code>mtx_</code></td><td><code>shared_mutex</code></td><td>Underlying mutex</td></tr>
+</table>
+<p>Methods: <code>lock()</code>/<code>unlock()</code>, <code>lock_shared()</code>/<code>unlock_shared()</code>, <code>try_lock()</code>/<code>try_lock_shared()</code>. All call check_hierarchy() before acquiring. RAII guards: <code>HierarchicalUniqueLock</code>, <code>HierarchicalSharedLock</code> (movable, non-copyable).</p>
 
-<h3>Class: DeadlockDetector (DEBUG only)</h3>
-<p>Singleton. Logs lock events (max 10000). DFS cycle detection in wait-for graph. No-op stub in release.</p>
+<h3>Class: DeadlockDetector <span class="tag tag-ro">DEBUG ONLY</span></h3>
+<p><strong>Purpose:</strong> Singleton that logs lock events and detects cycles in the wait-for graph. No-op stub in release builds.</p>
+<table><tr><th>Name</th><th>Type</th><th>Description</th></tr>
+<tr><td><code>log_</code></td><td><code>vector&lt;LockEvent&gt;</code></td><td>Circular log (max 10000, rotates oldest half)</td></tr>
+<tr><td><code>held_</code></td><td><code>unordered_map&lt;thread::id, set&lt;uint32_t&gt;&gt;</code></td><td>Currently held levels per thread</td></tr>
+<tr><td><code>waiting_</code></td><td><code>unordered_map&lt;thread::id, uint32_t&gt;</code></td><td>What each thread is waiting for</td></tr>
+<tr><td><code>mtx_</code></td><td><code>mutex</code></td><td>Guards all internal state</td></tr>
+</table>
+<details><summary>Methods</summary>
+<ul>
+<li><code>static DeadlockDetector&amp; instance()</code> -- Singleton access.</li>
+<li><code>void on_acquire(tid, level, label)</code> -- Logs Acquire event, adds to held_.</li>
+<li><code>void on_release(tid, level, label)</code> -- Logs Release event, removes from held_.</li>
+<li><code>void on_wait(tid, level)</code> / <code>on_wait_done(tid)</code> -- Updates waiting_ map.</li>
+<li><code>bool has_cycle() const</code> -- DFS from each waiting thread: follows wait &rarr; held &rarr; wait chains. Returns true if cycle found (deadlock).</li>
+<li><code>void clear()</code> -- Resets all state.</li>
+</ul>
+</details>
 
-<div class="invariant"><strong>Invariant:</strong> Lock ordering: LTM(1) before STM(2) before Registry(3) before Embeddings(4). All SharedLTM/STM/Registry/Embeddings operations hold appropriate locks. Per-context mutexes stored as unique_ptr (rehash-safe).</div>
-<div class="weak"><strong>Weak Point:</strong> No timeout on lock acquisition. DeadlockDetector drops oldest events on overflow. No automatic deadlock resolution.</div>
+<div class="invariant"><strong>Invariant:</strong> Lock ordering: LTM(1) before STM(2) before Registry(3) before Embeddings(4). All SharedLTM/STM/Registry/Embeddings operations hold appropriate locks. Per-context mutexes stored as unique_ptr (rehash-safe). ModelGuard releases model mutex before shared_lock.</div>
+<div class="weak"><strong>Weak Point:</strong> No timeout on lock acquisition (potential indefinite block). DeadlockDetector rotates oldest half of events on overflow (may lose useful history). No automatic deadlock resolution (detection only). check_hierarchy() is no-op in release builds. SharedSTM get_context_mutex() throws if context doesn't exist.</div>
 </section>
 <section id="streams">
 <h2>Module: streams</h2>
-<p><strong>Files:</strong> <code>streams/stream_config.hpp</code>, <code>lock_free_queue.hpp</code>, <code>think_stream.hpp/.cpp</code>, <code>stream_orchestrator.hpp/.cpp</code>, <code>stream_scheduler.hpp/.cpp</code>, <code>stream_monitor.hpp/.cpp</code></p>
-<p><strong>Purpose:</strong> Multi-stream parallel thinking. Lock-free queues, autonomous thinking threads, monitoring.</p>
+<p><strong>Files:</strong> <code>streams/stream_config.hpp</code>, <code>lock_free_queue.hpp</code>, <code>think_stream.hpp/.cpp</code>, <code>stream_orchestrator.hpp/.cpp</code>, <code>stream_categories.hpp</code>, <code>stream_scheduler.hpp/.cpp</code>, <code>stream_monitor.hpp/.cpp</code></p>
+<p><strong>Purpose:</strong> Multi-stream parallel thinking. Lock-free queues, autonomous thinking threads, category-based scheduling, latency monitoring.</p>
+<p><strong>Dependencies:</strong> concurrent/ (SharedLTM, SharedSTM, SharedRegistry, SharedEmbeddings), common/types.hpp</p>
 
-<h3>StreamConfig</h3>
-<table><tr><th>Name</th><th>Type</th><th>Description</th></tr>
-<tr><td><code>max_streams</code></td><td><code>uint32_t</code></td><td>0 = auto-detect via hardware_concurrency()</td></tr>
-<tr><td><code>backoff_strategy</code></td><td><code>BackoffStrategy</code></td><td>SpinYieldSleep (3-tier idle backoff)</td></tr>
-<tr><td><code>tick_interval</code></td><td><code>milliseconds</code></td><td>10ms between autonomous ticks</td></tr>
-<tr><td><code>monitor_interval</code></td><td><code>milliseconds</code></td><td>1000ms health-check interval</td></tr>
-<tr><td><code>shutdown_timeout</code></td><td><code>seconds</code></td><td>5s graceful shutdown timeout</td></tr>
-<tr><td><code>stall_threshold</code></td><td><code>milliseconds</code></td><td>5000ms stall detection threshold</td></tr>
-<tr><td><code>subsystem_flags</code></td><td><code>Subsystem</code></td><td>Bitfield: Spreading|Salience|Curiosity|Understanding</td></tr>
+<h3>Enum: Subsystem (bitfield)</h3>
+<p>Bitfield flags: <code>None=0</code>, <code>Spreading=1</code>, <code>Salience=2</code>, <code>Curiosity=4</code>, <code>Understanding=8</code>, <code>All=15</code>. Constexpr operators | and &amp; provided. <code>has_subsystem(flags, sub)</code> checks membership.</p>
+
+<h3>Enum: BackoffStrategy</h3>
+<p><code>SpinYieldSleep</code> (3-tier: spin N &rarr; yield &rarr; sleep), <code>YieldSleep</code> (2-tier), <code>Sleep</code> (direct).</p>
+
+<h3>Struct: StreamConfig</h3>
+<table><tr><th>Name</th><th>Type</th><th>Default</th><th>Description</th></tr>
+<tr><td><code>max_streams</code></td><td><code>uint32_t</code></td><td>0</td><td>0 = auto-detect via hardware_concurrency() (fallback: 4)</td></tr>
+<tr><td><code>backoff_strategy</code></td><td><code>BackoffStrategy</code></td><td>SpinYieldSleep</td><td>Idle backoff strategy</td></tr>
+<tr><td><code>spin_count</code></td><td><code>uint32_t</code></td><td>100</td><td>Spins before yielding (tier 1)</td></tr>
+<tr><td><code>yield_count</code></td><td><code>uint32_t</code></td><td>10</td><td>Yields before sleeping (tier 2)</td></tr>
+<tr><td><code>sleep_duration</code></td><td><code>microseconds</code></td><td>500</td><td>Sleep duration (tier 3)</td></tr>
+<tr><td><code>tick_interval</code></td><td><code>milliseconds</code></td><td>10</td><td>Interval between autonomous thinking ticks</td></tr>
+<tr><td><code>subsystem_flags</code></td><td><code>Subsystem</code></td><td>All</td><td>Which subsystems each stream runs</td></tr>
+<tr><td><code>monitor_interval</code></td><td><code>milliseconds</code></td><td>1000</td><td>Health-check interval</td></tr>
+<tr><td><code>shutdown_timeout</code></td><td><code>seconds</code></td><td>5</td><td>Graceful shutdown timeout</td></tr>
+<tr><td><code>stall_threshold</code></td><td><code>milliseconds</code></td><td>5000</td><td>No-progress stall detection</td></tr>
 </table>
 
-
 <h3>Class Template: MPMCQueue&lt;T&gt;</h3>
-<p>Vyukov bounded MPMC lock-free queue. Power-of-2 capacity. ABA-safe via sequence counters. Cache-line aligned head/tail (alignas(64)).</p>
-<p>Memory ordering: cell sequences use acquire/release; head/tail use relaxed.</p>
+<p><strong>Purpose:</strong> Vyukov bounded MPMC lock-free queue. ABA-safe via per-cell sequence counters.</p>
+<p>Static assert: T must be nothrow move- or copy-constructible.</p>
+<table><tr><th>Name</th><th>Type</th><th>Description</th></tr>
+<tr><td><code>capacity_</code></td><td><code>const size_t</code></td><td>Rounded up to next power of 2 (min 2)</td></tr>
+<tr><td><code>mask_</code></td><td><code>const size_t</code></td><td>capacity_ - 1 (for bitwise AND indexing)</td></tr>
+<tr><td><code>buffer_</code></td><td><code>vector&lt;Cell&gt;</code></td><td>Cell array, each Cell is alignas(64) with atomic sequence + data</td></tr>
+<tr><td><code>head_</code></td><td><code>alignas(64) atomic&lt;size_t&gt;</code></td><td>Consumer position (cache-line isolated)</td></tr>
+<tr><td><code>tail_</code></td><td><code>alignas(64) atomic&lt;size_t&gt;</code></td><td>Producer position (cache-line isolated)</td></tr>
+</table>
+<details><summary>Methods</summary>
+<ul>
+<li><code>bool try_push(const T&amp;)</code> / <code>bool try_push(T&amp;&amp;)</code> -- CAS loop on tail. Compares cell sequence with expected position (diff==0 means slot available). Returns false if full (diff&lt;0).</li>
+<li><code>optional&lt;T&gt; try_pop()</code> -- CAS loop on head. Checks cell sequence == pos+1 (data ready). Returns nullopt if empty. After pop, sets cell sequence to pos + mask + 1 (marks slot reusable).</li>
+<li><code>size_t capacity() const</code> -- Returns capacity_.</li>
+<li><code>bool empty() const</code> -- head &gt;= tail (relaxed ordering, approximate).</li>
+<li><code>size_t size_approx() const</code> -- tail - head (may be stale).</li>
+</ul>
+</details>
 
 <h3>Class Template: SPSCQueue&lt;T&gt;</h3>
-<p>Single-Producer Single-Consumer lock-free queue. Simpler than MPMC (no CAS). One slot reserved for empty detection.</p>
+<p><strong>Purpose:</strong> Single-Producer Single-Consumer lock-free queue. No CAS needed -- only atomic loads/stores.</p>
+<table><tr><th>Name</th><th>Type</th><th>Description</th></tr>
+<tr><td><code>capacity_</code></td><td><code>const size_t</code></td><td>Power-of-2 buffer size</td></tr>
+<tr><td><code>head_</code></td><td><code>alignas(64) atomic&lt;size_t&gt;</code></td><td>Consumer index</td></tr>
+<tr><td><code>tail_</code></td><td><code>alignas(64) atomic&lt;size_t&gt;</code></td><td>Producer index</td></tr>
+</table>
+<p>Usable capacity = capacity_ - 1 (one slot reserved for full/empty distinction). Memory ordering: tail uses release (producer), head uses acquire (consumer).</p>
+
+<h3>Struct: StreamMetrics (alignas(64))</h3>
+<table><tr><th>Name</th><th>Type</th><th>Description</th></tr>
+<tr><td><code>total_ticks</code></td><td><code>atomic&lt;uint64_t&gt;</code></td><td>Total ticks executed</td></tr>
+<tr><td><code>spreading_ticks</code></td><td><code>atomic&lt;uint64_t&gt;</code></td><td>Ticks with spreading activation</td></tr>
+<tr><td><code>salience_ticks</code></td><td><code>atomic&lt;uint64_t&gt;</code></td><td>Ticks with salience computation</td></tr>
+<tr><td><code>curiosity_ticks</code></td><td><code>atomic&lt;uint64_t&gt;</code></td><td>Ticks with curiosity engine</td></tr>
+<tr><td><code>understanding_ticks</code></td><td><code>atomic&lt;uint64_t&gt;</code></td><td>Ticks with understanding layer</td></tr>
+<tr><td><code>idle_ticks</code></td><td><code>atomic&lt;uint64_t&gt;</code></td><td>Ticks with no work</td></tr>
+<tr><td><code>errors</code></td><td><code>atomic&lt;uint64_t&gt;</code></td><td>Error count</td></tr>
+<tr><td><code>last_tick_epoch_us</code></td><td><code>atomic&lt;int64_t&gt;</code></td><td>Last tick timestamp (for stall detection)</td></tr>
+</table>
 
 <h3>Enum: StreamState</h3>
-<p>Created -> Starting -> Running -> Paused -> Stopping -> Stopped -> Error.</p>
+<p>State machine: <code>Created &rarr; Starting &rarr; Running &rarr; Paused &rarr; Stopping &rarr; Stopped &rarr; Error</code>.</p>
 
 <h3>Class: ThinkStream</h3>
-<p>Single thinking thread. Autonomous tick loop with configurable backoff. Runs spreading, salience, curiosity, understanding subsystems per tick.</p>
+<p><strong>Purpose:</strong> Single autonomous thinking thread. Runs a tick loop calling spreading, salience, curiosity, understanding subsystems per tick.</p>
+<table><tr><th>Name</th><th>Type</th><th>Description</th></tr>
+<tr><td><code>id_</code></td><td><code>const StreamId</code></td><td>Unique stream identifier</td></tr>
+<tr><td><code>context_id_</code></td><td><code>atomic&lt;ContextId&gt;</code></td><td>STM context for this stream</td></tr>
+<tr><td><code>ltm_/stm_/registry_/embeddings_</code></td><td><code>Shared*&amp;</code></td><td>References to thread-safe wrappers</td></tr>
+<tr><td><code>config_</code></td><td><code>StreamConfig</code></td><td>Copy of configuration</td></tr>
+<tr><td><code>subsystems_</code></td><td><code>atomic&lt;Subsystem&gt;</code></td><td>Active subsystem flags (runtime changeable)</td></tr>
+<tr><td><code>state_</code></td><td><code>atomic&lt;StreamState&gt;</code></td><td>Current state</td></tr>
+<tr><td><code>stop_requested_</code></td><td><code>atomic&lt;bool&gt;</code></td><td>Graceful stop flag</td></tr>
+<tr><td><code>work_queue_</code></td><td><code>MPMCQueue&lt;ThinkTask&gt;</code></td><td>Incoming task queue</td></tr>
+<tr><td><code>metrics_</code></td><td><code>StreamMetrics</code></td><td>Per-stream performance counters</td></tr>
+<tr><td><code>thread_</code></td><td><code>std::thread</code></td><td>OS thread</td></tr>
+</table>
+<details><summary>Methods</summary>
+<ul>
+<li><code>bool start()</code> -- Creates STM context, launches thread, transitions Created&rarr;Starting&rarr;Running.</li>
+<li><code>void stop()</code> -- Sets stop_requested_. State &rarr; Stopping.</li>
+<li><code>bool join(milliseconds timeout)</code> -- Joins thread with timeout. Returns false on timeout.</li>
+<li><code>bool push_task(ThinkTask)</code> -- Enqueues to work_queue_.</li>
+<li><code>void run()</code> -- (private) Main loop: while(!stop_requested_) { try_pop task or tick(); backoff if idle }.</li>
+<li><code>void tick()</code> -- (private) Calls do_spreading/do_salience/do_curiosity/do_understanding based on subsystem flags. Updates metrics.</li>
+<li><code>void backoff(uint32_t&amp; idle_count)</code> -- (private) 3-tier backoff: spin &rarr; yield &rarr; sleep.</li>
+</ul>
+</details>
 
 <h3>Class: StreamOrchestrator</h3>
-<p>Creates, manages, and destroys ThinkStreams. Distributes work via lock-free queues.</p>
+<p><strong>Purpose:</strong> Creates, manages, and destroys ThinkStreams. Distributes work via round-robin to least-loaded stream.</p>
+<table><tr><th>Name</th><th>Type</th><th>Description</th></tr>
+<tr><td><code>streams_</code></td><td><code>unordered_map&lt;StreamId, unique_ptr&lt;ThinkStream&gt;&gt;</code></td><td>Owned streams</td></tr>
+<tr><td><code>next_id_</code></td><td><code>atomic&lt;StreamId&gt;</code></td><td>ID generator (starts 1)</td></tr>
+<tr><td><code>streams_mtx_</code></td><td><code>mutex</code></td><td>Guards streams_ map</td></tr>
+<tr><td><code>monitor_thread_</code></td><td><code>thread</code></td><td>Health-check thread</td></tr>
+<tr><td><code>metrics_</code></td><td><code>OrchestratorMetrics</code></td><td>active_streams, total_ticks_all, total_errors_all, stalled_streams</td></tr>
+</table>
+<details><summary>Methods</summary>
+<ul>
+<li><code>StreamId create_stream()</code> / <code>create_stream(Subsystem)</code> -- Creates ThinkStream with next ID.</li>
+<li><code>bool start_stream(id)</code> / <code>void stop_stream(id)</code> / <code>void destroy_stream(id)</code></li>
+<li><code>void start_all()</code> -- Starts all created streams.</li>
+<li><code>bool shutdown(timeout)</code> -- Stops all, joins with timeout. Returns false if any timed out.</li>
+<li><code>void auto_scale()</code> -- Creates hardware_concurrency() streams and starts all.</li>
+<li><code>void start_monitor()</code> / <code>void stop_monitor()</code> -- Periodic health_check loop.</li>
+<li><code>vector&lt;StreamHealth&gt; health_check() const</code> -- Returns per-stream state, ticks, errors, stall flag.</li>
+<li><code>bool distribute_task(ThinkTask)</code> -- Pushes to least_loaded_stream() (lowest queue depth).</li>
+</ul>
+</details>
 
 <h3>Class: StreamScheduler</h3>
-<p>Schedules work items to streams. Balances load across available streams.</p>
+<p><strong>Purpose:</strong> Category-based stream scheduling with dynamic reallocation. Maps StreamCategory to budgets.</p>
+<table><tr><th>Name</th><th>Type</th><th>Description</th></tr>
+<tr><td><code>orchestrator_</code></td><td><code>StreamOrchestrator&amp;</code></td><td>Underlying orchestrator</td></tr>
+<tr><td><code>config_</code></td><td><code>SchedulerConfig</code></td><td>Per-category budgets, starvation limits</td></tr>
+<tr><td><code>category_streams_</code></td><td><code>array&lt;vector&lt;uint32_t&gt;, Count&gt;</code></td><td>Stream IDs per category</td></tr>
+<tr><td><code>stats_</code></td><td><code>array&lt;CategoryStats, Count&gt;</code></td><td>Per-category atomic counters</td></tr>
+<tr><td><code>current_load_</code></td><td><code>SystemLoad</code></td><td>Latest load signal</td></tr>
+<tr><td><code>rebalance_thread_</code></td><td><code>thread</code></td><td>Periodic rebalance (every 500ms)</td></tr>
+</table>
+<p>SchedulerConfig includes: budgets per category, max_starvation_rounds=5, rebalance_interval=500ms, total_max_streams (0=auto).</p>
+<details><summary>Methods</summary>
+<ul>
+<li><code>void start()</code> -- Creates initial streams per category budgets, starts rebalancer thread.</li>
+<li><code>bool shutdown(timeout)</code> -- Stops rebalancer, shuts down all categorized streams.</li>
+<li><code>uint32_t create_categorized_stream(StreamCategory cat)</code> -- Creates stream with category-specific subsystem flags.</li>
+<li><code>bool schedule_task(StreamCategory cat, ThinkTask)</code> -- Distributes to least-loaded stream in category.</li>
+<li><code>bool schedule_task_by_priority(ThinkTask)</code> -- Tries categories in priority order.</li>
+<li><code>void update_load(const SystemLoad&amp;)</code> -- Updates load signal for dynamic reallocation.</li>
+<li><code>void rebalance()</code> -- Computes target stream count per category, scales up/down.</li>
+</ul>
+</details>
 
 <h3>Class: StreamMonitor</h3>
-<p>Health monitoring thread. Detects stalls (no progress for stall_threshold). Generates alerts via callback.</p>
+<p><strong>Purpose:</strong> High-frequency (10Hz) health monitoring with latency histograms, alert system, and history ring buffer.</p>
+<table><tr><th>Name</th><th>Type</th><th>Description</th></tr>
+<tr><td><code>orchestrator_</code></td><td><code>StreamOrchestrator&amp;</code></td><td>Source of stream health data</td></tr>
+<tr><td><code>scheduler_</code></td><td><code>StreamScheduler&amp;</code></td><td>Source of category data</td></tr>
+<tr><td><code>latency_hist_</code></td><td><code>LatencyHistogram</code></td><td>Sliding window of 1000 samples (p50/p95/p99/max)</td></tr>
+<tr><td><code>thresholds_</code></td><td><code>AlertThresholds</code></td><td>stall=5000ms, throughput_drop=50%, latency=10000us, error_rate=1%</td></tr>
+<tr><td><code>alerts_</code></td><td><code>vector&lt;Alert&gt;</code></td><td>Active alerts (Stall, ThroughputDrop, HighLatency, ErrorRate)</td></tr>
+<tr><td><code>history_buf_</code></td><td><code>array&lt;HistoryEntry, 600&gt;</code></td><td>Ring buffer: 60s at 10Hz</td></tr>
+</table>
+<p>Snapshots: StreamSnapshot (per-stream ticks/sec, idle%, queue depth), CategorySnapshot (aggregate), GlobalSnapshot (total throughput, utilization).</p>
 
-<div class="invariant"><strong>Invariant:</strong> Queue capacity always power of 2. Sequence counters prevent ABA. head/tail never go backward. Streams transition through state machine only in valid order.</div>
-<div class="weak"><strong>Weak Point:</strong> Lock-free queues cannot block (only try_push/try_pop). Approximate size only. Spins on CAS failures under high contention.</div>
+<div class="invariant"><strong>Invariant:</strong> Queue capacity always power of 2. Sequence counters prevent ABA. head/tail never go backward. Streams transition through state machine only in valid order. Cache-line alignment (alignas(64)) prevents false sharing.</div>
+<div class="weak"><strong>Weak Point:</strong> Lock-free queues cannot block (only try_push/try_pop). size_approx() may be stale. Spins on CAS failures under high contention. SPSC reserves one slot. Monitor snapshot may be slightly stale (mutex guarded, not atomic).</div>
 </section>
 <section id="core">
 <h2>Module: core</h2>
 <p><strong>Files:</strong> <code>core/thinking_pipeline.hpp/.cpp</code>, <code>system_orchestrator.hpp/.cpp</code>, <code>brain19_app.hpp/.cpp</code>, <code>main.cpp</code></p>
 <p><strong>Purpose:</strong> Top-level orchestration. ThinkingPipeline (10-step cognitive cycle), SystemOrchestrator (28 subsystems), Brain19App (REPL).</p>
+<p><strong>Dependencies:</strong> ALL other modules. This is the top of the dependency graph.</p>
 
-<h3>Class: ThinkingPipeline</h3>
-<p>10-step cognitive cycle:</p>
-<ol>
-<li>Activate seed concepts in STM (CORE_KNOWLEDGE class)</li>
-<li>Spreading activation across LTM</li>
-<li>Compute salience scores, initialize focus</li>
-<li>Generate and combine relevance maps (WEIGHTED_AVERAGE)</li>
-<li>Find best thought paths (max 20)</li>
-<li>Run curiosity engine</li>
-<li>Run understanding layer (if enabled)</li>
-<li>Run KAN-LLM validation (if enabled)</li>
-<li>Complete</li>
-<li>Return result with timing</li>
-</ol>
-
-<h3>Class: SystemOrchestrator <span class="tag tag-core">CORE</span></h3>
-<p>Central orchestrator. 28+ subsystems. 15-stage initialization with cleanup on failure.</p>
+<h3>Struct: ThinkingResult</h3>
 <table><tr><th>Name</th><th>Type</th><th>Description</th></tr>
-<tr><td><code>config_</code></td><td><code>Config</code></td><td>data_dir, persistence, WAL, streams, Ollama settings</td></tr>
-<tr><td><code>running_</code></td><td><code>atomic&lt;bool&gt;</code></td><td>System running state</td></tr>
-<tr><td><code>init_stage_</code></td><td><code>int</code></td><td>Initialization stage (0-15)</td></tr>
-<tr><td><code>subsystem_mtx_</code></td><td><code>recursive_mutex</code></td><td>Orchestrator-level synchronization</td></tr>
-<tr><td><code>active_context_</code></td><td><code>ContextId</code></td><td>Active context for interactive use</td></tr>
-<tr><td><code>periodic_thread_</code></td><td><code>std::thread</code></td><td>Background task thread</td></tr>
+<tr><td><code>activated_concepts</code></td><td><code>vector&lt;ConceptId&gt;</code></td><td>All concepts activated in STM during cycle</td></tr>
+<tr><td><code>top_salient</code></td><td><code>vector&lt;SalienceScore&gt;</code></td><td>Top-K salient concepts with factor breakdown</td></tr>
+<tr><td><code>best_paths</code></td><td><code>vector&lt;ThoughtPath&gt;</code></td><td>Ranked thought paths through knowledge graph</td></tr>
+<tr><td><code>curiosity_triggers</code></td><td><code>vector&lt;CuriosityTrigger&gt;</code></td><td>Curiosity signals detected during cycle</td></tr>
+<tr><td><code>combined_relevance</code></td><td><code>RelevanceMap</code></td><td>Combined relevance map from micro-models</td></tr>
+<tr><td><code>understanding</code></td><td><code>UnderstandingResult</code></td><td>MiniLLM meaning/hypothesis/analogy/contradiction proposals</td></tr>
+<tr><td><code>validated_hypotheses</code></td><td><code>vector&lt;ValidationResult&gt;</code></td><td>KAN-validated hypothesis results</td></tr>
+<tr><td><code>steps_completed</code></td><td><code>size_t</code></td><td>Number of pipeline steps completed (0-10)</td></tr>
+<tr><td><code>total_duration_ms</code></td><td><code>double</code></td><td>Wall-clock time for entire cycle</td></tr>
 </table>
 
-<p>15 initialization stages in order: LTM, WAL+Persistence, BrainController, Embeddings+Registry+Trainer, CognitiveDynamics, CuriosityEngine, KANAdapter, UnderstandingLayer, KAN-LLM Hybrid, IngestionPipeline, ChatInterface, Shared Wrappers, Streams, Evolution, Foundation Seeding.</p>
+<h3>Class: ThinkingPipeline <span class="tag tag-core">CORE</span></h3>
+<p><strong>Purpose:</strong> Orchestrates a complete "thinking cycle" -- the heart of Brain19. Executes 10 sequential steps, each feeding results to the next.</p>
 
-<details><summary>Key Methods</summary>
+<h4>Config</h4>
+<table><tr><th>Name</th><th>Type</th><th>Default</th><th>Description</th></tr>
+<tr><td><code>initial_activation</code></td><td><code>double</code></td><td>0.8</td><td>Activation level for seed concepts in STM</td></tr>
+<tr><td><code>top_k_salient</code></td><td><code>size_t</code></td><td>10</td><td>Number of salient concepts to track</td></tr>
+<tr><td><code>max_relevance_maps</code></td><td><code>size_t</code></td><td>5</td><td>Max relevance maps to generate and combine</td></tr>
+<tr><td><code>enable_understanding</code></td><td><code>bool</code></td><td>true</td><td>Run MiniLLM understanding layer</td></tr>
+<tr><td><code>enable_kan_validation</code></td><td><code>bool</code></td><td>true</td><td>Run KAN-LLM hypothesis validation</td></tr>
+<tr><td><code>enable_curiosity</code></td><td><code>bool</code></td><td>true</td><td>Run curiosity engine</td></tr>
+</table>
+
+<h4>Pipeline Steps (10)</h4>
+<ol>
+<li><strong>step_activate_seeds:</strong> Activate seed concepts in STM with CORE_KNOWLEDGE class at config.initial_activation. Calls brain.begin_thinking().</li>
+<li><strong>step_spreading:</strong> Multi-source spreading activation via CognitiveDynamics. Trust-weighted, depth-limited BFS. Returns SpreadingStats.</li>
+<li><strong>step_salience:</strong> Compute salience scores for all active concepts. Initialize focus set. Returns top-K SalienceScores sorted by score.</li>
+<li><strong>step_relevance:</strong> For each of top salient concepts (up to max_relevance_maps), compute RelevanceMap via micro-models. Combine using WEIGHTED_AVERAGE overlay.</li>
+<li><strong>step_thought_paths:</strong> Beam-search for best thought paths. Maximum 20 paths. Each path scored by salience * trust * coherence with depth penalty.</li>
+<li><strong>step_curiosity:</strong> Run CuriosityEngine on current STM state. Generates triggers for shallow relations, missing depth, low exploration.</li>
+<li><strong>step_understanding:</strong> Run UnderstandingLayer (MiniLLMs). Generates MeaningProposals, HypothesisProposals, AnalogyProposals, ContradictionProposals. Only if understanding != nullptr.</li>
+<li><strong>step_kan_validation:</strong> Validate generated hypotheses via KAN function approximation. Only if kan_validator != nullptr and hypotheses exist.</li>
+<li>Complete: mark steps_completed = 10.</li>
+<li>Return: assemble ThinkingResult with all collected data and timing.</li>
+</ol>
+
+<details><summary>All Methods (9)</summary>
 <ul>
-<li><code>bool initialize()</code> -- 15-stage init with exception handling and cleanup_from_stage().</li>
-<li><code>void shutdown()</code> -- Reverse order: stop periodic thread, final checkpoint, stop streams, destroy context, shutdown brain, reset all subsystems.</li>
-<li><code>ChatResponse ask(const string&amp; question)</code> -- Find seeds via LTM label search, run thinking cycle, build context, call chat. Locked with subsystem_mtx_.</li>
-<li><code>IngestionResult ingest_text(const string&amp;, bool auto_approve)</code> -- Ingest via pipeline, ensure MicroModels. Locked.</li>
-<li><code>void create_checkpoint(const string&amp; tag)</code> -- Export STM, save via CheckpointManager, rotate old checkpoints.</li>
-<li><code>ThinkingResult run_thinking_cycle(const vector&lt;ConceptId&gt;&amp; seeds)</code> -- Execute pipeline + evolution.</li>
+<li><code>ThinkingPipeline()</code> / <code>explicit ThinkingPipeline(Config config)</code> -- Default or custom config.</li>
+<li><code>ThinkingResult execute(seeds, context, ltm, stm, brain, cognitive, curiosity, registry, embeddings, understanding*, kan_validator*)</code> -- Full 10-step cycle. understanding and kan_validator are nullable (disabled if null). Times entire execution. Exception-safe: catches per-step exceptions and continues.</li>
+<li><code>step_activate_seeds(seeds, ctx, stm, brain)</code> -- (private) Iterates seeds, calls stm.activate_concept() with CORE_KNOWLEDGE class.</li>
+<li><code>step_spreading(seeds, ctx, cognitive, ltm, stm)</code> -- (private) Calls cognitive.spread_activation_multi().</li>
+<li><code>step_salience(active, ctx, cognitive, ltm, stm)</code> -- (private) Calls cognitive.compute_salience_batch(), sorts, truncates to top_k.</li>
+<li><code>step_relevance(salient, registry, embeddings, ltm)</code> -- (private) For each salient concept, calls RelevanceMap::compute(). Combines with RelevanceMap::combine(WEIGHTED_AVERAGE). Normalizes result.</li>
+<li><code>step_thought_paths(seeds, ctx, cognitive, ltm, stm)</code> -- (private) Calls cognitive.find_best_paths().</li>
+<li><code>step_curiosity(ctx, curiosity, stm)</code> -- (private) Builds SystemObservation from STM active concepts, calls curiosity.observe_and_generate_triggers().</li>
+<li><code>step_understanding(salient_ids, ctx, understanding, cognitive, ltm, stm)</code> -- (private) Calls understanding.process_cycle().</li>
+</ul>
+</details>
+
+<h3>Class: SystemOrchestrator <span class="tag tag-core">CORE</span></h3>
+<p><strong>Purpose:</strong> Central lifecycle manager for ALL Brain19 subsystems. Owns 28+ unique_ptr subsystems. Provides the top-level ask/ingest/checkpoint API.</p>
+
+<h4>Config</h4>
+<table><tr><th>Name</th><th>Type</th><th>Default</th><th>Description</th></tr>
+<tr><td><code>data_dir</code></td><td><code>string</code></td><td>"brain19_data/"</td><td>Directory for persistent storage</td></tr>
+<tr><td><code>enable_persistence</code></td><td><code>bool</code></td><td>true</td><td>Enable mmap-backed PersistentLTM</td></tr>
+<tr><td><code>enable_wal</code></td><td><code>bool</code></td><td>true</td><td>Enable Write-Ahead Logging</td></tr>
+<tr><td><code>checkpoint_interval_minutes</code></td><td><code>size_t</code></td><td>30</td><td>Auto-checkpoint interval</td></tr>
+<tr><td><code>max_checkpoints</code></td><td><code>size_t</code></td><td>5</td><td>Keep at most N checkpoints (rotate oldest)</td></tr>
+<tr><td><code>max_streams</code></td><td><code>size_t</code></td><td>0</td><td>Thinking streams (0 = auto-detect)</td></tr>
+<tr><td><code>enable_monitoring</code></td><td><code>bool</code></td><td>true</td><td>Enable stream monitor thread</td></tr>
+<tr><td><code>ollama_host</code></td><td><code>string</code></td><td>"http://localhost:11434"</td><td>Ollama API endpoint</td></tr>
+<tr><td><code>ollama_model</code></td><td><code>string</code></td><td>"llama3.2:3b"</td><td>LLM model name</td></tr>
+<tr><td><code>seed_foundation</code></td><td><code>bool</code></td><td>true</td><td>Seed 500+ foundation concepts on first run</td></tr>
+</table>
+
+<h4>Member Variables</h4>
+<table><tr><th>Name</th><th>Type</th><th>Description</th></tr>
+<tr><td><code>config_</code></td><td><code>Config</code></td><td>Orchestrator configuration</td></tr>
+<tr><td><code>running_</code></td><td><code>atomic&lt;bool&gt;</code></td><td>System running state flag</td></tr>
+<tr><td><code>init_stage_</code></td><td><code>int</code></td><td>Tracks initialization progress (0-15) for cleanup_from_stage()</td></tr>
+<tr><td><code>subsystem_mtx_</code></td><td><code>recursive_mutex</code></td><td>Guards ask()/ingest() vs periodic_task_loop() concurrency</td></tr>
+<tr><td><code>active_context_</code></td><td><code>ContextId</code></td><td>STM context for interactive REPL use</td></tr>
+<tr><td><code>periodic_thread_</code></td><td><code>std::thread</code></td><td>Background thread for auto-checkpoint + maintenance</td></tr>
+<tr><td><code>periodic_running_</code></td><td><code>atomic&lt;bool&gt;</code></td><td>Controls periodic thread loop</td></tr>
+</table>
+
+<h4>Owned Subsystems (28, initialization order)</h4>
+<table><tr><th>Stage</th><th>Subsystems</th></tr>
+<tr><td>1</td><td>LongTermMemory, PersistentLTM</td></tr>
+<tr><td>2</td><td>WALWriter</td></tr>
+<tr><td>3</td><td>BrainController (+ ShortTermMemory)</td></tr>
+<tr><td>4</td><td>EmbeddingManager, MicroModelRegistry, MicroTrainer</td></tr>
+<tr><td>5</td><td>CognitiveDynamics</td></tr>
+<tr><td>6</td><td>CuriosityEngine</td></tr>
+<tr><td>7</td><td>KANAdapter</td></tr>
+<tr><td>8</td><td>UnderstandingLayer</td></tr>
+<tr><td>9</td><td>KanValidator, DomainManager, RefinementLoop</td></tr>
+<tr><td>10</td><td>IngestionPipeline, WikipediaImporter</td></tr>
+<tr><td>11</td><td>ChatInterface</td></tr>
+<tr><td>12</td><td>SharedLTM, SharedSTM, SharedRegistry, SharedEmbeddings</td></tr>
+<tr><td>13</td><td>StreamOrchestrator, StreamScheduler, StreamMonitor</td></tr>
+<tr><td>14</td><td>PatternDiscovery, EpistemicPromotion, ConceptProposer</td></tr>
+<tr><td>15</td><td>Foundation seeding (if empty LTM + seed_foundation=true)</td></tr>
+</table>
+
+<details><summary>All Methods (16)</summary>
+<ul>
+<li><code>bool initialize()</code> -- 15-stage initialization. Each stage wrapped in try/catch. On failure, calls cleanup_from_stage(init_stage_) to reverse-destroy all created subsystems. Returns false on failure.</li>
+<li><code>void shutdown()</code> -- Reverse order: stop periodic_running_, join periodic_thread_, final checkpoint, stop monitor, shutdown streams, destroy active_context_, shutdown brain, reset all 28 unique_ptrs.</li>
+<li><code>ChatResponse ask(const string&amp; question)</code> -- Locked(subsystem_mtx_). 1) Tokenize question into words. 2) Find seed concepts via LTM label substring match. 3) Run ThinkingPipeline::execute(). 4) Run evolution (pattern discovery + epistemic promotion + concept proposal). 5) Build epistemic context for ChatInterface. 6) Call chat_-&gt;ask_with_context(). Returns ChatResponse.</li>
+<li><code>IngestionResult ingest_text(const string&amp;, bool auto_approve)</code> -- Locked. Calls ingestion_-&gt;process_text(). Ensures micro-models via registry.ensure_models_for(). WAL-logs new concepts.</li>
+<li><code>IngestionResult ingest_wikipedia(const string&amp; url)</code> -- Locked. Delegates to wiki_importer_ then ingestion pipeline.</li>
+<li><code>void create_checkpoint(const string&amp; tag)</code> -- Locked. Exports STM snapshot, calls CheckpointManager::create_checkpoint(), rotates old checkpoints beyond max_checkpoints.</li>
+<li><code>bool restore_checkpoint(const string&amp; dir)</code> -- Locked. Calls CheckpointRestore::restore(). Rebuilds STM from snapshot.</li>
+<li><code>string get_status() const</code> -- Returns formatted status: concept count, relation count, model count, stream status.</li>
+<li><code>string get_stream_status() const</code> -- Returns per-stream health info from StreamOrchestrator.</li>
+<li><code>ThinkingResult run_thinking_cycle(const vector&lt;ConceptId&gt;&amp; seeds)</code> -- Locked. Runs ThinkingPipeline + evolution. Returns result.</li>
+<li><code>void run_periodic_maintenance()</code> -- Locked. Runs EpistemicPromotion::run_maintenance() + PatternDiscovery::discover_all().</li>
+<li><code>void run_evolution_after_thinking(const ThinkingResult&amp; result)</code> -- (private) Generates concept proposals from curiosity triggers and relevance anomalies.</li>
+<li><code>void periodic_task_loop()</code> -- (private) Background loop: every 5 min runs maintenance, every checkpoint_interval creates checkpoint. Sleeps 10s between checks.</li>
+<li><code>void cleanup_from_stage(int stage)</code> -- (private) Reverse-destroys subsystems from given stage down to 0.</li>
+<li><code>void seed_foundation()</code> -- (private) Calls FoundationConcepts::seed_all() if LTM is empty.</li>
+<li><code>void wal_log_store_concept(...)</code> -- (private) Writes WAL entry for concept store op.</li>
 </ul>
 </details>
 
 <h3>Class: Brain19App</h3>
-<p>REPL interface. Commands: ask, ingest, import, status, streams, checkpoint, restore, concepts, explain, think, help, quit.</p>
+<p><strong>Purpose:</strong> Interactive REPL (Read-Eval-Print Loop) for Brain19. Parses user commands, delegates to SystemOrchestrator.</p>
+<p>Commands: <code>ask &lt;question&gt;</code>, <code>ingest &lt;text&gt;</code>, <code>import wiki &lt;title&gt;</code>, <code>import scholar &lt;doi&gt;</code>, <code>status</code>, <code>streams</code>, <code>checkpoint [tag]</code>, <code>restore &lt;dir&gt;</code>, <code>concepts [type]</code>, <code>explain &lt;id&gt;</code>, <code>think &lt;id...&gt;</code>, <code>help</code>, <code>quit</code>.</p>
 
 <h3>main.cpp</h3>
-<p>CLI: --data-dir, --ollama-host, --ollama-model, --no-persistence, --no-foundation, --max-streams, --no-monitor. Interactive REPL or single command mode.</p>
+<p>Entry point. CLI argument parsing:</p>
+<table><tr><th>Flag</th><th>Description</th></tr>
+<tr><td><code>--data-dir &lt;path&gt;</code></td><td>Persistence directory</td></tr>
+<tr><td><code>--ollama-host &lt;url&gt;</code></td><td>Ollama API host</td></tr>
+<tr><td><code>--ollama-model &lt;name&gt;</code></td><td>LLM model name</td></tr>
+<tr><td><code>--no-persistence</code></td><td>Disable mmap persistence</td></tr>
+<tr><td><code>--no-foundation</code></td><td>Skip foundation seeding</td></tr>
+<tr><td><code>--max-streams &lt;N&gt;</code></td><td>Override stream count (validates &gt; 0)</td></tr>
+<tr><td><code>--no-monitor</code></td><td>Disable stream monitoring</td></tr>
+</table>
+<p>Handles SIGINT for graceful shutdown. Supports single-command mode (--ask "question") or interactive REPL.</p>
 
-<div class="invariant"><strong>Invariant:</strong> Init stages strictly ordered. Streams use SharedLTM etc, not direct references. Periodic thread only accesses evolution subsystems. Auto-checkpoint every 30 minutes. Auto-maintenance every 5 minutes.</div>
-<div class="weak"><strong>Weak Point:</strong> 15-stage init is single failure point. recursive_mutex may hide deadlocks. WAL logging in evolution may fail silently. No timeout on checkpoint ops.</div>
+<div class="invariant"><strong>Invariant:</strong> Init stages strictly ordered (1-15). cleanup_from_stage() reverses in exact opposite order. Streams use SharedLTM/STM/Registry/Embeddings, not direct references. Periodic thread only accesses evolution subsystems (locked). Auto-checkpoint every 30 minutes. Auto-maintenance every 5 minutes.</div>
+<div class="weak"><strong>Weak Point:</strong> 15-stage init is single failure point -- partial init may leave inconsistent state despite cleanup. recursive_mutex may hide deadlocks. WAL logging in evolution may fail silently. No timeout on checkpoint ops. Keyword matching in ask() is naive O(n) substring search.</div>
 </section>
 <section id="evolution">
 <h2>Module: evolution</h2>
 <p><strong>Files:</strong> <code>evolution/pattern_discovery.hpp/.cpp</code>, <code>epistemic_promotion.hpp/.cpp</code>, <code>concept_proposal.hpp/.cpp</code></p>
 <p><strong>Purpose:</strong> Knowledge graph evolution: pattern discovery, epistemic promotion/demotion, concept proposal generation.</p>
 
-<h3>Class: PatternDiscovery</h3>
-<p>Discovers structural patterns: clusters (BFS connected components), hierarchies (IS_A chains), bridges (cross-component nodes), cycles (DFS), gaps (missing sibling relations).</p>
+<h3>Class: PatternDiscovery <span class="tag tag-ro">READ-ONLY</span></h3>
+<p><strong>Purpose:</strong> Discovers structural patterns in the knowledge graph to identify areas for evolution.</p>
+
+<h4>Member Variables</h4>
+<table><tr><th>Name</th><th>Type</th><th>Description</th></tr>
+<tr><td><code>ltm_</code></td><td><code>const LongTermMemory&amp;</code></td><td>Read-only reference to knowledge base</td></tr>
+</table>
+
+<h4>Internal Struct: AdjacencyGraph</h4>
+<table><tr><th>Name</th><th>Type</th><th>Description</th></tr>
+<tr><td><code>nodes</code></td><td><code>vector&lt;ConceptId&gt;</code></td><td>All active concepts</td></tr>
+<tr><td><code>adj</code></td><td><code>unordered_map&lt;ConceptId, vector&lt;ConceptId&gt;&gt;</code></td><td>Directed edges (all types)</td></tr>
+<tr><td><code>adj_typed</code></td><td><code>unordered_map&lt;ConceptId, vector&lt;ConceptId&gt;&gt;</code></td><td>IS_A edges only (for hierarchies)</td></tr>
+</table>
+
+<h4>Struct: DiscoveredPattern</h4>
+<table><tr><th>Name</th><th>Type</th><th>Description</th></tr>
+<tr><td><code>description</code></td><td><code>string</code></td><td>Human-readable description</td></tr>
+<tr><td><code>involved_concepts</code></td><td><code>vector&lt;ConceptId&gt;</code></td><td>Concepts participating in pattern</td></tr>
+<tr><td><code>confidence</code></td><td><code>double</code></td><td>[0,1] confidence in pattern</td></tr>
+<tr><td><code>pattern_type</code></td><td><code>string</code></td><td>"cluster", "hierarchy", "cycle", "bridge", "gap"</td></tr>
+</table>
+
+<details><summary>All Methods (8)</summary>
+<ul>
+<li><code>explicit PatternDiscovery(const LongTermMemory&amp; ltm)</code> -- Stores read-only reference.</li>
+<li><code>vector&lt;DiscoveredPattern&gt; find_clusters(size_t min_size = 3)</code> -- BFS connected components. Confidence = edge density = edges / (n*(n-1)). Only reports components &gt;= min_size.</li>
+<li><code>vector&lt;DiscoveredPattern&gt; find_hierarchies(size_t min_depth = 3)</code> -- Follows IS_A chains greedily. Fixed confidence 0.9. Cycle-aware (stops on revisit).</li>
+<li><code>vector&lt;DiscoveredPattern&gt; find_bridges()</code> -- Finds concepts connecting 2+ components. Confidence 0.8. Returns empty if &lt;2 components.</li>
+<li><code>vector&lt;DiscoveredPattern&gt; find_cycles(size_t max_length = 5)</code> -- DFS simple cycle detection. Confidence 0.7. No repeated nodes except start.</li>
+<li><code>vector&lt;DiscoveredPattern&gt; find_gaps()</code> -- Sibling analogy: if sibling has relation that target lacks, it's a gap. Confidence 0.5 (speculative).</li>
+<li><code>vector&lt;DiscoveredPattern&gt; discover_all()</code> -- Calls all five methods and combines results.</li>
+<li><code>AdjacencyGraph build_graph() const</code> -- (private) Builds adjacency from active LTM concepts. O(C*R).</li>
+</ul>
+</details>
 
 <h3>Class: EpistemicPromotion <span class="tag tag-core">CORE</span></h3>
-<p>Manages epistemic lifecycle: SPECULATION -> HYPOTHESIS -> THEORY -> FACT.</p>
+<p><strong>Purpose:</strong> Manages epistemic lifecycle: SPECULATION &rarr; HYPOTHESIS &rarr; THEORY &rarr; FACT with automatic promotion/demotion and human review gate.</p>
+
+<h4>Member Variables</h4>
+<table><tr><th>Name</th><th>Type</th><th>Description</th></tr>
+<tr><td><code>ltm_</code></td><td><code>LongTermMemory&amp;</code></td><td>Mutable reference for reading and updating</td></tr>
+</table>
+
+<h4>Struct: PromotionCandidate</h4>
+<table><tr><th>Name</th><th>Type</th><th>Description</th></tr>
+<tr><td><code>id</code></td><td><code>ConceptId</code></td><td>Concept being evaluated</td></tr>
+<tr><td><code>current_type</code></td><td><code>EpistemicType</code></td><td>Current epistemic type</td></tr>
+<tr><td><code>proposed_type</code></td><td><code>EpistemicType</code></td><td>Target type</td></tr>
+<tr><td><code>current_trust / proposed_trust</code></td><td><code>double</code></td><td>Current and proposed trust values</td></tr>
+<tr><td><code>reasoning</code></td><td><code>string</code></td><td>Why promote/demote</td></tr>
+<tr><td><code>evidence</code></td><td><code>vector&lt;ConceptId&gt;</code></td><td>Supporting concepts</td></tr>
+<tr><td><code>requires_human_review</code></td><td><code>bool</code></td><td>true only for THEORY&rarr;FACT</td></tr>
+</table>
 
 <h4>Promotion Rules</h4>
 <table>
-<tr><th>From</th><th>To</th><th>Requirements</th><th>Human Review</th></tr>
-<tr><td>SPECULATION</td><td>HYPOTHESIS</td><td>3+ supports, validation &gt; 0.3, no contradictions</td><td>No</td></tr>
-<tr><td>HYPOTHESIS</td><td>THEORY</td><td>5+ theory+ supports, validation &gt; 0.6, 2+ independent sources, no contradictions</td><td>No</td></tr>
-<tr><td>THEORY</td><td>FACT</td><td>validation &gt; 0.7, 5+ supports, no contradictions</td><td><strong>YES</strong></td></tr>
+<tr><th>From</th><th>To</th><th>Requirements</th><th>Human</th></tr>
+<tr><td>SPECULATION</td><td>HYPOTHESIS</td><td>3+ supports, validation &gt; 0.3, no contradictions. Trust: min(0.5, max(0.3, validation))</td><td>No</td></tr>
+<tr><td>HYPOTHESIS</td><td>THEORY</td><td>5+ theory-level supports, validation &gt; 0.6, 2+ independent sources, no contradictions. Trust: min(0.8, max(0.5, validation))</td><td>No</td></tr>
+<tr><td>THEORY</td><td>FACT</td><td>validation &gt; 0.7, 5+ supports, no contradictions. Trust: max(0.8, validation)</td><td><strong>YES</strong></td></tr>
 <tr><td>Any</td><td>Lower</td><td>Contradictions detected</td><td>No</td></tr>
 </table>
 
-<p>Demotion chain on contradiction: FACT->THEORY(0.6), THEORY->HYPOTHESIS(0.4), HYPOTHESIS->SPECULATION(0.2).</p>
+<p>Demotion chain on contradiction: FACT&rarr;THEORY(0.6), THEORY&rarr;HYPOTHESIS(0.4), HYPOTHESIS&rarr;SPECULATION(0.2).</p>
 
-<h3>Class: ConceptProposer</h3>
-<p>Generates proposals from: curiosity triggers, relevance anomalies, cross-concept analogies.</p>
+<details><summary>All Methods (10)</summary>
+<ul>
+<li><code>explicit EpistemicPromotion(LongTermMemory&amp; ltm)</code> -- Stores mutable reference.</li>
+<li><code>vector&lt;PromotionCandidate&gt; evaluate_all()</code> -- Evaluates all active concepts. Returns candidates for promotion/demotion.</li>
+<li><code>optional&lt;PromotionCandidate&gt; evaluate(ConceptId)</code> -- Checks demotion first (priority), then promotion based on current type.</li>
+<li><code>bool promote(ConceptId, EpistemicType, double trust)</code> -- Rejects FACT (use confirm_as_fact). Creates new metadata and calls ltm_.update_epistemic_metadata().</li>
+<li><code>bool demote(ConceptId, EpistemicType, double trust, const string&amp; reason)</code> -- Creates metadata with new type. Reason parameter currently unused.</li>
+<li><code>bool confirm_as_fact(ConceptId, double trust, const string&amp; human_note)</code> -- GATE: Only THEORY can be promoted to FACT. Trust clamped [0.8, 1.0].</li>
+<li><code>MaintenanceResult run_maintenance()</code> -- Calls evaluate_all(), applies automatic promotions/demotions, collects human-review candidates.</li>
+<li><code>double compute_validation_score(ConceptId) const</code> -- (private) Weighted trust from SUPPORTS relations: total_trust / total_weight.</li>
+<li><code>size_t count_supporting_relations(ConceptId) const</code> -- (private) Counts incoming SUPPORTS from active concepts.</li>
+<li><code>bool has_contradictions(ConceptId) const</code> -- (private) Checks for CONTRADICTS relations to/from active concepts.</li>
+</ul>
+</details>
+
+<h3>Class: ConceptProposer <span class="tag tag-ro">READ-ONLY</span></h3>
+<p><strong>Purpose:</strong> Generates proposals for NEW concepts from curiosity triggers, relevance anomalies, and analogies.</p>
+
+<h4>Member Variables</h4>
 <table><tr><th>Name</th><th>Type</th><th>Description</th></tr>
-<tr><td><code>initial_type</code></td><td><code>EpistemicType</code></td><td>Enforced SPECULATION or HYPOTHESIS only</td></tr>
-<tr><td><code>initial_trust</code></td><td><code>double</code></td><td>CAPPED at 0.5</td></tr>
+<tr><td><code>ltm_</code></td><td><code>const LongTermMemory&amp;</code></td><td>Read-only reference</td></tr>
 </table>
 
-<p>Quality scoring: evidence_count * 0.15 + initial_trust + (HYPOTHESIS ? +0.2 : 0) + verified_evidence * 0.1.</p>
+<h4>Struct: ConceptProposal</h4>
+<table><tr><th>Name</th><th>Type</th><th>Description</th></tr>
+<tr><td><code>label</code></td><td><code>string</code></td><td>Generated label (e.g., "bridge_42_17")</td></tr>
+<tr><td><code>description</code></td><td><code>string</code></td><td>Human-readable description</td></tr>
+<tr><td><code>initial_type</code></td><td><code>EpistemicType</code></td><td>ENFORCED: SPECULATION or HYPOTHESIS only</td></tr>
+<tr><td><code>initial_trust</code></td><td><code>double</code></td><td>CAPPED at 0.5 in constructor</td></tr>
+<tr><td><code>source</code></td><td><code>string</code></td><td>Origin (e.g., "curiosity:shallow_relations")</td></tr>
+<tr><td><code>evidence</code></td><td><code>vector&lt;ConceptId&gt;</code></td><td>Supporting existing concepts</td></tr>
+<tr><td><code>reasoning</code></td><td><code>string</code></td><td>Why this concept is proposed</td></tr>
+</table>
 
-<div class="invariant"><strong>Invariant:</strong> THEORY-to-FACT requires human review (NEVER automatic). System-generated concepts ALWAYS start as SPECULATION or HYPOTHESIS. Initial trust CAPPED at 0.5. Demotions automatic on contradictions.</div>
-<div class="weak"><strong>Weak Point:</strong> No cycle deduplication in pattern discovery. Gap detection only IS_A hierarchies. Validation score ignores relation type quality. No timestamping of promotions. Label collisions possible with generic naming.</div>
+<details><summary>All Methods (6)</summary>
+<ul>
+<li><code>vector&lt;ConceptProposal&gt; from_curiosity(const vector&lt;CuriosityTrigger&gt;&amp;)</code> -- Converts triggers: SHALLOW_RELATIONS&rarr;bridge concepts (trust 0.15), MISSING_DEPTH&rarr;structural concepts (trust 0.2), LOW_EXPLORATION&rarr;area concepts (trust 0.1), RECURRENT_WITHOUT_FUNCTION&rarr;functional concepts (trust 0.25, HYPOTHESIS). Deduplicates via concept_exists_similar().</li>
+<li><code>vector&lt;ConceptProposal&gt; from_relevance_anomalies(const RelevanceMap&amp;, double threshold = 0.8)</code> -- Flags high-relevance pairs without direct LTM relation. Trust = min(0.3, score * 0.3). Type: SPECULATION.</li>
+<li><code>vector&lt;ConceptProposal&gt; from_analogies(const vector&lt;AnalogyProposal&gt;&amp;)</code> -- From analogies with structural_similarity &gt;= 0.5. Type: HYPOTHESIS if sim &gt; 0.7, else SPECULATION.</li>
+<li><code>vector&lt;ConceptProposal&gt; rank_proposals(vector&lt;ConceptProposal&gt;&amp;, size_t max_k = 10)</code> -- Deduplicates by label, sorts by quality score, truncates to top-k.</li>
+<li><code>double compute_quality_score(const ConceptProposal&amp;) const</code> -- (private) evidence_count * 0.15 + initial_trust + (HYPOTHESIS ? +0.2 : 0) + verified_evidence * 0.1.</li>
+<li><code>bool concept_exists_similar(const string&amp;) const</code> -- (private) O(n) exact label match against all LTM concepts.</li>
+</ul>
+</details>
+
+<div class="invariant"><strong>Invariant:</strong> THEORY-to-FACT requires human review (NEVER automatic). System-generated concepts ALWAYS start as SPECULATION or HYPOTHESIS. Initial trust CAPPED at 0.5. Demotions automatic on contradictions. No concept promotion skips levels.</div>
+<div class="weak"><strong>Weak Point:</strong> No cycle deduplication in pattern discovery. Gap detection only IS_A hierarchies. concept_exists_similar() is O(n). Validation score ignores relation type quality. No timestamping of promotions. Label collisions possible with generic naming. Hardcoded promotion thresholds not tunable.</div>
 </section>
 
 <section>

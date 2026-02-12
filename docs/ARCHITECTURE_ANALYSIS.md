@@ -368,7 +368,7 @@ Ollama wird an **zwei Stellen** genutzt:
 1. **ChatInterface** (`backend/llm/`): Verbalisierung von LTM-Wissen für den User
    - System-Prompt mit epistemischen Regeln
    - Konzept-Kontext aus LTM
-   - Modell: `llama3.2:3b` (konfigurierbar)
+   - Modell: `llama3.2:1b` (konfigurierbar)
 
 2. **OllamaMiniLLM** (`backend/understanding/`): Semantische Analyse
    - Meaning Extraction, Hypothesis Generation, Analogy Detection, Contradiction Detection

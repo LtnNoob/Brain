@@ -65,6 +65,9 @@ public:
 
         // Bootstrap
         bool seed_foundation = true;
+
+        // ThinkingPipeline
+        ThinkingPipeline::Config thinking_config{};
     };
 
     SystemOrchestrator();
@@ -113,6 +116,7 @@ public:
     // ─── Thinking ────────────────────────────────────────────────────────────
 
     ThinkingResult run_thinking_cycle(const std::vector<ConceptId>& seeds);
+    ThinkingResult run_thinking_cycle(const std::vector<ConceptId>& seeds, GoalState goal);
 
     // ─── Evolution ──────────────────────────────────────────────────────────
 

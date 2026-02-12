@@ -71,10 +71,12 @@ struct GoalState {
     }
 
     // Factory: Create goal from a causal query
-    static GoalState causal_goal(const std::vector<ConceptId>& seeds, const Vec10& query_emb, const std::string& query) {
+    // Uses chain-length-based progress (no target concepts) since causal chains
+    // follow links until they run out of causal edges.
+    static GoalState causal_goal(const Vec10& query_emb, const std::string& query) {
         GoalState gs;
         gs.goal_type = GoalType::CAUSAL_CHAIN;
-        gs.target_concepts = seeds;  // Seed concepts as starting points
+        gs.target_concepts = {};  // Exploration-style: progress by chain length
         gs.query_embedding = query_emb;
         gs.threshold = 0.7;
         gs.query_text = query;

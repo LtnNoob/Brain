@@ -77,7 +77,7 @@ public:
 
 private:
     // Placeholder for future KAN-based factory config
-    size_t created_count_;
+    size_t created_count_ = 0;
 
     // Helper: Build specialized system prompt for Mini-LLM
     std::string build_specialization_prompt(
@@ -161,7 +161,7 @@ private:
     std::string name_;
     std::string specialization_context_;  // Knowledge this Mini-LLM specializes in
     std::vector<ConceptId> focal_concepts_;  // Concepts this Mini-LLM knows about
-    mutable uint64_t proposal_counter_;
+    mutable uint64_t proposal_counter_ = 0;
 };
 
 } // namespace brain19

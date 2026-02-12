@@ -33,10 +33,10 @@ enum class TemplateType {
 
 // Result of template generation
 struct TemplateResult {
-    std::string text;                   // Generated German text
-    TemplateType template_type;         // Detected template type
-    size_t sentences_generated = 0;     // Number of sentences
-    double confidence = 1.0;            // Always 1.0 for templates
+    std::string text;                                          // Generated German text
+    TemplateType template_type = TemplateType::DEFINITIONAL;   // Detected template type
+    size_t sentences_generated = 0;                            // Number of sentences
+    double confidence = 1.0;                                   // Always 1.0 for templates
 };
 
 class TemplateEngine {

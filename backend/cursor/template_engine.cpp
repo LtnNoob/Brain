@@ -71,10 +71,17 @@ TemplateType TemplateEngine::classify(const std::vector<RelationType>& relations
     if (compare_count > 0 && compare_count >= causal_count && compare_count >= def_count) {
         return TemplateType::VERGLEICHEND;
     }
-    if (causal_count >= def_count) {
+    if (causal_count > def_count) {
         return TemplateType::KAUSAL_ERKLAEREND;
     }
-    return TemplateType::DEFINITIONAL;
+    if (def_count > causal_count) {
+        return TemplateType::DEFINITIONAL;
+    }
+    // Tie or all-zero: default to AUFZAEHLEND (mixed/listing pattern)
+    if (causal_count == 0 && def_count == 0) {
+        return TemplateType::AUFZAEHLEND;
+    }
+    return TemplateType::KAUSAL_ERKLAEREND;  // True tie: causal wins
 }
 
 TemplateResult TemplateEngine::generate(const TraversalResult& chain) const {

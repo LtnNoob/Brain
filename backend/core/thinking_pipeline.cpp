@@ -1,5 +1,4 @@
 #include "thinking_pipeline.hpp"
-#include "../cursor/template_engine.hpp"
 #include <chrono>
 #include <iostream>
 #include <algorithm>

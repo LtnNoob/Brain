@@ -195,6 +195,12 @@ std::optional<ConceptId> FocusCursor::step() {
 bool FocusCursor::step_to(ConceptId target) {
     if (!seeded_ || terminated_) return false;
 
+    // Check termination before moving (same as step())
+    if (check_termination()) {
+        terminated_ = true;
+        return false;
+    }
+
     // Check target is actually a neighbor
     auto outgoing = ltm_.get_outgoing_relations(current_);
     auto incoming = ltm_.get_incoming_relations(current_);
@@ -236,6 +242,16 @@ bool FocusCursor::step_to(ConceptId target) {
     ts.context_at_entry = context_embedding_;
     ts.depth = depth_;
     history_.push_back(ts);
+
+    // Update goal progress (same as step())
+    if (mode_ == ExplorationMode::GOAL_DIRECTED) {
+        std::vector<ConceptId> visited_vec(visited_.begin(), visited_.end());
+        goal_.update_progress(visited_vec, depth_);
+    }
+
+    // Note: preferred_relation_ is NOT cleared here (unlike step()).
+    // step_to() is a forced move — the preference wasn't consumed by scoring
+    // and should remain available for the next free step().
 
     return true;
 }
@@ -298,6 +314,7 @@ std::vector<FocusCursor> FocusCursor::branch(size_t k) const {
         copy.history_ = history_;
         copy.visited_ = visited_;
         copy.goal_ = goal_;
+        copy.preferred_relation_ = preferred_relation_;
 
         // Force-step each branch to a different candidate
         copy.step_to(candidates[i].target);
@@ -322,12 +339,12 @@ TraversalResult FocusCursor::result() const {
         res.relation_sequence.push_back(history_[i].relation_from);
     }
 
-    // Compute average score
+    // Compute average score (exclude seed step, which always has weight 1.0)
     double sum = 0.0;
-    for (const auto& step : history_) {
-        sum += step.weight_at_entry;
+    for (size_t i = 1; i < history_.size(); ++i) {
+        sum += history_[i].weight_at_entry;
     }
-    res.chain_score = history_.empty() ? 0.0 : sum / static_cast<double>(history_.size());
+    res.chain_score = (history_.size() <= 1) ? 0.0 : sum / static_cast<double>(history_.size() - 1);
 
     return res;
 }

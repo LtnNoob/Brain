@@ -167,7 +167,7 @@ bool SystemOrchestrator::initialize() {
         init_stage_ = 15;
 
         // ── ThinkingPipeline ────────────────────────────────────────────
-        thinking_ = std::make_unique<ThinkingPipeline>();
+        thinking_ = std::make_unique<ThinkingPipeline>(config_.thinking_config);
 
         // Create active context
         active_context_ = brain_->create_context();
@@ -567,6 +567,27 @@ ThinkingResult SystemOrchestrator::run_thinking_cycle(const std::vector<ConceptI
     );
 
     // Feed thinking results into evolution pipeline
+    run_evolution_after_thinking(result);
+
+    return result;
+}
+
+ThinkingResult SystemOrchestrator::run_thinking_cycle(
+    const std::vector<ConceptId>& seeds, GoalState goal)
+{
+    if (!running_ || !thinking_) return {};
+
+    std::lock_guard<std::recursive_mutex> lock(subsystem_mtx_);
+
+    auto result = thinking_->execute_with_goal(
+        seeds, std::move(goal), active_context_,
+        *ltm_, *brain_->get_stm_mutable(), *brain_,
+        *cognitive_, *curiosity_,
+        *registry_, *embeddings_,
+        understanding_.get(),
+        kan_validator_.get()
+    );
+
     run_evolution_after_thinking(result);
 
     return result;

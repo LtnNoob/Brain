@@ -90,6 +90,7 @@ bool SystemOrchestrator::initialize() {
         // ── Stage 6: CuriosityEngine ────────────────────────────────────
         log("  [6/15] CuriosityEngine...");
         curiosity_ = std::make_unique<CuriosityEngine>();
+        goal_queue_ = std::make_unique<GoalQueue>(20);
         init_stage_ = 6;
 
         // ── Stage 7: KANAdapter ─────────────────────────────────────────
@@ -189,7 +190,8 @@ bool SystemOrchestrator::initialize() {
                         *cognitive_, *curiosity_,
                         *registry_, *embeddings_,
                         understanding_.get(),
-                        kan_validator_.get()
+                        kan_validator_.get(),
+                        gdo_.get()
                     );
                     run_evolution_after_thinking(result);
                 }
@@ -312,6 +314,7 @@ void SystemOrchestrator::shutdown() {
     kan_validator_.reset();
     understanding_.reset();
     kan_adapter_.reset();
+    goal_queue_.reset();
     curiosity_.reset();
     gdo_.reset();
     cognitive_.reset();
@@ -340,7 +343,7 @@ void SystemOrchestrator::cleanup_from_stage(int stage) {
     if (stage >= 9)  { refinement_loop_.reset(); domain_manager_.reset(); kan_validator_.reset(); }
     if (stage >= 8)  { understanding_.reset(); }
     if (stage >= 7)  { kan_adapter_.reset(); }
-    if (stage >= 6)  { curiosity_.reset(); }
+    if (stage >= 6)  { goal_queue_.reset(); curiosity_.reset(); }
     if (stage >= 5)  { if (gdo_) { gdo_->stop(); gdo_.reset(); } cognitive_.reset(); }
     if (stage >= 4)  { trainer_.reset(); registry_.reset(); embeddings_.reset(); }
     if (stage >= 3)  { if (brain_) brain_->shutdown(); brain_.reset(); }
@@ -609,13 +612,9 @@ ThinkingResult SystemOrchestrator::run_thinking_cycle(const std::vector<ConceptI
         *cognitive_, *curiosity_,
         *registry_, *embeddings_,
         understanding_.get(),
-        kan_validator_.get()
+        kan_validator_.get(),
+        gdo_.get()
     );
-
-    // Feed cursor results into GDO
-    if (gdo_ && result.cursor_result) {
-        gdo_->feed_traversal_result(*result.cursor_result);
-    }
 
     // Feed thinking results into evolution pipeline
     run_evolution_after_thinking(result);
@@ -636,7 +635,8 @@ ThinkingResult SystemOrchestrator::run_thinking_cycle(
         *cognitive_, *curiosity_,
         *registry_, *embeddings_,
         understanding_.get(),
-        kan_validator_.get()
+        kan_validator_.get(),
+        gdo_.get()
     );
 
     run_evolution_after_thinking(result);
@@ -730,6 +730,13 @@ void SystemOrchestrator::periodic_task_loop() {
 // ─── Evolution After Thinking ────────────────────────────────────────────────
 
 void SystemOrchestrator::run_evolution_after_thinking(const ThinkingResult& result) {
+    // Enqueue generated goals into the goal queue
+    if (goal_queue_ && !result.generated_goals.empty()) {
+        for (const auto& goal : result.generated_goals) {
+            goal_queue_->push(goal);
+        }
+    }
+
     if (!concept_proposer_) return;
 
     // Generate proposals from curiosity triggers

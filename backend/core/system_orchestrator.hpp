@@ -8,6 +8,7 @@
 #include "../cognitive/cognitive_dynamics.hpp"
 #include "../cognitive/global_dynamics_operator.hpp"
 #include "../curiosity/curiosity_engine.hpp"
+#include "../curiosity/goal_generator.hpp"
 #include "../micromodel/micro_model_registry.hpp"
 #include "../micromodel/embedding_manager.hpp"
 #include "../micromodel/micro_trainer.hpp"
@@ -166,8 +167,9 @@ private:
     std::unique_ptr<CognitiveDynamics> cognitive_;
     std::unique_ptr<GlobalDynamicsOperator> gdo_;
 
-    // 6. Curiosity
+    // 6. Curiosity + Goals
     std::unique_ptr<CuriosityEngine> curiosity_;
+    std::unique_ptr<GoalQueue> goal_queue_;
 
     // 7. KAN
     std::unique_ptr<KANAdapter> kan_adapter_;

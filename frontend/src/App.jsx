@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { useBrain19 } from './hooks/useBrain19';
 import Brain19Visualizer from './Brain19Visualizer';
+import PipelineEditor from './PipelineEditor';
 
 const App = () => {
   const { snapshot, connected, loading, lastAnswer, ask, ingest, refreshSnapshot, fetchSnapshot } = useBrain19();
   const [question, setQuestion] = useState('');
   const [ingestText, setIngestText] = useState('');
   const [asking, setAsking] = useState(false);
+  const [activeTab, setActiveTab] = useState('monitor');
 
   const handleAsk = (e) => {
     e.preventDefault();
@@ -42,7 +44,21 @@ const App = () => {
     <div style={styles.container}>
       {/* Header */}
       <div style={styles.header}>
-        <h1 style={styles.title}>🧠 Brain19</h1>
+        <h1 style={styles.title}>Brain19</h1>
+        <div style={styles.tabBar}>
+          <button
+            style={activeTab === 'monitor' ? styles.tabActive : styles.tab}
+            onClick={() => setActiveTab('monitor')}
+          >
+            Monitor
+          </button>
+          <button
+            style={activeTab === 'pipeline' ? styles.tabActive : styles.tab}
+            onClick={() => setActiveTab('pipeline')}
+          >
+            Pipeline
+          </button>
+        </div>
         <div style={styles.headerRight}>
           <span style={{
             ...styles.statusDot,
@@ -59,73 +75,77 @@ const App = () => {
       </div>
 
       {/* Main content */}
-      <div style={styles.main}>
-        {/* Left: Visualization */}
-        <div style={styles.vizArea}>
-          {snapshot ? (
-            <Brain19Visualizer snapshot={snapshot} />
-          ) : (
-            <div style={styles.noData}>No snapshot data</div>
-          )}
-        </div>
-
-        {/* Right: Interaction panel */}
-        <div style={styles.panel}>
-          {/* Ask */}
-          <div style={styles.section}>
-            <h3 style={styles.sectionTitle}>💬 Ask Brain19</h3>
-            <form onSubmit={handleAsk} style={styles.form}>
-              <input
-                value={question}
-                onChange={(e) => setQuestion(e.target.value)}
-                placeholder="Ask a question..."
-                style={styles.input}
-                disabled={!connected}
-              />
-              <button type="submit" style={styles.submitBtn} disabled={!connected || asking}>
-                {asking ? '...' : 'Ask'}
-              </button>
-            </form>
-            {lastAnswer && (
-              <div style={styles.answerBox}>
-                <pre style={styles.answerText}>{lastAnswer}</pre>
-              </div>
+      {activeTab === 'monitor' ? (
+        <div style={styles.main}>
+          {/* Left: Visualization */}
+          <div style={styles.vizArea}>
+            {snapshot ? (
+              <Brain19Visualizer snapshot={snapshot} />
+            ) : (
+              <div style={styles.noData}>No snapshot data</div>
             )}
           </div>
 
-          {/* Ingest */}
-          <div style={styles.section}>
-            <h3 style={styles.sectionTitle}>📥 Ingest Knowledge</h3>
-            <form onSubmit={handleIngest} style={styles.form}>
-              <textarea
-                value={ingestText}
-                onChange={(e) => setIngestText(e.target.value)}
-                placeholder="Paste knowledge to ingest..."
-                style={styles.textarea}
-                disabled={!connected}
-              />
-              <button type="submit" style={styles.submitBtn} disabled={!connected}>
-                Ingest
-              </button>
-            </form>
-          </div>
-
-          {/* Status */}
-          {snapshot?.status && (
+          {/* Right: Interaction panel */}
+          <div style={styles.panel}>
+            {/* Ask */}
             <div style={styles.section}>
-              <h3 style={styles.sectionTitle}>📊 Status</h3>
-              <div style={styles.statusGrid}>
-                {Object.entries(snapshot.status).map(([k, v]) => (
-                  <div key={k} style={styles.statusItem}>
-                    <span style={styles.statusKey}>{k}</span>
-                    <span style={styles.statusVal}>{v}</span>
-                  </div>
-                ))}
-              </div>
+              <h3 style={styles.sectionTitle}>Ask Brain19</h3>
+              <form onSubmit={handleAsk} style={styles.form}>
+                <input
+                  value={question}
+                  onChange={(e) => setQuestion(e.target.value)}
+                  placeholder="Ask a question..."
+                  style={styles.input}
+                  disabled={!connected}
+                />
+                <button type="submit" style={styles.submitBtn} disabled={!connected || asking}>
+                  {asking ? '...' : 'Ask'}
+                </button>
+              </form>
+              {lastAnswer && (
+                <div style={styles.answerBox}>
+                  <pre style={styles.answerText}>{lastAnswer}</pre>
+                </div>
+              )}
             </div>
-          )}
+
+            {/* Ingest */}
+            <div style={styles.section}>
+              <h3 style={styles.sectionTitle}>Ingest Knowledge</h3>
+              <form onSubmit={handleIngest} style={styles.form}>
+                <textarea
+                  value={ingestText}
+                  onChange={(e) => setIngestText(e.target.value)}
+                  placeholder="Paste knowledge to ingest..."
+                  style={styles.textarea}
+                  disabled={!connected}
+                />
+                <button type="submit" style={styles.submitBtn} disabled={!connected}>
+                  Ingest
+                </button>
+              </form>
+            </div>
+
+            {/* Status */}
+            {snapshot?.status && (
+              <div style={styles.section}>
+                <h3 style={styles.sectionTitle}>Status</h3>
+                <div style={styles.statusGrid}>
+                  {Object.entries(snapshot.status).map(([k, v]) => (
+                    <div key={k} style={styles.statusItem}>
+                      <span style={styles.statusKey}>{k}</span>
+                      <span style={styles.statusVal}>{v}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
-      </div>
+      ) : (
+        <PipelineEditor snapshot={snapshot} />
+      )}
     </div>
   );
 };
@@ -135,9 +155,12 @@ const styles = {
   loading: { display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', gap: 16 },
   spinner: { width: 40, height: 40, border: '3px solid #333', borderTopColor: '#6366f1', borderRadius: '50%', animation: 'spin 1s linear infinite' },
   retryBtn: { padding: '8px 16px', background: '#333', color: '#fff', border: 'none', borderRadius: 6, cursor: 'pointer' },
-  header: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 24px', borderBottom: '1px solid #1e1e2e', background: '#0f0f1a' },
+  header: { display: 'flex', alignItems: 'center', padding: '12px 24px', borderBottom: '1px solid #1e1e2e', background: '#0f0f1a', gap: 16 },
   title: { margin: 0, fontSize: 22, fontWeight: 700, background: 'linear-gradient(135deg, #6366f1, #a78bfa)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' },
-  headerRight: { display: 'flex', alignItems: 'center', gap: 12 },
+  tabBar: { display: 'flex', gap: 4, background: '#1a1a2e', borderRadius: 6, padding: 3 },
+  tab: { padding: '6px 16px', background: 'transparent', color: '#888', border: 'none', borderRadius: 4, cursor: 'pointer', fontSize: 13, fontWeight: 500, transition: 'all 0.15s' },
+  tabActive: { padding: '6px 16px', background: '#6366f1', color: '#fff', border: 'none', borderRadius: 4, cursor: 'pointer', fontSize: 13, fontWeight: 600 },
+  headerRight: { display: 'flex', alignItems: 'center', gap: 12, marginLeft: 'auto' },
   statusDot: { width: 10, height: 10, borderRadius: '50%' },
   statusText: { fontSize: 12, fontWeight: 600, textTransform: 'uppercase', letterSpacing: 1 },
   statBadge: { fontSize: 12, padding: '4px 8px', background: '#1e1e2e', borderRadius: 4 },

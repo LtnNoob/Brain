@@ -15,6 +15,7 @@
 #include "../cursor/traversal_types.hpp"
 #include "../cursor/goal_state.hpp"
 #include "../cursor/focus_cursor_manager.hpp"
+#include "../cognitive/global_dynamics_operator.hpp"
 
 #include <optional>
 #include <vector>
@@ -96,7 +97,8 @@ public:
         MicroModelRegistry& registry,
         EmbeddingManager& embeddings,
         UnderstandingLayer* understanding,  // nullable if no LLM
-        KanValidator* kan_validator          // nullable if no KAN validation
+        KanValidator* kan_validator,         // nullable if no KAN validation
+        GlobalDynamicsOperator* gdo = nullptr // nullable if no GDO
     );
 
     // Execute with explicit goal for goal-directed traversal
@@ -112,7 +114,8 @@ public:
         MicroModelRegistry& registry,
         EmbeddingManager& embeddings,
         UnderstandingLayer* understanding,
-        KanValidator* kan_validator
+        KanValidator* kan_validator,
+        GlobalDynamicsOperator* gdo = nullptr
     );
 
     const Config& get_config() const { return config_; }

@@ -42,19 +42,21 @@ void ConceptEmbeddingStore::set(ConceptId cid, const Vec10& emb) {
 }
 
 void ConceptEmbeddingStore::nudge(ConceptId cid, const Vec10& target, double alpha) {
-    auto& emb = store_[cid];
-    if (store_.count(cid) == 0) {
-        // First access: initialize from hash, then the operator[] above already inserted default
-        emb = hash_init(cid);
+    auto it = store_.find(cid);
+    if (it == store_.end()) {
+        auto [ins, ok] = store_.emplace(cid, hash_init(cid));
+        it = ins;
     }
+    auto& emb = it->second;
     for (size_t i = 0; i < EMBED_DIM; ++i) {
         emb[i] = (1.0 - alpha) * emb[i] + alpha * target[i];
     }
 }
 
 double ConceptEmbeddingStore::similarity(ConceptId a, ConceptId b) {
-    const auto& ea = get(a);
-    const auto& eb = get(b);
+    // Copy by value: get(b) may rehash, invalidating a reference from get(a)
+    const Vec10 ea = get(a);
+    const Vec10 eb = get(b);
 
     double dot = 0.0, na = 0.0, nb = 0.0;
     for (size_t i = 0; i < EMBED_DIM; ++i) {

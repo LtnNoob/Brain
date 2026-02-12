@@ -24,7 +24,8 @@ ThinkingResult ThinkingPipeline::execute(
     MicroModelRegistry& registry,
     EmbeddingManager& embeddings,
     UnderstandingLayer* understanding,
-    KanValidator* kan_validator)
+    KanValidator* kan_validator,
+    GlobalDynamicsOperator* gdo)
 {
     auto start = std::chrono::steady_clock::now();
     ThinkingResult result;
@@ -43,11 +44,26 @@ ThinkingResult ThinkingPipeline::execute(
 
     // Step 2.5: FocusCursor traversal (optional)
     if (config_.enable_focus_cursor) {
+        // Augment seeds with GDO activation landscape
+        std::vector<ConceptId> cursor_seeds = seed_concepts;
+        if (gdo) {
+            auto gdo_top = gdo->get_activation_snapshot(3);
+            for (const auto& [cid, act] : gdo_top) {
+                bool already = false;
+                for (ConceptId s : cursor_seeds) {
+                    if (s == cid) { already = true; break; }
+                }
+                if (!already) cursor_seeds.push_back(cid);
+            }
+        }
+
         GoalState default_goal = GoalState::exploration_goal({}, "");
         auto qr = step_focus_cursor(
-            seed_concepts, context, ltm, stm, registry, embeddings, default_goal);
+            cursor_seeds, context, ltm, stm, registry, embeddings, default_goal);
         if (!qr.best_chain.empty()) {
             result.cursor_result = qr.best_chain;
+            // Feed cursor result back to GDO
+            if (gdo) gdo->feed_traversal_result(qr.best_chain);
         }
     }
 
@@ -73,6 +89,7 @@ ThinkingResult ThinkingPipeline::execute(
     // Step 7: CuriosityEngine
     if (config_.enable_curiosity) {
         result.curiosity_triggers = step_curiosity(context, curiosity, stm);
+        result.generated_goals = GoalGenerator::from_triggers(result.curiosity_triggers);
     }
     result.steps_completed = 7;
 
@@ -255,7 +272,8 @@ ThinkingResult ThinkingPipeline::execute_with_goal(
     MicroModelRegistry& registry,
     EmbeddingManager& embeddings,
     UnderstandingLayer* understanding,
-    KanValidator* kan_validator)
+    KanValidator* kan_validator,
+    GlobalDynamicsOperator* gdo)
 {
     auto start = std::chrono::steady_clock::now();
     ThinkingResult result;
@@ -274,10 +292,24 @@ ThinkingResult ThinkingPipeline::execute_with_goal(
 
     // Step 2.5: FocusCursor with explicit goal
     if (config_.enable_focus_cursor) {
+        // Augment seeds with GDO landscape
+        std::vector<ConceptId> cursor_seeds = seed_concepts;
+        if (gdo) {
+            auto gdo_top = gdo->get_activation_snapshot(3);
+            for (const auto& [cid, act] : gdo_top) {
+                bool already = false;
+                for (ConceptId s : cursor_seeds) {
+                    if (s == cid) { already = true; break; }
+                }
+                if (!already) cursor_seeds.push_back(cid);
+            }
+        }
+
         auto qr = step_focus_cursor(
-            seed_concepts, context, ltm, stm, registry, embeddings, goal);
+            cursor_seeds, context, ltm, stm, registry, embeddings, goal);
         if (!qr.best_chain.empty()) {
             result.cursor_result = qr.best_chain;
+            if (gdo) gdo->feed_traversal_result(qr.best_chain);
         }
         result.final_goal_state = goal;
     }
@@ -304,6 +336,7 @@ ThinkingResult ThinkingPipeline::execute_with_goal(
     // Step 7: CuriosityEngine
     if (config_.enable_curiosity) {
         result.curiosity_triggers = step_curiosity(context, curiosity, stm);
+        result.generated_goals = GoalGenerator::from_triggers(result.curiosity_triggers);
     }
     result.steps_completed = 7;
 

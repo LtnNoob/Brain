@@ -4,6 +4,7 @@
   "description": "Read-only visualization for Brain19 cognitive architecture",
   "private": true,
   "dependencies": {
+    "@xyflow/react": "^12.10.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },

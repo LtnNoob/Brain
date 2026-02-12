@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 
-const WS_URL = `ws://${window.location.host}/ws`;
-const API_BASE = '/api';
+const WS_URL = `ws://${window.location.hostname}:8019/ws`;
+const API_BASE = 'http://172.16.16.104:8019/api';
 
 export function useBrain19() {
   const [snapshot, setSnapshot] = useState(null);

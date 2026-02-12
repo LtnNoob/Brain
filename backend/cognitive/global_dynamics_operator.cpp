@@ -164,7 +164,12 @@ void GlobalDynamicsOperator::maybe_trigger_thinking() {
     // Release lock before callback (callback may re-enter inject_seeds etc.)
     ThinkingCallback cb = thinking_callback_;
     mtx_.unlock();
-    cb(seeds);
+    try {
+        cb(seeds);
+    } catch (...) {
+        mtx_.lock();
+        throw;
+    }
     mtx_.lock();
 }
 

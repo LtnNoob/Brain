@@ -1,0 +1,14 @@
+{
+  "format_version": 1,
+  "timestamp": "2026-02-11T13:01:24Z",
+  "epoch_ms": 1770814884757,
+  "tag": "shutdown",
+  "concept_count": 0,
+  "relation_count": 0,
+  "model_count": 233,
+  "kan_module_count": 0,
+  "components": [
+    {"filename": "stm.bin", "sha256": "fc97cb009b63d74bfc48efd110a83fca53e2f1154060321c80e8c660425374d2", "size_bytes": 285},
+    {"filename": "micromodels.bin", "sha256": "212a1fe17e68ca94d5f883bb90bcdadc707f80369799d37a1b7db3f83e73e705", "size_bytes": 803398}
+  ]
+}

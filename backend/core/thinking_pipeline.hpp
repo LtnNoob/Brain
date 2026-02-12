@@ -11,7 +11,11 @@
 #include "../ltm/long_term_memory.hpp"
 #include "../memory/stm.hpp"
 #include "../memory/brain_controller.hpp"
+#include "../cursor/traversal_types.hpp"
+#include "../cursor/goal_state.hpp"
+#include "../cursor/focus_cursor_manager.hpp"
 
+#include <optional>
 #include <vector>
 #include <string>
 
@@ -33,6 +37,10 @@ struct ThinkingResult {
     // Pipeline statistics
     size_t steps_completed = 0;
     double total_duration_ms = 0.0;
+
+    // --- FocusCursor results ---
+    std::optional<TraversalResult> cursor_result;
+    std::optional<GoalState> final_goal_state;
 };
 
 // =============================================================================
@@ -62,6 +70,10 @@ public:
         bool enable_understanding = true;
         bool enable_kan_validation = true;
         bool enable_curiosity = true;
+
+        // FocusCursor integration
+        bool enable_focus_cursor = true;
+        FocusCursorConfig cursor_config{};
     };
 
     ThinkingPipeline();
@@ -81,6 +93,22 @@ public:
         EmbeddingManager& embeddings,
         UnderstandingLayer* understanding,  // nullable if no LLM
         KanValidator* kan_validator          // nullable if no KAN validation
+    );
+
+    // Execute with explicit goal for goal-directed traversal
+    ThinkingResult execute_with_goal(
+        const std::vector<ConceptId>& seed_concepts,
+        GoalState goal,
+        ContextId context,
+        LongTermMemory& ltm,
+        ShortTermMemory& stm,
+        BrainController& brain,
+        CognitiveDynamics& cognitive,
+        CuriosityEngine& curiosity,
+        MicroModelRegistry& registry,
+        EmbeddingManager& embeddings,
+        UnderstandingLayer* understanding,
+        KanValidator* kan_validator
     );
 
     const Config& get_config() const { return config_; }
@@ -121,6 +149,16 @@ private:
     std::vector<ValidationResult> step_kan_validation(
         const std::vector<HypothesisProposal>& hypotheses,
         KanValidator& validator);
+
+    // Step 2.5: FocusCursor traversal (after spreading, before salience)
+    QueryResult step_focus_cursor(
+        const std::vector<ConceptId>& seeds,
+        ContextId ctx,
+        LongTermMemory& ltm,
+        ShortTermMemory& stm,
+        MicroModelRegistry& registry,
+        EmbeddingManager& embeddings,
+        const GoalState& goal);
 };
 
 } // namespace brain19

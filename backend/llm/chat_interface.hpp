@@ -2,7 +2,6 @@
 
 #include "../ltm/long_term_memory.hpp"
 #include "../memory/brain_controller.hpp"
-#include "ollama_client.hpp"
 #include <string>
 #include <vector>
 #include <memory>
@@ -19,26 +18,19 @@ struct ChatResponse {
     double llm_time_ms = 0.0;
 };
 
-// ChatInterface: LLM-powered verbalization of Brain19 knowledge
+// ChatInterface: Knowledge-based verbalization of Brain19 knowledge
 //
-// WICHTIG: LLM ist ein TOOL, kein Agent!
-// - LLM verbalisiert NUR vorhandenes LTM-Wissen
-// - LLM hat read-only Zugriff
-// - LLM kann NICHT modifizieren
-// - Epistemic metadata wird in Prompt eingebaut
-// - LLM MUSS epistemic metadata in Antworten einbauen
+// Uses LTM knowledge directly — no external LLM.
+// Template-Engine (cursor/template_engine.hpp) handles sentence generation.
 class ChatInterface {
 public:
     ChatInterface();
     ~ChatInterface();
-    
-    // Initialize with Ollama
-    bool initialize(const OllamaConfig& config);
-    
-    // Check if LLM is available
+
+    // LLM is never available (Ollama removed)
     bool is_llm_available() const;
-    
-    // Ask a question (with LLM)
+
+    // Ask a question
     ChatResponse ask(
         const std::string& question,
         const LongTermMemory& ltm
@@ -51,46 +43,40 @@ public:
         const std::vector<ConceptId>& salient_concepts,
         const std::vector<std::string>& thought_paths_summary = {}
     );
-    
+
     // List all knowledge of specific type
     std::string list_knowledge(
         const LongTermMemory& ltm,
         EpistemicType type
     );
-    
-    // Explain a concept (with LLM)
+
+    // Explain a concept
     std::string explain_concept(
         ConceptId id,
         const LongTermMemory& ltm
     );
-    
-    // Compare two concepts (with LLM)
+
+    // Compare two concepts
     std::string compare(
         ConceptId id1,
         ConceptId id2,
         const LongTermMemory& ltm
     );
-    
+
     // Get knowledge summary
     std::string get_summary(const LongTermMemory& ltm);
-    
+
 private:
-    // Build epistemic context for LLM
+    // Build epistemic context
     std::string build_epistemic_context(
         const std::vector<ConceptInfo>& concepts
     );
-    
-    // Build system prompt with epistemic rules
-    std::string build_system_prompt();
-    
+
     // Search for relevant concepts
     std::vector<ConceptInfo> find_relevant_concepts(
         const std::string& question,
         const LongTermMemory& ltm
     );
-    
-    std::unique_ptr<OllamaClient> ollama_;
-    bool llm_available_;
 };
 
 } // namespace brain19

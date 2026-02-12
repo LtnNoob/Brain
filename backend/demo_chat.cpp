@@ -105,19 +105,8 @@ int main() {
     std::cout << "✓ BrainController\n";
     std::cout << "✓ LongTermMemory\n";
     
-    // Initialize ChatInterface with Ollama
-    OllamaConfig ollama_config;
-    ollama_config.host = "http://localhost:11434";
-    ollama_config.model = "llama3.2:3b";  // Default model
-    ollama_config.temperature = 0.7;
-    ollama_config.num_predict = 512;
-    
-    if (chat.initialize(ollama_config)) {
-        std::cout << "✓ ChatInterface (LLM aktiv)\n\n";
-    } else {
-        std::cout << "⚠ ChatInterface (Fallback-Modus, kein LLM)\n";
-        std::cout << "  Tipp: Starte Ollama mit 'ollama serve'\n\n";
-    }
+    // ChatInterface: knowledge-only mode (Template-Engine, kein LLM)
+    std::cout << "✓ ChatInterface (Template-Engine)\n\n";
     
     setup_demo_knowledge(ltm);
     print_help();

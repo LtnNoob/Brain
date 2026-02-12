@@ -24,12 +24,20 @@ struct ConceptInfo {
     std::string label;
     std::string definition;
     EpistemicMetadata epistemic;  // REQUIRED, no default
-    
+
+    // === Refactor: Dynamic fields for FocusCursor / Global Dynamics ===
+    // Defaults = 0.0, carved from PersistentConceptRecord._reserved (32B)
+    double activation_score = 0.0;        // Current activation level [0,1]
+    double salience_score = 0.0;          // Computed salience [0,1]
+    double structural_confidence = 0.0;   // Graph-structure confidence [0,1]
+    double semantic_confidence = 0.0;     // Semantic confidence [0,1]
+
     // DELETED: No default constructor
     // This enforces epistemic explicitness at compile time
     ConceptInfo() = delete;
-    
+
     // REQUIRED: Constructor with epistemic metadata
+    // New fields use default member initializers (= 0.0), no API change
     ConceptInfo(
         ConceptId concept_id,
         const std::string& concept_label,
@@ -41,6 +49,7 @@ struct ConceptInfo {
       , epistemic(epistemic_metadata)
     {
         // Epistemic metadata is validated in EpistemicMetadata constructor
+        // New fields initialized via default member initializers
     }
     
     // Copy/move allowed for storage

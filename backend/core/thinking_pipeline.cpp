@@ -1,4 +1,5 @@
 #include "thinking_pipeline.hpp"
+#include "../cursor/template_engine.hpp"
 #include <chrono>
 #include <iostream>
 #include <algorithm>
@@ -40,6 +41,16 @@ ThinkingResult ThinkingPipeline::execute(
     // Step 2: Spreading Activation
     step_spreading(seed_concepts, context, cognitive, ltm, stm);
     result.steps_completed = 2;
+
+    // Step 2.5: FocusCursor traversal (optional)
+    if (config_.enable_focus_cursor) {
+        GoalState default_goal = GoalState::exploration_goal({}, "");
+        auto qr = step_focus_cursor(
+            seed_concepts, context, ltm, stm, registry, embeddings, default_goal);
+        if (!qr.best_chain.empty()) {
+            result.cursor_result = qr.best_chain;
+        }
+    }
 
     // Gather active concepts
     result.activated_concepts = stm.get_active_concepts(context, 0.05);
@@ -205,6 +216,124 @@ std::vector<ValidationResult> ThinkingPipeline::step_kan_validation(
         }
     }
     return results;
+}
+
+// ─── FocusCursor Step ─────────────────────────────────────────────────────────
+
+QueryResult ThinkingPipeline::step_focus_cursor(
+    const std::vector<ConceptId>& seeds,
+    ContextId ctx,
+    LongTermMemory& ltm,
+    ShortTermMemory& stm,
+    MicroModelRegistry& registry,
+    EmbeddingManager& embeddings,
+    const GoalState& goal)
+{
+    FocusCursorManager mgr(ltm, registry, embeddings, stm, config_.cursor_config);
+
+    Vec10 query_context{};
+    auto qr = mgr.process_seeds(seeds, query_context, goal);
+
+    // Persist best chain to STM
+    if (!qr.best_chain.empty()) {
+        mgr.persist_to_stm(ctx, qr.best_chain);
+    }
+
+    return qr;
+}
+
+// ─── Execute with Goal ───────────────────────────────────────────────────────
+
+ThinkingResult ThinkingPipeline::execute_with_goal(
+    const std::vector<ConceptId>& seed_concepts,
+    GoalState goal,
+    ContextId context,
+    LongTermMemory& ltm,
+    ShortTermMemory& stm,
+    BrainController& brain,
+    CognitiveDynamics& cognitive,
+    CuriosityEngine& curiosity,
+    MicroModelRegistry& registry,
+    EmbeddingManager& embeddings,
+    UnderstandingLayer* understanding,
+    KanValidator* kan_validator)
+{
+    auto start = std::chrono::steady_clock::now();
+    ThinkingResult result;
+
+    if (seed_concepts.empty()) {
+        return result;
+    }
+
+    // Step 1: Activate seed concepts in STM
+    step_activate_seeds(seed_concepts, context, stm, brain);
+    result.steps_completed = 1;
+
+    // Step 2: Spreading Activation
+    step_spreading(seed_concepts, context, cognitive, ltm, stm);
+    result.steps_completed = 2;
+
+    // Step 2.5: FocusCursor with explicit goal
+    if (config_.enable_focus_cursor) {
+        auto qr = step_focus_cursor(
+            seed_concepts, context, ltm, stm, registry, embeddings, goal);
+        if (!qr.best_chain.empty()) {
+            result.cursor_result = qr.best_chain;
+        }
+        result.final_goal_state = goal;
+    }
+
+    // Gather active concepts
+    result.activated_concepts = stm.get_active_concepts(context, 0.05);
+
+    // Step 3: Compute Salience + Focus
+    result.top_salient = step_salience(result.activated_concepts, context, cognitive, ltm, stm);
+    cognitive.init_focus(context);
+    for (auto& s : result.top_salient) {
+        cognitive.focus_on(context, s.concept_id, s.salience);
+    }
+    result.steps_completed = 3;
+
+    // Step 4-5: Generate and combine RelevanceMaps
+    result.combined_relevance = step_relevance(result.top_salient, registry, embeddings, ltm);
+    result.steps_completed = 5;
+
+    // Step 6: Find ThoughtPaths
+    result.best_paths = step_thought_paths(seed_concepts, context, cognitive, ltm, stm);
+    result.steps_completed = 6;
+
+    // Step 7: CuriosityEngine
+    if (config_.enable_curiosity) {
+        result.curiosity_triggers = step_curiosity(context, curiosity, stm);
+    }
+    result.steps_completed = 7;
+
+    // Step 8: UnderstandingLayer
+    if (config_.enable_understanding && understanding) {
+        std::vector<ConceptId> salient_ids;
+        salient_ids.reserve(result.top_salient.size());
+        for (auto& s : result.top_salient) {
+            salient_ids.push_back(s.concept_id);
+        }
+        result.understanding = step_understanding(
+            salient_ids, context, *understanding, cognitive, ltm, stm);
+    }
+    result.steps_completed = 8;
+
+    // Step 9: KAN-LLM Validation
+    if (config_.enable_kan_validation && kan_validator &&
+        !result.understanding.hypothesis_proposals.empty()) {
+        result.validated_hypotheses = step_kan_validation(
+            result.understanding.hypothesis_proposals, *kan_validator);
+    }
+    result.steps_completed = 9;
+
+    // Step 10: Complete
+    result.steps_completed = 10;
+    auto end = std::chrono::steady_clock::now();
+    result.total_duration_ms = std::chrono::duration<double, std::milli>(end - start).count();
+
+    return result;
 }
 
 } // namespace brain19

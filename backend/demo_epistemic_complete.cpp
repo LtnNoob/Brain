@@ -125,7 +125,7 @@ int main() {
     ltm.invalidate_concept(phlogiston_id, 0.05);
     auto phlogiston_after = ltm.retrieve_concept(phlogiston_id);
     std::cout << "   ✓ INVALIDATED (knowledge preserved, not deleted)\n";
-    std::cout << "   - Status: " << to_string(phlogiston_after->epistemic.status) << "\n";
+    std::cout << "   - Status: " << epistemic_status_to_string(phlogiston_after->epistemic.status) << "\n";
     std::cout << "   - Trust: " << phlogiston_after->epistemic.trust << " (very low)\n\n";
     
     print_separator("Phase 2: Query by Epistemic Type");
@@ -206,8 +206,8 @@ int main() {
     );
     
     std::cout << "✓ Stored in LTM with ID: " << qm_id << "\n";
-    std::cout << "  Type: " << to_string(qm_meta.type) << "\n";
-    std::cout << "  Status: " << to_string(qm_meta.status) << "\n";
+    std::cout << "  Type: " << epistemic_type_to_string(qm_meta.type) << "\n";
+    std::cout << "  Status: " << epistemic_status_to_string(qm_meta.status) << "\n";
     std::cout << "  Trust: " << qm_meta.trust << "\n";
     
     print_separator("Phase 5: Generate Snapshot with Epistemic Metadata");

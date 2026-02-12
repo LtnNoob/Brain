@@ -99,19 +99,6 @@ bool SystemOrchestrator::initialize() {
         understanding_ = std::make_unique<UnderstandingLayer>();
         // Register a stub MiniLLM (always available)
         understanding_->register_mini_llm(std::make_unique<StubMiniLLM>());
-        // Try to register Ollama-backed MiniLLM
-        {
-            OllamaConfig ollama_cfg;
-            ollama_cfg.host = config_.ollama_host;
-            ollama_cfg.model = config_.ollama_model;
-            auto ollama_llm = std::make_unique<OllamaMiniLLM>(ollama_cfg);
-            if (ollama_llm->is_available()) {
-                log("    Ollama MiniLLM available");
-                understanding_->register_mini_llm(std::move(ollama_llm));
-            } else {
-                log("    Ollama MiniLLM not available (degraded mode)");
-            }
-        }
         init_stage_ = 8;
 
         // ── Stage 9: KAN-LLM Hybrid ────────────────────────────────────
@@ -127,19 +114,10 @@ bool SystemOrchestrator::initialize() {
         wiki_importer_ = std::make_unique<WikipediaImporter>();
         init_stage_ = 10;
 
-        // ── Stage 11: ChatInterface + OllamaClient ──────────────────────
+        // ── Stage 11: ChatInterface (Template-Engine, kein LLM) ─────────
         log("  [11/15] ChatInterface...");
         chat_ = std::make_unique<ChatInterface>();
-        {
-            OllamaConfig chat_cfg;
-            chat_cfg.host = config_.ollama_host;
-            chat_cfg.model = config_.ollama_model;
-            if (chat_->initialize(chat_cfg)) {
-                log("    Chat LLM available");
-            } else {
-                log("    Chat LLM not available (knowledge-only mode)");
-            }
-        }
+        log("    Knowledge-only mode (Template-Engine)");
         init_stage_ = 11;
 
         // ── Stage 12: Shared Wrappers ───────────────────────────────────

@@ -32,7 +32,13 @@ struct RelationInfo {
     RelationType type;
     double weight;  // [0.0, 1.0] - spreading activation strength
 
-    // Constructor with validation
+    // === Refactor: Dynamic fields for FocusCursor / Global Dynamics ===
+    // Defaults = 0.0, carved from PersistentRelationRecord._reserved (24B)
+    double dynamic_weight = 0.0;       // Runtime-adjusted weight [0,1]
+    double inhibition_factor = 0.0;    // Inhibition from conflict [0,1]
+    double structural_strength = 0.0;  // Graph-structural strength [0,1]
+
+    // Constructor with validation (existing signature unchanged)
     RelationInfo(
         RelationId relation_id,
         ConceptId src,
@@ -45,6 +51,7 @@ struct RelationInfo {
       , type(rel_type)
       , weight(clamp_weight(rel_weight))
     {
+        // New fields initialized via default member initializers
     }
 
     // Default constructor deleted - force explicit construction

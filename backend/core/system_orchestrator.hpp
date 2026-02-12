@@ -14,8 +14,6 @@
 #include "../adapter/kan_adapter.hpp"
 #include "../understanding/understanding_layer.hpp"
 #include "../understanding/mini_llm.hpp"
-#include "../understanding/ollama_mini_llm.hpp"
-#include "../llm/ollama_client.hpp"
 #include "../llm/chat_interface.hpp"
 #include "../ingestor/ingestion_pipeline.hpp"
 #include "../importers/wikipedia_importer.hpp"
@@ -64,10 +62,6 @@ public:
         // Streams
         size_t max_streams = 0;  // 0 = auto-detect
         bool enable_monitoring = true;
-
-        // LLM
-        std::string ollama_host = "http://localhost:11434";
-        std::string ollama_model = "llama3.2:3b";
 
         // Bootstrap
         bool seed_foundation = true;

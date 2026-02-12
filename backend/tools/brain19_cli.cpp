@@ -97,8 +97,8 @@ static void action_show_kg(const LongTermMemory& ltm) {
         if (!cpt) continue;
         std::cout << "  [" << cpt->id << "] " << cpt->label << "\n"
                   << "       def:   " << cpt->definition << "\n"
-                  << "       type:  " << to_string(cpt->epistemic.type)
-                  << "  status: " << to_string(cpt->epistemic.status)
+                  << "       type:  " << epistemic_type_to_string(cpt->epistemic.type)
+                  << "  status: " << epistemic_status_to_string(cpt->epistemic.status)
                   << "  trust: " << std::fixed << std::setprecision(2)
                   << cpt->epistemic.trust << "\n";
     }

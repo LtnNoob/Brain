@@ -15,9 +15,8 @@ MICROMODEL_SOURCES = micromodel/micro_model.cpp micromodel/micro_model_registry.
                      micromodel/embedding_manager.cpp micromodel/micro_trainer.cpp \
                      micromodel/relevance_map.cpp micromodel/persistence.cpp
 COGNITIVE_SOURCES = cognitive/cognitive_dynamics.cpp
-UNDERSTANDING_SOURCES = understanding/understanding_layer.cpp understanding/mini_llm.cpp \
-                        understanding/ollama_mini_llm.cpp
-LLM_SOURCES = llm/chat_interface.cpp llm/ollama_client.cpp
+UNDERSTANDING_SOURCES = understanding/understanding_layer.cpp understanding/mini_llm.cpp
+LLM_SOURCES = llm/chat_interface.cpp
 IMPORTER_SOURCES = importers/wikipedia_importer.cpp importers/scholar_importer.cpp \
                    importers/http_client.cpp
 INGESTOR_SOURCES = ingestor/entity_extractor.cpp ingestor/relation_extractor.cpp \
@@ -36,6 +35,8 @@ BOOTSTRAP_SOURCES = bootstrap/foundation_concepts.cpp bootstrap/bootstrap_interf
                     bootstrap/context_accumulator.cpp
 STREAMS_SOURCES = streams/think_stream.cpp streams/stream_orchestrator.cpp \
                   streams/stream_scheduler.cpp streams/stream_monitor.cpp
+CURSOR_SOURCES = cursor/focus_cursor.cpp cursor/focus_cursor_manager.cpp \
+                 cursor/template_engine.cpp
 CORE_APP_SOURCES = core/system_orchestrator.cpp core/brain19_app.cpp \
                    core/thinking_pipeline.cpp
 
@@ -45,7 +46,8 @@ CORE_SOURCES = $(MEMORY_SOURCES) $(KAN_SOURCES) $(ADAPTER_SOURCES) \
                $(MICROMODEL_SOURCES) $(COGNITIVE_SOURCES) $(UNDERSTANDING_SOURCES) \
                $(LLM_SOURCES) $(IMPORTER_SOURCES) $(INGESTOR_SOURCES) \
                $(PERSISTENT_SOURCES) $(HYBRID_SOURCES) $(EVOLUTION_SOURCES) \
-               $(BOOTSTRAP_SOURCES) $(STREAMS_SOURCES) $(CORE_APP_SOURCES)
+               $(BOOTSTRAP_SOURCES) $(STREAMS_SOURCES) $(CORE_APP_SOURCES) \
+               $(CURSOR_SOURCES)
 
 CORE_OBJECTS = $(CORE_SOURCES:.cpp=.o)
 
@@ -56,7 +58,9 @@ TARGETS = brain19 \
           test_cognitive_dynamics test_epistemic_enforcement \
           test_understanding_layer test_importers \
           test_brain test_micromodel test_ingestor test_persistent_ltm \
-          test_stm_snapshot brain19_cli
+          test_stm_snapshot brain19_cli \
+          test_focus_cursor test_termination_conflict \
+          test_template_engine test_pipeline_cursor
 
 .PHONY: all clean run
 
@@ -111,6 +115,18 @@ test_stm_snapshot: test_stm_snapshot.o $(CORE_OBJECTS)
 	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
 brain19_cli: tools/brain19_cli.o $(CORE_OBJECTS)
+	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
+
+test_focus_cursor: cursor/test_focus_cursor.o $(CORE_OBJECTS)
+	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
+
+test_termination_conflict: cursor/test_termination_conflict.o $(CORE_OBJECTS)
+	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
+
+test_template_engine: cursor/test_template_engine.o $(CORE_OBJECTS)
+	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
+
+test_pipeline_cursor: core/test_pipeline_cursor.o $(CORE_OBJECTS)
 	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
 # --- Pattern Rule ---

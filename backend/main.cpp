@@ -7,8 +7,6 @@ static void print_usage(const char* prog) {
     std::cout << "Usage: " << prog << " [options] [command] [args...]\n\n";
     std::cout << "Options:\n";
     std::cout << "  --data-dir <path>      Data directory (default: brain19_data/)\n";
-    std::cout << "  --ollama-host <url>    Ollama host (default: http://localhost:11434)\n";
-    std::cout << "  --ollama-model <name>  Ollama model (default: llama3.2:3b)\n";
     std::cout << "  --no-persistence       Disable persistence\n";
     std::cout << "  --no-foundation        Skip foundation seeding\n";
     std::cout << "  --max-streams <n>      Max thinking streams (0=auto)\n";
@@ -30,12 +28,6 @@ int main(int argc, char* argv[]) {
     for (int i = 1; i < argc; ++i) {
         if (std::strcmp(argv[i], "--data-dir") == 0 && i + 1 < argc) {
             config.data_dir = argv[++i];
-            arg_start = i + 1;
-        } else if (std::strcmp(argv[i], "--ollama-host") == 0 && i + 1 < argc) {
-            config.ollama_host = argv[++i];
-            arg_start = i + 1;
-        } else if (std::strcmp(argv[i], "--ollama-model") == 0 && i + 1 < argc) {
-            config.ollama_model = argv[++i];
             arg_start = i + 1;
         } else if (std::strcmp(argv[i], "--no-persistence") == 0) {
             config.enable_persistence = false;

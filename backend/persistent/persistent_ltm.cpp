@@ -138,8 +138,13 @@ std::optional<ConceptInfo> PersistentLTM::retrieve_concept(ConceptId id) const {
         static_cast<EpistemicStatus>(rec->epistemic_status),
         rec->trust
     );
-    
-    return ConceptInfo(id, label, def, meta);
+
+    ConceptInfo info(id, label, def, meta);
+    info.activation_score = rec->activation_score;
+    info.salience_score = rec->salience_score;
+    info.structural_confidence = rec->structural_confidence;
+    info.semantic_confidence = rec->semantic_confidence;
+    return info;
 }
 
 bool PersistentLTM::exists(ConceptId id) const {
@@ -275,10 +280,14 @@ std::optional<RelationInfo> PersistentLTM::get_relation(RelationId id) const {
     auto* rec = relations_->record(it->second);
     if (rec->is_deleted()) return std::nullopt;
     
-    return RelationInfo(
+    RelationInfo info(
         rec->relation_id, rec->source, rec->target,
         static_cast<RelationType>(rec->type), rec->weight
     );
+    info.dynamic_weight = rec->dynamic_weight;
+    info.inhibition_factor = rec->inhibition_factor;
+    info.structural_strength = rec->structural_strength;
+    return info;
 }
 
 std::vector<RelationInfo> PersistentLTM::get_outgoing_relations(ConceptId source) const {

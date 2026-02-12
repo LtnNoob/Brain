@@ -1,7 +1,6 @@
 #pragma once
 
 #include "mini_llm.hpp"
-#include "ollama_mini_llm.hpp"
 #include "../ltm/long_term_memory.hpp"
 #include <memory>
 #include <string>
@@ -36,7 +35,7 @@ namespace brain19 {
 // TODO: Not yet implemented — planned for KAN-LLM Hybrid Layer
 class MiniLLMFactory {
 public:
-    explicit MiniLLMFactory(const OllamaConfig& base_config = OllamaConfig());
+    MiniLLMFactory();
     ~MiniLLMFactory() = default;
 
     // =========================================================================
@@ -77,7 +76,7 @@ public:
     size_t get_created_count() const { return created_count_; }
 
 private:
-    OllamaConfig base_config_;
+    // Placeholder for future KAN-based factory config
     size_t created_count_;
 
     // Helper: Build specialized system prompt for Mini-LLM
@@ -110,8 +109,7 @@ class SpecializedMiniLLM : public MiniLLM {
 public:
     SpecializedMiniLLM(
         const std::string& name,
-        const std::string& specialization_context,
-        const OllamaConfig& config
+        const std::string& specialization_context
     );
 
     ~SpecializedMiniLLM() override = default;
@@ -163,14 +161,7 @@ private:
     std::string name_;
     std::string specialization_context_;  // Knowledge this Mini-LLM specializes in
     std::vector<ConceptId> focal_concepts_;  // Concepts this Mini-LLM knows about
-    OllamaClient ollama_;
-    OllamaConfig config_;
     mutable uint64_t proposal_counter_;
-
-    // Helper: Build specialized prompt with context
-    std::vector<OllamaMessage> build_specialized_messages(
-        const std::string& task_prompt
-    ) const;
 };
 
 } // namespace brain19

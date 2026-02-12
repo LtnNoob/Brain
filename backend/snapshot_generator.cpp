@@ -79,8 +79,8 @@ std::string SnapshotGenerator::generate_json_snapshot(
             if (concept_info.has_value()) {
                 // EPISTEMIC ENFORCEMENT: Always verbalize epistemic metadata
                 json << "\"label\": \"" << escape_json_string(concept_info->label) << "\", ";
-                json << "\"epistemic_type\": \"" << to_string(concept_info->epistemic.type) << "\", ";
-                json << "\"epistemic_status\": \"" << to_string(concept_info->epistemic.status) << "\", ";
+                json << "\"epistemic_type\": \"" << epistemic_type_to_string(concept_info->epistemic.type) << "\", ";
+                json << "\"epistemic_status\": \"" << epistemic_status_to_string(concept_info->epistemic.status) << "\", ";
                 json << "\"trust\": " << concept_info->epistemic.trust;
                 
                 // Special marking for INVALIDATED knowledge

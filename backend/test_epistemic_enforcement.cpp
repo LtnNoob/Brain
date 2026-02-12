@@ -38,8 +38,8 @@ void test_required_fields() {
         0.95
     );
     
-    std::cout << "✓ Type: " << to_string(meta.type) << "\n";
-    std::cout << "✓ Status: " << to_string(meta.status) << "\n";
+    std::cout << "✓ Type: " << epistemic_type_to_string(meta.type) << "\n";
+    std::cout << "✓ Status: " << epistemic_status_to_string(meta.status) << "\n";
     std::cout << "✓ Trust: " << meta.trust << "\n";
     std::cout << "✓ PASS: All fields explicitly provided\n";
 }
@@ -146,8 +146,8 @@ void test_concept_requires_epistemic() {
     
     std::cout << "✓ Concept ID: " << concept_info.id << "\n";
     std::cout << "✓ Label: " << concept_info.label << "\n";
-    std::cout << "✓ Epistemic Type: " << to_string(concept_info.epistemic.type) << "\n";
-    std::cout << "✓ Epistemic Status: " << to_string(concept_info.epistemic.status) << "\n";
+    std::cout << "✓ Epistemic Type: " << epistemic_type_to_string(concept_info.epistemic.type) << "\n";
+    std::cout << "✓ Epistemic Status: " << epistemic_status_to_string(concept_info.epistemic.status) << "\n";
     std::cout << "✓ Trust: " << concept_info.epistemic.trust << "\n";
     std::cout << "✓ PASS: Epistemic metadata required at construction\n";
 }
@@ -182,9 +182,9 @@ void test_ltm_requires_epistemic() {
     // Verify retrieval includes epistemic data
     auto retrieved = ltm.retrieve_concept(id);
     assert(retrieved.has_value());
-    std::cout << "✓ Retrieved epistemic type: " << to_string(retrieved->epistemic.type) << "\n";
+    std::cout << "✓ Retrieved epistemic type: " << epistemic_type_to_string(retrieved->epistemic.type) << "\n";
     std::cout << "✓ Retrieved trust: " << retrieved->epistemic.trust << "\n";
-    
+
     std::cout << "✓ PASS: LTM enforces epistemic metadata requirement\n";
 }
 
@@ -208,8 +208,8 @@ void test_invalidation_not_deletion() {
     );
     
     std::cout << "✓ Concept stored with ID: " << id << "\n";
-    std::cout << "  Original type: " << to_string(original_meta.type) << "\n";
-    std::cout << "  Original status: " << to_string(original_meta.status) << "\n";
+    std::cout << "  Original type: " << epistemic_type_to_string(original_meta.type) << "\n";
+    std::cout << "  Original status: " << epistemic_status_to_string(original_meta.status) << "\n";
     std::cout << "  Original trust: " << original_meta.trust << "\n";
     
     // Invalidate (not delete)
@@ -222,9 +222,9 @@ void test_invalidation_not_deletion() {
     assert(retrieved.has_value());
     
     std::cout << "✓ Concept still exists after invalidation\n";
-    std::cout << "  New type: " << to_string(retrieved->epistemic.type) 
+    std::cout << "  New type: " << epistemic_type_to_string(retrieved->epistemic.type)
               << " (preserved)\n";
-    std::cout << "  New status: " << to_string(retrieved->epistemic.status) 
+    std::cout << "  New status: " << epistemic_status_to_string(retrieved->epistemic.status)
               << " (INVALIDATED)\n";
     std::cout << "  New trust: " << retrieved->epistemic.trust 
               << " (very low)\n";
@@ -326,10 +326,10 @@ void test_complete_workflow() {
     auto retrieved = ltm.retrieve_concept(concept_id);
     assert(retrieved.has_value());
     
-    std::cout << "  Type: " << to_string(retrieved->epistemic.type) << "\n";
-    std::cout << "  Status: " << to_string(retrieved->epistemic.status) << "\n";
+    std::cout << "  Type: " << epistemic_type_to_string(retrieved->epistemic.type) << "\n";
+    std::cout << "  Status: " << epistemic_status_to_string(retrieved->epistemic.status) << "\n";
     std::cout << "  Trust: " << retrieved->epistemic.trust << "\n";
-    
+
     std::cout << "\n✓ PASS: Complete workflow enforces epistemic explicitness\n";
     std::cout << "  Every step requires explicit epistemic decisions\n";
     std::cout << "  No defaults, no inferences, no hidden fallbacks\n";

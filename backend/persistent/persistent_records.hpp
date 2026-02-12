@@ -44,8 +44,13 @@ struct PersistentConceptRecord {
     uint64_t access_count;          // 8B — for future hot/cold tiering
     uint64_t last_access_epoch_us;  // 8B
     uint64_t created_epoch_us;      // 8B
-    uint8_t  _reserved[64];        // 64B — pad to 128
-    // Total: 128 bytes
+    // === Refactor: 4 doubles carved from _reserved (32B used, 32B remain) ===
+    double   activation_score;      // 8B — FocusCursor activation [0,1]
+    double   salience_score;        // 8B — Computed salience [0,1]
+    double   structural_confidence; // 8B — Graph-structural confidence [0,1]
+    double   semantic_confidence;   // 8B — Semantic confidence [0,1]
+    uint8_t  _reserved[32];        // 32B — remaining pad to 128
+    // Total: 128 bytes (unchanged)
     
     bool is_deleted() const { return flags & 0x01; }
     void mark_deleted() { flags |= 0x01; }
@@ -65,8 +70,11 @@ struct PersistentRelationRecord {
     uint8_t  flags;             // 1B (bit 0 = deleted)
     uint8_t  _pad[6];          // 6B alignment
     double   weight;            // 8B
-    uint8_t  _reserved[24];    // 24B — pad to 64
-    // Total: 64 bytes
+    // === Refactor: 3 doubles carved from _reserved (24B used, 0B remain) ===
+    double   dynamic_weight;    // 8B — Runtime-adjusted weight [0,1]
+    double   inhibition_factor; // 8B — Inhibition from conflict [0,1]
+    double   structural_strength; // 8B — Graph-structural strength [0,1]
+    // Total: 64 bytes (unchanged)
     
     bool is_deleted() const { return flags & 0x01; }
     void mark_deleted() { flags |= 0x01; }

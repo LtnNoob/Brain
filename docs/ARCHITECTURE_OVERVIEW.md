@@ -154,7 +154,7 @@ Brain19 is a three-tier system: C++ backend binary, Python FastAPI bridge, and R
 │     │  └──────────────────┘  └────────────────────────────┘ │          │
 │     │  ┌──────────────────┐  ┌────────────────────────────┐ │          │
 │     │  │  Wikipedia       │  │  Chat Interface            │ │          │
-│     │  │  Importer        │  │  Ollama LLM Verbalization  │ │          │
+│     │  │  Importer        │  │  Template Verbalization    │ │          │
 │     │  └──────────────────┘  └────────────────────────────┘ │          │
 │     │  ┌──────────────────────────────────────────────────┐ │          │
 │     │  │  Bootstrap Interface                             │ │          │
@@ -184,7 +184,7 @@ SystemOrchestrator owns all subsystems via `unique_ptr` and performs a 14-stage 
 | 8 | **Understanding** | UnderstandingLayer, MiniLLM | Semantic analysis via Mini-LLMs |
 | 9 | **Hybrid** | KanValidator, DomainManager, RefinementLoop, EpistemicBridge, HypothesisTranslator | KAN-LLM bidirectional validation |
 | 10 | **Ingestion** | IngestionPipeline (TextChunker → EntityExtractor → RelationExtractor → TrustTagger → ProposalQueue) | Knowledge import pipeline |
-| 11 | **Chat** | ChatInterface, OllamaClient | LLM verbalization (llama3.2:1b) |
+| 11 | **Chat** | ChatInterface | Template-based verbalization |
 | 12 | **Shared State** | SharedLTM, SharedSTM, SharedRegistry, SharedEmbeddings | Thread-safe wrappers for multi-stream access |
 | 13 | **Streams** | StreamOrchestrator, ThinkStreams, StreamScheduler, StreamMonitor | Parallel autonomous thinking threads |
 | 14 | **Evolution** | PatternDiscovery, EpistemicPromotion, ConceptProposer | Dynamic knowledge evolution |
@@ -284,7 +284,7 @@ Epistemic Values        →
 
 When the LLM is optionally used for creative hypothesis generation, these **always** pass through epistemic validation. LLM proposals receive a trust ceiling of 0.3–0.5 and are never automatically accepted.
 
-The LLM backend is Ollama (model: `llama3.2:1b` on port 11434), configured via `--ollama-host` and `--ollama-model` flags.
+The chat interface uses a template-based verbalization engine in knowledge-only mode.
 
 > See: [`backend/llm/chat_interface.hpp`](../backend/llm/chat_interface.hpp)
 
@@ -605,7 +605,7 @@ On first startup, Brain19 seeds **foundation concepts** — the semantic backbon
 
 The `brain19` binary is a REPL application (`Brain19App`) wrapping `SystemOrchestrator`. CLI commands: `ask`, `ingest`, `import`, `status`, `streams`, `checkpoint`, `restore`, `concepts`, `explain`, `think`, `help`.
 
-Flags: `--data-dir`, `--ollama-host`, `--ollama-model`, `--no-persistence`, `--no-foundation`, `--max-streams`, `--no-monitor`.
+Flags: `--data-dir`, `--no-persistence`, `--no-foundation`, `--max-streams`, `--no-monitor`.
 
 ### Python FastAPI Bridge (api/server.py)
 
@@ -640,7 +640,7 @@ All maintenance runs under `subsystem_mtx_` to ensure consistency.
 |----------|---------------|
 | Independent Thinking | MicroModels (430 params/concept) |
 | Creativity | Overlay of relevance maps |
-| Language | LLM as verbalizer (optional, Ollama) |
+| Language | Template-based verbalizer (knowledge-only mode) |
 | Truth | Compile-time epistemic enforcement |
 | Validation | KAN-LLM hybrid bidirectional (Phase 7) |
 | Evolution | Pattern discovery + epistemic promotion (Phase 6) |

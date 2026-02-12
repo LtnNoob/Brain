@@ -123,7 +123,7 @@ Die Nicht-Determinismus ist **temporal und kausal isoliert** — sie beeinflusst
 
 ### 2.3 Positionierung in der 9-Subsystem-Architektur
 
-Brain19 hat bereits eine Understanding Layer (Subsystem 9), die Mini-LLMs via Ollama nutzt. Domain-spezifische LLMs gehören **nicht** als 10. Subsystem daneben, sondern als **Spezialisierung innerhalb der Understanding Layer**.
+Brain19 hat bereits eine Understanding Layer (Subsystem 9), die Mini-LLMs nutzt. Domain-spezifische LLMs gehören **nicht** als 10. Subsystem daneben, sondern als **Spezialisierung innerhalb der Understanding Layer**.
 
 **Begründung:** Die Understanding Layer hat bereits den korrekten Architektur-Vertrag:
 - Alle Outputs sind HYPOTHESIS
@@ -139,7 +139,7 @@ Domain-spezifische LLMs erweitern diesen Vertrag um:
 ```
 Understanding Layer (erweitert)
 ├── MiniLLMFactory
-│   ├── GeneralMiniLLM (Ollama, wie bisher)
+│   ├── GeneralMiniLLM (KAN-backed, wie bisher)
 │   ├── DomainLLM_Physics (spezialisiert auf physikalische Konzepte)
 │   ├── DomainLLM_Biology (spezialisiert auf biologische Konzepte)
 │   └── DomainLLM_Philosophy (spezialisiert auf philosophische Konzepte)
@@ -312,7 +312,7 @@ Domain-spezifische LLMs ändern nichts an ConceptInfo's gelöschtem Default-Kons
 
 LLM-Abfragen sind um Größenordnungen langsamer als Brain19's deterministische Operationen:
 - Spreading Activation: Sub-Millisekunde
-- LLM-Abfrage (lokal, Ollama): 100ms - 10s
+- LLM-Abfrage (lokal): 100ms - 10s
 - LLM-Abfrage (API): 500ms - 30s
 
 **Mitigation:** 
@@ -349,9 +349,9 @@ Das LLM selbst ist opak, aber seine *Integration* ist vollständig transparent:
 
 **Mitigation:** Multi-Modell-Queries mit Divergenz-Erkennung. Wenn zwei Domain-LLMs widersprüchliche Proposals generieren, wird keiner automatisch akzeptiert.
 
-**Dependency-Creep:** Brain19 hat null externe Dependencies. LLM-Integration bringt Ollama (oder API-Abhängigkeiten) ins Spiel.
+**Dependency-Creep:** Brain19 hat null externe Dependencies. LLM-Integration bringt API-Abhängigkeiten ins Spiel.
 
-**Mitigation:** Die Understanding Layer ist bereits Ollama-abhängig. Domain-LLMs erweitern diese existierende Dependency, fügen keine neue hinzu. Die Kern-Architektur (STM, LTM, Cognitive Dynamics, Epistemic System, KAN) bleibt dependency-frei.
+**Mitigation:** Domain-LLMs sind optional. Die Kern-Architektur (STM, LTM, Cognitive Dynamics, Epistemic System, KAN) bleibt dependency-frei. The system operates in knowledge-only mode without external LLM dependencies.
 
 ---
 
@@ -420,7 +420,7 @@ Das LLM selbst ist opak, aber seine *Integration* ist vollständig transparent:
 
 - **Keine Änderung an EpistemicMetadata** — das heilige Subsystem bleibt unberührt
 - **Keine automatische Promotion** von LLM-Output zu FACT/THEORY
-- **Keine neue externe Dependency** über Ollama hinaus
+- **Keine neue externe Dependency**
 - **Kein neues Subsystem** — Erweiterung des bestehenden Understanding Layer
 - **Keine Aufweichung der Compile-Time-Enforcement**
 - **Kein Agent-Verhalten** — LLMs bleiben Tools ohne Autonomie

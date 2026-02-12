@@ -407,16 +407,16 @@ public:
 };
 ```
 
-### Integration mit Ollama/llama.cpp
+### Integration mit externem LLM-Backend
 
 ```cpp
-class OllamaMiniLLM : public MiniLLM {
+class ExternalMiniLLM : public MiniLLM {
 private:
     std::string model_name_;
     std::string endpoint_;
 
 public:
-    OllamaMiniLLM(const std::string& model, const std::string& endpoint)
+    ExternalMiniLLM(const std::string& model, const std::string& endpoint)
         : model_name_(model), endpoint_(endpoint) {}
 
     std::vector<MeaningProposal> extract_meaning(
@@ -428,8 +428,8 @@ public:
         // 1. Build prompt from activated concepts (READ-ONLY)
         std::string prompt = build_prompt(active_concepts, ltm);
 
-        // 2. Call Ollama API
-        std::string response = call_ollama_api(prompt);
+        // 2. Call external LLM API
+        std::string response = call_llm_api(prompt);
 
         // 3. Parse response and create proposals
         auto proposals = parse_response_to_proposals(response);

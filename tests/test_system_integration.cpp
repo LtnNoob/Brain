@@ -29,7 +29,6 @@ static SystemOrchestrator::Config test_config() {
     cfg.seed_foundation = false;
     cfg.enable_monitoring = false;
     cfg.max_streams = 2;  // minimal
-    cfg.ollama_host = "http://localhost:99999";  // deliberately unavailable
     return cfg;
 }
 
@@ -90,7 +89,7 @@ void test_text_ingestion() {
     orch.shutdown();
 }
 
-// ─── Test 4: Ask Question (without Ollama) ───────────────────────────────────
+// ─── Test 4: Ask Question (knowledge-only mode) ─────────────────────────────
 
 void test_ask_no_llm() {
     auto cfg = test_config();
@@ -99,7 +98,7 @@ void test_ask_no_llm() {
     ASSERT(orch.initialize());
 
     auto resp = orch.ask("What is Physics?");
-    // Without Ollama, should still return something (knowledge-only mode)
+    // Should return something in knowledge-only mode
     ASSERT(!resp.answer.empty());
 
     orch.shutdown();

@@ -1,10 +1,10 @@
-# Brain19 mit Ollama LLM - Quickstart 🚀
+# Brain19 — Quickstart
 
 ## Installation (3 Befehle)
 
 ```bash
 # 1. Entpacken
-tar -xzf brain19_ollama_final.tar.gz
+tar -xzf brain19_complete.tar.gz
 cd brain19_complete_project
 
 # 2. Automatische Installation
@@ -15,17 +15,15 @@ cd backend
 ./demo_chat
 ```
 
-**Das war's!** 🎉
+**Das war's!**
 
 ---
 
 ## Was install.sh macht
 
-1. ✅ Installiert libcurl & nlohmann-json
-2. ✅ Installiert Ollama
-3. ✅ Kompiliert Brain19
-4. ✅ Lädt llama3.2:1b Model herunter
-5. ✅ Verifiziert Installation
+1. Installiert libcurl & nlohmann-json
+2. Kompiliert Brain19
+3. Verifiziert Installation
 
 **Zeit:** ~5-10 Minuten (abhängig von Download-Geschwindigkeit)
 
@@ -42,22 +40,14 @@ sudo apt update
 sudo apt install -y libcurl4-openssl-dev nlohmann-json3-dev
 ```
 
-### 2. Ollama
-
-```bash
-curl -fsSL https://ollama.com/install.sh | sh
-ollama serve &  # In Hintergrund starten
-ollama pull llama3.2:1b
-```
-
-### 3. Brain19 kompilieren
+### 2. Brain19 kompilieren
 
 ```bash
 cd brain19_complete_project/backend
-make -f Makefile.ollama
+make
 ```
 
-### 4. Starten
+### 3. Starten
 
 ```bash
 ./demo_chat
@@ -71,11 +61,11 @@ make -f Makefile.ollama
 Brain19> summary
 # Zeigt Wissensübersicht
 
-Brain19> Was weißt du über Katzen?
-# LLM verarbeitet Frage und antwortet mit epistemischen Metadaten
+Brain19> Was weisst du ueber Katzen?
+# Verarbeitet Frage und antwortet mit epistemischen Metadaten
 
 Brain19> Vergleiche Evolution und Multiversum
-# LLM vergleicht epistemisch
+# Vergleicht epistemisch
 
 Brain19> quit
 # Beenden
@@ -83,7 +73,7 @@ Brain19> quit
 
 ---
 
-## 🆕 Cognitive Dynamics Demo
+## Cognitive Dynamics Demo
 
 Cognitive Dynamics demonstriert Aufmerksamkeits-Management und Reasoning:
 
@@ -95,8 +85,8 @@ make -f Makefile.cognitive
 
 **Demonstriert:**
 - **Spreading Activation:** Aktivierung breitet sich durch Knowledge-Graph aus
-- **Salience Computation:** Ranking nach Wichtigkeit (activation × trust × connectivity)
-- **Focus Management:** Arbeitsgedächtnis-Simulation mit Kapazitätslimit
+- **Salience Computation:** Ranking nach Wichtigkeit (activation x trust x connectivity)
+- **Focus Management:** Arbeitsgedaechtnis-Simulation mit Kapazitaetslimit
 - **Thought Path Finding:** Beste Inferenz-Pfade finden
 
 **Output:**
@@ -111,70 +101,34 @@ Salience scores:
   Fur       0.663
 
 Top thought paths:
-  Cat → Fur
-  Cat → Mammal → Animal
+  Cat -> Fur
+  Cat -> Mammal -> Animal
 
-ALL EPISTEMIC INVARIANTS PRESERVED ✓
+ALL EPISTEMIC INVARIANTS PRESERVED
 ```
 
-**Tests ausführen:**
+**Tests ausfuehren:**
 ```bash
 ./test_cognitive_dynamics
-# Erwartung: Alle 8 Tests bestehen ✅
+# Erwartung: Alle 8 Tests bestehen
 ```
 
 ---
 
-## Verfügbare Befehle
+## Verfuegbare Befehle
 
 | Befehl | Funktion |
 |--------|----------|
-| `summary` | Wissensübersicht |
+| `summary` | Wissensuebersicht |
 | `list facts` | Alle Fakten |
 | `list theories` | Alle Theorien |
-| `explain <id>` | Konzept erklären |
+| `explain <id>` | Konzept erklaeren |
 | `compare <id1> <id2>` | Vergleichen |
-| **Freie Fragen** | **Natürliche Sprache!** |
-
----
-
-## Model wechseln
-
-Kleineres Model (schneller):
-```bash
-ollama pull phi3:mini
-```
-
-Besseres Model (langsamer, präziser):
-```bash
-ollama pull mistral:7b
-```
-
-In `demo_chat.cpp` ändern:
-```cpp
-ollama_config.model = "mistral:7b";
-```
-
-Neu kompilieren:
-```bash
-make -f Makefile.ollama
-```
+| **Freie Fragen** | **Natuerliche Sprache!** |
 
 ---
 
 ## Troubleshooting
-
-### "Ollama not available"
-```bash
-# In separatem Terminal:
-ollama serve
-```
-
-### Model nicht gefunden
-```bash
-ollama list  # Verfügbare Models
-ollama pull llama3.2:1b  # Model herunterladen
-```
 
 ### Kompilierungsfehler
 ```bash
@@ -184,37 +138,31 @@ sudo apt install -y libcurl4-openssl-dev nlohmann-json3-dev
 
 ---
 
-## Weiterführende Docs
+## Weiterfuehrende Docs
 
-- `OLLAMA_README.md` - Vollständige Dokumentation
 - `SYSTEM_OVERVIEW.md` - Brain19 Architektur
-- `backend/llm/README.md` - LLM Interface Details
 
 ---
 
 ## Was ist neu?
 
-### ✅ Echtes LLM
-- Natürliche Sprachverarbeitung
-- Kontextuelles Verständnis
-- Flüssige Antworten
+### Knowledge-Only Mode
+- Eigenstaendige Wissensverarbeitung
+- Epistemische Metadaten
+- Template-basierte Textgenerierung
 
-### ✅ Epistemic Prompting
-- LLM MUSS Metadaten kommunizieren
+### Epistemic System
 - FACT vs SPECULATION unterscheiden
 - Trust-Level verbalisieren
 
-### ✅ Lokale Ausführung
+### Lokale Ausfuehrung
 - Keine Cloud
-- Volle Privatsphäre
-- Offline-fähig (nach Model-Download)
+- Volle Privatsphaere
+- Komplett offline-faehig
 
-### ✅ Fallback-Modus
-- System funktioniert auch ohne Ollama
+### Fallback-Modus
 - Automatischer Fallback auf Keyword-Matching
 
 ---
-
-**Brain19 spricht jetzt natürliche Sprache! 🧠💬✨**
 
 **Viel Erfolg!**

@@ -53,7 +53,7 @@
 │  ┌──────────────────────┐    ┌──────────────────────────────────┐           │
 │  │  KAN Subsystem       │    │  Understanding Layer (OPTIONAL)  │           │
 │  │                      │    │                                  │           │
-│  │  KANModule           │    │  MiniLLM (Stub/Ollama)           │           │
+│  │  KANModule           │    │  MiniLLM (Stub/KAN)              │           │
 │  │  KANLayer            │    │  UnderstandingLayer              │           │
 │  │  KANNode (B-Spline)  │    │  Proposals (Hypothesis,         │           │
 │  │  KANAdapter          │    │   Analogy, Contradiction,       │           │
@@ -74,9 +74,9 @@
 │  └──────────────────────┘    ┌──────────────────────────────────┐           │
 │                              │  Snapshot Generator              │           │
 │  ┌──────────────────────┐    │  (Read-Only State Export)        │           │
-│  │  LLM / Chat          │    │  → snapshot.json                │           │
-│  │  OllamaClient        │    └──────────────────────────────────┘           │
-│  │  ChatInterface       │                                                   │
+│  │  Chat Interface      │    │  → snapshot.json                │           │
+│  │  ChatInterface       │    └──────────────────────────────────┘           │
+│  │                      │                                                   │
 │  └──────────────────────┘    ┌──────────────────────────────────┐           │
 │                              │  CLI Tool                        │           │
 │                              │  brain19_cli                     │           │
@@ -150,7 +150,7 @@
 | `UnderstandingLayer` | `understanding/understanding_layer.hpp` | Semantische Analyse via MiniLLMs | Liest: STM, LTM; Schreibt: Proposals |
 | `MiniLLM` | `understanding/mini_llm.hpp` | Abstrakte LLM-Schnittstelle | Interface |
 | `StubMiniLLM` | `understanding/mini_llm.hpp` | Deterministischer Stub für Tests | Implementation |
-| `OllamaMiniLLM` | `understanding/ollama_mini_llm.hpp` | Ollama-basierte Implementation | Implementation |
+| `KANMiniLLM` | `understanding/kan_mini_llm.hpp` | KAN-backed Implementation | Implementation |
 | `MiniLLMFactory` | `understanding/mini_llm_factory.hpp` | Factory für spezialisierte MiniLLMs | Factory |
 | `HypothesisProposal` | `understanding/understanding_proposals.hpp` | LLM-generierte Hypothese | Datenstruktur |
 | `AnalogyProposal` | `understanding/understanding_proposals.hpp` | Analogie-Vorschlag | Datenstruktur |
@@ -177,7 +177,7 @@
 | `WikipediaImporter` | `importers/wikipedia_importer.hpp` | URL/Text → KnowledgeProposal | Transformer |
 | `ScholarImporter` | `importers/scholar_importer.hpp` | DOI/URL/Text → KnowledgeProposal | Transformer |
 | `KnowledgeProposal` | `importers/knowledge_proposal.hpp` | Strukturierter Import-Vorschlag | Datenstruktur |
-| `OllamaClient` | `llm/ollama_client.hpp` | HTTP-Client für Ollama API | Netzwerk |
+| `HttpClient` | `llm/http_client.hpp` | HTTP-Client | Netzwerk |
 | `ChatInterface` | `llm/chat_interface.hpp` | Chat-basierte Interaktion mit Brain19 | Schreibt: STM, LTM |
 | `SnapshotGenerator` | `snapshot_generator.hpp` | JSON-Export des Systemzustands | Read-Only |
 
@@ -290,7 +290,7 @@ Trigger: Konzept wird aktiviert (STM)
 │  2. Für jede registrierte MiniLLM: │
 │     ┌─────────────────────────┐    │
 │     │ MiniLLM::generate()     │    │
-│     │ (Stub oder Ollama)      │    │
+│     │ (Stub or KAN-backed)    │    │
 │     └──────────┬──────────────┘    │
 │                │                   │
 │  3. Response parsen → Proposals    │
@@ -442,8 +442,8 @@ INFERENCE (RelevanceMap):
 
 ┌──────────────┐     ┌───────────────┐
 │understanding/│────→│ llm/          │
-│understanding │     │ ollama_client │
-│_layer        │     │ chat_interface│
+│understanding │     │ chat_interface│
+│_layer        │     │               │
 │mini_llm*     │     └───────────────┘
 └──────────────┘
 
@@ -477,7 +477,7 @@ types.hpp ← epistemic ← ltm ← brain_controller ← cognitive_dynamics
                                snapshot_generator
 
 micromodel ← kan ← kan_adapter
-understanding ← llm/ollama
+understanding ← llm
 ingestor ← ltm + epistemic
 importers ← ingestor
 ```
@@ -505,7 +505,7 @@ UnderstandingLayer
  └── vector<unique_ptr<MiniLLM>> mini_llms_  ← EXKLUSIV
 
 ChatInterface
- └── unique_ptr<OllamaClient> ollama_        ← EXKLUSIV
+ └── unique_ptr<HttpClient> client_           ← EXKLUSIV
 
 WikipediaImporter / ScholarImporter
  └── return unique_ptr<KnowledgeProposal>    ← Transfer zum Aufrufer
@@ -749,8 +749,8 @@ Aktuell:                          Ziel:
                                        │
                                        ▼
                                  ┌──────────┐
-                                 │ LLM      │──→ Hypothesen-Generierung
-                                 │(Ollama)  │     (kreativ aber unvalidiert)
+                                 │ MiniLLM  │──→ Hypothesen-Generierung
+                                 │          │     (kreativ aber unvalidiert)
                                  └──────────┘
                                        │
                                        ▼

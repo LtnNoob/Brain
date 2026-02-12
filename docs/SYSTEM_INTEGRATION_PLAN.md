@@ -18,10 +18,10 @@
 | 5 | CognitiveDynamics | none | ✅ OK |
 | 6 | CuriosityEngine | none | ✅ OK |
 | 7 | KANAdapter | none | ✅ OK |
-| 8 | UnderstandingLayer + MiniLLMs | Ollama (ext) | ✅ OK |
+| 8 | UnderstandingLayer + MiniLLMs | none | ✅ OK |
 | 9 | KAN-LLM Hybrid (Validator, DomainMgr, RefinementLoop) | KanValidator | ✅ OK |
 | 10 | IngestionPipeline + WikiImporter | LTM | ✅ OK |
-| 11 | ChatInterface + OllamaClient | Ollama (ext) | ✅ OK |
+| 11 | ChatInterface | none | ✅ OK |
 | 12 | Shared Wrappers (SharedLTM/STM/Registry/Embeddings) | LTM, STM, Registry, Embeddings | ✅ OK |
 | 13 | Streams (Orchestrator, Scheduler, Monitor) | Shared Wrappers | ✅ OK |
 | 14 | Bootstrap Foundation Seeding | LTM | ✅ OK |
@@ -58,7 +58,7 @@
  8. UnderstandingLayer + MiniLLMs
  9. KAN-LLM Hybrid
 10. IngestionPipeline + Importers
-11. ChatInterface + OllamaClient
+11. ChatInterface
 12. Evolution (PatternDiscovery, EpistemicPromotion, ConceptProposer) ← NEW
 13. Shared Wrappers
 14. Streams
@@ -96,7 +96,7 @@ User question
   │    ├─ ChatInterface::ask(question, ltm)
   │    │   ├─ find_relevant_concepts() ← ANOTHER naive search, independent of thinking
   │    │   ├─ build_epistemic_context() → system prompt with concept data
-  │    │   └─ OllamaClient::chat() → LLM response
+  │    │   └─ ChatInterface::generate() → response
   │    │
   │    └─ Return ChatResponse
 ```
@@ -239,7 +239,7 @@ Streams start and tick, but:
 
 ### 3.5 KAN-LLM Hybrid — Correctly Wired in ThinkingPipeline
 
-KanValidator is called in Step 9 of ThinkingPipeline, but only if UnderstandingLayer produces hypothesis_proposals. With StubMiniLLM (no Ollama), this never happens → KAN validation never runs.
+KanValidator is called in Step 9 of ThinkingPipeline, but only if UnderstandingLayer produces hypothesis_proposals. In knowledge-only mode, this never happens → KAN validation never runs.
 
 ---
 
@@ -340,7 +340,7 @@ Some persistent files are in STREAM_SRCS but NOT in BRAIN19_SRCS. Evolution file
 LDLIBS = -lcurl -lpthread
 ```
 
-- **libcurl** — Required by `http_client.cpp` (Wikipedia/Scholar import) and `ollama_client.cpp`
+- **libcurl** — Required by `http_client.cpp` (Wikipedia/Scholar import)
 - **pthread** — Already in CXXFLAGS via `-pthread`
 - No other external deps (KAN, MicroModels, etc. are all header/source)
 
@@ -381,7 +381,7 @@ BRAIN19_SRCS = \
 	$(BACKEND)/adapter/kan_adapter.cpp \
 	$(BACKEND)/understanding/understanding_layer.cpp \
 	$(BACKEND)/understanding/mini_llm.cpp \
-	$(BACKEND)/understanding/ollama_mini_llm.cpp \
+	$(BACKEND)/understanding/mini_llm.cpp \
 	$(BACKEND)/hybrid/hypothesis_translator.cpp \
 	$(BACKEND)/hybrid/epistemic_bridge.cpp \
 	$(BACKEND)/hybrid/kan_validator.cpp \
@@ -397,7 +397,7 @@ BRAIN19_SRCS = \
 	$(BACKEND)/importers/wikipedia_importer.cpp \
 	$(BACKEND)/importers/scholar_importer.cpp \
 	$(BACKEND)/importers/http_client.cpp \
-	$(BACKEND)/llm/ollama_client.cpp \
+	$(BACKEND)/llm/chat_interface.cpp \
 	$(BACKEND)/llm/chat_interface.cpp \
 	$(BACKEND)/evolution/pattern_discovery.cpp \
 	$(BACKEND)/evolution/epistemic_promotion.cpp \

@@ -323,7 +323,7 @@ w = σ(z)            (relevance ∈ (0,1))</code></pre>
 │     │  └──────────────────┘  └────────────────────────────┘ │          │
 │     │  ┌──────────────────┐  ┌────────────────────────────┐ │          │
 │     │  │  Wikipedia       │  │  Chat Interface            │ │          │
-│     │  │  Importer        │  │  Ollama LLM Verbalization  │ │          │
+│     │  │  Importer        │  │  Knowledge-only Verbalization  │ │          │
 │     │  └──────────────────┘  └────────────────────────────┘ │          │
 │     │  ┌──────────────────────────────────────────────────┐ │          │
 │     │  │  Bootstrap Interface                             │ │          │
@@ -404,8 +404,8 @@ w = σ(z)            (relevance ∈ (0,1))</code></pre>
 <tr>
 <td>11</td>
 <td><strong>Chat</strong></td>
-<td>ChatInterface, OllamaClient</td>
-<td>LLM verbalization (llama3.2:1b)</td>
+<td>ChatInterface</td>
+<td>Knowledge-only verbalization</td>
 </tr>
 <tr>
 <td>12</td>
@@ -504,7 +504,6 @@ Epistemic Values        →
 </tr>
 </tbody></table>
 <p>When the LLM is optionally used for creative hypothesis generation, these <strong>always</strong> pass through epistemic validation. LLM proposals receive a trust ceiling of 0.3–0.5 and are never automatically accepted.</p>
-<p>The LLM backend is Ollama (model: <code>llama3.2:1b</code> on port 11434), configured via <code>--ollama-host</code> and <code>--ollama-model</code> flags.</p>
 <blockquote>See: <a href="../backend/llm/chat_interface.hpp"><code>backend/llm/chat_interface.hpp</code></a></blockquote>
 <h2 id="overview-kan-llm-hybrid-validation-phase-7">KAN-LLM Hybrid Validation (Phase 7)</h2>
 <p>Phase 7 introduces bidirectional validation between Kolmogorov-Arnold Networks and the LLM. This is the core innovation for epistemic integrity of system-generated knowledge.</p>
@@ -837,7 +836,7 @@ LTM.store_concept() + LTM.add_relation()</code></pre>
 <h2 id="overview-three-tier-deployment">Three-Tier Deployment</h2>
 <h3>C++ Backend Binary</h3>
 <p>The <code>brain19</code> binary is a REPL application (<code>Brain19App</code>) wrapping <code>SystemOrchestrator</code>. CLI commands: <code>ask</code>, <code>ingest</code>, <code>import</code>, <code>status</code>, <code>streams</code>, <code>checkpoint</code>, <code>restore</code>, <code>concepts</code>, <code>explain</code>, <code>think</code>, <code>help</code>.</p>
-<p>Flags: <code>--data-dir</code>, <code>--ollama-host</code>, <code>--ollama-model</code>, <code>--no-persistence</code>, <code>--no-foundation</code>, <code>--max-streams</code>, <code>--no-monitor</code>.</p>
+<p>Flags: <code>--data-dir</code>, <code>--no-persistence</code>, <code>--no-foundation</code>, <code>--max-streams</code>, <code>--no-monitor</code>.</p>
 <h3>Python FastAPI Bridge (api/server.py)</h3>
 <p>Port 8019. Translates HTTP/WebSocket requests into subprocess calls to the brain19 binary. An <code>asyncio.Lock</code> (<code>cmd_lock</code>) serializes all subprocess calls. Snapshot caching with invalidation on mutations.</p>
 <h3>React Frontend (frontend/src/Brain19Visualizer.jsx)</h3>
@@ -871,7 +870,7 @@ LTM.store_concept() + LTM.add_relation()</code></pre>
 </tr>
 <tr>
 <td>Language</td>
-<td>LLM as verbalizer (optional, Ollama)</td>
+<td>Knowledge-only verbalizer</td>
 </tr>
 <tr>
 <td>Truth</td>
@@ -974,7 +973,6 @@ flowchart TB
     subgraph Understanding[&quot;Understanding Layer&quot;]
         UL[UnderstandingLayer&lt;br/&gt;Semantic Analysis]
         MLLM[MiniLLM&lt;br/&gt;Registered models]
-        OML[OllamaMiniLLM&lt;br/&gt;Ollama-backed]
     end
 
     subgraph Evolution[&quot;Evolution (Phase 6)&quot;]
@@ -999,7 +997,6 @@ flowchart TB
     end
 
     subgraph LLMLayer[&quot;LLM Layer&quot;]
-        OC[OllamaClient&lt;br/&gt;HTTP to Ollama]
         CI[ChatInterface&lt;br/&gt;Verbalization tool]
     end
 
@@ -1323,7 +1320,6 @@ sequenceDiagram
     participant RM as RelevanceMap
     participant MR as MicroModelRegistry
     participant EM as EmbeddingManager
-    participant OC as OllamaClient
 
     User-&gt;&gt;CI: ask(question, ltm)
 
@@ -1354,8 +1350,7 @@ sequenceDiagram
     CI-&gt;&gt;CI: build_system_prompt()
     Note over CI: Verbalize ONLY existing knowledge.&lt;br/&gt;Mark uncertainties explicitly.
 
-    CI-&gt;&gt;OC: generate(prompt, context)
-    OC--&gt;&gt;CI: OllamaResponse
+    CI-&gt;&gt;CI: generate_response(prompt, context)
 
     CI--&gt;&gt;User: ChatResponse {answer, referenced_concepts, epistemic_note}
 </pre></div>
@@ -1618,7 +1613,6 @@ flowchart TD
         IP --&gt;|owns| EE[EntityExtractor]
         IP --&gt;|owns| RE[RelationExtractor]
         IP --&gt;|owns| TT[TrustTagger]
-        CI --&gt;|owns| OC[&quot;OllamaClient&quot;]
     end
 
     subgraph ReadOnly[&quot;Read-Only Access&quot;]
@@ -1904,7 +1898,7 @@ sequenceDiagram
 
     Note over SO: Stage 11: Chat + LLM
     SO-&gt;&gt;CI: new ChatInterface()
-    SO-&gt;&gt;CI: initialize(ollama_config)
+    SO-&gt;&gt;CI: initialize()
     Note over SO: init_stage_ = 11
 
     Note over SO: Stage 12: Shared Wrappers
@@ -2003,7 +1997,6 @@ flowchart TD
     end
 
     subgraph External[&quot;External Services&quot;]
-        OLLAMA[Ollama&lt;br/&gt;:11434&lt;br/&gt;llama3.2:1b]
         WIKI[Wikipedia API&lt;br/&gt;Article import]
         SCHOLAR[Google Scholar&lt;br/&gt;Paper search]
     end
@@ -2018,14 +2011,12 @@ flowchart TD
     WS --&gt;|subprocess exec| BIN
     BIN --&gt; SO
     SO --&gt; DATA
-    SO --&gt;|HTTP| OLLAMA
     SO --&gt;|HTTP| WIKI
     SO --&gt;|HTTP| SCHOLAR
 
     style VIZ fill:#61dafb,color:#000
     style FA fill:#009688,color:#fff
     style BIN fill:#2563eb,color:#fff
-    style OLLAMA fill:#7c3aed,color:#fff
 </pre></div>
 <p><em>Generated from actual code in <code>backend/</code>, <code>api/</code>, and <code>frontend/</code>. Updated: 2026-02-12.</em></p>
 <div class="cat-banner"><h2>Class Diagrams</h2><p class="sub">11 UML class diagrams for all core module hierarchies.</p></div>
@@ -2445,13 +2436,6 @@ classDiagram
         +detect_contradictions(concepts, ltm, stm, ctx)* vector~ContradictionProposal~
     }
 
-    class OllamaMiniLLM {
-        -OllamaClient* client_
-        +extract_meaning(...) vector~MeaningProposal~
-        +generate_hypotheses(...) vector~HypothesisProposal~
-        +detect_analogies(...) vector~AnalogyProposal~
-        +detect_contradictions(...) vector~ContradictionProposal~
-    }
 
     class MeaningProposal {
         +ConceptId concept_id
@@ -2481,7 +2465,6 @@ classDiagram
     }
 
     UnderstandingLayer &quot;1&quot; *-- &quot;*&quot; MiniLLM : mini_llms_
-    MiniLLM &lt;|-- OllamaMiniLLM : implements
     UnderstandingLayer ..&gt; MeaningProposal : generates
     UnderstandingLayer ..&gt; HypothesisProposal : generates
     UnderstandingLayer ..&gt; AnalogyProposal : generates
@@ -2903,7 +2886,7 @@ sequenceDiagram
     Note over SO: Full 14-stage init for each request
 
     SO-&gt;&gt;SO: ask(&quot;What is gravity?&quot;)
-    Note over SO: ThinkingPipeline → ChatInterface → Ollama
+    Note over SO: ThinkingPipeline → ChatInterface
 
     SO--&gt;&gt;BIN: ChatResponse {answer, concepts, epistemic_note}
 
@@ -3428,7 +3411,7 @@ stateDiagram-v2
 
     Stage9_Hybrid --&gt; Stage10_Ingestion : new IngestionPipeline(ltm)
 
-    Stage10_Ingestion --&gt; Stage11_Chat : new ChatInterface\ninitialize(ollama_config)
+    Stage10_Ingestion --&gt; Stage11_Chat : new ChatInterface\ninitialize()
 
     Stage11_Chat --&gt; Stage12_Shared : SharedLTM, SharedSTM\nSharedRegistry, SharedEmbeddings
 

@@ -66,7 +66,7 @@ Der Bug mit erfundenen IDs ist gefixt (`stm.get_active_concepts(context, 0.0)`).
 
 3. **Benchmarking-Framework** — Es gibt keine Möglichkeit, die Performance-Claims zu validieren. Kein einziger reproduzierbarer Benchmark.
 
-4. **Error Recovery** — Kein systematisches Exception-Handling. Ein fehlgeschlagener Ollama-Call kann das gesamte Understanding-Cycle abbrechen.
+4. **Error Recovery** — Kein systematisches Exception-Handling. Ein fehlgeschlagener externer API-Call kann das gesamte Understanding-Cycle abbrechen.
 
 5. **Monitoring** — SnapshotGenerator ist read-only und zeigt nicht alle Subsysteme. Strukturiertes Logging fehlt.
 

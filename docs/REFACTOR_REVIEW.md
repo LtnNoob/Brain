@@ -275,7 +275,7 @@ Die FOCUS_CURSOR_DESIGN (§5.2) definiert ein detailliertes KAN-Policy-Interface
 ### M1. LanguageEngine existiert nicht
 
 **Refactor-Plan §7:** `language_engine_.generate(result)` — kein solches Klasse/Interface existiert.
-Es gibt `ChatInterface` und `OllamaClient`, aber keine dedizierte "LanguageEngine" für Template-basierte Satzgenerierung aus Cursor-Ketten. Muss neu erstellt werden.
+Es gibt `ChatInterface`, aber keine dedizierte "LanguageEngine" für Template-basierte Satzgenerierung aus Cursor-Ketten. Muss neu erstellt werden.
 
 ---
 

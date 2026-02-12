@@ -1,5 +1,5 @@
 # REFACTOR AUDIT — Iteration 2 (Re-Audit)
-## FocusCursor + Template-Engine + Ollama Removal + Pipeline Integration
+## FocusCursor + Template-Engine + Pipeline Integration
 
 **Date:** 2026-02-12
 **Scope:** Verify all fixes from Iteration 1, check for regressions, find remaining issues

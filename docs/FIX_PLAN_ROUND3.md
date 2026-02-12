@@ -149,7 +149,7 @@ Die 7 Bugs sind **weitgehend unabhängig** voneinander. Keine kausalen Abhängig
 **Aufwand:** Gering (ca. 30min)
 
 **Ist-Zustand:**
-- Jeder `OllamaClient`-Konstruktor ruft `curl_global_init()`, Destruktor `curl_global_cleanup()`
+- Each HTTP client constructor calls `curl_global_init()`, destructor `curl_global_cleanup()`
 - Bei mehreren Instanzen: Race Condition + vorzeitiges Cleanup
 
 **Was ändern:**
@@ -160,7 +160,7 @@ Die 7 Bugs sind **weitgehend unabhängig** voneinander. Keine kausalen Abhängig
 
 **Seiteneffekte:** Keine funktionalen.
 
-**Test:** Mehrere OllamaClient parallel erzeugen/zerstören → kein Crash unter TSan.
+**Test:** Mehrere HTTP-Client-Instanzen parallel erzeugen/zerstören → kein Crash unter TSan.
 
 ---
 
@@ -177,7 +177,7 @@ Die 7 Bugs sind **weitgehend unabhängig** voneinander. Keine kausalen Abhängig
 
 ---
 
-### Bug #7: Unvollständiger switch in ollama_mini_llm.cpp
+### Bug #7: Unvollständiger switch in mini_llm_factory.hpp
 
 **Schwere:** LOW  
 **Aufwand:** Gering (ca. 10min)

@@ -675,7 +675,7 @@ def build_html():
     # ═══════════════════════════════════════════════════════════════════════════
     p('''<section id="understanding">
 <h2>Module: understanding</h2>
-<p><strong>Files:</strong> <code>understanding/understanding_proposals.hpp</code>, <code>mini_llm.hpp/.cpp</code>, <code>ollama_mini_llm.hpp/.cpp</code>, <code>mini_llm_factory.hpp</code>, <code>understanding_layer.hpp/.cpp</code></p>
+<p><strong>Files:</strong> <code>understanding/understanding_proposals.hpp</code>, <code>mini_llm.hpp/.cpp</code>, <code>mini_llm_factory.hpp</code>, <code>understanding_layer.hpp/.cpp</code></p>
 <p><strong>Purpose:</strong> Semantic analysis layer using Mini-LLMs. All outputs are HYPOTHESIS. READ-ONLY LTM access.</p>
 
 <h3>Proposal Structs</h3>
@@ -699,14 +699,11 @@ def build_html():
 <h3>Class: StubMiniLLM</h3>
 <p>Placeholder for testing. Conservative confidence (0.3-0.5). CRITICAL: throws if proposal not HYPOTHESIS.</p>
 
-<h3>Class: OllamaMiniLLM ''' + tag("EXTERNAL","tag-ext") + '''</h3>
-<p>Real semantic analysis via Ollama API. Confidence estimated from hedging/certainty language markers.</p>
-
 <h3>Class: UnderstandingLayer</h3>
 <p>Aggregates proposals from registered Mini-LLMs. Filters by confidence thresholds. Rate-limited (max_proposals_per_cycle).</p>
 
 <div class="invariant"><strong>Invariant:</strong> All proposals HYPOTHESIS-typed. All LTM access read-only. No state modification. Deterministic aggregation.</div>
-<div class="weak"><strong>Weak Point:</strong> Simple string-based parsing for Ollama responses (brittle). No retry logic. proposal_counter_ not thread-safe.</div>
+<div class="weak"><strong>Weak Point:</strong> proposal_counter_ not thread-safe.</div>
 </section>
 ''')
 
@@ -829,18 +826,11 @@ LTM.store_concept() + LTM.add_relation()</code></pre>
     # ═══════════════════════════════════════════════════════════════════════════
     p('''<section id="llm">
 <h2>Module: llm</h2>
-<p><strong>Files:</strong> <code>llm/ollama_client.hpp/.cpp</code>, <code>chat_interface.hpp/.cpp</code></p>
-<p><strong>Purpose:</strong> LLM integration via Ollama REST API. ChatInterface is a TOOL (read-only), not an AGENT.</p>
-
-<h3>Class: OllamaClient ''' + tag("EXTERNAL","tag-ext") + '''</h3>
-''' + member_table([
-    ("config_", "OllamaConfig", "host, model, temperature, num_predict"),
-    ("initialized_", "bool", "Flag for initialize() call"),
-]) + '''
-<p>CURL-based HTTP client. call_once global init. 5-minute timeout. JSON parsing via nlohmann::json.</p>
+<p><strong>Files:</strong> <code>llm/chat_interface.hpp/.cpp</code></p>
+<p><strong>Purpose:</strong> Knowledge-only chat interface. ChatInterface is a TOOL (read-only), not an AGENT.</p>
 
 <h3>Class: ChatInterface</h3>
-<p>LLM-powered verbalization. CRITICAL: LLM is read-only tool. Receives concepts+epistemic metadata, returns natural language preserving epistemic integrity.</p>
+<p>Knowledge-based verbalization. CRITICAL: read-only tool. Receives concepts+epistemic metadata, returns natural language preserving epistemic integrity.</p>
 <details><summary>Methods</summary>
 <ul>
 <li><code>ChatResponse ask(const string&amp; question, const LTM&amp;)</code> -- Keyword-match relevant concepts. Build system prompt + epistemic context. Fallback mode without LLM.</li>
@@ -850,8 +840,8 @@ LTM.store_concept() + LTM.add_relation()</code></pre>
 </ul>
 </details>
 
-<div class="invariant"><strong>Invariant:</strong> LLM never modifies LTM. Epistemic metadata always included in prompts. Fallback mode available without Ollama.</div>
-<div class="weak"><strong>Weak Point:</strong> Hardcoded German system prompt. Naive keyword matching O(n). No prompt caching. No retry logic.</div>
+<div class="invariant"><strong>Invariant:</strong> Chat never modifies LTM. Epistemic metadata always included in responses.</div>
+<div class="weak"><strong>Weak Point:</strong> Naive keyword matching O(n). No caching.</div>
 </section>
 ''')
 
@@ -1009,7 +999,7 @@ LTM.store_concept() + LTM.add_relation()</code></pre>
 <h3>Class: SystemOrchestrator ''' + tag("CORE","tag-core") + '''</h3>
 <p>Central orchestrator. 28+ subsystems. 15-stage initialization with cleanup on failure.</p>
 ''' + member_table([
-    ("config_", "Config", "data_dir, persistence, WAL, streams, Ollama settings"),
+    ("config_", "Config", "data_dir, persistence, WAL, streams settings"),
     ("running_", "atomic<bool>", "System running state"),
     ("init_stage_", "int", "Initialization stage (0-15)"),
     ("subsystem_mtx_", "recursive_mutex", "Orchestrator-level synchronization"),
@@ -1033,7 +1023,7 @@ LTM.store_concept() + LTM.add_relation()</code></pre>
 <p>REPL interface. Commands: ask, ingest, import, status, streams, checkpoint, restore, concepts, explain, think, help, quit.</p>
 
 <h3>main.cpp</h3>
-<p>CLI: --data-dir, --ollama-host, --ollama-model, --no-persistence, --no-foundation, --max-streams, --no-monitor. Interactive REPL or single command mode.</p>
+<p>CLI: --data-dir, --no-persistence, --no-foundation, --max-streams, --no-monitor. Interactive REPL or single command mode.</p>
 
 <div class="invariant"><strong>Invariant:</strong> Init stages strictly ordered. Streams use SharedLTM etc, not direct references. Periodic thread only accesses evolution subsystems. Auto-checkpoint every 30 minutes. Auto-maintenance every 5 minutes.</div>
 <div class="weak"><strong>Weak Point:</strong> 15-stage init is single failure point. recursive_mutex may hide deadlocks. WAL logging in evolution may fail silently. No timeout on checkpoint ops.</div>

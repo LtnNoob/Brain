@@ -208,7 +208,7 @@ stateDiagram-v2
 
     Stage9_Hybrid --> Stage10_Ingestion : new IngestionPipeline(ltm)
 
-    Stage10_Ingestion --> Stage11_Chat : new ChatInterface\ninitialize(ollama_config)
+    Stage10_Ingestion --> Stage11_Chat : new ChatInterface\ninitialize()
 
     Stage11_Chat --> Stage12_Shared : SharedLTM, SharedSTM\nSharedRegistry, SharedEmbeddings
 

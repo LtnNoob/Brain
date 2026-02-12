@@ -43,7 +43,7 @@ sequenceDiagram
     Note over SO: Full 14-stage init for each request
 
     SO->>SO: ask("What is gravity?")
-    Note over SO: ThinkingPipeline → ChatInterface → Ollama
+    Note over SO: ThinkingPipeline → ChatInterface
 
     SO-->>BIN: ChatResponse {answer, concepts, epistemic_note}
 

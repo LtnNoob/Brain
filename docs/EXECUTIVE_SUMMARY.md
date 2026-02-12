@@ -1,6 +1,6 @@
 # Brain19 Refactor — Executive Summary
 
-**Datum:** 2026-02-12 (aktualisiert: Ollama-Entscheidung)
+**Datum:** 2026-02-12
 **Basis:** REFACTOR_REVIEW.md, INTEGRATION_PLAN.md, RISK_MITIGATION_PLAN.md
 **Zweck:** Nüchterne Bewertung für den Entwickler. Keine Schönfärberei.
 
@@ -8,7 +8,7 @@
 
 ## 1. Ziel des Refactors
 
-Brain19 soll von einem Spreading-Activation-System zu einer Dual-Mode-Architektur erweitert werden: **Global Dynamics** (Hintergrund-Aktivierung via bestehendem CognitiveDynamics) + **FocusCursor** (gezielte Graph-Traversierung mit MicroModel-gestützter Kantenbewertung). Zusätzlich soll eine **KAN-basierte Language Engine** (BPE-Tokenizer, KAN-Encoder/Decoder, SemanticScorer, FusionLayer) eigene Textgenerierung ermöglichen — ohne externe LLMs wie Ollama. Das Ziel ist ein System, das selbstständig Wissensgraph-Ketten traversiert und daraus deutsche Sätze generiert, komplett on-device mit ~1M Parametern.
+Brain19 soll von einem Spreading-Activation-System zu einer Dual-Mode-Architektur erweitert werden: **Global Dynamics** (Hintergrund-Aktivierung via bestehendem CognitiveDynamics) + **FocusCursor** (gezielte Graph-Traversierung mit MicroModel-gestützter Kantenbewertung). Zusätzlich soll eine **KAN-basierte Language Engine** (BPE-Tokenizer, KAN-Encoder/Decoder, SemanticScorer, FusionLayer) eigene Textgenerierung ermöglichen — ohne externe LLMs. Das Ziel ist ein System, das selbstständig Wissensgraph-Ketten traversiert und daraus deutsche Sätze generiert, komplett on-device mit ~1M Parametern.
 
 ---
 
@@ -50,7 +50,7 @@ Der Plan sieht ~500 manuell kuratierte QA-Paare vor. Das reicht nicht. Der Mitig
 
 | Komponente | Grund |
 |-----------|-------|
-| **Ollama komplett** | Entscheidung Felix: Wird vollständig entfernt, kein Fallback. `OllamaClient`, `OllamaMiniLLM`, `ChatInterface` werden gelöscht. Template-Engine braucht kein LLM. |
+| **External LLM dependencies** | Werden vollständig entfernt, kein Fallback. Legacy LLM client code wird gelöscht. Template-Engine braucht kein LLM. |
 | `Brain19ControlLoop` (geplant) | Wird NICHT gebaut — ThinkingPipeline wird stattdessen erweitert |
 | `ReasoningLayer` (aus Language Engine Design) | Wird eliminiert — FocusCursorManager übernimmt |
 
@@ -130,7 +130,7 @@ Basis: Abendarbeit, ~2-3 Stunden pro Session.
 6. KANTraversalPolicy — **mit hardcoded Policy starten**, KAN-Training später
 7. GlobalDynamicsOperator + ThinkingPipeline Integration
 
-### Language Engine: Template-First-Strategie (kein Ollama)
+### Language Engine: Template-First-Strategie
 8. **Phase 9 erst starten wenn Phase 0-8 stabil läuft und getestet ist**
 9. **Template-Engine sofort** — RelationType-basierte Satzmuster direkt aus FocusCursor-Ketten:
    - `CAUSES` → "X verursacht Y"
@@ -159,7 +159,7 @@ Basis: Abendarbeit, ~2-3 Stunden pro Session.
 | 4 | WAL: Neue Ops für dynamische Felder? | Neue WALOpTypes vs. nur via Checkpoint | Nur Checkpoint (dynamische Felder sind flüchtig) |
 | 5 | Thread-Safety-Modell für FocusCursor? | SharedLTM& vs. LTM& unter Lock | SharedLTM& ist sauberer, aber mehr Refactoring |
 | 6 | EMBED_DIM: Bei 10 bleiben oder auf 16? | 10 = kompatibel, 16 = besser für Language Engine | Bei 10 bleiben, Language Engine intern mit ℝ³² arbeiten |
-| 7 | ~~Ollama~~ | **Entschieden: Wird komplett entfernt.** Kein Fallback. Template-Engine funktioniert ohne LLM. | ✅ Entschieden |
+| 7 | ~~External LLM~~ | **Entschieden: Wird komplett entfernt.** Kein Fallback. Template-Engine funktioniert ohne LLM. | Entschieden |
 | 8 | Template-Fallback: Wie detailliert? | Einfache String-Konkatenation vs. elaborierte Templates | Einfach starten, iterieren |
 | 9 | Vocab-Größe: 8K oder gleich 16K? | 8K = weniger Params, 16K = besser für Deutsch | 8K starten, VocabDiagnostics entscheidet |
 | 10 | MicroModel Joint Fine-Tuning (Stage 3): Überhaupt machen? | Risiko der Korrumpierung vs. bessere Integration | Überspringen, MicroModels frozen lassen |
@@ -170,6 +170,6 @@ Basis: Abendarbeit, ~2-3 Stunden pro Session.
 
 Der Refactor beschreibt eine **gute Zielarchitektur**, aber der Weg dorthin ist deutlich komplexer als im Originalplan dargestellt. Der **Integration Plan** hat die meisten Probleme des Reviews gelöst (korrigierte APIs, Persistence-Strategie via _reserved-Bytes, ThinkingPipeline-Erweiterung statt Ersatz). Die **Risk Mitigation** ist solide mit konkretem C++-Code für jeden Risiko-Fall.
 
-**Ehrliche Einschätzung:** Phase 0-8 (FocusCursor) ist machbar und wertvoll. Die Language Engine (Phase 9) ist ein ambitioniertes Experiment — der KAN-Decoder mit 134K Params wird lange auf Template-Stufe bleiben. Das ist okay: Templates direkt aus FocusCursor-Ketten (RelationType → Satzmuster) liefern korrekte, nachvollziehbare Antworten. Kein LLM nötig.
+**Ehrliche Einschätzung:** Phase 0-8 (FocusCursor) ist machbar und wertvoll. Die Language Engine (Phase 9) ist ein ambitioniertes Experiment — der KAN-Decoder mit 134K Params wird lange auf Template-Stufe bleiben. Das ist okay: Templates direkt aus FocusCursor-Ketten (RelationType → Satzmuster) liefern korrekte, nachvollziehbare Antworten. Kein externes LLM nötig.
 
-**Empfehlung:** Cursor zuerst, testen, stabilisieren. Template-Engine parallel aufbauen — funktioniert vom ersten Tag ohne externe Abhängigkeiten. KAN-Decoder als langfristiges Upgrade. **Ollama wird komplett entfernt** (Entscheidung Felix).
+**Empfehlung:** Cursor zuerst, testen, stabilisieren. Template-Engine parallel aufbauen — funktioniert vom ersten Tag ohne externe Abhängigkeiten. KAN-Decoder als langfristiges Upgrade. External LLM dependencies are fully removed.

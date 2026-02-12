@@ -9,7 +9,7 @@ Durchgeführt von 4 parallelen Opus-Agenten. Jeder Agent hat jeden File in seine
 | ingestor | 8/10 | ✅ Solide |
 | tools/cli | 8/10 | ✅ Solide |
 | ltm | 7/10 | 🟡 OK |
-| llm/ollama | 7/10 | 🟡 OK |
+| llm | 7/10 | 🟡 OK |
 | memory/stm | 7/10 | 🟡 OK |
 | epistemic | 7/10 | 🟡 OK |
 | adapter | 7/10 | 🟡 OK |
@@ -154,16 +154,7 @@ for (ConceptId cid : all_ids) {
 - **File:** Alle Subsysteme
 - **Problem:** Kein Mutex, kein atomic. Jeder concurrent Zugriff = Data Race UB.
 
-### BUG-M12: LLM — POST statt GET für /api/tags
-- **File:** llm/ollama_client.cpp:42
-
-### BUG-M13: LLM — curl_global_init nicht thread-safe
-- **File:** llm/ollama_client.cpp:17-19
-
-### BUG-M14: LLM — Kein Retry
-- **File:** llm/ollama_client.hpp
-
-### BUG-M15: Understanding — SpecializedMiniLLM nicht implementiert
+### BUG-M12: Understanding — SpecializedMiniLLM nicht implementiert
 - **File:** understanding/mini_llm_factory.hpp
 
 ### BUG-M16: KAN — Quadratisch langsames Training

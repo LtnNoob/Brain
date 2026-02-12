@@ -784,7 +784,7 @@ private:
 };
 ```
 
-### 5.3 KAN-basiertes MiniLLM (ersetzt Ollama für bestimmte Tasks)
+### 5.3 KAN-basiertes MiniLLM (ersetzt externe LLMs fuer bestimmte Tasks)
 
 **Neue Datei:** `backend/understanding/kan_mini_llm.hpp` + `.cpp`
 
@@ -851,12 +851,12 @@ Einfache Byte-Pair-Encoding Implementation:
 - [ ] Tokenizer trainiert auf LTM-Daten, Roundtrip: tokenize(detokenize(text)) == text
 - [ ] KANEncoder: encode("photosynthesis") gibt konsistentes VecN
 - [ ] KANDecoder: nearest_concepts(encode("photosynthesis")) enthält "Photosynthesis"
-- [ ] KANMiniLLM: detect_analogies() findet bekannte Analogien aus KG ohne Ollama
-- [ ] KANMiniLLM: detect_contradictions() findet CONTRADICTS-Relationen ohne Ollama
-- [ ] Ollama weiterhin für extract_meaning() und Chat-Verbalisierung verwendet
+- [ ] KANMiniLLM: detect_analogies() findet bekannte Analogien aus KG ohne externes LLM
+- [ ] KANMiniLLM: detect_contradictions() findet CONTRADICTS-Relationen ohne externes LLM
+- [ ] extract_meaning() und Chat-Verbalisierung funktionieren in knowledge-only mode
 
 ### Risiken
-- **Hoch:** KAN-Encoder Qualität für Text ist ungetestet. Mitigation: Fallback auf OllamaMiniLLM.
+- **Hoch:** KAN-Encoder Qualität für Text ist ungetestet. Mitigation: Fallback auf Template-Engine.
 - **Mittel:** 8K Vocab reicht evtl. nicht für Open-Domain. Mitigation: 16K oder 32K als Option.
 - **Hoch:** Training des KAN-Encoders braucht ausreichend LTM-Daten (>500 Konzepte).
 
@@ -1076,5 +1076,5 @@ Phase 0 → Phase 1 → Phase 2 → Phase 3
 ### Offene Fragen
 
 1. **Template vs. Constexpr für EMBED_DIM?** Empfehlung: constexpr reicht, Template ist Overengineering für 1 Dimension.
-2. **Ollama komplett ersetzen?** Nein. Ollama bleibt für Chat und Meaning Extraction. KAN ersetzt nur Analogy/Contradiction/Hypothesis.
+2. **External LLM needed?** No. Template-Engine handles Chat and Meaning Extraction. KAN handles Analogy/Contradiction/Hypothesis.
 3. **WAL/Persistence wann?** Orthogonal zu diesem Plan. Sollte als separates Workstream parallel laufen.

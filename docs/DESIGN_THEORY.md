@@ -51,7 +51,7 @@ Ein "Automotive-LLM" soll nicht wissen, dass ein Getriebe Zahnräder hat. Es sol
 Input → STM → CognitiveDynamics (Spreading Activation, Salience)
                      ↓
               UnderstandingLayer
-                ├── MiniLLM[] (generisch, via Ollama)
+                ├── MiniLLM[] (generisch)
                 └── Proposals (ALLE HYPOTHESIS)
                      ↓
               BrainController
@@ -117,7 +117,7 @@ DomainCluster[]
   ║  Cluster)                                       ║
   ║                                                  ║
   ║  Input: KG-Struktur (NUR Topologie + Labels)    ║
-  ║  Tool: LLM (Ollama)                             ║
+  ║  Tool: LLM                                       ║
   ║  Output: Strukturierte Proposals                 ║
   ║                                                  ║
   ║  INVARIANT:                                      ║
@@ -302,7 +302,7 @@ Kreative Sessions auf verschiedenen Ebenen haben verschiedene Qualitäten:
    - Potentielle Synergie: KAN erkennt numerische Muster, LLM erkennt konzeptuelle Muster
    - Braucht saubere Integration
 
-4. **Welche Ollama-Modelle eignen sich für strukturiertes kreatives Reasoning?**
+4. **Welche Modellgrößen eignen sich für strukturiertes kreatives Reasoning?**
    - Kleine Modelle (3B) halluzinieren mehr → mehr "Kreativität" aber weniger Qualität
    - Größere Modelle (70B) sind präziser → weniger Überraschungen aber höhere Qualität
    - Vielleicht verschiedene Modellgrößen für verschiedene Proposal-Typen
@@ -321,7 +321,7 @@ Nicht implementieren, sondern:
 
 1. **KG-Analyse:** Verstehe die tatsächliche Struktur und Größe des aktuellen Brain19-KG. Abstrakte Clustering-Algorithmen sind sinnlos ohne Verständnis der Daten.
 
-2. **Prompt-Experimente:** Teste mit dem vorhandenen Ollama-Setup, welche Art von Prompts tatsächlich nützliche kreative Proposals generieren. Manuelle Tests, keine Architektur.
+2. **Prompt-Experimente:** Teste, welche Art von Prompts tatsächlich nützliche kreative Proposals generieren. Manuelle Tests, keine Architektur.
 
 3. **Epistemische Provenienz definieren:** Design das Provenienz-Tracking-System BEVOR die LLM-Integration gebaut wird. Das ist der Kern der epistemischen Sicherheit.
 

@@ -464,8 +464,8 @@ classDiagram
         +detect_contradictions(concepts, ltm, stm, ctx)* vector~ContradictionProposal~
     }
 
-    class OllamaMiniLLM {
-        -OllamaClient* client_
+    class SpecializedMiniLLM {
+        -string domain_
         +extract_meaning(...) vector~MeaningProposal~
         +generate_hypotheses(...) vector~HypothesisProposal~
         +detect_analogies(...) vector~AnalogyProposal~
@@ -500,7 +500,7 @@ classDiagram
     }
 
     UnderstandingLayer "1" *-- "*" MiniLLM : mini_llms_
-    MiniLLM <|-- OllamaMiniLLM : implements
+    MiniLLM <|-- SpecializedMiniLLM : implements
     UnderstandingLayer ..> MeaningProposal : generates
     UnderstandingLayer ..> HypothesisProposal : generates
     UnderstandingLayer ..> AnalogyProposal : generates

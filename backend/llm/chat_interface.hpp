@@ -27,7 +27,7 @@ public:
     ChatInterface();
     ~ChatInterface();
 
-    // LLM is never available (Ollama removed)
+    // LLM is not available — knowledge-only mode
     bool is_llm_available() const;
 
     // Ask a question

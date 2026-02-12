@@ -1,5 +1,5 @@
 # REFACTOR AUDIT — Iteration 1
-## FocusCursor + Template-Engine + Ollama Removal + Pipeline Integration
+## FocusCursor + Template-Engine + Knowledge-Only Mode + Pipeline Integration
 
 **Date:** 2026-02-12
 **Scope:** All new/changed files from INTEGRATION_PLAN.md implementation
@@ -87,7 +87,7 @@ For a causal query ("Was passiert wenn X?"), the cursor should follow causal lin
 ```cpp
 size_t created_count_;  // ← NO INITIALIZER
 ```
-Reading via `get_created_count()` returns indeterminate value if no creation occurred. Pre-existing issue but exacerbated by removing OllamaConfig constructor which may have initialized it.
+Reading via `get_created_count()` returns indeterminate value if no creation occurred. Pre-existing issue but exacerbated by constructor changes which may have initialized it.
 
 **Fix:** Add `= 0` default member initializer.
 
@@ -230,7 +230,7 @@ Nested loop iterates over `target_concepts * visited_concepts`. For realistic gr
 - `llm/chat_interface.cpp` — Clean
 - `understanding/mini_llm_factory.hpp` — C5, C6
 
-### Modified Files (Ollama removal, no new issues)
+### Modified Files (knowledge-only mode transition, no new issues)
 - `main.cpp` — Clean
 - `demo_chat.cpp` — Clean
 

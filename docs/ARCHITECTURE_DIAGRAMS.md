@@ -83,7 +83,7 @@ flowchart TB
     subgraph Understanding["Understanding Layer"]
         UL[UnderstandingLayer<br/>Semantic Analysis]
         MLLM[MiniLLM<br/>Registered models]
-        OML[OllamaMiniLLM<br/>Ollama-backed]
+        OML[MiniLLM<br/>KAN-backed]
     end
 
     subgraph Evolution["Evolution (Phase 6)"]
@@ -107,8 +107,8 @@ flowchart TB
         HC[HttpClient<br/>libcurl wrapper]
     end
 
-    subgraph LLMLayer["LLM Layer"]
-        OC[OllamaClient<br/>HTTP to Ollama]
+    subgraph LLMLayer["Chat Layer"]
+        OC[HttpClient<br/>HTTP client]
         CI[ChatInterface<br/>Verbalization tool]
     end
 
@@ -452,7 +452,7 @@ sequenceDiagram
     participant RM as RelevanceMap
     participant MR as MicroModelRegistry
     participant EM as EmbeddingManager
-    participant OC as OllamaClient
+    participant OC as HttpClient
 
     User->>CI: ask(question, ltm)
 
@@ -484,7 +484,7 @@ sequenceDiagram
     Note over CI: Verbalize ONLY existing knowledge.<br/>Mark uncertainties explicitly.
 
     CI->>OC: generate(prompt, context)
-    OC-->>CI: OllamaResponse
+    OC-->>CI: Response
 
     CI-->>User: ChatResponse {answer, referenced_concepts, epistemic_note}
 ```
@@ -777,7 +777,7 @@ flowchart TD
         IP -->|owns| EE[EntityExtractor]
         IP -->|owns| RE[RelationExtractor]
         IP -->|owns| TT[TrustTagger]
-        CI -->|owns| OC["OllamaClient"]
+        CI -->|owns| OC["HttpClient"]
     end
 
     subgraph ReadOnly["Read-Only Access"]
@@ -1083,7 +1083,7 @@ sequenceDiagram
 
     Note over SO: Stage 11: Chat + LLM
     SO->>CI: new ChatInterface()
-    SO->>CI: initialize(ollama_config)
+    SO->>CI: initialize(config)
     Note over SO: init_stage_ = 11
 
     Note over SO: Stage 12: Shared Wrappers
@@ -1192,7 +1192,6 @@ flowchart TD
     end
 
     subgraph External["External Services"]
-        OLLAMA[Ollama<br/>:11434<br/>llama3.2:1b]
         WIKI[Wikipedia API<br/>Article import]
         SCHOLAR[Google Scholar<br/>Paper search]
     end
@@ -1207,14 +1206,12 @@ flowchart TD
     WS -->|subprocess exec| BIN
     BIN --> SO
     SO --> DATA
-    SO -->|HTTP| OLLAMA
     SO -->|HTTP| WIKI
     SO -->|HTTP| SCHOLAR
 
     style VIZ fill:#61dafb,color:#000
     style FA fill:#009688,color:#fff
     style BIN fill:#2563eb,color:#fff
-    style OLLAMA fill:#7c3aed,color:#fff
 ```
 
 ---

@@ -19,7 +19,7 @@
 
 ## 1. Executive Summary <a name="executive-summary"></a>
 
-Brain19 ist ein ambitioniertes kognitives Architektur-System mit ~15 Subsystemen. Die **Grundinfrastruktur ist solide implementiert**: LTM mit epistemischem Tracking, Ingestion Pipeline, KAN-basierte Funktionsapproximation, MicroModel-basierte Relevanzberechnung, und ein Ollama-basiertes LLM-Interface.
+Brain19 ist ein ambitioniertes kognitives Architektur-System mit ~15 Subsystemen. Die **Grundinfrastruktur ist solide implementiert**: LTM mit epistemischem Tracking, Ingestion Pipeline, KAN-basierte Funktionsapproximation, MicroModel-basierte Relevanzberechnung, und ein Chat-Interface.
 
 **Kritische Erkenntnis:** Die Systeme arbeiten weitgehend **parallel aber isoliert**. Die zentrale Schwäche ist das Fehlen einer echten **bidirektionalen Wissensverankerung** — MicroModels lernen aus KG-Struktur, aber das gelernte Wissen fließt nicht zurück in den Graphen. MiniLLMs generieren Hypothesen, aber diese werden nicht systematisch durch KAN validiert und verankert.
 
@@ -36,10 +36,8 @@ Brain19 ist ein ambitioniertes kognitives Architektur-System mit ~15 Subsystemen
 | KAN Validator (Hybrid) | ✅ Voll funktional | 80% |
 | Epistemic Promotion | ✅ Voll funktional | 80% |
 | Pattern Discovery | ✅ Voll funktional | 75% |
-| Ollama Client | ✅ Voll funktional | 85% |
 | ChatInterface | ✅ Voll funktional | 80% |
 | UnderstandingLayer | ⚠️ Teilweise | 60% |
-| OllamaMiniLLM | ⚠️ Basis-Impl. | 55% |
 | MiniLLMFactory | ❌ Nur Header/TODO | 10% |
 | SpecializedMiniLLM | ❌ Nur Header/TODO | 10% |
 | KAN↔MiniLLM Brücke | ❌ Nicht verbunden | 5% |
@@ -99,11 +97,6 @@ Brain19 ist ein ambitioniertes kognitives Architektur-System mit ~15 Subsystemen
 - Framework steht: registriert MiniLLMs, aggregiert Proposals, filtert nach Confidence
 - `perform_understanding_cycle()`: Spreading Activation → Salience → MiniLLM Proposals
 - **Aber**: Outputs werden im SystemOrchestrator nur im ThinkingPipeline-Kontext genutzt, nicht systematisch in den KG zurückgeschrieben
-
-#### OllamaMiniLLM
-- Funktionale Ollama-Anbindung für alle 4 Proposal-Typen (Meaning, Hypothesis, Analogy, Contradiction)
-- Prompt-Engineering mit epistemischem Kontext
-- **Aber**: Kein Fine-Tuning, keine Spezialisierung, keine Wissensverankerung
 
 ### 2.3 Nur Stubs / Nicht Implementiert
 
@@ -195,7 +188,7 @@ Brain19 ist ein ambitioniertes kognitives Architektur-System mit ~15 Subsystemen
        │
        └─── 4. ChatInterface::ask_with_context()
                  ├─ build_epistemic_context(concepts)
-                 ├─ Ollama chat(system_prompt + context + question)
+                 ├─ chat(system_prompt + context + question)
                  └─ → ChatResponse (answer, referenced_concepts, speculation_flag)
 ```
 
@@ -263,7 +256,7 @@ Brain19 ist ein ambitioniertes kognitives Architektur-System mit ~15 Subsystemen
 
 Die Verbindung ist bewusst asymmetrisch designed:
 
-- **LTM → MiniLLM**: MiniLLMs erhalten READ-ONLY Zugriff auf LTM. Der `OllamaMiniLLM` baut Prompts aus `ConceptInfo` (Label, Definition, EpistemicMetadata) und gibt sie als Kontext an Ollama. Dies funktioniert.
+- **LTM → MiniLLM**: MiniLLMs erhalten READ-ONLY Zugriff auf LTM. Sie bauen Kontext aus `ConceptInfo` (Label, Definition, EpistemicMetadata). Dies funktioniert.
 
 - **MiniLLM → LTM**: Es gibt **keinen direkten Schreibweg**. MiniLLM-Outputs sind `Proposals` (HYPOTHESIS). Diese gehen an die `UnderstandingLayer`, werden im `ThinkingPipeline` verarbeitet, und nur indirekt über `ConceptProposer::from_curiosity()` werden neue Konzepte in LTM geschrieben — aber als SPECULATION mit max Trust 0.5.
 
@@ -359,35 +352,22 @@ Die einzige "Interaktion" passiert über den Wissensgraph selbst (Spreading Acti
    - MicroModels sollten ihre eigene Architektur anpassen können (z.B. Embedding-Dimension, Learning Rate)
    - KAN-Module sollten ihre Topologie basierend auf Fehleranalyse erweitern/reduzieren
 
-### 4.6 Ollama-Einbindung und KAN-MiniLLM Hybrid Engine
+### 4.6 KAN-MiniLLM Hybrid Engine
 
-**Aktuelle Ollama-Einbindung:**
+**Wo KAN-MiniLLM Hybrid Tasks uebernimmt:**
 
-Ollama wird an **zwei Stellen** genutzt:
+| Aufgabe | Vorschlag (KAN-Hybrid) |
+|---------|------------------------|
+| Hypothesis Generation | KAN-Pattern-Detection + Template-basierte Textgenerierung |
+| Analogy Detection | RelevanceMap-Overlay + Strukturvergleich |
+| Contradiction Detection | Epistemischer Graph-Check + KAN-Validierung |
+| Meaning Extraction | KAN-Context + Template-Engine |
+| Chat Verbalization | Template-Engine (= User-Interface) |
 
-1. **ChatInterface** (`backend/llm/`): Verbalisierung von LTM-Wissen für den User
-   - System-Prompt mit epistemischen Regeln
-   - Konzept-Kontext aus LTM
-   - Modell: `llama3.2:1b` (konfigurierbar)
-
-2. **OllamaMiniLLM** (`backend/understanding/`): Semantische Analyse
-   - Meaning Extraction, Hypothesis Generation, Analogy Detection, Contradiction Detection
-   - Gleicher Ollama-Client, gleiche API
-
-**Wo Ollama durch KAN-MiniLLM Hybrid ersetzen:**
-
-| Aufgabe | Aktuell (Ollama) | Vorschlag (KAN-Hybrid) |
-|---------|------------------|------------------------|
-| Hypothesis Generation | LLM-Prompt → Text → Parse | KAN-Pattern-Detection + LLM für Textualierung |
-| Analogy Detection | LLM-Prompt → Text → Parse | RelevanceMap-Overlay + Strukturvergleich |
-| Contradiction Detection | LLM-Prompt → Text → Parse | Epistemischer Graph-Check + KAN-Validierung |
-| Meaning Extraction | Braucht LLM | LLM bleibt, aber mit KAN-Context |
-| Chat Verbalization | Braucht LLM | LLM bleibt (= User-Interface) |
-
-**Konkret ersetzbar durch KAN:**
-- `detect_analogies()`: Strukturelle Analogie ist ein Graph-Problem, kein LLM-Problem. RelevanceMap-Vergleich + KAN-Funktionsvergleich (Topologie-Match) wäre präziser und schneller.
-- `detect_contradictions()`: Epistemische Widersprüche sind im Graph codiert (CONTRADICTS-Relations, Trust-Konflikte). Ein KAN-Modul könnte lernen, welche Konzeptpaare typischerweise widersprüchlich sind.
-- `generate_hypotheses()`: Teilweise. Pattern Detection passiert bereits via `HypothesisTranslator`. Der LLM-Teil könnte auf Textgenerierung für die Hypothesenformulierung reduziert werden.
+**Konkret durch KAN umsetzbar:**
+- `detect_analogies()`: Strukturelle Analogie ist ein Graph-Problem. RelevanceMap-Vergleich + KAN-Funktionsvergleich (Topologie-Match) waere praeziser und schneller.
+- `detect_contradictions()`: Epistemische Widersprueche sind im Graph codiert (CONTRADICTS-Relations, Trust-Konflikte). Ein KAN-Modul koennte lernen, welche Konzeptpaare typischerweise widersprüchlich sind.
+- `generate_hypotheses()`: Teilweise. Pattern Detection passiert bereits via `HypothesisTranslator`. Die Textgenerierung erfolgt ueber die Template-Engine.
 
 ---
 
@@ -397,10 +377,10 @@ Ollama wird an **zwei Stellen** genutzt:
 
 ```
 AKTUELL:
-  OllamaMiniLLM → HypothesisProposal → UnderstandingLayer → [Ende]
-  
+  MiniLLM → HypothesisProposal → UnderstandingLayer → [Ende]
+
 SOLL:
-  OllamaMiniLLM → HypothesisProposal → KanValidator::validate()
+  MiniLLM → HypothesisProposal → KanValidator::validate()
                                       → EpistemicBridge::assess()
                                       → LTM.update_epistemic_metadata()
                                       → MicroModel Re-Training
@@ -448,7 +428,7 @@ KAN-Module (mathematische Funktionsapproximation) und MicroModels (Relevanzberec
 │                                                             │
 │  ┌──────────────┐    ┌──────────────┐    ┌──────────────┐  │
 │  │  MiniLLM Pool │    │  KAN Cluster  │    │  MicroModel  │  │
-│  │  (Ollama +    │◄──►│  (Validatoren │◄──►│  Ring        │  │
+│  │  (KAN +       │◄──►│  (Validatoren │◄──►│  Ring        │  │
 │  │   Specialized)│    │   pro Domain) │    │  (Interaction│  │
 │  └──────┬───────┘    └──────┬───────┘    │   Layer)     │  │
 │         │                    │            └──────┬───────┘  │
@@ -557,14 +537,14 @@ public:
 
 #### Phase 4: KAN-MiniLLM Spezialisierung (Aufwand: ~3-5 Tage)
 
-Statt generisches Ollama für alles:
+Statt generischer MiniLLM fuer alles:
 
-1. **Domain-KAN**: Pro `DomainType` ein trainiertes KAN-Modul, das domänenspezifische Relationen validiert
-2. **KAN-gesteuerte Prompts**: KAN-Analyseergebnisse fließen in MiniLLM-Prompts ein
-3. **MiniLLMFactory implementieren**: Pro Konzeptcluster ein spezialisiertes MiniLLM mit fokussiertem System-Prompt
+1. **Domain-KAN**: Pro `DomainType` ein trainiertes KAN-Modul, das domaenenspezifische Relationen validiert
+2. **KAN-gesteuerte Kontexte**: KAN-Analyseergebnisse fliessen in MiniLLM-Kontexte ein
+3. **MiniLLMFactory implementieren**: Pro Konzeptcluster ein spezialisiertes MiniLLM mit fokussiertem Kontext
 
 ```cpp
-// Statt: OllamaMiniLLM (generisch für alles)
+// Statt: generisches MiniLLM fuer alles
 // Neu:
 class KANAugmentedMiniLLM : public MiniLLM {
     // KAN validiert Hypothesen VOR der LLM-Formulierung
@@ -595,20 +575,18 @@ class KANAugmentedMiniLLM : public MiniLLM {
 | 🟢 P2 | Thinking-Persistenz | Niedrig | 1d |
 | 🔵 P3 | Self-Modifying Topology | Niedrig | 5-7d |
 
-### 6.4 Ollama-Ersetzungsstrategie
+### 6.4 KAN/Graph-Analyse Strategie
 
-**Nicht ersetzen, sondern reduzieren:**
-
-Ollama bleibt für:
-- Chat-Verbalisierung (User-Interface)
-- Meaning Extraction (semantisches Verständnis braucht Sprachmodell)
-- Textformulierung von Hypothesen
-
-Ollama wird ersetzt durch KAN/Graph-Analyse für:
+**KAN/Graph-Analyse uebernimmt:**
 - Analogy Detection → RelevanceMap-Strukturvergleich
-- Contradiction Detection → Graph-basierte epistemische Prüfung
+- Contradiction Detection → Graph-basierte epistemische Pruefung
 - Pattern Detection → bereits implementiert im `HypothesisTranslator`
 - Hypothesis Plausibility → KAN-Validation (bereits implementiert, nur nicht verbunden)
+
+**Template-Engine uebernimmt:**
+- Chat-Verbalisierung (User-Interface)
+- Meaning Extraction (Template-basiert)
+- Textformulierung von Hypothesen
 
 ---
 
@@ -633,7 +611,6 @@ backend/
 │   └── function_hypothesis.hpp         # Pure Data Wrapper
 ├── understanding/
 │   ├── mini_llm.{hpp,cpp}              # Abstract Interface + StubMiniLLM
-│   ├── ollama_mini_llm.{hpp,cpp}       # Ollama-backed Semantic Analysis
 │   ├── understanding_layer.{hpp,cpp}   # Aggregation + Filtering
 │   ├── understanding_proposals.hpp     # Proposal Types (Meaning/Hyp/Analogy/Contra)
 │   └── mini_llm_factory.hpp            # TODO: Dynamic Specialization
@@ -644,8 +621,7 @@ backend/
 │   ├── refinement_loop.{hpp,cpp}       # Bidirectional LLM↔KAN Dialog
 │   └── domain_manager.{hpp,cpp}        # Domain Detection + Cross-Domain
 ├── llm/
-│   ├── ollama_client.{hpp,cpp}         # HTTP REST Client for Ollama
-│   └── chat_interface.{hpp,cpp}        # LLM Verbalization with Epistemic Context
+│   └── chat_interface.{hpp,cpp}        # Verbalization with Epistemic Context
 ├── evolution/
 │   ├── epistemic_promotion.{hpp,cpp}   # SPEC→HYP→THEORY→FACT Pipeline
 │   ├── concept_proposal.{hpp,cpp}      # System-Generated Concept Proposals

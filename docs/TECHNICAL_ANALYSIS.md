@@ -217,8 +217,8 @@ Das umfangreichste Subsystem — implementiert 4 kognitive Prozesse:
 
 **Dateien:** `understanding/*.hpp/.cpp` (~1.230 Zeilen)
 
-Semantische Analyse-Schicht, die Mini-LLMs (lokal via Ollama) für Bedeutungsextraktion nutzt:
-- `MiniLLM` Abstraktion mit `OllamaMiniLLM` Implementation
+Semantische Analyse-Schicht, die Mini-LLMs für Bedeutungsextraktion nutzt:
+- `MiniLLM` Abstraktion mit `SpecializedMiniLLM` Implementation
 - Generiert `MeaningProposal`, `HypothesisProposal`, `AnalogyProposal`, `ContradictionProposal`
 - **Alle Outputs sind HYPOTHESIS** — die Understanding Layer darf keine Facts generieren
 - Factory Pattern für Mini-LLM Erstellung
@@ -239,7 +239,7 @@ backend/                          # ~10.000 Zeilen
 ├── adapter/         (2 Dateien)  # KAN Adapter
 ├── curiosity/       (3 Dateien)  # Curiosity Engine
 ├── understanding/   (7 Dateien)  # Understanding Layer + Mini-LLMs
-├── llm/             (4 Dateien)  # Ollama Client + Chat Interface
+├── llm/             (4 Dateien)  # Chat Interface
 ├── importers/       (5 Dateien)  # Wikipedia/Scholar Importer
 ├── snapshot_generator.hpp/.cpp   # JSON Snapshot Export
 ├── 5x demo_*.cpp                 # Demos
@@ -267,7 +267,7 @@ RelationInfo ───────────────→ LTM   CognitiveDyn
                                        ↑
 CuriosityTrigger ← CuriosityEngine    UnderstandingLayer ← MiniLLM
                                                             ↑
-KANNode → KANLayer → KANModule ← KANAdapter         OllamaMiniLLM
+KANNode → KANLayer → KANModule ← KANAdapter         SpecializedMiniLLM
                         ↑
                   FunctionHypothesis
 ```
@@ -475,7 +475,7 @@ Brain19 implementiert die **Kernkonzepte** etablierter kognitiver Architekturen:
 - **KAN von Grund auf:** Keine PyTorch/TensorFlow-Abhängigkeit
 - **Cox-de Boor Rekursion:** Korrekte B-Spline Implementierung
 - **Numerischer Gradient:** Zentrale Differenz statt Autograd
-- **Ollama-Integration:** Lokale LLM-Anbindung für Understanding Layer
+- **Understanding Layer:** Semantische Analyse für Bedeutungsextraktion
 - **Deterministisch:** Gleiche Inputs → gleiche Outputs (reproduzierbar)
 
 ### 6.3 System Design Patterns

@@ -189,8 +189,7 @@ BRAIN19_SRCS = \
 	$(BACKEND)/adapter/kan_adapter.cpp \
 	$(BACKEND)/understanding/understanding_layer.cpp \
 	$(BACKEND)/understanding/mini_llm.cpp \
-	$(BACKEND)/understanding/ollama_mini_llm.cpp \
-	$(BACKEND)/hybrid/hypothesis_translator.cpp \
+		$(BACKEND)/hybrid/hypothesis_translator.cpp \
 	$(BACKEND)/hybrid/epistemic_bridge.cpp \
 	$(BACKEND)/hybrid/kan_validator.cpp \
 	$(BACKEND)/hybrid/domain_manager.cpp \
@@ -205,8 +204,7 @@ BRAIN19_SRCS = \
 	$(BACKEND)/importers/wikipedia_importer.cpp \
 	$(BACKEND)/importers/scholar_importer.cpp \
 	$(BACKEND)/importers/http_client.cpp \
-	$(BACKEND)/llm/ollama_client.cpp \
-	$(BACKEND)/llm/chat_interface.cpp \
+		$(BACKEND)/llm/chat_interface.cpp \
 	$(BACKEND)/persistent/persistent_ltm.cpp \
 	$(BACKEND)/persistent/wal.cpp \
 	$(BACKEND)/persistent/stm_snapshot.cpp \

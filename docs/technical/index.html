@@ -405,7 +405,7 @@ w = σ(z)            (relevance ∈ (0,1))</code></pre>
 <td>11</td>
 <td><strong>Chat</strong></td>
 <td>ChatInterface, OllamaClient</td>
-<td>LLM verbalization (llama3.2:1b)</td>
+<td>LLM verbalization (llama3.2:3b)</td>
 </tr>
 <tr>
 <td>12</td>
@@ -504,7 +504,7 @@ Epistemic Values        →
 </tr>
 </tbody></table>
 <p>When the LLM is optionally used for creative hypothesis generation, these <strong>always</strong> pass through epistemic validation. LLM proposals receive a trust ceiling of 0.3–0.5 and are never automatically accepted.</p>
-<p>The LLM backend is Ollama (model: <code>llama3.2:1b</code> on port 11434), configured via <code>--ollama-host</code> and <code>--ollama-model</code> flags.</p>
+<p>The LLM backend is Ollama (model: <code>llama3.2:3b</code> on port 11434), configured via <code>--ollama-host</code> and <code>--ollama-model</code> flags.</p>
 <blockquote>See: <a href="../backend/llm/chat_interface.hpp"><code>backend/llm/chat_interface.hpp</code></a></blockquote>
 <h2 id="overview-kan-llm-hybrid-validation-phase-7">KAN-LLM Hybrid Validation (Phase 7)</h2>
 <p>Phase 7 introduces bidirectional validation between Kolmogorov-Arnold Networks and the LLM. This is the core innovation for epistemic integrity of system-generated knowledge.</p>
@@ -2003,7 +2003,7 @@ flowchart TD
     end
 
     subgraph External[&quot;External Services&quot;]
-        OLLAMA[Ollama&lt;br/&gt;:11434&lt;br/&gt;llama3.2:1b]
+        OLLAMA[Ollama&lt;br/&gt;:11434&lt;br/&gt;llama3.2:3b]
         WIKI[Wikipedia API&lt;br/&gt;Article import]
         SCHOLAR[Google Scholar&lt;br/&gt;Paper search]
     end

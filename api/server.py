@@ -41,15 +41,7 @@ async def run_brain_command(command: str, arg: str = "", timeout: int = 60) -> s
             output = stdout.decode("utf-8", errors="replace")
             # Filter out initialization noise
             lines = output.split("\n")
-            filtered = []
-            for l in lines:
-                if (not l.startswith("[Brain19]") and 
-                    "Shutting down" not in l and 
-                    "Checkpoint" not in l and
-                    "Stopping" not in l and
-                    "Brain19 shut down" not in l and
-                    l.strip()):
-                    filtered.append(l)
+            filtered = [l for l in lines if not l.startswith("[Brain19]") and "Shutting down" not in l and "Checkpoint" not in l]
             return "\n".join(filtered).strip()
         except asyncio.TimeoutError:
             proc.kill()
@@ -231,76 +223,6 @@ async def api_ingest(body: dict):
 async def api_streams():
     text = await run_brain_command("status")  # streams info is in status
     return {"raw": text}
-
-
-# ─── Code Generation Endpoints ────────────────────────────────────────────────
-
-from api.codegen.templates import get_all_templates, get_template
-from api.codegen.assembler import (
-    PipelineConfig, PipelineStep, generate_main_cpp, parse_current_pipeline,
-)
-
-MAIN_CPP_PATH = os.path.join(BRAIN19_DIR, "backend", "main.cpp")
-
-
-@app.get("/api/codegen/templates")
-async def api_codegen_templates():
-    """List all available pipeline step templates with parameters."""
-    return {"templates": get_all_templates()}
-
-
-@app.post("/api/codegen/generate")
-async def api_codegen_generate(body: dict):
-    """Generate main.cpp from a pipeline configuration.
-
-    Body: {
-        "steps": [{"step_id": "stm", "enabled": true, "params": {"initial_activation": "0.9"}}],
-        "data_dir": "brain19_data/",
-        "enable_persistence": true,
-        "seed_foundation": true
-    }
-    """
-    steps = []
-    for s in body.get("steps", []):
-        steps.append(PipelineStep(
-            step_id=s.get("step_id", ""),
-            enabled=s.get("enabled", True),
-            params=s.get("params", {}),
-        ))
-
-    if not steps:
-        return {"error": "No steps provided"}
-
-    pipeline = PipelineConfig(
-        steps=steps,
-        data_dir=body.get("data_dir", "brain19_data/"),
-        enable_persistence=body.get("enable_persistence", True),
-        seed_foundation=body.get("seed_foundation", True),
-    )
-
-    code = generate_main_cpp(pipeline)
-    return {
-        "code": code,
-        "steps_count": len([s for s in steps if s.enabled]),
-        "path": MAIN_CPP_PATH,
-    }
-
-
-@app.get("/api/codegen/current")
-async def api_codegen_current():
-    """Read the current main.cpp and parse the pipeline step sequence."""
-    try:
-        with open(MAIN_CPP_PATH, "r") as f:
-            content = f.read()
-    except FileNotFoundError:
-        return {"error": "main.cpp not found", "path": MAIN_CPP_PATH}
-
-    steps = parse_current_pipeline(content)
-    return {
-        "path": MAIN_CPP_PATH,
-        "steps": steps,
-        "raw_length": len(content),
-    }
 
 
 @app.websocket("/ws")

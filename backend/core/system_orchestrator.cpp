@@ -2,11 +2,14 @@
 #include "../bootstrap/foundation_concepts.hpp"
 
 #include <algorithm>
+#include <cctype>
 #include <chrono>
+#include <cmath>
 #include <cstring>
 #include <filesystem>
 #include <iostream>
 #include <sstream>
+#include <unordered_set>
 
 namespace brain19 {
 
@@ -371,6 +374,80 @@ void SystemOrchestrator::seed_foundation() {
 
 // ─── Chat ────────────────────────────────────────────────────────────────────
 
+// ─── Seed-Finding Helpers (file-local) ────────────────────────────────────────
+
+namespace {
+
+static const std::unordered_set<std::string> SEED_STOP_WORDS = {
+    "a", "an", "the", "is", "are", "was", "were", "be", "been", "being",
+    "have", "has", "had", "do", "does", "did", "will", "would", "could",
+    "should", "may", "might", "shall", "can", "need", "must",
+    "i", "me", "my", "we", "our", "you", "your", "he", "she", "it",
+    "they", "them", "their", "his", "her", "its",
+    "what", "which", "who", "whom", "this", "that", "these", "those",
+    "am", "if", "or", "and", "but", "not", "no", "so", "too", "very",
+    "of", "in", "on", "at", "to", "for", "with", "by", "from", "about",
+    "into", "through", "during", "before", "after", "above", "below",
+    "between", "out", "off", "over", "under", "again", "further", "then",
+    "once", "here", "there", "when", "where", "why", "how", "all", "each",
+    "every", "both", "few", "more", "most", "other", "some", "such",
+    "only", "own", "same", "than", "just", "also", "now",
+    "ein", "eine", "der", "die", "das", "ist", "sind", "war", "und",
+    "oder", "nicht", "ich", "du", "er", "sie", "es", "wir", "ihr",
+    "von", "zu", "mit", "auf", "aus", "fuer", "ueber", "nach",
+    "wie", "was", "wer", "wo", "warum",
+};
+
+std::string seed_to_lower(const std::string& s) {
+    std::string result = s;
+    std::transform(result.begin(), result.end(), result.begin(), ::tolower);
+    return result;
+}
+
+std::vector<std::string> seed_extract_keywords(const std::string& text) {
+    std::string lower = seed_to_lower(text);
+    std::vector<std::string> keywords;
+    std::string word;
+    for (char c : lower) {
+        if (std::isalnum(static_cast<unsigned char>(c))) {
+            word += c;
+        } else {
+            if (word.size() >= 2 && SEED_STOP_WORDS.find(word) == SEED_STOP_WORDS.end()) {
+                keywords.push_back(word);
+            }
+            word.clear();
+        }
+    }
+    if (word.size() >= 2 && SEED_STOP_WORDS.find(word) == SEED_STOP_WORDS.end()) {
+        keywords.push_back(word);
+    }
+    return keywords;
+}
+
+size_t seed_levenshtein(const std::string& a, const std::string& b) {
+    size_t m = a.size(), n = b.size();
+    std::vector<size_t> prev(n + 1), curr(n + 1);
+    for (size_t j = 0; j <= n; ++j) prev[j] = j;
+    for (size_t i = 1; i <= m; ++i) {
+        curr[0] = i;
+        for (size_t j = 1; j <= n; ++j) {
+            size_t cost = (a[i-1] == b[j-1]) ? 0 : 1;
+            curr[j] = std::min({prev[j] + 1, curr[j-1] + 1, prev[j-1] + cost});
+        }
+        std::swap(prev, curr);
+    }
+    return prev[n];
+}
+
+struct ScoredSeed {
+    ConceptId id;
+    double score;
+};
+
+} // anonymous namespace
+
+// ─── Ask (Multi-Strategy Semantic Matching) ──────────────────────────────────
+
 ChatResponse SystemOrchestrator::ask(const std::string& question) {
     if (!running_ || !chat_) {
         ChatResponse resp{};
@@ -383,20 +460,106 @@ ChatResponse SystemOrchestrator::ask(const std::string& question) {
 
     std::lock_guard<std::recursive_mutex> lock(subsystem_mtx_);
 
-    // Find seed concepts by searching LTM labels (case-insensitive)
-    std::vector<ConceptId> seeds;
-    std::string lower_q = question;
-    std::transform(lower_q.begin(), lower_q.end(), lower_q.begin(), ::tolower);
+    // Classify intent first
+    auto intent = ChatInterface::classify_intent(question);
+
+    // Multi-strategy seed finding
+    std::string lower_q = seed_to_lower(question);
+    auto keywords = seed_extract_keywords(question);
+    std::vector<ScoredSeed> scored_seeds;
 
     for (auto cid : ltm_->get_all_concept_ids()) {
         auto info = ltm_->retrieve_concept(cid);
         if (!info) continue;
-        std::string lower_label = info->label;
-        std::transform(lower_label.begin(), lower_label.end(), lower_label.begin(), ::tolower);
-        if (lower_q.find(lower_label) != std::string::npos) {
-            seeds.push_back(cid);
-            if (seeds.size() >= 5) break;
+
+        std::string lower_label = seed_to_lower(info->label);
+        std::string lower_def = seed_to_lower(info->definition);
+        double score = 0.0;
+
+        // Strategy 1: Exact label match
+        if (lower_q == lower_label) {
+            score += 10.0;
         }
+
+        // Strategy 2: Label substring in query (weighted by label length)
+        if (lower_label.size() >= 3 && lower_q.find(lower_label) != std::string::npos) {
+            score += 5.0 * (static_cast<double>(lower_label.size()) / lower_q.size());
+        }
+
+        // Strategy 3: Keyword match on labels
+        for (const auto& kw : keywords) {
+            if (lower_label.find(kw) != std::string::npos) {
+                score += 3.0;
+            }
+        }
+
+        // Strategy 4: Keyword match on definitions
+        for (const auto& kw : keywords) {
+            if (lower_def.find(kw) != std::string::npos) {
+                score += 1.5;
+            }
+        }
+
+        // Strategy 5: Fuzzy match (Levenshtein) + prefix match
+        for (const auto& kw : keywords) {
+            if (kw.size() >= 3 && lower_label.size() >= 3) {
+                size_t dist = seed_levenshtein(kw, lower_label);
+                size_t max_len = std::max(kw.size(), lower_label.size());
+                double similarity = 1.0 - (static_cast<double>(dist) / max_len);
+                if (similarity >= 0.7) {
+                    score += 2.0 * similarity;
+                }
+            }
+            // Prefix match
+            if (kw.size() >= 3 && lower_label.size() >= kw.size() &&
+                lower_label.substr(0, kw.size()) == kw) {
+                score += 2.5;
+            }
+        }
+
+        // Strategy 6: Multi-word label decomposition
+        {
+            std::vector<std::string> label_words;
+            std::string w;
+            for (char c : lower_label) {
+                if (std::isalnum(static_cast<unsigned char>(c))) {
+                    w += c;
+                } else if (!w.empty()) {
+                    label_words.push_back(w);
+                    w.clear();
+                }
+            }
+            if (!w.empty()) label_words.push_back(w);
+
+            for (const auto& lw : label_words) {
+                if (lw.size() < 3) continue;
+                for (const auto& kw : keywords) {
+                    if (lw == kw) {
+                        score += 3.5;
+                    } else if (lw.size() >= 4 && kw.size() >= 4 &&
+                               lw.substr(0, 4) == kw.substr(0, 4)) {
+                        score += 2.0;
+                    }
+                }
+            }
+        }
+
+        // Epistemic trust boost
+        score *= (0.8 + 0.2 * info->epistemic.trust);
+
+        if (score > 0.0) {
+            scored_seeds.push_back({cid, score});
+        }
+    }
+
+    // Sort by score, take top seeds
+    std::sort(scored_seeds.begin(), scored_seeds.end(),
+        [](const ScoredSeed& a, const ScoredSeed& b) { return a.score > b.score; });
+
+    std::vector<ConceptId> seeds;
+    size_t max_seeds = 8;
+    for (size_t i = 0; i < std::min(scored_seeds.size(), max_seeds); ++i) {
+        seeds.push_back(scored_seeds[i].id);
     }
 
     // Inject energy into GDO from user query
@@ -415,19 +578,20 @@ ChatResponse SystemOrchestrator::ask(const std::string& question) {
             salient_ids.push_back(s.concept_id);
         }
 
-        // Build thought path summaries
+        // Build thought path summaries (top 3)
         std::vector<std::string> path_summaries;
         for (const auto& path : thinking_result.best_paths) {
+            if (path_summaries.size() >= 3) break;
             std::string summary;
             for (size_t i = 0; i < path.nodes.size(); ++i) {
-                if (i > 0) summary += " → ";
+                if (i > 0) summary += " -> ";
                 auto info = ltm_->retrieve_concept(path.nodes[i].concept_id);
                 summary += info ? info->label : ("?" + std::to_string(path.nodes[i].concept_id));
             }
             path_summaries.push_back(summary);
         }
 
-        return chat_->ask_with_context(question, *ltm_, salient_ids, path_summaries);
+        return chat_->ask_with_context(question, *ltm_, salient_ids, path_summaries, intent);
     }
 
     return chat_->ask(question, *ltm_);

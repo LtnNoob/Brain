@@ -80,7 +80,16 @@ public:
     // Intent classification
     static QueryIntent classify_intent(const std::string& question);
 
+    // Set total counts for greeting
+    void set_totals(size_t concepts, size_t relations) {
+        total_concepts_ = concepts;
+        total_relations_ = relations;
+    }
+
 private:
+    size_t total_concepts_ = 0;
+    size_t total_relations_ = 0;
+
     // Build epistemic context
     std::string build_epistemic_context(
         const std::vector<ConceptInfo>& concepts

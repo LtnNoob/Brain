@@ -286,15 +286,15 @@ std::string ChatInterface::build_epistemic_context(
 std::string ChatInterface::format_greeting(const std::vector<ConceptInfo>& top_concepts) {
     std::ostringstream ans;
     ans << "Hallo! Ich bin Brain19.\n\n";
+    ans << "Ich kenne " << total_concepts_ << " Konzepte und " << total_relations_ << " Relationen in meinem Wissensnetz. ";
     if (!top_concepts.empty()) {
-        ans << "Ich kenne " << top_concepts.size() << " relevante Konzepte. ";
         ans << "Frag mich z.B. ueber **" << top_concepts[0].label << "**";
         if (top_concepts.size() > 1) {
             ans << " oder **" << top_concepts[1].label << "**";
         }
         ans << ".\n";
     } else {
-        ans << "Frag mich etwas ueber mein Wissensnetz!\n";
+        ans << "Frag mich etwas!\n";
     }
     return ans.str();
 }

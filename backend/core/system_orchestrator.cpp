@@ -458,6 +458,9 @@ ChatResponse SystemOrchestrator::ask(const std::string& question) {
         return resp;
     }
 
+    // Update chat with total counts
+    chat_->set_totals(ltm_->get_all_concept_ids().size(), ltm_->total_relation_count());
+
     std::lock_guard<std::recursive_mutex> lock(subsystem_mtx_);
 
     // Classify intent first

@@ -15,6 +15,7 @@ static void print_usage(const char* prog) {
     std::cout << "Commands:\n";
     std::cout << "  ask <question>         Ask a question\n";
     std::cout << "  ingest <text>          Ingest knowledge\n";
+    std::cout << "  load <file_or_dir>     Load JSON training data\n";
     std::cout << "  import <url>           Import from Wikipedia\n";
     std::cout << "  status                 Show system status\n";
     std::cout << "  (none)                 Interactive REPL\n";

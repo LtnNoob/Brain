@@ -1,7 +1,9 @@
 #include "brain19_app.hpp"
 #include <iostream>
 #include <sstream>
+#include <fstream>
 #include <algorithm>
+#include <filesystem>
 
 namespace brain19 {
 
@@ -52,6 +54,7 @@ int Brain19App::run_interactive() {
 int Brain19App::run_command(const std::string& command, const std::string& arg) {
     if (command == "ask")        { cmd_ask(arg); }
     else if (command == "ingest")     { cmd_ingest(arg); }
+    else if (command == "load")       { cmd_load(arg); }
     else if (command == "import")     { cmd_import(arg); }
     else if (command == "status")     { cmd_status(); }
     else if (command == "streams")    { cmd_streams(); }
@@ -244,10 +247,93 @@ void Brain19App::cmd_think(const std::string& concept_label) {
     std::cout << "  KAN validations: " << result.validated_hypotheses.size() << "\n";
 }
 
+void Brain19App::cmd_load(const std::string& path) {
+    if (path.empty()) {
+        std::cout << "Usage: load <file_or_dir>\n";
+        return;
+    }
+
+    auto* pipeline = orchestrator_.ingestion_pipeline();
+    if (!pipeline) {
+        std::cout << "Ingestion pipeline not available\n";
+        return;
+    }
+
+    namespace fs = std::filesystem;
+
+    std::vector<fs::path> files;
+    if (fs::is_directory(path)) {
+        for (const auto& entry : fs::directory_iterator(path)) {
+            if (entry.path().extension() == ".json") {
+                files.push_back(entry.path());
+            }
+        }
+        std::sort(files.begin(), files.end());
+    } else if (fs::is_regular_file(path)) {
+        files.push_back(path);
+    } else {
+        std::cout << "Not found: " << path << "\n";
+        return;
+    }
+
+    size_t total_concepts = 0, total_relations = 0, total_files = 0;
+
+    for (const auto& file : files) {
+        std::ifstream ifs(file);
+        if (!ifs) {
+            std::cout << "  [SKIP] Cannot read " << file.filename().string() << "\n";
+            continue;
+        }
+
+        std::string content((std::istreambuf_iterator<char>(ifs)),
+                             std::istreambuf_iterator<char>());
+
+        // Remap field names from training format to ingestor format:
+        //   "trust_category" -> "trust"
+        //   "source_label"   -> "source"
+        //   "target_label"   -> "target"
+        //   "relation_type"  -> "type"
+        auto remap = [](std::string& s, const std::string& from, const std::string& to) {
+            size_t pos = 0;
+            std::string search = "\"" + from + "\"";
+            std::string replace = "\"" + to + "\"";
+            while ((pos = s.find(search, pos)) != std::string::npos) {
+                s.replace(pos, search.size(), replace);
+                pos += replace.size();
+            }
+        };
+        remap(content, "trust_category", "trust");
+        remap(content, "source_label", "source");
+        remap(content, "target_label", "target");
+        remap(content, "relation_type", "type");
+
+        auto result = pipeline->ingest_json(content, true);
+        if (result.success) {
+            total_concepts += result.concepts_stored;
+            total_relations += result.relations_stored;
+            ++total_files;
+            std::cout << "  [OK] " << file.filename().string()
+                      << " — " << result.concepts_stored << "C, "
+                      << result.relations_stored << "R\n";
+        } else {
+            std::cout << "  [FAIL] " << file.filename().string()
+                      << " — " << result.error_message << "\n";
+        }
+    }
+
+    // Ensure micro-models exist for new concepts
+    orchestrator_.run_periodic_maintenance();
+
+    std::cout << "\nLoaded " << total_files << " files: "
+              << total_concepts << " concepts, "
+              << total_relations << " relations\n";
+}
+
 void Brain19App::cmd_help() {
     std::cout << "Brain19 Commands:\n";
     std::cout << "  ask <question>     — Ask Brain19 a question\n";
     std::cout << "  ingest <text>      — Ingest knowledge from text\n";
+    std::cout << "  load <path>        — Load JSON training data (file or dir)\n";
     std::cout << "  import <url>       — Import from Wikipedia\n";
     std::cout << "  think <concept>    — Run thinking cycle on a concept\n";
     std::cout << "  concepts           — List all concepts\n";

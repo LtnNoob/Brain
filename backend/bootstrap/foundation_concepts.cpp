@@ -492,7 +492,14 @@ bool FoundationConcepts::seed_from_file(LongTermMemory& ltm, const std::string& 
         if (si == label_map.end() || ti == label_map.end()) continue;
 
         auto rel_type = reg.find_by_name(tp->as_string());
-        if (!rel_type) continue;
+        if (!rel_type) {
+            // Auto-register unknown relation types from training data
+            Vec10 default_emb = {0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3};
+            auto new_type = reg.register_type(
+                tp->as_string(), tp->as_string(),
+                RelationCategory::CUSTOM_CATEGORY, default_emb);
+            rel_type = new_type;
+        }
 
         double weight = 0.8;
         auto* wt = r.get("weight");

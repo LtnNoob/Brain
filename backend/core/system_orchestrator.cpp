@@ -1,5 +1,6 @@
 #include "system_orchestrator.hpp"
 #include "../bootstrap/foundation_concepts.hpp"
+#include "../understanding/mini_llm_factory.hpp"
 
 #include <algorithm>
 #include <cctype>
@@ -172,6 +173,45 @@ bool SystemOrchestrator::initialize() {
             log("  [15/15] Foundation already present or disabled");
         }
         init_stage_ = 15;
+
+        // ── Create domain-specific MiniLLMs from IS_A hierarchy ─────────
+        {
+            auto active_ids = ltm_->get_active_concepts();
+            if (!active_ids.empty()) {
+                MiniLLMFactory factory;
+                // Cluster by IS_A root: walk IS_A edges upward
+                std::unordered_map<ConceptId, std::vector<ConceptId>> root_clusters;
+                for (auto cid : active_ids) {
+                    ConceptId current = cid;
+                    std::unordered_set<ConceptId> visited;
+                    for (size_t depth = 0; depth < 20; ++depth) {
+                        visited.insert(current);
+                        auto rels = ltm_->get_outgoing_relations(current);
+                        ConceptId parent = 0;
+                        bool found = false;
+                        for (const auto& r : rels) {
+                            if (r.type == RelationType::IS_A && !visited.count(r.target)) {
+                                parent = r.target;
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (!found) break;
+                        current = parent;
+                    }
+                    root_clusters[current].push_back(cid);
+                }
+                for (auto& [root_id, members] : root_clusters) {
+                    if (members.size() < 3) continue;
+                    auto ri = ltm_->retrieve_concept(root_id);
+                    std::string nm = ri ? ri->label : "domain-" + std::to_string(root_id);
+                    understanding_->register_mini_llm(
+                        factory.create_specialized_mini_llm(members, *ltm_, nm));
+                }
+                log("    Created " + std::to_string(factory.get_created_count()) +
+                    " domain MiniLLMs from IS_A hierarchy");
+            }
+        }
 
         // ── ThinkingPipeline ────────────────────────────────────────────
         thinking_ = std::make_unique<ThinkingPipeline>(config_.thinking_config);
@@ -571,30 +611,237 @@ ChatResponse SystemOrchestrator::ask(const std::string& question) {
         gdo_->inject_seeds(seeds, 0.8);
     }
 
-    // Run thinking cycle and pass results to ChatInterface
+    // Run full cognitive pipeline and build ThinkingContext for response fusion
     if (!seeds.empty()) {
         auto thinking_result = run_thinking_cycle(seeds);
 
-        // Collect salient concept IDs
-        std::vector<ConceptId> salient_ids;
+        // ── Build ThinkingContext from ThinkingResult ──
+        ThinkingContext ctx;
+
+        // Salient concepts: start with seeds (query-matched), then add
+        // pipeline-discovered salient concepts that aren't already included
+        std::unordered_set<ConceptId> salient_set;
+        for (auto sid : seeds) {
+            ctx.salient_concepts.push_back(sid);
+            salient_set.insert(sid);
+        }
         for (const auto& s : thinking_result.top_salient) {
-            salient_ids.push_back(s.concept_id);
+            if (!salient_set.count(s.concept_id)) {
+                ctx.salient_concepts.push_back(s.concept_id);
+                salient_set.insert(s.concept_id);
+            }
         }
 
-        // Build thought path summaries (top 3)
-        std::vector<std::string> path_summaries;
+        // Thought path summaries (top 5)
         for (const auto& path : thinking_result.best_paths) {
-            if (path_summaries.size() >= 3) break;
+            if (ctx.thought_path_summaries.size() >= 5) break;
             std::string summary;
             for (size_t i = 0; i < path.nodes.size(); ++i) {
                 if (i > 0) summary += " -> ";
                 auto info = ltm_->retrieve_concept(path.nodes[i].concept_id);
                 summary += info ? info->label : ("?" + std::to_string(path.nodes[i].concept_id));
             }
-            path_summaries.push_back(summary);
+            ctx.thought_path_summaries.push_back(summary);
         }
 
-        return chat_->ask_with_context(question, *ltm_, salient_ids, path_summaries, intent);
+        // ── Domain detection: keyword match + cognitive salience ──
+        // Combines TWO signals:
+        // 1. Keyword-match score: concepts directly matching the query text
+        //    (these ARE what the user asked about — must be prioritized)
+        // 2. Cognitive salience: concepts discovered by spreading activation
+        //    (these provide enrichment/context — secondary signal)
+        // This implements "KAN-Relations + Pattern Matching → Topic Detection"
+        {
+            // Build combined relevance score per concept
+            // Normalize keyword scores to [0,1], then combine
+            double max_keyword_score = 0.0;
+            for (const auto& ss : scored_seeds) {
+                if (ss.score > max_keyword_score) max_keyword_score = ss.score;
+            }
+
+            std::unordered_map<ConceptId, double> combined_score;
+
+            // Keyword match signal (normalized, high weight)
+            constexpr double KEYWORD_WEIGHT = 3.0;
+            for (const auto& ss : scored_seeds) {
+                double norm_kw = (max_keyword_score > 0.0)
+                    ? (ss.score / max_keyword_score) : 0.0;
+                combined_score[ss.id] = norm_kw * KEYWORD_WEIGHT;
+            }
+
+            // Cognitive salience signal (already [0,1])
+            constexpr double SALIENCE_WEIGHT = 1.0;
+            for (const auto& s : thinking_result.top_salient) {
+                combined_score[s.concept_id] += s.salience * SALIENCE_WEIGHT;
+            }
+
+            // Activated but not salient/keyword: low signal
+            for (auto cid : thinking_result.activated_concepts) {
+                if (!combined_score.count(cid)) {
+                    combined_score[cid] = 0.05;
+                }
+            }
+
+            // Select top concepts for domain clustering (by combined score)
+            std::vector<std::pair<ConceptId, double>> domain_candidates;
+            domain_candidates.reserve(combined_score.size());
+            for (auto& [cid, score] : combined_score) {
+                domain_candidates.push_back({cid, score});
+            }
+            std::sort(domain_candidates.begin(), domain_candidates.end(),
+                [](const auto& a, const auto& b) { return a.second > b.second; });
+            if (domain_candidates.size() > 30) domain_candidates.resize(30);
+
+            // Map concept → domain ancestor (walk up IS_A, max 2 hops)
+            // Walk up 1 IS_A hop: "Physics" → "Science" (not all the way to "Knowledge")
+            std::unordered_map<ConceptId, std::vector<ConceptId>> root_to_members;
+            std::unordered_map<ConceptId, double> root_score;
+            for (auto& [cid, score] : domain_candidates) {
+                ConceptId current = cid;
+                std::unordered_set<ConceptId> visited;
+                for (size_t depth = 0; depth < 1; ++depth) {
+                    if (visited.count(current)) break;
+                    visited.insert(current);
+                    auto rels = ltm_->get_outgoing_relations(current);
+                    bool found = false;
+                    for (const auto& r : rels) {
+                        if (r.type == RelationType::IS_A && !visited.count(r.target)) {
+                            current = r.target;
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found) break;
+                }
+                root_to_members[current].push_back(cid);
+                root_score[current] += score;
+            }
+
+            // Convert to DomainInsight
+            std::vector<ThinkingContext::DomainInsight> domains;
+            for (auto& [root_id, members] : root_to_members) {
+                if (members.empty()) continue;
+                ThinkingContext::DomainInsight di;
+                auto root_info = ltm_->retrieve_concept(root_id);
+                di.domain_name = root_info ? root_info->label : "Domain-" + std::to_string(root_id);
+                for (auto mid : members) {
+                    di.concepts.push_back(mid);
+                }
+                // Relevance = combined score (normalized to [0,1] using max possible)
+                double max_possible = KEYWORD_WEIGHT + SALIENCE_WEIGHT;
+                di.relevance = std::min(1.0, root_score[root_id] / max_possible);
+                domains.push_back(std::move(di));
+            }
+            // Sort by relevance descending
+            std::sort(domains.begin(), domains.end(),
+                [](const ThinkingContext::DomainInsight& a,
+                   const ThinkingContext::DomainInsight& b) {
+                    return a.relevance > b.relevance;
+                });
+            // Keep top domains (floor 0.25 to filter spreading-activation noise)
+            for (auto& d : domains) {
+                if (d.relevance < 0.25 && !ctx.detected_domains.empty()) break;
+                ctx.detected_domains.push_back(std::move(d));
+                if (ctx.detected_domains.size() >= 5) break;
+            }
+        }
+
+        // ── KAN-Relations analysis ──
+        // Priority: relations FROM seed concepts (query-matched), then
+        // between salient concepts. Cap at 10 links total.
+        {
+            auto add_relation = [&](const RelationInfo& r) {
+                if (ctx.relation_links.size() >= 10) return;
+                auto src_info = ltm_->retrieve_concept(r.source);
+                auto tgt_info = ltm_->retrieve_concept(r.target);
+                if (!src_info || !tgt_info) return;
+
+                ThinkingContext::RelationLink rl;
+                rl.source = r.source;
+                rl.target = r.target;
+                rl.relation_name = relation_type_to_string(r.type);
+                rl.weight = r.weight;
+                rl.source_label = src_info->label;
+                rl.target_label = tgt_info->label;
+                ctx.relation_links.push_back(std::move(rl));
+            };
+
+            // First: relations FROM seed concepts (what the user asked about)
+            for (auto sid : seeds) {
+                if (ctx.relation_links.size() >= 10) break;
+                auto rels = ltm_->get_outgoing_relations(sid);
+                for (const auto& r : rels) {
+                    add_relation(r);
+                }
+            }
+
+            // Then: relations between non-seed salient concepts
+            for (size_t i = seeds.size(); i < ctx.salient_concepts.size() && i < 8; ++i) {
+                if (ctx.relation_links.size() >= 10) break;
+                auto rels = ltm_->get_outgoing_relations(ctx.salient_concepts[i]);
+                for (const auto& r : rels) {
+                    // Only salient-to-salient for non-seed concepts
+                    bool target_salient = false;
+                    for (auto scid : ctx.salient_concepts) {
+                        if (scid == r.target) { target_salient = true; break; }
+                    }
+                    if (target_salient) add_relation(r);
+                }
+            }
+        }
+
+        // ── Understanding Layer results → ThinkingContext ──
+        const auto& uresult = thinking_result.understanding;
+
+        // Meaning insights from MiniLLMs
+        for (const auto& mp : uresult.meaning_proposals) {
+            ThinkingContext::MeaningInsight mi;
+            mi.interpretation = mp.interpretation;
+            mi.confidence = mp.model_confidence;
+            mi.source_model = mp.source_model;
+            mi.source_concepts = mp.source_concepts;
+            ctx.meaning_insights.push_back(std::move(mi));
+        }
+
+        // Hypothesis insights with KAN validation
+        for (size_t i = 0; i < uresult.hypothesis_proposals.size(); ++i) {
+            const auto& hp = uresult.hypothesis_proposals[i];
+            ThinkingContext::HypothesisInsight hi;
+            hi.statement = hp.hypothesis_statement;
+            hi.confidence = hp.model_confidence;
+            hi.source_model = hp.source_model;
+
+            // Check if this hypothesis was KAN-validated
+            if (i < thinking_result.validated_hypotheses.size()) {
+                const auto& vr = thinking_result.validated_hypotheses[i];
+                hi.kan_validated = true;
+                if (vr.validated && vr.assessment.converged) {
+                    hi.validation_status = "validated";
+                } else if (!vr.validated) {
+                    hi.validation_status = "refuted";
+                } else {
+                    hi.validation_status = "inconclusive";
+                }
+            }
+            ctx.hypothesis_insights.push_back(std::move(hi));
+        }
+
+        // Contradiction notes
+        for (const auto& cp : uresult.contradiction_proposals) {
+            ThinkingContext::ContradictionNote cn;
+            cn.concept_a = cp.concept_a;
+            cn.concept_b = cp.concept_b;
+            cn.description = cp.contradiction_description;
+            cn.severity = cp.severity;
+            ctx.contradiction_notes.push_back(std::move(cn));
+        }
+
+        // Pipeline statistics
+        ctx.steps_completed = thinking_result.steps_completed;
+        ctx.thinking_duration_ms = thinking_result.total_duration_ms;
+        ctx.total_proposals = uresult.total_proposals_generated;
+
+        return chat_->ask_with_thinking(question, *ltm_, ctx, intent);
     }
 
     return chat_->ask(question, *ltm_);

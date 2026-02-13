@@ -2,6 +2,8 @@
 
 #include "mini_llm.hpp"
 #include "../ltm/long_term_memory.hpp"
+#include "../memory/active_relation.hpp"      // RelationType
+#include "../epistemic/epistemic_metadata.hpp" // EpistemicType
 #include <memory>
 #include <string>
 #include <vector>

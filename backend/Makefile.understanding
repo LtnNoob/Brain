@@ -5,6 +5,7 @@ LDFLAGS =
 # Understanding Layer objects
 UNDERSTANDING_OBJS = \
     understanding/mini_llm.o \
+    understanding/mini_llm_factory.o \
     understanding/understanding_layer.o
 
 # Cognitive Dynamics objects (dependency)
@@ -14,7 +15,8 @@ COGNITIVE_OBJS = \
 # Memory objects (dependency)
 MEMORY_OBJS = \
     memory/stm.o \
-    memory/brain_controller.o
+    memory/brain_controller.o \
+    memory/relation_type_registry.o
 
 # LTM objects (dependency)
 LTM_OBJS = \

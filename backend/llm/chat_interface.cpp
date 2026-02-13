@@ -504,6 +504,235 @@ ChatResponse ChatInterface::ask_with_context(
     return response;
 }
 
+// ─── Ask With Thinking (Full Cognitive Pipeline) ──────────────────────────────
+
+ChatResponse ChatInterface::ask_with_thinking(
+    const std::string& question,
+    const LongTermMemory& ltm,
+    const ThinkingContext& thinking,
+    QueryIntent intent
+) {
+    ChatResponse response;
+    response.used_llm = false;
+    response.contains_speculation = false;
+    response.intent = (intent != QueryIntent::UNKNOWN) ? intent : classify_intent(question);
+
+    // Collect concept info for salient concepts
+    std::vector<ConceptInfo> relevant;
+    for (auto cid : thinking.salient_concepts) {
+        auto info_opt = ltm.retrieve_concept(cid);
+        if (info_opt.has_value()) {
+            relevant.push_back(info_opt.value());
+            response.referenced_concepts.push_back(cid);
+            if (info_opt->epistemic.type == EpistemicType::SPECULATION ||
+                info_opt->epistemic.type == EpistemicType::HYPOTHESIS) {
+                response.contains_speculation = true;
+            }
+            if (info_opt->epistemic.status == EpistemicStatus::INVALIDATED) {
+                response.epistemic_note = "Contains invalidated knowledge";
+            } else if (info_opt->epistemic.trust < 0.5 && response.epistemic_note.empty()) {
+                response.epistemic_note = "Low certainty information";
+            }
+        }
+    }
+
+    // Merge keyword matches (dedup by ID)
+    auto keyword_matches = find_relevant_concepts(question, ltm);
+    std::set<ConceptId> seen;
+    for (const auto& r : relevant) seen.insert(r.id);
+    for (const auto& info : keyword_matches) {
+        if (seen.find(info.id) == seen.end()) {
+            relevant.push_back(info);
+            response.referenced_concepts.push_back(info.id);
+            seen.insert(info.id);
+        }
+    }
+
+    // Re-rank: keyword-matched first
+    std::unordered_map<ConceptId, size_t> text_rank;
+    for (size_t i = 0; i < keyword_matches.size(); ++i) {
+        text_rank[keyword_matches[i].id] = i;
+    }
+    std::stable_sort(relevant.begin(), relevant.end(),
+        [&text_rank](const ConceptInfo& a, const ConceptInfo& b) {
+            auto it_a = text_rank.find(a.id);
+            auto it_b = text_rank.find(b.id);
+            size_t rank_a = (it_a != text_rank.end()) ? it_a->second : 9999;
+            size_t rank_b = (it_b != text_rank.end()) ? it_b->second : 9999;
+            return rank_a < rank_b;
+        });
+
+    // Format based on intent
+    switch (response.intent) {
+        case QueryIntent::GREETING:
+            response.answer = format_greeting(relevant);
+            break;
+        case QueryIntent::STATEMENT:
+            response.answer = format_statement(relevant);
+            break;
+        default:
+            response.answer = format_thinking_response(relevant, thinking, ltm);
+            break;
+    }
+
+    return response;
+}
+
+// ─── Full-Pipeline Response Formatter ────────────────────────────────────────
+
+std::string ChatInterface::format_thinking_response(
+    const std::vector<ConceptInfo>& top_concepts,
+    const ThinkingContext& thinking,
+    const LongTermMemory& ltm
+) {
+    std::ostringstream ans;
+
+    if (top_concepts.empty()) {
+        ans << "Ich habe dazu kein direktes Wissen in meinem Netz.\n";
+        return ans.str();
+    }
+
+    // ── Pipeline summary header ──
+    ans << "Basierend auf meinem Denken ("
+        << thinking.salient_concepts.size() << " aktivierte Konzepte, "
+        << thinking.steps_completed << " Pipeline-Schritte, "
+        << static_cast<int>(thinking.thinking_duration_ms) << "ms):\n";
+
+    // ── Multi-domain detection ──
+    // Only flag multi-domain if there are 2+ domains with significant relevance
+    // AND the top two have comparable relevance (ratio < 3:1)
+    bool multi_domain = false;
+    if (thinking.detected_domains.size() > 1) {
+        double top = thinking.detected_domains[0].relevance;
+        double second = thinking.detected_domains[1].relevance;
+        multi_domain = (second > 0.1 && (top / std::max(second, 0.01)) < 3.0);
+    }
+
+    if (multi_domain) {
+        // Ambiguity detected — show all domains
+        ans << "\n**Mehrere Wissensbereiche erkannt:**\n";
+        for (const auto& domain : thinking.detected_domains) {
+            ans << "  - **" << domain.domain_name << "** ("
+                << domain.concepts.size() << " Konzepte, Relevanz: "
+                << static_cast<int>(domain.relevance * 100) << "%)\n";
+        }
+        ans << "\n";
+
+        // Show primary concept from each domain
+        for (const auto& domain : thinking.detected_domains) {
+            if (domain.concepts.empty()) continue;
+            ans << "**" << domain.domain_name << ":**\n";
+            size_t shown = 0;
+            for (auto cid : domain.concepts) {
+                if (shown >= 2) break;
+                auto info_opt = ltm.retrieve_concept(cid);
+                if (!info_opt) continue;
+                ans << "  **" << info_opt->label << "** ("
+                    << epistemic_type_to_string(info_opt->epistemic.type)
+                    << ", Trust: " << static_cast<int>(info_opt->epistemic.trust * 100) << "%)\n"
+                    << "  " << info_opt->definition << "\n";
+                ++shown;
+            }
+            ans << "\n";
+        }
+    } else {
+        // Single domain — detailed answer
+        const auto& primary = top_concepts[0];
+        ans << "**" << primary.label << "** ("
+            << epistemic_type_to_string(primary.epistemic.type)
+            << ", Trust: " << static_cast<int>(primary.epistemic.trust * 100) << "%)\n";
+        ans << primary.definition << "\n\n";
+
+        // Related concepts
+        if (top_concepts.size() > 1) {
+            ans << "Verwandte Konzepte:\n";
+            size_t shown = 0;
+            for (size_t i = 1; i < top_concepts.size() && shown < 3; ++i) {
+                const auto& c = top_concepts[i];
+                ans << "  - **" << c.label << "** ("
+                    << epistemic_type_to_string(c.epistemic.type)
+                    << ", " << static_cast<int>(c.epistemic.trust * 100) << "%): "
+                    << c.definition.substr(0, 120);
+                if (c.definition.size() > 120) ans << "...";
+                ans << "\n";
+                ++shown;
+            }
+            ans << "\n";
+        }
+    }
+
+    // ── KAN-Relations between salient concepts ──
+    if (!thinking.relation_links.empty()) {
+        ans << "KAN-Relationen:\n";
+        size_t shown = 0;
+        for (const auto& rl : thinking.relation_links) {
+            if (shown >= 8) break;
+            ans << "  " << rl.source_label << " --[" << rl.relation_name
+                << "]--> " << rl.target_label;
+            if (rl.weight < 1.0) {
+                ans << " (w=" << static_cast<int>(rl.weight * 100) << "%)";
+            }
+            ans << "\n";
+            ++shown;
+        }
+        ans << "\n";
+    }
+
+    // ── MiniLLM meaning insights ──
+    if (!thinking.meaning_insights.empty()) {
+        ans << "Semantische Analyse (MiniLLMs):\n";
+        size_t shown = 0;
+        for (const auto& insight : thinking.meaning_insights) {
+            if (shown >= 5) break;
+            ans << "  - " << insight.interpretation
+                << " (Konfidenz: " << static_cast<int>(insight.confidence * 100) << "%, "
+                << insight.source_model << ")\n";
+            ++shown;
+        }
+        ans << "\n";
+    }
+
+    // ── Hypotheses (with KAN validation status) ──
+    if (!thinking.hypothesis_insights.empty()) {
+        ans << "Hypothesen:\n";
+        size_t shown = 0;
+        for (const auto& hyp : thinking.hypothesis_insights) {
+            if (shown >= 3) break;
+            ans << "  - " << hyp.statement
+                << " (Konfidenz: " << static_cast<int>(hyp.confidence * 100) << "%";
+            if (hyp.kan_validated) {
+                ans << ", KAN: " << hyp.validation_status;
+            }
+            ans << ")\n";
+            ++shown;
+        }
+        ans << "\n";
+    }
+
+    // ── Contradictions ──
+    if (!thinking.contradiction_notes.empty()) {
+        ans << "Widersprueche erkannt:\n";
+        for (const auto& c : thinking.contradiction_notes) {
+            ans << "  - " << c.description
+                << " (Schwere: " << static_cast<int>(c.severity * 100) << "%)\n";
+        }
+        ans << "\n";
+    }
+
+    // ── Thought paths ──
+    if (!thinking.thought_path_summaries.empty()) {
+        ans << "Gedankenpfade:\n";
+        size_t shown = 0;
+        for (const auto& p : thinking.thought_path_summaries) {
+            if (shown >= 3) break;
+            ans << "  " << p << "\n";
+            ++shown;
+        }
+    }
+
+    return ans.str();
+}
+
 // ─── Explain Concept ─────────────────────────────────────────────────────────
 
 std::string ChatInterface::explain_concept(

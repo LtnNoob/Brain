@@ -131,6 +131,17 @@ std::vector<AnalogyProposal> UnderstandingLayer::find_analogies(
     // Collect proposals from all Mini-LLMs
     for (const auto& mini_llm : mini_llms_) {
         auto proposals = mini_llm->detect_analogies(concept_set_a, concept_set_b, ltm, stm, context);
+
+        // CRITICAL: Verify confidence bounds [0.0, 1.0]
+        for (const auto& proposal : proposals) {
+            if (proposal.model_confidence < 0.0 || proposal.model_confidence > 1.0) {
+                throw std::logic_error(
+                    "CONFIDENCE VIOLATION: AnalogyProposal from " +
+                    mini_llm->get_model_id() + " has out-of-range confidence"
+                );
+            }
+        }
+
         all_proposals.insert(all_proposals.end(), proposals.begin(), proposals.end());
     }
 

@@ -2,6 +2,7 @@
 #include <chrono>
 #include <iostream>
 #include <algorithm>
+#include <unordered_set>
 
 namespace brain19 {
 
@@ -94,11 +95,17 @@ ThinkingResult ThinkingPipeline::execute(
     result.steps_completed = 7;
 
     // Step 8: UnderstandingLayer
+    // Include seed concepts AND salient: seeds are what the user asked
+    // about, salient are what spreading activation discovered.
+    // MiniLLMs need BOTH for focal-concept overlap detection.
     if (config_.enable_understanding && understanding) {
+        std::unordered_set<ConceptId> seen;
         std::vector<ConceptId> salient_ids;
-        salient_ids.reserve(result.top_salient.size());
+        for (auto cid : seed_concepts) {
+            if (seen.insert(cid).second) salient_ids.push_back(cid);
+        }
         for (auto& s : result.top_salient) {
-            salient_ids.push_back(s.concept_id);
+            if (seen.insert(s.concept_id).second) salient_ids.push_back(s.concept_id);
         }
         result.understanding = step_understanding(
             salient_ids, context, *understanding, cognitive, ltm, stm);
@@ -209,14 +216,44 @@ std::vector<CuriosityTrigger> ThinkingPipeline::step_curiosity(
 
 UnderstandingLayer::UnderstandingResult ThinkingPipeline::step_understanding(
     const std::vector<ConceptId>& salient_ids, ContextId ctx,
-    UnderstandingLayer& understanding, CognitiveDynamics& cognitive,
+    UnderstandingLayer& understanding, CognitiveDynamics& /*cognitive*/,
     LongTermMemory& ltm, ShortTermMemory& stm)
 {
     if (salient_ids.empty()) {
         return {};
     }
-    return understanding.perform_understanding_cycle(
-        salient_ids[0], cognitive, ltm, stm, ctx);
+
+    // FIX: Use ALL salient concepts directly instead of re-doing spreading
+    // activation from a single seed via perform_understanding_cycle().
+    // The ThinkingPipeline already spread activation from all seeds (step 2)
+    // and computed salience (step 3). Reuse that work.
+    UnderstandingLayer::UnderstandingResult result;
+
+    result.meaning_proposals = understanding.analyze_meaning(
+        salient_ids, ltm, stm, ctx);
+
+    result.hypothesis_proposals = understanding.propose_hypotheses(
+        salient_ids, ltm, stm, ctx);
+
+    result.contradiction_proposals = understanding.check_contradictions(
+        salient_ids, ltm, stm, ctx);
+
+    // Analogies: split salient concepts into two sets
+    if (salient_ids.size() >= 4) {
+        auto mid = salient_ids.size() / 2;
+        std::vector<ConceptId> set_a(salient_ids.begin(), salient_ids.begin() + mid);
+        std::vector<ConceptId> set_b(salient_ids.begin() + mid, salient_ids.end());
+        result.analogy_proposals = understanding.find_analogies(
+            set_a, set_b, ltm, stm, ctx);
+    }
+
+    result.total_proposals_generated =
+        result.meaning_proposals.size() +
+        result.hypothesis_proposals.size() +
+        result.analogy_proposals.size() +
+        result.contradiction_proposals.size();
+
+    return result;
 }
 
 std::vector<ValidationResult> ThinkingPipeline::step_kan_validation(
@@ -341,11 +378,17 @@ ThinkingResult ThinkingPipeline::execute_with_goal(
     result.steps_completed = 7;
 
     // Step 8: UnderstandingLayer
+    // Include seed concepts AND salient: seeds are what the user asked
+    // about, salient are what spreading activation discovered.
+    // MiniLLMs need BOTH for focal-concept overlap detection.
     if (config_.enable_understanding && understanding) {
+        std::unordered_set<ConceptId> seen;
         std::vector<ConceptId> salient_ids;
-        salient_ids.reserve(result.top_salient.size());
+        for (auto cid : seed_concepts) {
+            if (seen.insert(cid).second) salient_ids.push_back(cid);
+        }
         for (auto& s : result.top_salient) {
-            salient_ids.push_back(s.concept_id);
+            if (seen.insert(s.concept_id).second) salient_ids.push_back(s.concept_id);
         }
         result.understanding = step_understanding(
             salient_ids, context, *understanding, cognitive, ltm, stm);

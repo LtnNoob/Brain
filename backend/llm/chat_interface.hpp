@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <cstdint>
 
 namespace brain19 {
 
@@ -26,6 +27,69 @@ struct ChatResponse {
     bool used_llm = false;
     double llm_time_ms = 0.0;
     QueryIntent intent = QueryIntent::UNKNOWN;
+};
+
+// ThinkingContext: Full cognitive pipeline output for response generation
+//
+// Populated by SystemOrchestrator from ThinkingResult.
+// Contains pre-processed insights from ALL pipeline stages —
+// no raw proposal types needed (decoupled from understanding_proposals.hpp).
+struct ThinkingContext {
+    // Salient concepts from cognitive pipeline
+    std::vector<ConceptId> salient_concepts;
+    std::vector<std::string> thought_path_summaries;
+
+    // Domain detection: which knowledge domains were activated
+    struct DomainInsight {
+        std::string domain_name;
+        std::vector<ConceptId> concepts;
+        double relevance;  // [0,1] — based on seed scores
+    };
+    std::vector<DomainInsight> detected_domains;
+
+    // Meaning insights from MiniLLMs (Understanding Layer Step 8)
+    struct MeaningInsight {
+        std::string interpretation;
+        double confidence;
+        std::string source_model;
+        std::vector<ConceptId> source_concepts;
+    };
+    std::vector<MeaningInsight> meaning_insights;
+
+    // Hypothesis insights from MiniLLMs + KAN validation (Steps 8-9)
+    struct HypothesisInsight {
+        std::string statement;
+        double confidence;
+        std::string source_model;
+        bool kan_validated = false;
+        std::string validation_status;  // "validated", "refuted", "inconclusive", ""
+    };
+    std::vector<HypothesisInsight> hypothesis_insights;
+
+    // KAN-Relations between salient concepts (graph structure)
+    struct RelationLink {
+        ConceptId source;
+        ConceptId target;
+        std::string relation_name;  // e.g., "IS_A", "CAUSES"
+        double weight;
+        std::string source_label;
+        std::string target_label;
+    };
+    std::vector<RelationLink> relation_links;
+
+    // Contradiction alerts from MiniLLMs
+    struct ContradictionNote {
+        ConceptId concept_a;
+        ConceptId concept_b;
+        std::string description;
+        double severity;
+    };
+    std::vector<ContradictionNote> contradiction_notes;
+
+    // Pipeline statistics
+    size_t steps_completed = 0;
+    double thinking_duration_ms = 0.0;
+    size_t total_proposals = 0;
 };
 
 // ChatInterface: Knowledge-based verbalization of Brain19 knowledge
@@ -52,6 +116,16 @@ public:
         const LongTermMemory& ltm,
         const std::vector<ConceptId>& salient_concepts,
         const std::vector<std::string>& thought_paths_summary = {},
+        QueryIntent intent = QueryIntent::UNKNOWN
+    );
+
+    // Ask with full cognitive pipeline output (ThinkingContext)
+    // Routes: Input → KAN-Relations + Pattern Matching → Topic Detection →
+    //         Generative Thinking → Multi-MiniLLM Orchestration → Output Fusion
+    ChatResponse ask_with_thinking(
+        const std::string& question,
+        const LongTermMemory& ltm,
+        const ThinkingContext& thinking,
         QueryIntent intent = QueryIntent::UNKNOWN
     );
 
@@ -106,6 +180,13 @@ private:
     std::string format_question(const std::vector<ConceptInfo>& top_concepts,
                                 const std::vector<std::string>& thought_paths);
     std::string format_statement(const std::vector<ConceptInfo>& top_concepts);
+
+    // Full-pipeline response formatting (multi-domain, fusion)
+    std::string format_thinking_response(
+        const std::vector<ConceptInfo>& top_concepts,
+        const ThinkingContext& thinking,
+        const LongTermMemory& ltm
+    );
 };
 
 } // namespace brain19

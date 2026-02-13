@@ -67,7 +67,7 @@ public:
 
         // Bootstrap
         bool seed_foundation = true;
-        std::string foundation_file = "data/foundation.json";
+        std::string foundation_file = "data/foundation_full.json";
 
         // GlobalDynamicsOperator
         bool enable_gdo = false;

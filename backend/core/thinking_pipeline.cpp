@@ -1,5 +1,8 @@
 #include "thinking_pipeline.hpp"
 #include "../understanding/kan_aware_mini_llm.hpp"
+#include "../hybrid/kan_graph_monitor.hpp"
+#include "../hybrid/topology_router.hpp"
+#include "../hybrid/refinement_loop.hpp"
 #include <chrono>
 #include <iostream>
 #include <algorithm>
@@ -27,7 +30,8 @@ ThinkingResult ThinkingPipeline::execute(
     EmbeddingManager& embeddings,
     UnderstandingLayer* understanding,
     KanValidator* kan_validator,
-    GlobalDynamicsOperator* gdo)
+    GlobalDynamicsOperator* gdo,
+    RefinementLoop* refinement_loop)
 {
     auto start = std::chrono::steady_clock::now();
     ThinkingResult result;
@@ -95,23 +99,37 @@ ThinkingResult ThinkingPipeline::execute(
     }
     result.steps_completed = 7;
 
+    // Build salient_ids for steps 7.5, 8, 8.5
+    std::unordered_set<ConceptId> seen;
+    std::vector<ConceptId> salient_ids;
+    for (auto cid : seed_concepts) {
+        if (seen.insert(cid).second) salient_ids.push_back(cid);
+    }
+    for (auto& s : result.top_salient) {
+        if (seen.insert(s.concept_id).second) salient_ids.push_back(s.concept_id);
+    }
+
+    // Step 7.5: KAN Graph Scan (Topology A — detect anomalies)
+    if (config_.enable_topology_a) {
+        result.kan_anomalies = step_kan_graph_scan(
+            salient_ids, registry, embeddings, ltm);
+    }
+
     // Step 8: UnderstandingLayer
-    // Include seed concepts AND salient: seeds are what the user asked
-    // about, salient are what spreading activation discovered.
-    // MiniLLMs need BOTH for focal-concept overlap detection.
     if (config_.enable_understanding && understanding) {
-        std::unordered_set<ConceptId> seen;
-        std::vector<ConceptId> salient_ids;
-        for (auto cid : seed_concepts) {
-            if (seen.insert(cid).second) salient_ids.push_back(cid);
-        }
-        for (auto& s : result.top_salient) {
-            if (seen.insert(s.concept_id).second) salient_ids.push_back(s.concept_id);
-        }
         result.understanding = step_understanding(
             salient_ids, context, *understanding, cognitive, ltm, stm);
     }
     result.steps_completed = 8;
+
+    // Step 8.5: Topology A Investigation (KAN anomalies → hypotheses)
+    if (config_.enable_topology_a && understanding && !result.kan_anomalies.empty()) {
+        result.topology_a_hypotheses = step_topology_a(
+            result.kan_anomalies, *understanding, ltm, stm, context);
+        for (const auto& h : result.topology_a_hypotheses) {
+            result.understanding.hypothesis_proposals.push_back(h);
+        }
+    }
 
     // Step 9: KAN-LLM Validation
     if (config_.enable_kan_validation && kan_validator &&
@@ -120,6 +138,12 @@ ThinkingResult ThinkingPipeline::execute(
             result.understanding.hypothesis_proposals, *kan_validator);
     }
     result.steps_completed = 9;
+
+    // Step 9C: Topology C Refinement
+    if (config_.enable_topology_c && refinement_loop && understanding &&
+        !result.validated_hypotheses.empty()) {
+        step_topology_c(result, *refinement_loop, *understanding, ltm, stm, context);
+    }
 
     // Step 9.5A: Trust ceiling enforcement (Topology B)
     for (auto& vr : result.validated_hypotheses) {
@@ -319,6 +343,88 @@ QueryResult ThinkingPipeline::step_focus_cursor(
     return qr;
 }
 
+// ─── Topology A+C Steps ──────────────────────────────────────────────────────
+
+std::vector<InvestigationRequest> ThinkingPipeline::step_kan_graph_scan(
+    const std::vector<ConceptId>& salient_ids,
+    MicroModelRegistry& registry,
+    EmbeddingManager& embeddings,
+    LongTermMemory& ltm)
+{
+    KanGraphMonitor monitor(registry, embeddings);
+    return monitor.scan(salient_ids, ltm);
+}
+
+std::vector<HypothesisProposal> ThinkingPipeline::step_topology_a(
+    const std::vector<InvestigationRequest>& anomalies,
+    UnderstandingLayer& understanding,
+    LongTermMemory& ltm,
+    ShortTermMemory& stm,
+    ContextId context)
+{
+    std::vector<HypothesisProposal> all_hypotheses;
+
+    // Use KanAwareMiniLLMs to investigate anomalies
+    understanding.for_each_mini_llm([&](MiniLLM& llm) {
+        auto* kan_aware = dynamic_cast<KanAwareMiniLLM*>(&llm);
+        if (kan_aware) {
+            auto hypotheses = kan_aware->investigate_anomalies(
+                anomalies, ltm, stm, context);
+            for (auto& h : hypotheses) {
+                all_hypotheses.push_back(std::move(h));
+            }
+        }
+    });
+
+    return all_hypotheses;
+}
+
+void ThinkingPipeline::step_topology_c(
+    ThinkingResult& result,
+    RefinementLoop& refinement_loop,
+    UnderstandingLayer& understanding,
+    LongTermMemory& ltm,
+    ShortTermMemory& stm,
+    ContextId context)
+{
+    TopologyRouter router;
+    auto decision = router.route(result.kan_anomalies, result.validated_hypotheses);
+
+    if (decision.refine_indices.empty()) return;
+
+    for (size_t idx : decision.refine_indices) {
+        if (idx >= result.validated_hypotheses.size()) continue;
+        if (idx >= result.understanding.hypothesis_proposals.size()) continue;
+
+        const auto& original_hyp = result.understanding.hypothesis_proposals[idx];
+
+        // Build a refiner callback: given residual feedback, produce a refined hypothesis
+        // by re-running propose_hypotheses with the same evidence concepts
+        auto refiner = [&](const HypothesisProposal& previous,
+                           const std::string& /*residual_feedback*/) -> HypothesisProposal {
+            // Re-generate hypotheses from the same evidence
+            auto new_hyps = understanding.propose_hypotheses(
+                previous.evidence_concepts, ltm, stm, context);
+
+            if (!new_hyps.empty()) {
+                return new_hyps[0];
+            }
+            return previous;  // Fallback: return unchanged
+        };
+
+        try {
+            auto refinement_result = refinement_loop.run(original_hyp, refiner);
+
+            // Replace the validation result with the refined one
+            result.validated_hypotheses[idx] = refinement_result.final_validation;
+            result.topology_c_refinements++;
+        } catch (const std::exception& e) {
+            std::cerr << "[ThinkingPipeline] Topology C refinement failed: "
+                      << e.what() << "\n";
+        }
+    }
+}
+
 // ─── Execute with Goal ───────────────────────────────────────────────────────
 
 ThinkingResult ThinkingPipeline::execute_with_goal(
@@ -334,7 +440,8 @@ ThinkingResult ThinkingPipeline::execute_with_goal(
     EmbeddingManager& embeddings,
     UnderstandingLayer* understanding,
     KanValidator* kan_validator,
-    GlobalDynamicsOperator* gdo)
+    GlobalDynamicsOperator* gdo,
+    RefinementLoop* refinement_loop)
 {
     auto start = std::chrono::steady_clock::now();
     ThinkingResult result;
@@ -401,11 +508,8 @@ ThinkingResult ThinkingPipeline::execute_with_goal(
     }
     result.steps_completed = 7;
 
-    // Step 8: UnderstandingLayer
-    // Include seed concepts AND salient: seeds are what the user asked
-    // about, salient are what spreading activation discovered.
-    // MiniLLMs need BOTH for focal-concept overlap detection.
-    if (config_.enable_understanding && understanding) {
+    // Build salient_ids for steps 7.5, 8, 8.5
+    {
         std::unordered_set<ConceptId> seen;
         std::vector<ConceptId> salient_ids;
         for (auto cid : seed_concepts) {
@@ -414,10 +518,29 @@ ThinkingResult ThinkingPipeline::execute_with_goal(
         for (auto& s : result.top_salient) {
             if (seen.insert(s.concept_id).second) salient_ids.push_back(s.concept_id);
         }
-        result.understanding = step_understanding(
-            salient_ids, context, *understanding, cognitive, ltm, stm);
+
+        // Step 7.5: KAN Graph Scan (Topology A — detect anomalies)
+        if (config_.enable_topology_a) {
+            result.kan_anomalies = step_kan_graph_scan(
+                salient_ids, registry, embeddings, ltm);
+        }
+
+        // Step 8: UnderstandingLayer
+        if (config_.enable_understanding && understanding) {
+            result.understanding = step_understanding(
+                salient_ids, context, *understanding, cognitive, ltm, stm);
+        }
+        result.steps_completed = 8;
+
+        // Step 8.5: Topology A Investigation (KAN anomalies → hypotheses)
+        if (config_.enable_topology_a && understanding && !result.kan_anomalies.empty()) {
+            result.topology_a_hypotheses = step_topology_a(
+                result.kan_anomalies, *understanding, ltm, stm, context);
+            for (const auto& h : result.topology_a_hypotheses) {
+                result.understanding.hypothesis_proposals.push_back(h);
+            }
+        }
     }
-    result.steps_completed = 8;
 
     // Step 9: KAN-LLM Validation
     if (config_.enable_kan_validation && kan_validator &&
@@ -426,6 +549,12 @@ ThinkingResult ThinkingPipeline::execute_with_goal(
             result.understanding.hypothesis_proposals, *kan_validator);
     }
     result.steps_completed = 9;
+
+    // Step 9C: Topology C Refinement
+    if (config_.enable_topology_c && refinement_loop && understanding &&
+        !result.validated_hypotheses.empty()) {
+        step_topology_c(result, *refinement_loop, *understanding, ltm, stm, context);
+    }
 
     // Step 9.5A: Trust ceiling enforcement (Topology B)
     for (auto& vr : result.validated_hypotheses) {

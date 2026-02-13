@@ -238,7 +238,8 @@ bool SystemOrchestrator::initialize() {
                         *registry_, *embeddings_,
                         understanding_.get(),
                         kan_validator_.get(),
-                        gdo_.get()
+                        gdo_.get(),
+                        refinement_loop_.get()
                     );
                     run_evolution_after_thinking(result);
 
@@ -903,6 +904,15 @@ ChatResponse SystemOrchestrator::ask(const std::string& question) {
             ctx.hypothesis_insights.push_back(std::move(hi));
         }
 
+        // Topology A hypothesis insights (marked distinctly)
+        for (const auto& ah : thinking_result.topology_a_hypotheses) {
+            ThinkingContext::HypothesisInsight hi;
+            hi.statement = ah.hypothesis_statement;
+            hi.confidence = ah.model_confidence;
+            hi.source_model = ah.source_model;
+            ctx.hypothesis_insights.push_back(std::move(hi));
+        }
+
         // Contradiction notes
         for (const auto& cp : uresult.contradiction_proposals) {
             ThinkingContext::ContradictionNote cn;
@@ -1121,7 +1131,8 @@ ThinkingResult SystemOrchestrator::run_thinking_cycle(const std::vector<ConceptI
         *registry_, *embeddings_,
         understanding_.get(),
         kan_validator_.get(),
-        gdo_.get()
+        gdo_.get(),
+        refinement_loop_.get()
     );
 
     // Feed thinking results into evolution pipeline
@@ -1144,7 +1155,8 @@ ThinkingResult SystemOrchestrator::run_thinking_cycle(
         *registry_, *embeddings_,
         understanding_.get(),
         kan_validator_.get(),
-        gdo_.get()
+        gdo_.get(),
+        refinement_loop_.get()
     );
 
     run_evolution_after_thinking(result);

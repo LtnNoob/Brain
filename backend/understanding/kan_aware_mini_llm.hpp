@@ -4,6 +4,7 @@
 #include "../micromodel/micro_model_registry.hpp"
 #include "../micromodel/embedding_manager.hpp"
 #include "../hybrid/kan_validator.hpp"
+#include "../hybrid/investigation_request.hpp"
 #include <vector>
 #include <string>
 #include <cstdint>
@@ -63,6 +64,14 @@ public:
 
     // KAN feedback for training (non-const — mutates pattern weights)
     void train_from_validation(const std::vector<ValidationResult>& results);
+
+    // Topology A: Investigate KAN-detected anomalies
+    // Generates hypotheses from InvestigationRequests produced by KanGraphMonitor
+    std::vector<HypothesisProposal> investigate_anomalies(
+        const std::vector<InvestigationRequest>& requests,
+        const LongTermMemory& ltm,
+        const ShortTermMemory& stm,
+        ContextId context) const;
 
     // Trust ceiling constants (Topology B)
     static constexpr double LLM_ONLY_TRUST_CEILING = 0.3;

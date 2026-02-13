@@ -9,6 +9,7 @@
 #include "../micromodel/embedding_manager.hpp"
 #include "../understanding/understanding_layer.hpp"
 #include "../hybrid/kan_validator.hpp"
+#include "../hybrid/investigation_request.hpp"
 #include "../ltm/long_term_memory.hpp"
 #include "../memory/stm.hpp"
 #include "../memory/brain_controller.hpp"
@@ -22,6 +23,9 @@
 #include <string>
 
 namespace brain19 {
+
+// Forward declaration for Topology C
+class RefinementLoop;
 
 // =============================================================================
 // THINKING RESULT
@@ -46,6 +50,11 @@ struct ThinkingResult {
 
     // --- Generated goals from curiosity ---
     std::vector<GoalState> generated_goals;
+
+    // --- Topology A+C results ---
+    std::vector<InvestigationRequest> kan_anomalies;
+    std::vector<HypothesisProposal> topology_a_hypotheses;
+    size_t topology_c_refinements = 0;
 };
 
 // =============================================================================
@@ -76,6 +85,10 @@ public:
         bool enable_kan_validation = true;
         bool enable_curiosity = true;
 
+        // Topology A+C
+        bool enable_topology_a = true;
+        bool enable_topology_c = true;
+
         // FocusCursor integration
         bool enable_focus_cursor = true;
         FocusCursorConfig cursor_config{};
@@ -98,7 +111,8 @@ public:
         EmbeddingManager& embeddings,
         UnderstandingLayer* understanding,  // nullable if no LLM
         KanValidator* kan_validator,         // nullable if no KAN validation
-        GlobalDynamicsOperator* gdo = nullptr // nullable if no GDO
+        GlobalDynamicsOperator* gdo = nullptr, // nullable if no GDO
+        RefinementLoop* refinement_loop = nullptr // nullable for Topology C
     );
 
     // Execute with explicit goal for goal-directed traversal
@@ -115,7 +129,8 @@ public:
         EmbeddingManager& embeddings,
         UnderstandingLayer* understanding,
         KanValidator* kan_validator,
-        GlobalDynamicsOperator* gdo = nullptr
+        GlobalDynamicsOperator* gdo = nullptr,
+        RefinementLoop* refinement_loop = nullptr
     );
 
     const Config& get_config() const { return config_; }
@@ -156,6 +171,30 @@ private:
     std::vector<ValidationResult> step_kan_validation(
         const std::vector<HypothesisProposal>& hypotheses,
         KanValidator& validator);
+
+    // Step 7.5: KAN Graph Scan (Topology A — detect anomalies)
+    std::vector<InvestigationRequest> step_kan_graph_scan(
+        const std::vector<ConceptId>& salient_ids,
+        MicroModelRegistry& registry,
+        EmbeddingManager& embeddings,
+        LongTermMemory& ltm);
+
+    // Step 8.5: Topology A Investigation (KAN anomalies → hypotheses)
+    std::vector<HypothesisProposal> step_topology_a(
+        const std::vector<InvestigationRequest>& anomalies,
+        UnderstandingLayer& understanding,
+        LongTermMemory& ltm,
+        ShortTermMemory& stm,
+        ContextId context);
+
+    // Step 9C: Topology C Refinement (refine partially-validated hypotheses)
+    void step_topology_c(
+        ThinkingResult& result,
+        RefinementLoop& refinement_loop,
+        UnderstandingLayer& understanding,
+        LongTermMemory& ltm,
+        ShortTermMemory& stm,
+        ContextId context);
 
     // Step 2.5: FocusCursor traversal (after spreading, before salience)
     QueryResult step_focus_cursor(

@@ -676,4 +676,118 @@ void KanAwareMiniLLM::train_from_validation(
     }
 }
 
+// =============================================================================
+// INVESTIGATE ANOMALIES (Topology A — KAN → LLM)
+// =============================================================================
+//
+// For each InvestigationRequest from KanGraphMonitor, generate a hypothesis
+// using KAN-translatable keywords so HypothesisTranslator::detect_pattern_detailed()
+// can parse them. Trust capped at LLM_ONLY_TRUST_CEILING (0.3).
+//
+
+std::vector<HypothesisProposal> KanAwareMiniLLM::investigate_anomalies(
+    const std::vector<InvestigationRequest>& requests,
+    const LongTermMemory& ltm,
+    const ShortTermMemory& /*stm*/,
+    ContextId /*context*/
+) const {
+    std::vector<HypothesisProposal> proposals;
+
+    for (const auto& req : requests) {
+        auto info_a = ltm.retrieve_concept(req.concept_a);
+        auto info_b = ltm.retrieve_concept(req.concept_b);
+
+        std::string label_a = info_a ? info_a->label : ("?" + std::to_string(req.concept_a));
+        std::string label_b = info_b ? info_b->label : ("?" + std::to_string(req.concept_b));
+
+        std::ostringstream stmt;
+        std::ostringstream reasoning;
+        std::vector<std::string> patterns;
+        std::vector<ConceptId> evidence = {req.concept_a, req.concept_b};
+
+        switch (req.anomaly_type) {
+            case AnomalyType::WEAK_EDGE:
+                // Keywords: "proportional", "increases with" → LINEAR
+                stmt << "KAN predicts " << label_a << " --"
+                     << relation_type_to_string(req.relation_type) << "--> "
+                     << label_b << " is strong (KAN:" << std::fixed;
+                stmt.precision(2);
+                stmt << req.kan_score << ") but LTM weight is low ("
+                     << req.ltm_weight
+                     << "). Relationship is proportional and increases with evidence.";
+
+                reasoning << "KAN anomaly investigation: weak edge detected. "
+                          << "KAN prediction significantly exceeds LTM weight, "
+                          << "suggesting underweighted proportional relationship.";
+
+                patterns = {"kan-anomaly", "weak-edge", "proportional", "increases with"};
+                break;
+
+            case AnomalyType::MISSING_LINK:
+                // Keywords: "threshold", "activation" → THRESHOLD
+                stmt << "KAN detects potential " << relation_type_to_string(req.relation_type)
+                     << " link between " << label_a << " and " << label_b
+                     << " (KAN:" << std::fixed;
+                stmt.precision(2);
+                stmt << req.kan_score
+                     << "). Threshold-based activation pattern suggests hidden connection.";
+
+                reasoning << "KAN anomaly investigation: missing link detected. "
+                          << "MicroModel predicts relationship where none exists in LTM.";
+
+                patterns = {"kan-anomaly", "missing-link", "threshold", "activation"};
+                break;
+
+            case AnomalyType::CONTRADICTION:
+                // Keywords: "conditional", "depends on" → CONDITIONAL
+                stmt << "KAN/LTM contradiction on " << label_a << " --"
+                     << relation_type_to_string(req.relation_type) << "--> "
+                     << label_b << ": LTM=" << std::fixed;
+                stmt.precision(2);
+                stmt << req.ltm_weight << ", KAN=" << req.kan_score
+                     << ". Relationship is conditional, depends on context.";
+
+                reasoning << "KAN anomaly investigation: contradiction detected. "
+                          << "|LTM - KAN| = " << std::fixed;
+                reasoning.precision(2);
+                reasoning << req.anomaly_strength
+                          << " — suggests context-dependent relationship.";
+
+                patterns = {"kan-anomaly", "contradiction", "conditional", "depends on"};
+                break;
+
+            case AnomalyType::STALE_RELATION:
+                // Keywords: "conditional", "depends on" → CONDITIONAL
+                stmt << "High LTM weight (" << std::fixed;
+                stmt.precision(2);
+                stmt << req.ltm_weight << ") but low KAN prediction ("
+                     << req.kan_score << ") for " << label_a << " --"
+                     << relation_type_to_string(req.relation_type) << "--> "
+                     << label_b
+                     << ". Relationship may be conditional, depends on updated evidence.";
+
+                reasoning << "KAN anomaly investigation: stale relation detected. "
+                          << "LTM weight no longer supported by KAN predictions — "
+                          << "may be outdated or context-dependent.";
+
+                patterns = {"kan-anomaly", "stale-relation", "conditional", "depends on"};
+                break;
+        }
+
+        double confidence = std::min(req.anomaly_strength * 0.8, LLM_ONLY_TRUST_CEILING);
+
+        proposals.emplace_back(
+            ++proposal_counter_,
+            evidence,
+            stmt.str(),
+            reasoning.str(),
+            patterns,
+            confidence,
+            get_model_id() + " [KAN-anomaly]"
+        );
+    }
+
+    return proposals;
+}
+
 } // namespace brain19

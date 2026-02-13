@@ -29,7 +29,7 @@ PERSISTENT_SOURCES = persistent/persistent_ltm.cpp persistent/wal.cpp \
                      persistent/checkpoint_restore.cpp
 HYBRID_SOURCES = hybrid/kan_validator.cpp hybrid/domain_manager.cpp \
                  hybrid/refinement_loop.cpp hybrid/epistemic_bridge.cpp \
-                 hybrid/hypothesis_translator.cpp
+                 hybrid/hypothesis_translator.cpp hybrid/kan_graph_monitor.cpp
 EVOLUTION_SOURCES = evolution/pattern_discovery.cpp evolution/epistemic_promotion.cpp \
                     evolution/concept_proposal.cpp
 BOOTSTRAP_SOURCES = bootstrap/foundation_concepts.cpp bootstrap/bootstrap_interface.cpp \

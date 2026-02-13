@@ -16,7 +16,7 @@ FocusCursor::FocusCursor(
     , config_(config)
     , mode_(config.default_mode)
 {
-    context_embedding_.fill(0.0);
+    context_embedding_.core.fill(0.0);
 }
 
 void FocusCursor::seed(ConceptId start) {
@@ -57,9 +57,9 @@ double FocusCursor::evaluate_edge(ConceptId from, ConceptId to, RelationType typ
     // Blend in target-specific information
     Vec10 target_emb = embeddings_.make_target_embedding(
         0, static_cast<uint64_t>(from), static_cast<uint64_t>(to));
-    for (size_t i = 0; i < EMBED_DIM; ++i) {
-        c_mixed[i] = (1.0 - config_.context_mix_rate) * c_mixed[i]
-                    + config_.context_mix_rate * target_emb[i];
+    for (size_t i = 0; i < CORE_DIM; ++i) {
+        c_mixed.core[i] = (1.0 - config_.context_mix_rate) * c_mixed.core[i]
+                    + config_.context_mix_rate * target_emb.core[i];
     }
 
     return model->predict(e, c_mixed);
@@ -69,9 +69,9 @@ void FocusCursor::accumulate_context(ConceptId new_concept) {
     // Blend current context with information from the new concept
     Vec10 new_emb = embeddings_.make_target_embedding(
         0, static_cast<uint64_t>(current_), static_cast<uint64_t>(new_concept));
-    for (size_t i = 0; i < EMBED_DIM; ++i) {
-        context_embedding_[i] = (1.0 - config_.context_mix_rate) * context_embedding_[i]
-                               + config_.context_mix_rate * new_emb[i];
+    for (size_t i = 0; i < CORE_DIM; ++i) {
+        context_embedding_.core[i] = (1.0 - config_.context_mix_rate) * context_embedding_.core[i]
+                               + config_.context_mix_rate * new_emb.core[i];
     }
 }
 

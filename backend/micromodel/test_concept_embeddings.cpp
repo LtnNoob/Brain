@@ -28,7 +28,7 @@ void test_auto_create() {
 
     // Should be non-zero
     double sum = 0.0;
-    for (double v : emb) sum += std::abs(v);
+    for (double v : emb.core) sum += std::abs(v);
     assert(sum > 0.0);
     PASS();
 }
@@ -72,7 +72,7 @@ void test_nudge() {
     TEST("Nudge moves embedding toward target");
     ConceptEmbeddingStore store;
     Vec10 target{};
-    target.fill(1.0);
+    target.core.fill(1.0);
 
     store.get(50);  // auto-create
     auto before = store.get(50);
@@ -162,7 +162,7 @@ void test_normalized_init() {
     for (ConceptId c = 1; c <= 50; ++c) {
         const auto& emb = store.get(c);
         double norm = 0.0;
-        for (double v : emb) norm += v * v;
+        for (double v : emb.core) norm += v * v;
         norm = std::sqrt(norm);
         assert(std::abs(norm - 1.0) < 1e-6);
     }

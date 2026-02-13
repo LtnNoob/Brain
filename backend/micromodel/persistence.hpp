@@ -10,37 +10,49 @@ namespace brain19 {
 namespace persistence {
 
 // =============================================================================
-// BINARY PERSISTENCE
+// BINARY PERSISTENCE — v3 (FlexEmbedding)
 // =============================================================================
 //
-// Format:
+// Format v3:
 //   Header (32 bytes):
 //     magic    "BM19"  (4 bytes)
-//     version  uint32  (4 bytes) = 1
+//     version  uint32  (4 bytes) = 3
 //     model_count uint64 (8 bytes)
 //     context_count uint64 (8 bytes)
 //     reserved (8 bytes)
 //
-//   Per model (3448 bytes each):
+//   Per model (7528 bytes each):
 //     concept_id  uint64 (8 bytes)
-//     params      430 × double (3440 bytes)
+//     params      940 x double (7520 bytes)
 //
-//   Relation embeddings (800 bytes):
-//     10 × Vec10 (10 × 10 × 8 bytes)
+//   Relation embeddings:
+//     rel_emb_count uint32 (4 bytes)
+//     Per relation:
+//       type_id     uint16 (2 bytes)
+//       core        16 x double (128 bytes)
+//       detail_dim  uint16 (2 bytes)
+//       detail      detail_dim x double (variable)
 //
-//   Per context embedding:
-//     name_len    uint32 (4 bytes)
-//     name        name_len bytes
-//     embedding   Vec10 (80 bytes)
-//
-//   Concept embeddings (v2+):
+//   Concept embeddings:
 //     concept_emb_count uint32 (4 bytes)
-//     Per concept embedding:
-//       concept_id    uint64 (8 bytes)
-//       embedding     Vec10 (80 bytes)
+//     Per concept:
+//       concept_id  uint64 (8 bytes)
+//       core        16 x double (128 bytes)
+//       detail_dim  uint16 (2 bytes)
+//       detail      detail_dim x double (variable)
+//
+//   Context embeddings:
+//     Per context:
+//       name_len    uint32 (4 bytes)
+//       name        name_len bytes
+//       core        16 x double (128 bytes)
+//       detail_dim  uint16 (2 bytes)
+//       detail      detail_dim x double (variable)
 //
 //   Footer:
 //     checksum    uint64 (8 bytes) - XOR of all preceding 8-byte blocks
+//
+// Backward compatible: reads v1 (10D fixed) and v2 (10D counted) with migration to 16D core.
 //
 
 bool save(const std::string& filepath,

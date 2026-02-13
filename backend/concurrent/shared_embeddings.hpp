@@ -23,7 +23,7 @@ public:
 
     // === READ operations (shared_lock) ===
 
-    Vec10 get_relation_embedding(RelationType type) const {
+    FlexEmbedding get_relation_embedding(RelationType type) const {
         std::shared_lock lock(mtx_);
         return em_.get_relation_embedding(type);
     }
@@ -38,19 +38,19 @@ public:
         return em_.get_context_names();
     }
 
-    Vec10 make_context_embedding(const std::string& name) const {
+    FlexEmbedding make_context_embedding(const std::string& name) const {
         std::shared_lock lock(mtx_);
         return em_.make_context_embedding(name);
     }
 
-    Vec10 make_target_embedding(size_t context_hash, uint64_t source_id, uint64_t target_id) const {
+    FlexEmbedding make_target_embedding(size_t context_hash, uint64_t source_id, uint64_t target_id) const {
         std::shared_lock lock(mtx_);
         return em_.make_target_embedding(context_hash, source_id, target_id);
     }
 
     // === WRITE operations (unique_lock) — auto-create on first access ===
 
-    Vec10 get_context_embedding(const std::string& name) {
+    FlexEmbedding get_context_embedding(const std::string& name) {
         // Fast path: check with shared lock first
         {
             std::shared_lock lock(mtx_);
@@ -63,20 +63,20 @@ public:
         return em_.get_context_embedding(name);
     }
 
-    Vec10 query_context() { return get_context_embedding("query"); }
-    Vec10 recall_context() { return get_context_embedding("recall"); }
-    Vec10 creative_context() { return get_context_embedding("creative"); }
-    Vec10 analytical_context() { return get_context_embedding("analytical"); }
+    FlexEmbedding query_context() { return get_context_embedding("query"); }
+    FlexEmbedding recall_context() { return get_context_embedding("recall"); }
+    FlexEmbedding creative_context() { return get_context_embedding("creative"); }
+    FlexEmbedding analytical_context() { return get_context_embedding("analytical"); }
 
     // === Direct access (unique_lock — for persistence) ===
 
     // Relation embedding access — delegates to registry via EmbeddingManager
-    const Vec10& get_relation_embedding_locked(RelationType type) const {
+    const FlexEmbedding& get_relation_embedding_locked(RelationType type) const {
         std::shared_lock lock(mtx_);
         return em_.get_relation_embedding(type);
     }
 
-    const std::unordered_map<std::string, Vec10>& context_embeddings() const {
+    const std::unordered_map<std::string, FlexEmbedding>& context_embeddings() const {
         std::shared_lock lock(mtx_);
         return em_.context_embeddings();
     }

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "flex_embedding.hpp"
+
 #include <array>
 #include <cmath>
 #include <cstddef>
@@ -15,7 +17,7 @@ namespace brain19 {
 // Each concept in the KG gets its own MicroModel that computes a personalized
 // relevance score given a relation embedding (e) and a context embedding (c).
 //
-// Forward pass:  v = W·c + b  (10D),  z = eᵀ·v  (scalar),  w = σ(z) ∈ (0,1)
+// Forward pass:  v = W·c_core + b  (16D),  z = e_core^T·v  (scalar),  w = sigma(z) in (0,1)
 //
 // CONSTRAINTS:
 // - No shared weights between models (each is fully independent)
@@ -23,11 +25,23 @@ namespace brain19 {
 // - No external dependencies: hand-written matmul, sigmoid, Adam
 //
 
-static constexpr size_t EMBED_DIM = 10;
-static constexpr size_t FLAT_SIZE = 430;  // 100 W + 10 b + 10 e_init + 10 c_init + 300 state
+// Backward compatibility aliases
+static constexpr size_t EMBED_DIM = CORE_DIM;  // 16 (was 10)
 
-using Vec10 = std::array<double, EMBED_DIM>;
-using Mat10x10 = std::array<double, EMBED_DIM * EMBED_DIM>;  // row-major
+// MicroModel operates on CoreVec (16D) for its weight matrix
+using CoreMat = std::array<double, CORE_DIM * CORE_DIM>;  // 256 elements, row-major
+
+// Type alias: Vec10 -> FlexEmbedding for transition compatibility
+using Vec10 = FlexEmbedding;
+
+// Old alias (deprecated)
+using Mat10x10 = CoreMat;
+
+// New FLAT_SIZE for 16D:
+// W(256) + b(16) + e_init(16) + c_init(16) +
+// dW_momentum(256) + db_momentum(16) + dW_variance(256) + db_variance(16) +
+// e_grad_accum(16) + c_grad_accum(16) + scalars(5) + reserved(55) = 940
+static constexpr size_t FLAT_SIZE = 940;
 
 // Training configuration
 struct MicroTrainingConfig {
@@ -43,8 +57,8 @@ struct MicroTrainingConfig {
 
 // Training sample: (relation_embedding, context_embedding, target_score)
 struct TrainingSample {
-    Vec10 relation_embedding;
-    Vec10 context_embedding;
+    FlexEmbedding relation_embedding;
+    FlexEmbedding context_embedding;
     double target;  // desired output in [0, 1]
 };
 
@@ -56,14 +70,14 @@ struct MicroTrainingResult {
 };
 
 // Adam optimizer state for a single MicroModel
-// Total: 300 doubles
+// Total: 636 doubles (256+16+256+16+16+16+5+55)
 struct TrainingState {
-    Mat10x10 dW_momentum{};       // 100 - first moment of W gradients
-    Vec10    db_momentum{};       //  10 - first moment of b gradients
-    Mat10x10 dW_variance{};       // 100 - second moment of W gradients
-    Vec10    db_variance{};       //  10 - second moment of b gradients
-    Vec10    e_grad_accum{};      //  10 - accumulated e gradients (unused for now)
-    Vec10    c_grad_accum{};      //  10 - accumulated c gradients (unused for now)
+    CoreMat  dW_momentum{};       // 256 - first moment of W gradients
+    CoreVec  db_momentum{};       //  16 - first moment of b gradients
+    CoreMat  dW_variance{};       // 256 - second moment of W gradients
+    CoreVec  db_variance{};       //  16 - second moment of b gradients
+    CoreVec  e_grad_accum{};      //  16 - accumulated e gradients (unused for now)
+    CoreVec  c_grad_accum{};      //  16 - accumulated c gradients (unused for now)
     // Scalars (5)
     double   timestep = 0.0;
     double   last_loss = 0.0;
@@ -99,32 +113,32 @@ public:
     MicroModel();
 
     // Forward pass: predict relevance given relation and context embeddings
-    // Returns value in (0, 1)
-    double predict(const Vec10& e, const Vec10& c) const;
+    // Returns value in (0, 1). Operates on core dimensions only.
+    double predict(const FlexEmbedding& e, const FlexEmbedding& c) const;
 
     // Single training step with Adam optimizer
     // Returns MSE loss for this sample
-    double train_step(const Vec10& e, const Vec10& c, double target, const MicroTrainingConfig& config);
+    double train_step(const FlexEmbedding& e, const FlexEmbedding& c, double target, const MicroTrainingConfig& config);
 
     // Train on a batch of samples for multiple epochs
     MicroTrainingResult train(const std::vector<TrainingSample>& samples, const MicroTrainingConfig& config);
 
-    // Serialization to/from flat array (430 doubles)
+    // Serialization to/from flat array (940 doubles)
     void to_flat(std::array<double, FLAT_SIZE>& out) const;
     void from_flat(const std::array<double, FLAT_SIZE>& in);
 
     // Direct access for testing
-    const Mat10x10& weights() const { return W_; }
-    const Vec10& bias() const { return b_; }
-    const Vec10& e_init() const { return e_init_; }
-    const Vec10& c_init() const { return c_init_; }
+    const CoreMat& weights() const { return W_; }
+    const CoreVec& bias() const { return b_; }
+    const CoreVec& e_init() const { return e_init_; }
+    const CoreVec& c_init() const { return c_init_; }
 
 private:
-    Mat10x10 W_;       // 100 params - weight matrix
-    Vec10 b_;          // 10 params  - bias vector
-    Vec10 e_init_;     // 10 params  - default relation embedding
-    Vec10 c_init_;     // 10 params  - default context embedding
-    TrainingState state_;  // 300 params - optimizer state
+    CoreMat W_;        // 256 params - weight matrix (16x16)
+    CoreVec b_;        // 16 params  - bias vector
+    CoreVec e_init_;   // 16 params  - default relation embedding
+    CoreVec c_init_;   // 16 params  - default context embedding
+    TrainingState state_;  // 636 params - optimizer state
 };
 
 } // namespace brain19

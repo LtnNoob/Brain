@@ -494,7 +494,7 @@ bool FoundationConcepts::seed_from_file(LongTermMemory& ltm, const std::string& 
         auto rel_type = reg.find_by_name(tp->as_string());
         if (!rel_type) {
             // Auto-register unknown relation types from training data
-            Vec10 default_emb = {0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3};
+            FlexEmbedding default_emb = {0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
             auto new_type = reg.register_type(
                 tp->as_string(), tp->as_string(),
                 RelationCategory::CUSTOM_CATEGORY, default_emb);

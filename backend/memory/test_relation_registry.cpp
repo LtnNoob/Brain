@@ -115,7 +115,7 @@ void test_embeddings_nonzero() {
     for (auto type : reg.all_types()) {
         const Vec10& emb = reg.get_embedding(type);
         double sum = 0.0;
-        for (double v : emb) sum += std::abs(v);
+        for (double v : emb.core) sum += std::abs(v);
         assert(sum > 0.0);
     }
     PASS();
@@ -142,7 +142,7 @@ void test_runtime_registration() {
     TEST("Runtime type registration");
     auto& reg = RelationTypeRegistry::instance();
 
-    Vec10 emb = {0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5};
+    Vec10 emb = {0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5};
     auto new_type = reg.register_type("EXPLAINS", "erklaert", RelationCategory::CAUSAL, emb);
 
     assert(static_cast<uint16_t>(new_type) >= 1000);

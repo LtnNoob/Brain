@@ -1,6 +1,6 @@
 #pragma once
 
-#include "micro_model.hpp"  // Vec10, EMBED_DIM
+#include "micro_model.hpp"  // FlexEmbedding, CORE_DIM
 #include "../common/types.hpp"
 
 #include <cstddef>
@@ -14,25 +14,28 @@ namespace brain19 {
 // ConceptEmbeddingStore
 // =============================================================================
 //
-// Per-concept 10D embeddings, auto-created from hash on first access.
-// Supports nudge (gradient-free update) and cosine similarity search.
+// Per-concept FlexEmbeddings (16D core + variable detail), auto-created from
+// hash on first access. Supports nudge (gradient-free update) and two-phase
+// cosine similarity search (core-filter then full-rerank).
 //
 
 class ConceptEmbeddingStore {
 public:
     // Get embedding for concept (auto-created from hash if missing)
-    const Vec10& get(ConceptId cid);
+    const FlexEmbedding& get(ConceptId cid);
 
     // Explicitly set an embedding
-    void set(ConceptId cid, const Vec10& emb);
+    void set(ConceptId cid, const FlexEmbedding& emb);
 
     // Nudge embedding toward a target: emb = (1-alpha)*emb + alpha*target
-    void nudge(ConceptId cid, const Vec10& target, double alpha = 0.1);
+    void nudge(ConceptId cid, const FlexEmbedding& target, double alpha = 0.1);
 
-    // Cosine similarity between two concept embeddings
+    // Full cosine similarity between two concept embeddings
     double similarity(ConceptId a, ConceptId b);
 
-    // Find k most similar concepts to the given one
+    // Find k most similar concepts using two-phase search:
+    //   Phase 1: core_similarity for all -> top 50 candidates
+    //   Phase 2: full_similarity for top 50 -> top K
     std::vector<std::pair<ConceptId, double>> most_similar(ConceptId cid, size_t k);
 
     // Check if concept has an embedding
@@ -45,14 +48,14 @@ public:
     void clear() { store_.clear(); }
 
     // Direct access for persistence
-    const std::unordered_map<ConceptId, Vec10>& data() const { return store_; }
-    std::unordered_map<ConceptId, Vec10>& data_mut() { return store_; }
+    const std::unordered_map<ConceptId, FlexEmbedding>& data() const { return store_; }
+    std::unordered_map<ConceptId, FlexEmbedding>& data_mut() { return store_; }
 
 private:
-    std::unordered_map<ConceptId, Vec10> store_;
+    std::unordered_map<ConceptId, FlexEmbedding> store_;
 
     // Create a deterministic embedding from concept ID hash
-    static Vec10 hash_init(ConceptId cid);
+    static FlexEmbedding hash_init(ConceptId cid);
 };
 
 } // namespace brain19

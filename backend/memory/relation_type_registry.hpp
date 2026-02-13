@@ -1,7 +1,8 @@
 #pragma once
 
 #include "active_relation.hpp"
-#include "../micromodel/micro_model.hpp"  // Vec10, EMBED_DIM
+#include "../micromodel/flex_embedding.hpp"  // FlexEmbedding, CORE_DIM
+#include "../micromodel/micro_model.hpp"     // Vec10 alias
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -29,7 +30,7 @@ struct RelationTypeInfo {
     std::string name_de;    // German natural language: "ist ein(e)", "erzeugt"
     std::string slug;       // Hyphenated: "is-a", "produces"
     RelationCategory category;
-    Vec10 embedding;        // 10D embedding for this type
+    FlexEmbedding embedding;  // 16D core + variable detail
     bool is_builtin;        // true for 0-19, false for >=1000
 };
 
@@ -50,7 +51,7 @@ public:
         const std::string& name,
         const std::string& name_de,
         RelationCategory category,
-        const Vec10& embedding
+        const FlexEmbedding& embedding
     );
 
     // Get all registered types
@@ -59,7 +60,7 @@ public:
     size_t size() const;
 
     // Convenience accessors (delegate to get())
-    const Vec10& get_embedding(RelationType type) const;
+    const FlexEmbedding& get_embedding(RelationType type) const;
     const std::string& get_name_de(RelationType type) const;
     const std::string& get_slug(RelationType type) const;
     const std::string& get_name(RelationType type) const;
@@ -70,7 +71,7 @@ private:
     void register_builtins();
     void register_one(RelationType type, const std::string& name,
                       const std::string& name_de, const std::string& slug,
-                      RelationCategory category, const Vec10& embedding,
+                      RelationCategory category, const FlexEmbedding& embedding,
                       bool builtin);
 
     std::unordered_map<uint16_t, RelationTypeInfo> types_;

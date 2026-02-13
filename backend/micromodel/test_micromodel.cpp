@@ -62,8 +62,8 @@ void test_micro_model() {
     {
         MicroModel model;
         Vec10 e, c;
-        e.fill(0.1);
-        c.fill(0.1);
+        e.core.fill(0.1);
+        c.core.fill(0.1);
         double pred = model.predict(e, c);
         ASSERT_GT(pred, 0.0);
         ASSERT_LT(pred, 1.0);
@@ -74,8 +74,8 @@ void test_micro_model() {
     {
         MicroModel model;
         Vec10 e, c;
-        e.fill(0.0);
-        c.fill(0.0);
+        e.core.fill(0.0);
+        c.core.fill(0.0);
         double pred = model.predict(e, c);
         // With zero e, dot product is 0 regardless of v, so sigmoid(0) = 0.5
         ASSERT_NEAR(pred, 0.5, 0.01);
@@ -85,8 +85,8 @@ void test_micro_model() {
     TEST("Predict is deterministic")
     {
         MicroModel model;
-        Vec10 e = {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
-        Vec10 c = {1.0, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1};
+        Vec10 e = {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6};
+        Vec10 c = {1.0, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4};
         double pred1 = model.predict(e, c);
         double pred2 = model.predict(e, c);
         ASSERT_NEAR(pred1, pred2, 1e-15);
@@ -96,8 +96,8 @@ void test_micro_model() {
     TEST("Single train_step reduces loss")
     {
         MicroModel model;
-        Vec10 e = {0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5};
-        Vec10 c = {0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3};
+        Vec10 e = {0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5};
+        Vec10 c = {0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3};
         MicroTrainingConfig config;
         config.learning_rate = 0.1;
 
@@ -111,8 +111,8 @@ void test_micro_model() {
     TEST("Training converges on simple target")
     {
         MicroModel model;
-        Vec10 e = {0.8, 0.2, 0.1, 0.0, 0.0, 0.3, 0.0, 0.0, 0.1, 0.0};
-        Vec10 c = {0.1, 0.5, 0.0, 0.3, 0.0, 0.2, 0.0, 0.1, 0.0, 0.4};
+        Vec10 e = {0.8, 0.2, 0.1, 0.0, 0.0, 0.3, 0.0, 0.0, 0.1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+        Vec10 c = {0.1, 0.5, 0.0, 0.3, 0.0, 0.2, 0.0, 0.1, 0.0, 0.4, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
         std::vector<TrainingSample> samples;
         samples.push_back({e, c, 0.8});
@@ -133,9 +133,9 @@ void test_micro_model() {
     TEST("Training with multiple samples")
     {
         MicroModel model;
-        Vec10 e1 = {0.9, 0.0, 0.1, 0.3, 0.0, 0.1, 0.7, 0.8, 0.5, 0.7};
-        Vec10 e2 = {0.0, 0.9, 0.0, 0.1, 0.7, 0.1, 0.6, 0.9, 0.4, 0.8};
-        Vec10 c  = {0.1, 0.2, 0.3, 0.1, 0.2, 0.1, 0.3, 0.1, 0.2, 0.1};
+        Vec10 e1 = {0.9, 0.0, 0.1, 0.3, 0.0, 0.1, 0.7, 0.8, 0.5, 0.7, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+        Vec10 e2 = {0.0, 0.9, 0.0, 0.1, 0.7, 0.1, 0.6, 0.9, 0.4, 0.8, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+        Vec10 c  = {0.1, 0.2, 0.3, 0.1, 0.2, 0.1, 0.3, 0.1, 0.2, 0.1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
         std::vector<TrainingSample> samples;
         samples.push_back({e1, c, 0.7});
@@ -165,8 +165,8 @@ void test_micro_model() {
     TEST("Flat roundtrip preserves model state")
     {
         MicroModel original;
-        Vec10 e = {0.5, 0.4, 0.3, 0.2, 0.1, 0.0, -0.1, -0.2, -0.3, -0.4};
-        Vec10 c = {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
+        Vec10 e = {0.5, 0.4, 0.3, 0.2, 0.1, 0.0, -0.1, -0.2, -0.3, -0.4, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+        Vec10 c = {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
         // Train a bit to get non-trivial state
         MicroTrainingConfig config;
@@ -721,8 +721,8 @@ void test_persistence() {
 
         // Train models a bit
         MicroModel* m1 = reg.get_model(1);
-        Vec10 e = {0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5};
-        Vec10 c = {0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3};
+        Vec10 e = {0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5};
+        Vec10 c = {0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3};
         MicroTrainingConfig config;
         m1->train_step(e, c, 0.8, config);
 

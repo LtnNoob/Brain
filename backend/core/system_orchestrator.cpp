@@ -224,6 +224,18 @@ bool SystemOrchestrator::initialize() {
         // Ensure MicroModels for all concepts
         registry_->ensure_models_for(*ltm_);
 
+        // Initial MicroModel training from KG structure
+        // Without this, all predictions are ~0.50 (untrained) and KAN validation
+        // always refutes. Train once at startup so existing KG data produces
+        // meaningful predictions immediately.
+        if (trainer_ && registry_->size() > 0) {
+            log("    Training MicroModels from KG...");
+            auto stats = trainer_->train_all(*registry_, *embeddings_, *ltm_);
+            log("    Trained " + std::to_string(stats.models_trained) + " models ("
+                + std::to_string(stats.models_converged) + " converged, avg loss "
+                + std::to_string(stats.avg_final_loss) + ")");
+        }
+
         // Start GDO
         if (gdo_) {
             gdo_->set_thinking_callback([this](const std::vector<ConceptId>& seeds) {
@@ -1276,6 +1288,22 @@ void SystemOrchestrator::run_evolution_after_thinking(const ThinkingResult& resu
             wal_log_store_concept(new_id, proposal.label, proposal.description, meta);
             if (registry_) registry_->create_model(new_id);
         }
+    }
+
+    // Targeted MicroModel training for activated concepts
+    // Only train models that were active in this thinking cycle, not train_all().
+    // This keeps predictions fresh as the KG evolves without O(N) overhead per query.
+    if (trainer_ && registry_ && embeddings_ && !result.activated_concepts.empty()) {
+        size_t trained = 0;
+        for (auto cid : result.activated_concepts) {
+            MicroModel* model = registry_->get_model(cid);
+            if (!model) continue;
+            auto samples = trainer_->generate_samples(cid, *embeddings_, *ltm_);
+            if (samples.empty()) continue;
+            trainer_->train_single(cid, *model, *embeddings_, *ltm_);
+            ++trained;
+        }
+        (void)trained;  // Available for future logging
     }
 
     // Generate proposals from relevance anomalies

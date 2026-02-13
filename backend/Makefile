@@ -16,7 +16,7 @@ MICROMODEL_SOURCES = micromodel/micro_model.cpp micromodel/micro_model_registry.
                      micromodel/relevance_map.cpp micromodel/persistence.cpp \
                      micromodel/concept_embedding_store.cpp
 COGNITIVE_SOURCES = cognitive/cognitive_dynamics.cpp cognitive/global_dynamics_operator.cpp
-UNDERSTANDING_SOURCES = understanding/understanding_layer.cpp understanding/mini_llm.cpp understanding/mini_llm_factory.cpp
+UNDERSTANDING_SOURCES = understanding/understanding_layer.cpp understanding/mini_llm.cpp understanding/mini_llm_factory.cpp understanding/kan_aware_mini_llm.cpp
 LLM_SOURCES = llm/chat_interface.cpp
 IMPORTER_SOURCES = importers/wikipedia_importer.cpp importers/scholar_importer.cpp \
                    importers/http_client.cpp

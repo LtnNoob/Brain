@@ -90,6 +90,12 @@ public:
     // Get number of registered Mini-LLMs
     size_t get_mini_llm_count() const { return mini_llms_.size(); }
 
+    // Visit all registered MiniLLMs (for KAN feedback)
+    template<typename Fn>
+    void for_each_mini_llm(Fn&& fn) {
+        for (auto& llm : mini_llms_) { fn(*llm); }
+    }
+
     // =========================================================================
     // SEMANTIC ANALYSIS (READ-ONLY)
     // =========================================================================

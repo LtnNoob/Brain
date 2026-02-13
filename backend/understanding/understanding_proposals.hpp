@@ -74,6 +74,10 @@ struct MeaningProposal {
 struct HypothesisProposal {
     uint64_t proposal_id;
 
+    // Trust ceiling constants (Topology B)
+    static constexpr double LLM_ONLY_TRUST_CEILING = 0.3;
+    static constexpr double KAN_VALIDATED_TRUST_CEILING = 0.7;
+
     // Source evidence (READ-ONLY references)
     std::vector<ConceptId> evidence_concepts;
 
@@ -98,11 +102,14 @@ struct HypothesisProposal {
 
         SuggestedEpistemic() = default;
 
-        SuggestedEpistemic(EpistemicType type, double trust)
+        SuggestedEpistemic(EpistemicType /*type*/, double trust)
             : suggested_type(EpistemicType::HYPOTHESIS)  // ALWAYS HYPOTHESIS
-            , suggested_trust(std::max(0.0, std::min(1.0, trust)))
+            , suggested_trust(std::min(
+                  std::max(0.0, std::min(1.0, trust)),
+                  LLM_ONLY_TRUST_CEILING))  // Cap at LLM-only ceiling
         {
             // ENFORCEMENT: Type is ALWAYS HYPOTHESIS regardless of input
+            // ENFORCEMENT: Trust capped at LLM_ONLY_TRUST_CEILING (Topology B)
         }
     };
 

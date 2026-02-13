@@ -1,6 +1,7 @@
 #include "system_orchestrator.hpp"
 #include "../bootstrap/foundation_concepts.hpp"
 #include "../understanding/mini_llm_factory.hpp"
+#include "../understanding/kan_aware_mini_llm.hpp"
 
 #include <algorithm>
 #include <cctype>
@@ -105,8 +106,9 @@ bool SystemOrchestrator::initialize() {
         // ── Stage 8: UnderstandingLayer + MiniLLMs ──────────────────────
         log("  [8/15] UnderstandingLayer...");
         understanding_ = std::make_unique<UnderstandingLayer>();
-        // Register a stub MiniLLM (always available)
-        understanding_->register_mini_llm(std::make_unique<StubMiniLLM>());
+        // Register KAN-aware MiniLLM (Topology B: reads KG + KAN predictions)
+        understanding_->register_mini_llm(
+            std::make_unique<KanAwareMiniLLM>(*registry_, *embeddings_));
         init_stage_ = 8;
 
         // ── Stage 9: KAN-LLM Hybrid ────────────────────────────────────

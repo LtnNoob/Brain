@@ -1,4 +1,5 @@
 #include "thinking_pipeline.hpp"
+#include "../understanding/kan_aware_mini_llm.hpp"
 #include <chrono>
 #include <iostream>
 #include <algorithm>
@@ -119,6 +120,29 @@ ThinkingResult ThinkingPipeline::execute(
             result.understanding.hypothesis_proposals, *kan_validator);
     }
     result.steps_completed = 9;
+
+    // Step 9.5A: Trust ceiling enforcement (Topology B)
+    for (auto& vr : result.validated_hypotheses) {
+        double ceiling = vr.validated
+            ? HypothesisProposal::KAN_VALIDATED_TRUST_CEILING
+            : HypothesisProposal::LLM_ONLY_TRUST_CEILING;
+        double capped = std::min(vr.assessment.metadata.trust, ceiling);
+        EpistemicType type = vr.validated
+            ? vr.assessment.metadata.type
+            : EpistemicType::SPECULATION;
+        vr.assessment.metadata = EpistemicMetadata(
+            type, vr.assessment.metadata.status, capped);
+    }
+
+    // Step 9.5B: Feed validation back to KanAwareMiniLLMs
+    if (understanding && !result.validated_hypotheses.empty()) {
+        understanding->for_each_mini_llm([&](MiniLLM& llm) {
+            auto* kan_aware = dynamic_cast<KanAwareMiniLLM*>(&llm);
+            if (kan_aware) {
+                kan_aware->train_from_validation(result.validated_hypotheses);
+            }
+        });
+    }
 
     // Step 10: Complete
     result.steps_completed = 10;
@@ -402,6 +426,29 @@ ThinkingResult ThinkingPipeline::execute_with_goal(
             result.understanding.hypothesis_proposals, *kan_validator);
     }
     result.steps_completed = 9;
+
+    // Step 9.5A: Trust ceiling enforcement (Topology B)
+    for (auto& vr : result.validated_hypotheses) {
+        double ceiling = vr.validated
+            ? HypothesisProposal::KAN_VALIDATED_TRUST_CEILING
+            : HypothesisProposal::LLM_ONLY_TRUST_CEILING;
+        double capped = std::min(vr.assessment.metadata.trust, ceiling);
+        EpistemicType type = vr.validated
+            ? vr.assessment.metadata.type
+            : EpistemicType::SPECULATION;
+        vr.assessment.metadata = EpistemicMetadata(
+            type, vr.assessment.metadata.status, capped);
+    }
+
+    // Step 9.5B: Feed validation back to KanAwareMiniLLMs
+    if (understanding && !result.validated_hypotheses.empty()) {
+        understanding->for_each_mini_llm([&](MiniLLM& llm) {
+            auto* kan_aware = dynamic_cast<KanAwareMiniLLM*>(&llm);
+            if (kan_aware) {
+                kan_aware->train_from_validation(result.validated_hypotheses);
+            }
+        });
+    }
 
     // Step 10: Complete
     result.steps_completed = 10;

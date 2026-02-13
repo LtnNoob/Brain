@@ -719,6 +719,37 @@ std::string ChatInterface::format_thinking_response(
         ans << "\n";
     }
 
+    // ── Embedding discoveries ──
+    if (!thinking.embedding_discoveries.empty()) {
+        ans << "Embedding-Aehnlichkeit:\n";
+        size_t shown = 0;
+        for (const auto& ed : thinking.embedding_discoveries) {
+            if (shown >= 4) break;
+            ans << "  " << ed.label << " (cosine="
+                << static_cast<int>(ed.similarity * 100) << "%)\n";
+            ++shown;
+        }
+        ans << "\n";
+    }
+
+    // ── Autonomous thinking insights (GDO background) ──
+    if (!thinking.autonomous_insights.empty()) {
+        ans << "Autonomes Denken (Hintergrund):\n";
+        for (const auto& ai : thinking.autonomous_insights) {
+            ans << "  " << ai.seed_concepts.size() << " Seed-Konzepte, "
+                << ai.proposals_generated << " Proposals";
+            if (!ai.discovered_labels.empty()) {
+                ans << ", neue Konzepte: ";
+                for (size_t i = 0; i < ai.discovered_labels.size() && i < 3; ++i) {
+                    if (i > 0) ans << ", ";
+                    ans << ai.discovered_labels[i];
+                }
+            }
+            ans << " (" << static_cast<int>(ai.duration_ms) << "ms)\n";
+        }
+        ans << "\n";
+    }
+
     // ── Thought paths ──
     if (!thinking.thought_path_summaries.empty()) {
         ans << "Gedankenpfade:\n";

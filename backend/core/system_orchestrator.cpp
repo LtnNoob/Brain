@@ -227,6 +227,8 @@ bool SystemOrchestrator::initialize() {
             gdo_->set_thinking_callback([this](const std::vector<ConceptId>& seeds) {
                 std::lock_guard<std::recursive_mutex> lock(subsystem_mtx_);
                 if (running_ && thinking_) {
+                    size_t concepts_before = ltm_->get_all_concept_ids().size();
+
                     auto result = thinking_->execute(
                         seeds, active_context_,
                         *ltm_, *brain_->get_stm_mutable(), *brain_,
@@ -237,6 +239,40 @@ bool SystemOrchestrator::initialize() {
                         gdo_.get()
                     );
                     run_evolution_after_thinking(result);
+
+                    // Store results for surfacing in next ask() call
+                    size_t concepts_after = ltm_->get_all_concept_ids().size();
+                    size_t new_count = (concepts_after > concepts_before)
+                        ? (concepts_after - concepts_before) : 0;
+
+                    GDOThinkingResult gdo_result;
+                    gdo_result.seeds = seeds;
+                    gdo_result.proposals_generated =
+                        result.understanding.total_proposals_generated;
+                    gdo_result.new_concepts_created = new_count;
+                    gdo_result.duration_ms = result.total_duration_ms;
+
+                    // Collect labels of newly created concepts
+                    if (new_count > 0) {
+                        auto all_ids = ltm_->get_all_concept_ids();
+                        // New concepts are at the end (sequential IDs)
+                        for (size_t i = all_ids.size() - new_count; i < all_ids.size(); ++i) {
+                            auto cinfo = ltm_->retrieve_concept(all_ids[i]);
+                            if (cinfo) {
+                                gdo_result.new_concept_labels.push_back(cinfo->label);
+                            }
+                        }
+                    }
+
+                    {
+                        std::lock_guard<std::mutex> glock(gdo_results_mtx_);
+                        gdo_thinking_results_.push_back(std::move(gdo_result));
+                        // Cap buffer to avoid unbounded growth
+                        if (gdo_thinking_results_.size() > 10) {
+                            gdo_thinking_results_.erase(
+                                gdo_thinking_results_.begin());
+                        }
+                    }
                 }
             });
             gdo_->start();
@@ -595,7 +631,7 @@ ChatResponse SystemOrchestrator::ask(const std::string& question) {
         }
     }
 
-    // Sort by score, take top seeds
+    // Sort by score, take top text-matched seeds
     std::sort(scored_seeds.begin(), scored_seeds.end(),
         [](const ScoredSeed& a, const ScoredSeed& b) { return a.score > b.score; });
 
@@ -603,6 +639,45 @@ ChatResponse SystemOrchestrator::ask(const std::string& question) {
     size_t max_seeds = 8;
     for (size_t i = 0; i < std::min(scored_seeds.size(), max_seeds); ++i) {
         seeds.push_back(scored_seeds[i].id);
+    }
+
+    // ── Strategy 7: Embedding similarity expansion ──
+    // For top text-matched seeds, find embedding-similar concepts via
+    // ConceptEmbeddingStore::most_similar() (cosine similarity on 10D
+    // embeddings trained by MicroModels). This catches semantically
+    // related concepts that text matching misses.
+    std::vector<ThinkingContext::EmbeddingSeed> embedding_discoveries;
+    if (!seeds.empty() && embeddings_) {
+        auto& emb_store = embeddings_->concept_embeddings();
+        std::unordered_set<ConceptId> seed_set(seeds.begin(), seeds.end());
+        size_t expand_from = std::min(seeds.size(), size_t(3));  // top 3 text matches
+
+        for (size_t i = 0; i < expand_from; ++i) {
+            auto similar = emb_store.most_similar(seeds[i], 5);
+            for (const auto& [sim_cid, sim_score] : similar) {
+                if (seed_set.count(sim_cid)) continue;
+                if (sim_score < 0.3) continue;  // min similarity threshold
+
+                // Add to scored_seeds with embedding-derived score
+                double emb_score = 1.5 + (sim_score - 0.3) * 5.0;
+                scored_seeds.push_back({sim_cid, emb_score});
+
+                // Track for display
+                auto cinfo = ltm_->retrieve_concept(sim_cid);
+                ThinkingContext::EmbeddingSeed es;
+                es.concept_id = sim_cid;
+                es.similar_to = seeds[i];
+                es.similarity = sim_score;
+                es.label = cinfo ? cinfo->label : "?";
+                embedding_discoveries.push_back(es);
+
+                // Add to seeds if room
+                if (seeds.size() < 12) {
+                    seeds.push_back(sim_cid);
+                    seed_set.insert(sim_cid);
+                }
+            }
+        }
     }
 
     // Inject energy into GDO from user query
@@ -840,6 +915,23 @@ ChatResponse SystemOrchestrator::ask(const std::string& question) {
         ctx.steps_completed = thinking_result.steps_completed;
         ctx.thinking_duration_ms = thinking_result.total_duration_ms;
         ctx.total_proposals = uresult.total_proposals_generated;
+
+        // Embedding discoveries from Strategy 7
+        ctx.embedding_discoveries = std::move(embedding_discoveries);
+
+        // ── Drain GDO autonomous thinking results ──
+        {
+            std::lock_guard<std::mutex> glock(gdo_results_mtx_);
+            for (auto& gr : gdo_thinking_results_) {
+                ThinkingContext::AutonomousInsight ai;
+                ai.seed_concepts = std::move(gr.seeds);
+                ai.discovered_labels = std::move(gr.new_concept_labels);
+                ai.proposals_generated = gr.proposals_generated;
+                ai.duration_ms = gr.duration_ms;
+                ctx.autonomous_insights.push_back(std::move(ai));
+            }
+            gdo_thinking_results_.clear();
+        }
 
         return chat_->ask_with_thinking(question, *ltm_, ctx, intent);
     }

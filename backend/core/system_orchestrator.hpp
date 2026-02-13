@@ -219,6 +219,18 @@ private:
     mutable std::mutex alert_log_mtx_;
     std::vector<std::string> stream_alerts_;
 
+    // GDO autonomous thinking results buffer (thread-safe)
+    // Populated by GDO callback thread, drained by ask() on main thread.
+    struct GDOThinkingResult {
+        std::vector<ConceptId> seeds;
+        size_t proposals_generated = 0;
+        size_t new_concepts_created = 0;
+        double duration_ms = 0.0;
+        std::vector<std::string> new_concept_labels;
+    };
+    mutable std::mutex gdo_results_mtx_;
+    std::vector<GDOThinkingResult> gdo_thinking_results_;
+
     // ─── Helpers ─────────────────────────────────────────────────────────────
 
     void cleanup_from_stage(int stage);

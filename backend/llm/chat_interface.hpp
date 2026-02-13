@@ -86,6 +86,24 @@ struct ThinkingContext {
     };
     std::vector<ContradictionNote> contradiction_notes;
 
+    // Autonomous thinking insights (from GDO background thinking)
+    struct AutonomousInsight {
+        std::vector<ConceptId> seed_concepts;
+        std::vector<std::string> discovered_labels;
+        size_t proposals_generated = 0;
+        double duration_ms = 0.0;
+    };
+    std::vector<AutonomousInsight> autonomous_insights;
+
+    // Embedding-similar concepts discovered (Strategy 7)
+    struct EmbeddingSeed {
+        ConceptId concept_id;
+        ConceptId similar_to;  // which text-matched seed it's similar to
+        double similarity;
+        std::string label;
+    };
+    std::vector<EmbeddingSeed> embedding_discoveries;
+
     // Pipeline statistics
     size_t steps_completed = 0;
     double thinking_duration_ms = 0.0;

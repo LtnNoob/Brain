@@ -46,8 +46,8 @@ static constexpr size_t FLAT_SIZE = 940;
 // Training configuration
 struct MicroTrainingConfig {
     double learning_rate = 0.01;
-    size_t max_epochs = 500;
-    double convergence_threshold = 1e-4;
+    size_t max_epochs = 100;
+    double convergence_threshold = 1e-6;
     double adam_beta1 = 0.9;
     double adam_beta2 = 0.999;
     double adam_epsilon = 1e-8;

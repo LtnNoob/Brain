@@ -1,6 +1,7 @@
 #include "concept_trainer.hpp"
 
 #include <algorithm>
+#include <thread>
 #include <unordered_set>
 
 namespace brain19 {
@@ -94,49 +95,88 @@ ConceptTrainerStats ConceptTrainer::train_all(
         EmbeddingManager& embeddings,
         const LongTermMemory& ltm) {
 
-    ConceptTrainerStats stats;
     auto model_ids = registry.get_model_ids();
-    double total_loss = 0.0;
-
-    auto& concept_store = embeddings.concept_embeddings();
+    const auto& concept_store = embeddings.concept_embeddings();
     static const size_t RECALL_HASH = std::hash<std::string>{}("recall");
 
-    for (ConceptId cid : model_ids) {
-        ConceptModel* model = registry.get_model(cid);
-        if (!model) continue;
+    // Thread count: use hardware concurrency, cap at 8
+    size_t num_threads = std::max(1u, std::thread::hardware_concurrency());
+    num_threads = std::min(num_threads, size_t(8));
+    if (model_ids.size() < 100) num_threads = 1;  // no overhead for tiny sets
 
-        auto samples = generate_samples(cid, embeddings, ltm);
-        stats.total_samples += samples.size();
+    // Per-thread local stats (avoids atomics)
+    struct ThreadStats {
+        size_t models_trained = 0;
+        size_t total_samples = 0;
+        size_t total_epochs = 0;
+        double total_loss = 0.0;
+        size_t models_converged = 0;
+        size_t refined_updates = 0;
+    };
+    std::vector<ThreadStats> thread_stats(num_threads);
 
-        // Count positive samples (non-negative targets)
-        size_t num_positives = 0;
-        for (const auto& s : samples) {
-            if (s.target > config_.neg_target) num_positives++;
+    auto worker = [&](size_t tid, size_t start, size_t end) {
+        auto& ts = thread_stats[tid];
+        for (size_t i = start; i < end; ++i) {
+            ConceptId cid = model_ids[i];
+            ConceptModel* model = registry.get_model(cid);
+            if (!model) continue;
+
+            auto samples = generate_samples(cid, embeddings, ltm);
+            ts.total_samples += samples.size();
+
+            // Count positive samples (non-negative targets)
+            size_t num_positives = 0;
+            for (const auto& s : samples) {
+                if (s.target > config_.neg_target) num_positives++;
+            }
+            if (num_positives == 0) continue;
+
+            auto result = model->train(samples, config_.model_config);
+            ts.models_trained++;
+            ts.total_epochs += result.epochs_run;
+            ts.total_loss += result.final_loss;
+            if (result.converged) {
+                ts.models_converged++;
+            }
+
+            // Refined training: train multi-head + FlexKAN immediately after bilinear
+            FlexEmbedding concept_from = concept_store.get_or_default(cid);
+            auto outgoing = ltm.get_outgoing_relations(cid);
+            for (const auto& rel : outgoing) {
+                FlexEmbedding concept_to = concept_store.get_or_default(rel.target);
+                const auto& rel_emb = embeddings.get_relation_embedding(rel.type);
+                auto ctx_emb = embeddings.make_target_embedding(RECALL_HASH, cid, rel.target);
+
+                model->train_refined(rel_emb, ctx_emb, concept_from, concept_to,
+                                     rel.weight, config_.kan_learning_rate);
+                ts.refined_updates++;
+            }
         }
-        if (num_positives == 0) continue;
+    };
 
-        auto result = model->train(samples, config_.model_config);
-        stats.models_trained++;
-        stats.total_epochs += result.epochs_run;
-        total_loss += result.final_loss;
-        if (result.converged) {
-            stats.models_converged++;
-        }
-
-        // Refined training: train multi-head + FlexKAN immediately after bilinear
-        FlexEmbedding concept_from = concept_store.get_or_default(cid);
-        auto outgoing = ltm.get_outgoing_relations(cid);
-        for (const auto& rel : outgoing) {
-            FlexEmbedding concept_to = concept_store.get_or_default(rel.target);
-            const auto& rel_emb = embeddings.get_relation_embedding(rel.type);
-            auto ctx_emb = embeddings.make_target_embedding(RECALL_HASH, cid, rel.target);
-
-            model->train_refined(rel_emb, ctx_emb, concept_from, concept_to,
-                                 rel.weight, config_.kan_learning_rate);
-            stats.refined_updates++;
-        }
+    // Launch worker threads with chunked work distribution
+    std::vector<std::thread> threads;
+    size_t chunk = (model_ids.size() + num_threads - 1) / num_threads;
+    for (size_t t = 0; t < num_threads; ++t) {
+        size_t start = t * chunk;
+        size_t end = std::min(start + chunk, model_ids.size());
+        if (start >= end) break;
+        threads.emplace_back(worker, t, start, end);
     }
+    for (auto& t : threads) t.join();
 
+    // Merge per-thread stats
+    ConceptTrainerStats stats;
+    double total_loss = 0.0;
+    for (const auto& ts : thread_stats) {
+        stats.models_trained += ts.models_trained;
+        stats.total_samples += ts.total_samples;
+        stats.total_epochs += ts.total_epochs;
+        total_loss += ts.total_loss;
+        stats.models_converged += ts.models_converged;
+        stats.refined_updates += ts.refined_updates;
+    }
     if (stats.models_trained > 0) {
         stats.avg_final_loss = total_loss / static_cast<double>(stats.models_trained);
     }

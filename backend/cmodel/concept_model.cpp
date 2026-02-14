@@ -410,7 +410,7 @@ MicroTrainingResult ConceptModel::train(const std::vector<TrainingSample>& sampl
         result.epochs_run = epoch + 1;
         result.final_loss = avg_loss;
 
-        if (avg_loss < best_avg_loss) {
+        if (avg_loss < best_avg_loss - config.convergence_threshold) {
             best_avg_loss = avg_loss;
             patience_counter = 0;
         } else {

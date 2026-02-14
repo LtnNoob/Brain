@@ -26,7 +26,10 @@ struct ConceptTrainerConfig {
     double kan_learning_rate = 0.005;
     size_t kan_epochs = 50;
 
-    ConceptTrainerConfig() = default;
+    ConceptTrainerConfig() {
+        model_config.max_epochs = 500;
+        model_config.convergence_threshold = 1e-4;
+    }
 };
 
 struct ConceptTrainerStats {

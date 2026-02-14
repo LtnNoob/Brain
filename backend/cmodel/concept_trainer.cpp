@@ -98,6 +98,9 @@ ConceptTrainerStats ConceptTrainer::train_all(
     auto model_ids = registry.get_model_ids();
     double total_loss = 0.0;
 
+    auto& concept_store = embeddings.concept_embeddings();
+    static const size_t RECALL_HASH = std::hash<std::string>{}("recall");
+
     for (ConceptId cid : model_ids) {
         ConceptModel* model = registry.get_model(cid);
         if (!model) continue;
@@ -105,7 +108,12 @@ ConceptTrainerStats ConceptTrainer::train_all(
         auto samples = generate_samples(cid, embeddings, ltm);
         stats.total_samples += samples.size();
 
-        if (samples.empty()) continue;
+        // Count positive samples (non-negative targets)
+        size_t num_positives = 0;
+        for (const auto& s : samples) {
+            if (s.target > config_.neg_target) num_positives++;
+        }
+        if (num_positives == 0) continue;
 
         auto result = model->train(samples, config_.model_config);
         stats.models_trained++;
@@ -114,31 +122,23 @@ ConceptTrainerStats ConceptTrainer::train_all(
         if (result.converged) {
             stats.models_converged++;
         }
-    }
 
-    if (stats.models_trained > 0) {
-        stats.avg_final_loss = total_loss / static_cast<double>(stats.models_trained);
-    }
-
-    // Refined training pass: train multi-head + FlexKAN using concept embeddings
-    auto& concept_store = embeddings.concept_embeddings();
-    for (ConceptId cid : model_ids) {
-        ConceptModel* model = registry.get_model(cid);
-        if (!model) continue;
-
+        // Refined training: train multi-head + FlexKAN immediately after bilinear
         FlexEmbedding concept_from = concept_store.get_or_default(cid);
-
         auto outgoing = ltm.get_outgoing_relations(cid);
         for (const auto& rel : outgoing) {
             FlexEmbedding concept_to = concept_store.get_or_default(rel.target);
             const auto& rel_emb = embeddings.get_relation_embedding(rel.type);
-            static const size_t RECALL_HASH = std::hash<std::string>{}("recall");
             auto ctx_emb = embeddings.make_target_embedding(RECALL_HASH, cid, rel.target);
 
             model->train_refined(rel_emb, ctx_emb, concept_from, concept_to,
                                  rel.weight, config_.kan_learning_rate);
             stats.refined_updates++;
         }
+    }
+
+    if (stats.models_trained > 0) {
+        stats.avg_final_loss = total_loss / static_cast<double>(stats.models_trained);
     }
 
     return stats;

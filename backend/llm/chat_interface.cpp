@@ -37,6 +37,21 @@ static const std::unordered_set<std::string> STOP_WORDS = {
     "oder", "nicht", "ich", "du", "er", "sie", "es", "wir", "ihr",
     "von", "zu", "mit", "auf", "aus", "fuer", "ueber", "nach",
     "wie", "was", "wer", "wo", "warum",
+    // German pronouns
+    "mir", "mich", "dir", "dich", "ihm", "ihn", "uns", "euch", "ihnen",
+    "mein", "meine", "meinem", "meinen", "meiner", "meines",
+    "dein", "deine", "deinem", "deinen", "deiner", "deines",
+    "sein", "seine", "seinem", "seinen", "seiner", "seines",
+    "unser", "unsere", "unserem", "unseren", "unserer", "unseres",
+    "euer", "eure", "eurem", "euren", "eurer", "eures",
+};
+
+static const std::unordered_set<std::string> INTENT_VERBS = {
+    "erklaer", "erklaere", "beschreib", "beschreibe",
+    "zeig", "zeige", "definier", "definiere",
+    "vergleich", "vergleiche", "finde", "such", "suche",
+    "explain", "describe", "show", "tell", "define",
+    "compare", "find", "search", "list",
 };
 
 static std::string to_lower(const std::string& s) {
@@ -53,13 +68,17 @@ static std::vector<std::string> extract_keywords(const std::string& text) {
         if (std::isalnum(static_cast<unsigned char>(c))) {
             word += c;
         } else {
-            if (word.size() >= 2 && STOP_WORDS.find(word) == STOP_WORDS.end()) {
+            if (word.size() >= 2 &&
+                STOP_WORDS.find(word) == STOP_WORDS.end() &&
+                INTENT_VERBS.find(word) == INTENT_VERBS.end()) {
                 keywords.push_back(word);
             }
             word.clear();
         }
     }
-    if (word.size() >= 2 && STOP_WORDS.find(word) == STOP_WORDS.end()) {
+    if (word.size() >= 2 &&
+        STOP_WORDS.find(word) == STOP_WORDS.end() &&
+        INTENT_VERBS.find(word) == INTENT_VERBS.end()) {
         keywords.push_back(word);
     }
     return keywords;
@@ -176,34 +195,37 @@ std::vector<ConceptInfo> ChatInterface::find_relevant_concepts(
             score += 4.0;
         }
 
-        // Strategy 4: Keyword match on labels
+        // Strategy 4: Keyword match on labels (weighted by keyword length)
         for (const auto& kw : keywords) {
+            double kw_weight = std::min(2.0, 0.5 + static_cast<double>(kw.size()) / 8.0);
             if (lower_label.find(kw) != std::string::npos) {
-                score += 3.0;
+                score += 3.0 * kw_weight;
             }
         }
 
-        // Strategy 5: Keyword match on definitions
+        // Strategy 5: Keyword match on definitions (weighted by keyword length)
         for (const auto& kw : keywords) {
+            double kw_weight = std::min(2.0, 0.5 + static_cast<double>(kw.size()) / 8.0);
             if (lower_def.find(kw) != std::string::npos) {
-                score += 1.5;
+                score += 1.5 * kw_weight;
             }
         }
 
         // Strategy 6: Fuzzy match — Levenshtein on label vs each keyword
         for (const auto& kw : keywords) {
+            double kw_weight = std::min(2.0, 0.5 + static_cast<double>(kw.size()) / 8.0);
             if (kw.size() >= 3 && lower_label.size() >= 3) {
                 size_t dist = levenshtein(kw, lower_label);
                 size_t max_len = std::max(kw.size(), lower_label.size());
                 double similarity = 1.0 - (static_cast<double>(dist) / max_len);
                 if (similarity >= 0.7) {
-                    score += 2.0 * similarity;
+                    score += 2.0 * similarity * kw_weight;
                 }
             }
             // Also check prefix match
             if (kw.size() >= 3 && lower_label.size() >= kw.size() &&
                 lower_label.substr(0, kw.size()) == kw) {
-                score += 2.5;
+                score += 2.5 * kw_weight;
             }
         }
 
@@ -221,16 +243,33 @@ std::vector<ConceptInfo> ChatInterface::find_relevant_concepts(
             }
             if (!w.empty()) label_words.push_back(w);
 
+            size_t matched_words = 0;
             for (const auto& lw : label_words) {
                 if (lw.size() < 3) continue;
+                bool word_matched = false;
                 for (const auto& kw : keywords) {
+                    double kw_weight = std::min(2.0, 0.5 + static_cast<double>(kw.size()) / 8.0);
                     if (lw == kw) {
-                        score += 3.5;
+                        score += 3.5 * kw_weight;
+                        word_matched = true;
                     } else if (lw.size() >= 4 && kw.size() >= 4 &&
                                lw.substr(0, 4) == kw.substr(0, 4)) {
                         // Stem prefix match (e.g., "grav" matches "gravity")
-                        score += 2.0;
+                        score += 2.0 * kw_weight;
+                        word_matched = true;
                     }
+                }
+                if (word_matched) matched_words++;
+            }
+
+            // Multi-word label penalty: if full phrase not in query and
+            // only partial word match (<50% coverage), heavily discount
+            if (label_words.size() > 1 &&
+                lower_q.find(lower_label) == std::string::npos) {
+                double coverage = (label_words.empty()) ? 0.0
+                    : static_cast<double>(matched_words) / static_cast<double>(label_words.size());
+                if (coverage < 0.5) {
+                    score *= 0.2;
                 }
             }
         }

@@ -93,6 +93,11 @@ public:
     void to_flat(std::array<double, CM_FLAT_SIZE>& out) const;
     void from_flat(const std::array<double, CM_FLAT_SIZE>& in);
 
+    // === Training quality tracking ===
+    bool is_converged() const { return converged_; }
+    size_t sample_count() const { return sample_count_; }
+    double final_loss() const { return final_loss_; }
+
     // === Bilinear internals (for compatibility) ===
     const CoreMat& weights() const { return W_; }
     const CoreVec& bias() const { return b_; }
@@ -115,6 +120,11 @@ private:
 
     // Per-concept pattern weights (15 doubles)
     ConceptPatternWeights patterns_;
+
+    // Training quality state
+    bool converged_ = false;
+    size_t sample_count_ = 0;
+    double final_loss_ = 1.0;
 
     // Reserved (25 doubles)
     std::array<double, 25> reserved_{};

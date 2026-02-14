@@ -32,6 +32,9 @@ double ConceptPatternEngine::predict_edge(
     const ConceptModel* model = registry_.get_model(from);
     if (!model) return 0.0;
 
+    // Quality gate: only use scores from converged models with enough samples
+    if (!model->is_converged() || model->sample_count() < 10) return 0.0;
+
     const auto& rel_emb = embeddings_.get_relation_embedding(type);
     static const size_t QUERY_HASH = std::hash<std::string>{}("query");
     auto ctx_emb = embeddings_.make_target_embedding(QUERY_HASH, from, to);
@@ -39,7 +42,11 @@ double ConceptPatternEngine::predict_edge(
     auto concept_from = embeddings_.concept_embeddings().get_or_default(from);
     auto concept_to = embeddings_.concept_embeddings().get_or_default(to);
 
-    return model->predict_refined(rel_emb, ctx_emb, concept_from, concept_to);
+    double score = model->predict_refined(rel_emb, ctx_emb, concept_from, concept_to);
+
+    // Discount by training quality: lower loss = higher quality
+    double quality = 1.0 - std::min(model->final_loss(), 1.0);
+    return score * quality;
 }
 
 // =============================================================================
@@ -307,7 +314,7 @@ std::vector<HypothesisProposal> ConceptPatternEngine::generate_hypotheses(
         }
     }
 
-    // ─── Pattern 3: Missing Link (ConceptModel predicts >0.5, no LTM relation)
+    // ─── Pattern 3: Missing Link (ConceptModel predicts >0.7, no LTM relation)
     {
         double avg_weight = 0.0;
         size_t wc = 0;
@@ -329,7 +336,24 @@ std::vector<HypothesisProposal> ConceptPatternEngine::generate_hypotheses(
 
                     for (auto rtype : try_types) {
                         double kan = predict_edge(concepts[i].id, concepts[j].id, rtype);
-                        if (kan < 0.5) continue;
+                        if (kan < 0.7) continue;
+
+                        // Bidirectional consistency: if A→B strong, B→A should be at least 0.3
+                        double reverse = predict_edge(concepts[j].id, concepts[i].id, rtype);
+                        if (reverse < 0.3) continue;
+
+                        // Shared-neighbor check: without common neighbors, require score > 0.85
+                        bool has_shared_neighbor = false;
+                        for (const auto& ri : concepts[i].outgoing) {
+                            for (const auto& rj : concepts[j].outgoing) {
+                                if (ri.target == rj.target) {
+                                    has_shared_neighbor = true;
+                                    break;
+                                }
+                            }
+                            if (has_shared_neighbor) break;
+                        }
+                        if (!has_shared_neighbor && kan < 0.85) continue;
 
                         double confidence = avg_weight * kan * 0.8;
                         confidence = std::min(confidence, LLM_ONLY_TRUST_CEILING);
@@ -341,7 +365,7 @@ std::vector<HypothesisProposal> ConceptPatternEngine::generate_hypotheses(
                              << " — activation pattern suggests hidden connection"
                              << " (CM:" << std::fixed;
                         stmt.precision(2);
-                        stmt << kan << ")";
+                        stmt << kan << ", rev:" << reverse << ")";
 
                         std::vector<ConceptId> evidence = {
                             concepts[i].id, concepts[j].id

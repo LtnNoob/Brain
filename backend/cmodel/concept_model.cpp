@@ -385,13 +385,17 @@ double ConceptModel::train_step(const FlexEmbedding& e, const FlexEmbedding& c,
 MicroTrainingResult ConceptModel::train(const std::vector<TrainingSample>& samples,
                                          const MicroTrainingConfig& config) {
     MicroTrainingResult result;
+    sample_count_ = samples.size();
 
     if (samples.empty()) {
         result.converged = true;
+        converged_ = true;
+        final_loss_ = 0.0;
         return result;
     }
 
-    double prev_avg_loss = 1e9;
+    double best_avg_loss = 1e9;
+    size_t patience_counter = 0;
 
     for (size_t epoch = 0; epoch < config.max_epochs; ++epoch) {
         double total_loss = 0.0;
@@ -406,15 +410,28 @@ MicroTrainingResult ConceptModel::train(const std::vector<TrainingSample>& sampl
         result.epochs_run = epoch + 1;
         result.final_loss = avg_loss;
 
-        double improvement = std::abs(prev_avg_loss - avg_loss);
-        if (improvement < config.convergence_threshold && epoch > 0) {
+        if (avg_loss < best_avg_loss) {
+            best_avg_loss = avg_loss;
+            patience_counter = 0;
+        } else {
+            patience_counter++;
+        }
+
+        // Converged if loss is already very low
+        if (avg_loss < 0.01) {
             result.converged = true;
             break;
         }
 
-        prev_avg_loss = avg_loss;
+        // Converged if no improvement for 10 epochs
+        if (patience_counter >= 10) {
+            result.converged = true;
+            break;
+        }
     }
 
+    converged_ = result.converged;
+    final_loss_ = result.final_loss;
     return result;
 }
 

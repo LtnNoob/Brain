@@ -59,6 +59,13 @@ public:
     // Get decoder confidence threshold
     double confidence_threshold() const { return config_.decoder_confidence_threshold; }
 
+    // Set the active token vocabulary (tokens trained by decoder training)
+    // At inference, all other tokens are suppressed to -inf logits.
+    void set_trained_tokens(const std::vector<uint16_t>& tokens) {
+        trained_tokens_.clear();
+        trained_tokens_.insert(tokens.begin(), tokens.end());
+    }
+
 private:
     LanguageConfig config_;
 
@@ -68,8 +75,11 @@ private:
     // Update KAN: R^80 → R^32 → R^16
     KANModule update_kan_;
 
-    // Output projection: R^16 → R^VOCAB_SIZE (shared with encoder embeddings)
+    // Output projection: R^FUSED_DIM → R^VOCAB_SIZE
     std::vector<std::vector<double>> output_projection_;
+
+    // Active token set (populated by training, used to suppress untrained tokens)
+    std::unordered_set<uint16_t> trained_tokens_;
 
     // Compute logits from hidden state
     std::vector<double> compute_logits(const std::vector<double>& hidden) const;

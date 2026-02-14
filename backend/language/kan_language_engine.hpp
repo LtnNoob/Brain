@@ -70,6 +70,7 @@ public:
     KANDecoder& decoder() { return decoder_; }
     SemanticScorer& scorer() { return scorer_; }
     FusionLayer& fusion() { return fusion_; }
+    EmbeddingManager& embeddings() { return embeddings_; }
 
     // Persistence
     void save(const std::string& dir) const;

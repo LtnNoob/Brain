@@ -19,12 +19,13 @@ KANDecoder::KANDecoder(const LanguageConfig& config)
                    32, LanguageConfig::DECODER_HIDDEN_DIM},
                   config.kan_num_knots)
 {
-    // Initialize output projection: DECODER_HIDDEN_DIM × VOCAB_SIZE (16 × 8192)
+    // Initialize output projection: (2*FUSED_DIM) × VOCAB_SIZE (128 × 8192)
+    // Uses [h, h²] quadratic features for non-linear capacity.
     std::mt19937 rng(777);
-    double limit = std::sqrt(6.0 / (LanguageConfig::DECODER_HIDDEN_DIM + LanguageConfig::VOCAB_SIZE));
+    double limit = std::sqrt(6.0 / (2 * LanguageConfig::FUSED_DIM + LanguageConfig::VOCAB_SIZE));
     std::uniform_real_distribution<double> dist(-limit, limit);
 
-    output_projection_.resize(LanguageConfig::DECODER_HIDDEN_DIM);
+    output_projection_.resize(2 * LanguageConfig::FUSED_DIM);
     for (auto& row : output_projection_) {
         row.resize(LanguageConfig::VOCAB_SIZE);
         for (auto& v : row) v = dist(rng);
@@ -55,27 +56,45 @@ DecoderOutput KANDecoder::decode(
     std::unordered_set<ConceptId> active_concepts(
         fused.ordered_concepts.begin(), fused.ordered_concepts.end());
 
-    // Step 0: Initialize hidden state from fused vector
-    auto hidden = init_kan_.evaluate(fused.fused_vector);
-    if (hidden.size() != LanguageConfig::DECODER_HIDDEN_DIM) {
-        hidden.resize(LanguageConfig::DECODER_HIDDEN_DIM, 0.0);
+    // Step 0: Initialize hidden state from full fused vector (64D)
+    // Bypass init_kan — training uses fused directly, inference must match.
+    const size_t H = LanguageConfig::FUSED_DIM;  // 64
+    std::vector<double> hidden(H, 0.0);
+    for (size_t i = 0; i < std::min(H, fused.fused_vector.size()); ++i) {
+        hidden[i] = fused.fused_vector[i];
     }
 
     double total_conf = 0.0;
     size_t generated = 0;
 
     for (size_t t = 0; t < max_tokens; ++t) {
-        // Compute logits
-        auto logits = compute_logits(hidden);
+        // Build quadratic features: [h, h²] for non-linear capacity
+        std::vector<double> h_ext(2 * H);
+        for (size_t i = 0; i < H; ++i) {
+            h_ext[i] = hidden[i];
+            h_ext[H + i] = hidden[i] * hidden[i];
+        }
+
+        // Compute logits from extended features
+        auto logits = compute_logits(h_ext);
 
         // Boost concept tokens
         boost_concept_tokens(logits, active_concepts, tokenizer);
 
-        // Suppress special tokens (PAD, BOS, UNK, SEP, RESERVED)
+        // Suppress special tokens (PAD, BOS, UNK, SEP)
         logits[LanguageConfig::PAD_TOKEN] = -1e9;
         logits[LanguageConfig::BOS_TOKEN] = -1e9;
         logits[LanguageConfig::UNK_TOKEN] = -1e9;
         logits[LanguageConfig::SEP_TOKEN] = -1e9;
+
+        // Suppress all non-trained tokens (they have random W, drowning softmax)
+        if (!trained_tokens_.empty()) {
+            for (size_t v = 0; v < logits.size(); ++v) {
+                if (trained_tokens_.find(static_cast<uint16_t>(v)) == trained_tokens_.end()) {
+                    logits[v] = -1e9;
+                }
+            }
+        }
 
         // Softmax
         auto probs = softmax(logits);
@@ -114,23 +133,13 @@ DecoderOutput KANDecoder::decode(
             }
         }
 
-        // Update hidden state: concat(hidden, embed(token)) → KAN → new hidden
-        std::vector<double> update_input;
-        update_input.reserve(LanguageConfig::DECODER_HIDDEN_DIM + LanguageConfig::TOKEN_EMBED_DIM);
-        update_input.insert(update_input.end(), hidden.begin(), hidden.end());
-
-        // Get token embedding
+        // Update hidden state: simple linear mixing (matches training dynamics)
+        // Bypass update_kan — cheap O(H) update gives position-dependent outputs
         if (token < token_embeddings.size()) {
             const auto& emb = token_embeddings[token];
-            update_input.insert(update_input.end(), emb.begin(), emb.end());
-        } else {
-            // Zero embedding fallback
-            update_input.resize(LanguageConfig::DECODER_HIDDEN_DIM + LanguageConfig::TOKEN_EMBED_DIM, 0.0);
-        }
-
-        hidden = update_kan_.evaluate(update_input);
-        if (hidden.size() != LanguageConfig::DECODER_HIDDEN_DIM) {
-            hidden.resize(LanguageConfig::DECODER_HIDDEN_DIM, 0.0);
+            for (size_t i = 0; i < H && i < emb.size(); ++i) {
+                hidden[i] = hidden[i] * 0.8 + emb[i] * 0.2;
+            }
         }
     }
 

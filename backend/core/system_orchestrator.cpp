@@ -1,6 +1,7 @@
 #include "system_orchestrator.hpp"
 #include "../bootstrap/foundation_concepts.hpp"
 #include "../cmodel/concept_pattern_engine.hpp"
+#include "../language/language_training.hpp"
 
 #include <algorithm>
 #include <cctype>
@@ -205,6 +206,16 @@ bool SystemOrchestrator::initialize() {
             log("    Trained " + std::to_string(stats.models_trained) + " models ("
                 + std::to_string(stats.models_converged) + " converged, avg loss "
                 + std::to_string(stats.avg_final_loss) + ")");
+        }
+
+        // KAN decoder training from KG relations
+        if (language_engine_ && language_engine_->is_ready()) {
+            log("    Training KAN decoder from KG relations...");
+            LanguageTraining lang_trainer(*language_engine_, *ltm_);
+            LanguageConfig lang_config;
+            auto lang_result = lang_trainer.train_stage1(lang_config);
+            log("    KAN decoder: " + std::to_string(lang_result.epochs_run) + " epochs, loss="
+                + std::to_string(lang_result.final_loss));
         }
 
         // Start GDO

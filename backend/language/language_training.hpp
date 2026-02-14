@@ -78,6 +78,11 @@ public:
     };
     std::vector<DecoderPair> generate_decoder_data() const;
 
+    // Generate relation-based decoder data: one compound paragraph per concept
+    // combining ALL outgoing relations into 15-30 token training targets.
+    // Input vectors use FusionLayer-projected concept embeddings (R^64).
+    std::vector<DecoderPair> generate_relation_decoder_data() const;
+
 private:
     KANLanguageEngine& engine_;
     LongTermMemory& ltm_;
@@ -94,6 +99,11 @@ private:
     //   4. Output projection: direct gradient descent
     //   5. Init-KAN + Update-KAN: train on (input, target_h) pairs via MSE
     double train_decoder_epoch(const std::vector<DecoderPair>& data, double lr);
+
+    // Closed-form ridge regression for output projection W
+    // Solves: W = argmin_W Σ ||W^T · h_ext - one_hot(target)||² + λ||W||²
+    // One-shot optimal solution in ~50ms vs iterative SGD.
+    void train_decoder_closedform(const std::vector<DecoderPair>& data, double lambda);
 
     // Softmax helper
     static std::vector<double> softmax(const std::vector<double>& logits);

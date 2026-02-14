@@ -1,4 +1,5 @@
 #include "chat_interface.hpp"
+#include "../memory/relation_type_registry.hpp"
 #include <sstream>
 #include <algorithm>
 #include <iostream>
@@ -617,6 +618,15 @@ ChatResponse ChatInterface::ask_with_thinking(
     return response;
 }
 
+// ─── NLG Helper ─────────────────────────────────────────────────────────────
+
+static std::string relation_as_sentence(const ThinkingContext::RelationLink& rl) {
+    auto& reg = RelationTypeRegistry::instance();
+    auto type_opt = reg.find_by_name(rl.relation_name);
+    std::string verb = type_opt ? reg.get_name_de(*type_opt) : rl.relation_name;
+    return rl.source_label + " " + verb + " " + rl.target_label + ".";
+}
+
 // ─── Full-Pipeline Response Formatter ────────────────────────────────────────
 
 std::string ChatInterface::format_thinking_response(
@@ -631,15 +641,7 @@ std::string ChatInterface::format_thinking_response(
         return ans.str();
     }
 
-    // ── Pipeline summary header ──
-    ans << "Basierend auf meinem Denken ("
-        << thinking.salient_concepts.size() << " aktivierte Konzepte, "
-        << thinking.steps_completed << " Pipeline-Schritte, "
-        << static_cast<int>(thinking.thinking_duration_ms) << "ms):\n";
-
-    // ── Multi-domain detection ──
-    // Only flag multi-domain if there are 2+ domains with significant relevance
-    // AND the top two have comparable relevance (ratio < 3:1)
+    // ── Section 1+2: Core concept / Multi-domain ──
     bool multi_domain = false;
     if (thinking.detected_domains.size() > 1) {
         double top = thinking.detected_domains[0].relevance;
@@ -648,150 +650,91 @@ std::string ChatInterface::format_thinking_response(
     }
 
     if (multi_domain) {
-        // Ambiguity detected — show all domains
-        ans << "\n**Mehrere Wissensbereiche erkannt:**\n";
-        for (const auto& domain : thinking.detected_domains) {
-            ans << "  - **" << domain.domain_name << "** ("
-                << domain.concepts.size() << " Konzepte, Relevanz: "
-                << static_cast<int>(domain.relevance * 100) << "%)\n";
-        }
-        ans << "\n";
-
-        // Show primary concept from each domain
         for (const auto& domain : thinking.detected_domains) {
             if (domain.concepts.empty()) continue;
-            ans << "**" << domain.domain_name << ":**\n";
-            size_t shown = 0;
-            for (auto cid : domain.concepts) {
-                if (shown >= 2) break;
-                auto info_opt = ltm.retrieve_concept(cid);
-                if (!info_opt) continue;
-                ans << "  **" << info_opt->label << "** ("
-                    << epistemic_type_to_string(info_opt->epistemic.type)
-                    << ", Trust: " << static_cast<int>(info_opt->epistemic.trust * 100) << "%)\n"
-                    << "  " << info_opt->definition << "\n";
-                ++shown;
-            }
-            ans << "\n";
+            auto info_opt = ltm.retrieve_concept(domain.concepts[0]);
+            if (!info_opt) continue;
+            ans << "**" << info_opt->label << "**: " << info_opt->definition << "\n\n";
         }
     } else {
-        // Single domain — detailed answer
         const auto& primary = top_concepts[0];
-        ans << "**" << primary.label << "** ("
-            << epistemic_type_to_string(primary.epistemic.type)
-            << ", Trust: " << static_cast<int>(primary.epistemic.trust * 100) << "%)\n";
-        ans << primary.definition << "\n\n";
+        ans << "**" << primary.label << "**: " << primary.definition << "\n";
+    }
 
-        // Related concepts
-        if (top_concepts.size() > 1) {
-            ans << "Verwandte Konzepte:\n";
-            size_t shown = 0;
-            for (size_t i = 1; i < top_concepts.size() && shown < 3; ++i) {
-                const auto& c = top_concepts[i];
-                ans << "  - **" << c.label << "** ("
-                    << epistemic_type_to_string(c.epistemic.type)
-                    << ", " << static_cast<int>(c.epistemic.trust * 100) << "%): "
-                    << c.definition.substr(0, 120);
-                if (c.definition.size() > 120) ans << "...";
-                ans << "\n";
-                ++shown;
+    // ── Section 3: Relations as natural sentences (weight > 0.5) ──
+    {
+        std::vector<std::string> sentences;
+        for (const auto& rl : thinking.relation_links) {
+            if (rl.weight > 0.5) {
+                sentences.push_back(relation_as_sentence(rl));
+            }
+        }
+        if (!sentences.empty()) {
+            ans << "\n";
+            for (size_t i = 0; i < sentences.size(); ++i) {
+                if (i > 0) ans << " ";
+                ans << sentences[i];
             }
             ans << "\n";
         }
     }
 
-    // ── KAN-Relations between salient concepts ──
-    if (!thinking.relation_links.empty()) {
-        ans << "KAN-Relationen:\n";
+    // ── Section 4: Related concepts (max 3, compact) ──
+    if (!multi_domain && top_concepts.size() > 1) {
+        ans << "\nVerwandte Konzepte: ";
         size_t shown = 0;
-        for (const auto& rl : thinking.relation_links) {
-            if (shown >= 8) break;
-            ans << "  " << rl.source_label << " --[" << rl.relation_name
-                << "]--> " << rl.target_label;
-            if (rl.weight < 1.0) {
-                ans << " (w=" << static_cast<int>(rl.weight * 100) << "%)";
-            }
-            ans << "\n";
+        for (size_t i = 1; i < top_concepts.size() && shown < 3; ++i) {
+            const auto& c = top_concepts[i];
+            if (shown > 0) ans << " | ";
+            ans << "**" << c.label << "** — "
+                << c.definition.substr(0, 100);
+            if (c.definition.size() > 100) ans << "...";
             ++shown;
         }
         ans << "\n";
     }
 
-    // ── MiniLLM meaning insights ──
+    // ── Section 5: Meaning insights (max 3, compact) ──
     if (!thinking.meaning_insights.empty()) {
-        ans << "Semantische Analyse (MiniLLMs):\n";
+        ans << "\n";
         size_t shown = 0;
         for (const auto& insight : thinking.meaning_insights) {
-            if (shown >= 5) break;
-            ans << "  - " << insight.interpretation
-                << " (Konfidenz: " << static_cast<int>(insight.confidence * 100) << "%, "
-                << insight.source_model << ")\n";
+            if (shown >= 3) break;
+            ans << "- " << insight.interpretation
+                << " (" << static_cast<int>(insight.confidence * 100) << "%)\n";
             ++shown;
         }
-        ans << "\n";
     }
 
-    // ── Hypotheses (with KAN validation status) ──
-    if (!thinking.hypothesis_insights.empty()) {
-        ans << "Hypothesen:\n";
-        size_t shown = 0;
+    // ── Section 6: Hypotheses (confidence > 0.5 only) ──
+    {
+        bool header_shown = false;
         for (const auto& hyp : thinking.hypothesis_insights) {
-            if (shown >= 3) break;
-            ans << "  - " << hyp.statement
-                << " (Konfidenz: " << static_cast<int>(hyp.confidence * 100) << "%";
+            if (hyp.confidence <= 0.5) continue;
+            if (!header_shown) { ans << "\n"; header_shown = true; }
+            ans << "- " << hyp.statement
+                << " (Hypothese, " << static_cast<int>(hyp.confidence * 100) << "%";
             if (hyp.kan_validated) {
-                ans << ", KAN: " << hyp.validation_status;
+                ans << ", " << hyp.validation_status;
             }
             ans << ")\n";
-            ++shown;
         }
-        ans << "\n";
     }
 
-    // ── Contradictions ──
-    if (!thinking.contradiction_notes.empty()) {
-        ans << "Widersprueche erkannt:\n";
+    // ── Section 7: Contradictions (severity > 0.7 only) ──
+    {
+        bool header_shown = false;
         for (const auto& c : thinking.contradiction_notes) {
-            ans << "  - " << c.description
+            if (c.severity <= 0.7) continue;
+            if (!header_shown) { ans << "\n"; header_shown = true; }
+            ans << "- " << c.description
                 << " (Schwere: " << static_cast<int>(c.severity * 100) << "%)\n";
         }
-        ans << "\n";
     }
 
-    // ── Embedding discoveries ──
-    if (!thinking.embedding_discoveries.empty()) {
-        ans << "Embedding-Aehnlichkeit:\n";
-        size_t shown = 0;
-        for (const auto& ed : thinking.embedding_discoveries) {
-            if (shown >= 4) break;
-            ans << "  " << ed.label << " (cosine="
-                << static_cast<int>(ed.similarity * 100) << "%)\n";
-            ++shown;
-        }
-        ans << "\n";
-    }
-
-    // ── Autonomous thinking insights (GDO background) ──
-    if (!thinking.autonomous_insights.empty()) {
-        ans << "Autonomes Denken (Hintergrund):\n";
-        for (const auto& ai : thinking.autonomous_insights) {
-            ans << "  " << ai.seed_concepts.size() << " Seed-Konzepte, "
-                << ai.proposals_generated << " Proposals";
-            if (!ai.discovered_labels.empty()) {
-                ans << ", neue Konzepte: ";
-                for (size_t i = 0; i < ai.discovered_labels.size() && i < 3; ++i) {
-                    if (i > 0) ans << ", ";
-                    ans << ai.discovered_labels[i];
-                }
-            }
-            ans << " (" << static_cast<int>(ai.duration_ms) << "ms)\n";
-        }
-        ans << "\n";
-    }
-
-    // ── Thought paths ──
+    // ── Section 8: Thought paths (max 3) ──
     if (!thinking.thought_path_summaries.empty()) {
-        ans << "Gedankenpfade:\n";
+        ans << "\nGedankenpfade:\n";
         size_t shown = 0;
         for (const auto& p : thinking.thought_path_summaries) {
             if (shown >= 3) break;

@@ -83,6 +83,17 @@ static double tent_basis(double x, size_t k, size_t num_knots) {
     return 1.0 - dist / width;
 }
 
+// Derivative of tent basis w.r.t. x: +1/width on ascending, -1/width on descending, 0 at peak/outside
+static double tent_derivative(double x, size_t k, size_t num_knots) {
+    double center = static_cast<double>(k) / static_cast<double>(num_knots - 1);
+    double width = 1.0 / static_cast<double>(num_knots - 1);
+    double diff = x - center;
+    if (std::abs(diff) >= width) return 0.0;
+    if (diff > 0.0) return -1.0 / width;
+    if (diff < 0.0) return  1.0 / width;
+    return 0.0;  // at peak (subgradient = 0)
+}
+
 static double kan_edge_forward(const double* coeffs, double x, size_t num_knots) {
     x = std::max(0.0, std::min(1.0, x));
     double result = 0.0;
@@ -126,17 +137,67 @@ double FlexKAN::evaluate(const std::array<double, INPUT_DIM>& input) const {
 
 void FlexKAN::train_step(const std::array<double, INPUT_DIM>& input,
                           double target, double learning_rate) {
-    constexpr double eps = 1e-5;
-    double base_output = evaluate(input);
-    double base_loss = 0.5 * (base_output - target) * (base_output - target);
+    // Analytical gradient — replaces 280 forward passes with 1 forward + 1 backward
 
-    for (size_t i = 0; i < TOTAL_PARAMS; ++i) {
-        double orig = params[i];
-        params[i] = orig + eps;
-        double plus_output = evaluate(input);
-        double plus_loss = 0.5 * (plus_output - target) * (plus_output - target);
-        double grad = (plus_loss - base_loss) / eps;
-        params[i] = orig - learning_rate * grad;
+    // Forward with cached intermediates
+    double in[INPUT_DIM];
+    for (size_t i = 0; i < INPUT_DIM; ++i) {
+        in[i] = std::max(0.0, std::min(1.0, input[i]));
+    }
+
+    double hidden_raw[HIDDEN_DIM] = {};
+    for (size_t j = 0; j < HIDDEN_DIM; ++j) {
+        for (size_t i = 0; i < INPUT_DIM; ++i) {
+            size_t edge_idx = (i * HIDDEN_DIM + j) * NUM_KNOTS;
+            hidden_raw[j] += kan_edge_forward(&params[edge_idx], in[i], NUM_KNOTS);
+        }
+    }
+
+    double hidden_act[HIDDEN_DIM];
+    for (size_t j = 0; j < HIDDEN_DIM; ++j) {
+        hidden_act[j] = sigmoid(hidden_raw[j]);
+    }
+
+    double output_raw = 0.0;
+    for (size_t j = 0; j < HIDDEN_DIM; ++j) {
+        size_t edge_idx = (LAYER0_EDGES + j) * NUM_KNOTS;
+        output_raw += kan_edge_forward(&params[edge_idx], hidden_act[j], NUM_KNOTS);
+    }
+
+    double output = sigmoid(output_raw);
+
+    // Backward pass
+    double dL_dout_raw = (output - target) * output * (1.0 - output);
+
+    // Compute dL/d(hidden_raw[j]) using original params before any updates
+    double dL_dhidden_raw[HIDDEN_DIM] = {};
+    for (size_t j = 0; j < HIDDEN_DIM; ++j) {
+        size_t edge_base = (LAYER0_EDGES + j) * NUM_KNOTS;
+        double d_edge_dx = 0.0;
+        for (size_t k = 0; k < NUM_KNOTS; ++k) {
+            d_edge_dx += params[edge_base + k] * tent_derivative(hidden_act[j], k, NUM_KNOTS);
+        }
+        dL_dhidden_raw[j] = dL_dout_raw * d_edge_dx * hidden_act[j] * (1.0 - hidden_act[j]);
+    }
+
+    // Update layer 1 coefficients
+    for (size_t j = 0; j < HIDDEN_DIM; ++j) {
+        size_t edge_base = (LAYER0_EDGES + j) * NUM_KNOTS;
+        for (size_t k = 0; k < NUM_KNOTS; ++k) {
+            double grad = dL_dout_raw * tent_basis(hidden_act[j], k, NUM_KNOTS);
+            params[edge_base + k] -= learning_rate * grad;
+        }
+    }
+
+    // Update layer 0 coefficients
+    for (size_t j = 0; j < HIDDEN_DIM; ++j) {
+        for (size_t i = 0; i < INPUT_DIM; ++i) {
+            size_t edge_base = (i * HIDDEN_DIM + j) * NUM_KNOTS;
+            for (size_t k = 0; k < NUM_KNOTS; ++k) {
+                double grad = dL_dhidden_raw[j] * tent_basis(in[i], k, NUM_KNOTS);
+                params[edge_base + k] -= learning_rate * grad;
+            }
+        }
     }
 }
 
@@ -358,35 +419,181 @@ MicroTrainingResult ConceptModel::train(const std::vector<TrainingSample>& sampl
 }
 
 // =============================================================================
-// Refined training (multi-head + KAN, numerical gradient)
+// Refined training (multi-head + KAN, analytical gradient)
 // =============================================================================
+//
+// Replaces 920 forward passes (numerical gradient) with 1 forward + 1 backward.
+// Backprop chain: loss -> sigmoid -> KAN(L1) -> sigmoid -> KAN(L0) -> sigmoid -> multihead
+//
 
 void ConceptModel::train_refined(const FlexEmbedding& rel_emb, const FlexEmbedding& ctx_emb,
                                   const FlexEmbedding& concept_from,
                                   const FlexEmbedding& concept_to,
                                   double target, double learning_rate) {
-    constexpr double eps = 1e-5;
-    double base_output = predict_refined(rel_emb, ctx_emb, concept_from, concept_to);
-    double base_loss = 0.5 * (base_output - target) * (base_output - target);
+    // =================================================================
+    // Forward pass with cached intermediates
+    // =================================================================
 
-    // Train multi-head params (640)
-    for (size_t i = 0; i < MultiHeadBilinear::TOTAL_PARAMS; ++i) {
-        double orig = multihead_.params[i];
-        multihead_.params[i] = orig + eps;
-        double plus_output = predict_refined(rel_emb, ctx_emb, concept_from, concept_to);
-        double plus_loss = 0.5 * (plus_output - target) * (plus_output - target);
-        double grad = (plus_loss - base_loss) / eps;
-        multihead_.params[i] = orig - learning_rate * grad;
+    // 1. Bilinear score (constant w.r.t. refined params)
+    double bilinear = predict(rel_emb, ctx_emb);
+
+    // 2. Multi-head bilinear — inline to cache projections
+    auto input_q = make_input_vec(concept_from);
+    auto input_k = make_input_vec(concept_to);
+
+    constexpr size_t MH_K  = MultiHeadBilinear::K;
+    constexpr size_t MH_D  = MultiHeadBilinear::D_PROJ;
+    constexpr size_t MH_IN = MultiHeadBilinear::INPUT_DIM;
+
+    std::array<double, MH_K> mh_scores{};
+    double p_proj[MH_K][MH_D];
+    double q_proj[MH_K][MH_D];
+
+    for (size_t h = 0; h < MH_K; ++h) {
+        size_t p_off = h * MultiHeadBilinear::PARAMS_PER_HEAD;
+        size_t q_off = p_off + MH_D * MH_IN;
+
+        double dot = 0.0;
+        for (size_t d = 0; d < MH_D; ++d) {
+            p_proj[h][d] = 0.0;
+            q_proj[h][d] = 0.0;
+            for (size_t j = 0; j < MH_IN; ++j) {
+                p_proj[h][d] += multihead_.params[p_off + d * MH_IN + j] * input_q[j];
+                q_proj[h][d] += multihead_.params[q_off + d * MH_IN + j] * input_k[j];
+            }
+            dot += p_proj[h][d] * q_proj[h][d];
+        }
+        mh_scores[h] = dot;
     }
 
-    // Train KAN params (280)
+    // 3. Assemble KAN input
+    constexpr size_t KAN_IN = FlexKAN::INPUT_DIM;
+    constexpr size_t KAN_H  = FlexKAN::HIDDEN_DIM;
+    constexpr size_t KAN_NK = FlexKAN::NUM_KNOTS;
+
+    std::array<double, KAN_IN> kan_input;
+    for (size_t i = 0; i < MH_K; ++i) {
+        kan_input[i] = sigmoid(mh_scores[i]);
+    }
+    kan_input[4] = bilinear;
+    kan_input[5] = static_cast<double>(
+        std::min(concept_from.detail.size(), concept_to.detail.size())) / 496.0;
+
+    // Clamp for KAN
+    double in[KAN_IN];
+    for (size_t i = 0; i < KAN_IN; ++i) {
+        in[i] = std::max(0.0, std::min(1.0, kan_input[i]));
+    }
+
+    // 4. KAN Layer 0 forward
+    double hidden_raw[KAN_H] = {};
+    for (size_t j = 0; j < KAN_H; ++j) {
+        for (size_t i = 0; i < KAN_IN; ++i) {
+            size_t edge_idx = (i * KAN_H + j) * KAN_NK;
+            hidden_raw[j] += kan_edge_forward(&kan_.params[edge_idx], in[i], KAN_NK);
+        }
+    }
+
+    double hidden_act[KAN_H];
+    for (size_t j = 0; j < KAN_H; ++j) {
+        hidden_act[j] = sigmoid(hidden_raw[j]);
+    }
+
+    // 5. KAN Layer 1 forward
+    double output_raw = 0.0;
+    for (size_t j = 0; j < KAN_H; ++j) {
+        size_t edge_idx = (FlexKAN::LAYER0_EDGES + j) * KAN_NK;
+        output_raw += kan_edge_forward(&kan_.params[edge_idx], hidden_act[j], KAN_NK);
+    }
+
+    double output = sigmoid(output_raw);
+
+    // =================================================================
+    // Backward pass — compute all gradients before applying updates
+    // =================================================================
+
+    double dL_dout = output - target;
+    double dL_dout_raw = dL_dout * output * (1.0 - output);
+
+    // --- KAN Layer 1: coefficient gradients + backprop to hidden ---
+    double kan_grad[FlexKAN::TOTAL_PARAMS] = {};
+    double dL_dhidden_act[KAN_H] = {};
+
+    for (size_t j = 0; j < KAN_H; ++j) {
+        size_t edge_base = (FlexKAN::LAYER0_EDGES + j) * KAN_NK;
+
+        // Coefficient gradients: dL/d(coeff) = dL/d(out_raw) * tent(hidden_act[j], k)
+        for (size_t k = 0; k < KAN_NK; ++k) {
+            kan_grad[edge_base + k] = dL_dout_raw * tent_basis(hidden_act[j], k, KAN_NK);
+        }
+
+        // Backprop to hidden_act[j]: d(out_raw)/d(hidden_act[j]) = sum_k coeff * d_tent/dx
+        double d_edge_dx = 0.0;
+        for (size_t k = 0; k < KAN_NK; ++k) {
+            d_edge_dx += kan_.params[edge_base + k] * tent_derivative(hidden_act[j], k, KAN_NK);
+        }
+        dL_dhidden_act[j] = dL_dout_raw * d_edge_dx;
+    }
+
+    // Through sigmoid: dL/d(hidden_raw[j])
+    double dL_dhidden_raw[KAN_H];
+    for (size_t j = 0; j < KAN_H; ++j) {
+        dL_dhidden_raw[j] = dL_dhidden_act[j] * hidden_act[j] * (1.0 - hidden_act[j]);
+    }
+
+    // --- KAN Layer 0: coefficient gradients + backprop to input ---
+    double dL_din[KAN_IN] = {};
+
+    for (size_t i = 0; i < KAN_IN; ++i) {
+        for (size_t j = 0; j < KAN_H; ++j) {
+            size_t edge_base = (i * KAN_H + j) * KAN_NK;
+
+            // Coefficient gradients
+            for (size_t k = 0; k < KAN_NK; ++k) {
+                kan_grad[edge_base + k] = dL_dhidden_raw[j] * tent_basis(in[i], k, KAN_NK);
+            }
+
+            // Backprop to input
+            double d_edge_dx = 0.0;
+            for (size_t k = 0; k < KAN_NK; ++k) {
+                d_edge_dx += kan_.params[edge_base + k] * tent_derivative(in[i], k, KAN_NK);
+            }
+            dL_din[i] += dL_dhidden_raw[j] * d_edge_dx;
+        }
+    }
+
+    // --- Multi-head gradients ---
+    // kan_input[h] = sigmoid(mh_scores[h]), so:
+    // dL/d(mh_scores[h]) = dL/d(in[h]) * kan_input[h] * (1 - kan_input[h])
+    double mh_grad[MultiHeadBilinear::TOTAL_PARAMS] = {};
+
+    for (size_t h = 0; h < MH_K; ++h) {
+        double dL_dmh = dL_din[h] * kan_input[h] * (1.0 - kan_input[h]);
+
+        size_t p_off = h * MultiHeadBilinear::PARAMS_PER_HEAD;
+        size_t q_off = p_off + MH_D * MH_IN;
+
+        // score[h] = sum_d dot(P*input_q, Q*input_k)
+        // d(score[h])/dP[d][j] = q_proj[d] * input_q[j]
+        // d(score[h])/dQ[d][j] = p_proj[d] * input_k[j]
+        for (size_t d = 0; d < MH_D; ++d) {
+            for (size_t j = 0; j < MH_IN; ++j) {
+                mh_grad[p_off + d * MH_IN + j] = dL_dmh * q_proj[h][d] * input_q[j];
+                mh_grad[q_off + d * MH_IN + j] = dL_dmh * p_proj[h][d] * input_k[j];
+            }
+        }
+    }
+
+    // =================================================================
+    // Apply all updates
+    // =================================================================
+
+    for (size_t i = 0; i < MultiHeadBilinear::TOTAL_PARAMS; ++i) {
+        multihead_.params[i] -= learning_rate * mh_grad[i];
+    }
+
     for (size_t i = 0; i < FlexKAN::TOTAL_PARAMS; ++i) {
-        double orig = kan_.params[i];
-        kan_.params[i] = orig + eps;
-        double plus_output = predict_refined(rel_emb, ctx_emb, concept_from, concept_to);
-        double plus_loss = 0.5 * (plus_output - target) * (plus_output - target);
-        double grad = (plus_loss - base_loss) / eps;
-        kan_.params[i] = orig - learning_rate * grad;
+        kan_.params[i] -= learning_rate * kan_grad[i];
     }
 }
 

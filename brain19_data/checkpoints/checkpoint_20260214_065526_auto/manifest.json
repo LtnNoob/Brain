@@ -1,0 +1,14 @@
+{
+  "format_version": 1,
+  "timestamp": "2026-02-14T06:55:26Z",
+  "epoch_ms": 1771052126944,
+  "tag": "auto",
+  "concept_count": 0,
+  "relation_count": 0,
+  "model_count": 29675,
+  "kan_module_count": 0,
+  "components": [
+    {"filename": "stm.bin", "sha256": "a1635a8a493d225c11da2f40a330a8c2329590f92b8a45c5c6046cf005aa3adc", "size_bytes": 110904},
+    {"filename": "micromodels.bin", "sha256": "8eaea3559fe2df29b5d8cd8bbf1eee22598e5da6e22c700a22a71410ebb800ba", "size_bytes": 451297414}
+  ]
+}

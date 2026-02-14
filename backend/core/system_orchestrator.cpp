@@ -337,6 +337,12 @@ void SystemOrchestrator::shutdown() {
         stream_orch_->shutdown(std::chrono::milliseconds{3000});
     }
 
+    // Destroy stream objects BEFORE brain controller frees STM.
+    // ThinkStream destructors call stm_.destroy_context(), so the STM must be alive.
+    stream_monitor_.reset();
+    stream_sched_.reset();
+    stream_orch_.reset();
+
     // Destroy context
     if (brain_ && active_context_ != 0) {
         brain_->destroy_context(active_context_);
@@ -353,9 +359,6 @@ void SystemOrchestrator::shutdown() {
     concept_proposer_.reset();
     epistemic_promotion_.reset();
     pattern_discovery_.reset();
-    stream_monitor_.reset();
-    stream_sched_.reset();
-    stream_orch_.reset();
     shared_embeddings_.reset();
     shared_registry_.reset();
     shared_stm_.reset();

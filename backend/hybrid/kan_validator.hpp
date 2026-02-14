@@ -4,9 +4,11 @@
 #include "epistemic_bridge.hpp"
 #include "../kan/kan_module.hpp"
 #include "../adapter/kan_adapter.hpp"
+#include "../ltm/long_term_memory.hpp"
 #include <memory>
 #include <optional>
 #include <string>
+#include <unordered_map>
 
 namespace brain19 {
 
@@ -39,6 +41,50 @@ struct ValidationResult {
 };
 
 // =============================================================================
+// CHAIN VALIDATION RESULT
+// =============================================================================
+
+struct ChainValidationResult {
+    std::vector<ValidationResult> edge_results;
+    double geometric_mean_trust;
+    double weakest_link;
+    bool chain_valid;
+    std::string chain_summary;
+
+    // NO default constructor (consistent with ValidationResult)
+    ChainValidationResult() = delete;
+
+    ChainValidationResult(
+        bool valid, double geo, double weak, std::string summary
+    ) : geometric_mean_trust(geo)
+      , weakest_link(weak)
+      , chain_valid(valid)
+      , chain_summary(std::move(summary))
+    {}
+};
+
+// =============================================================================
+// KAN MODEL CACHE
+// =============================================================================
+
+struct KANModelCache {
+    std::unordered_map<int, std::pair<std::shared_ptr<KANModule>, double>> cache;
+
+    std::shared_ptr<KANModule> get(RelationshipPattern pattern) const {
+        auto it = cache.find(static_cast<int>(pattern));
+        if (it != cache.end()) return it->second.first;
+        return nullptr;
+    }
+
+    void store(RelationshipPattern pattern, std::shared_ptr<KANModule> module, double mse) {
+        auto it = cache.find(static_cast<int>(pattern));
+        if (it == cache.end() || mse < it->second.second) {
+            cache[static_cast<int>(pattern)] = {std::move(module), mse};
+        }
+    }
+};
+
+// =============================================================================
 // KAN VALIDATOR
 // =============================================================================
 //
@@ -61,6 +107,8 @@ public:
         double convergence_threshold = 1e-6;   // fallback default
         size_t min_data_points = 10;
         size_t default_num_knots = 10;
+        double min_chain_edge_confidence = 0.75;
+        bool enable_model_cache = true;
     };
 
     KanValidator() : KanValidator(Config{}) {}
@@ -68,6 +116,11 @@ public:
 
     // Validate a hypothesis proposal end-to-end
     ValidationResult validate(const HypothesisProposal& proposal) const;
+
+    // Validate a multi-hop chain hypothesis
+    ChainValidationResult validate_chain(
+        const HypothesisProposal& proposal,
+        const LongTermMemory& ltm) const;
 
     // Access sub-components
     const HypothesisTranslator& translator() const { return translator_; }
@@ -78,6 +131,7 @@ private:
     Config config_;
     HypothesisTranslator translator_;
     EpistemicBridge bridge_;
+    mutable KANModelCache model_cache_;
 };
 
 } // namespace brain19

@@ -9,9 +9,9 @@
 #include "../cognitive/global_dynamics_operator.hpp"
 #include "../curiosity/curiosity_engine.hpp"
 #include "../curiosity/goal_generator.hpp"
-#include "../micromodel/micro_model_registry.hpp"
+#include "../cmodel/concept_model_registry.hpp"
+#include "../cmodel/concept_trainer.hpp"
 #include "../micromodel/embedding_manager.hpp"
-#include "../micromodel/micro_trainer.hpp"
 #include "../micromodel/relevance_map.hpp"
 #include "../adapter/kan_adapter.hpp"
 #include "../understanding/understanding_layer.hpp"
@@ -160,8 +160,8 @@ private:
 
     // 4. MicroModels
     std::unique_ptr<EmbeddingManager> embeddings_;
-    std::unique_ptr<MicroModelRegistry> registry_;
-    std::unique_ptr<MicroTrainer> trainer_;
+    std::unique_ptr<ConceptModelRegistry> registry_;
+    std::unique_ptr<ConceptTrainer> trainer_;
 
     // 5. Cognitive
     std::unique_ptr<CognitiveDynamics> cognitive_;

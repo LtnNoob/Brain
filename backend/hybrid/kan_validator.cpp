@@ -1,5 +1,7 @@
 #include "kan_validator.hpp"
 #include <memory>
+#include <cmath>
+#include <sstream>
 
 namespace brain19 {
 
@@ -51,11 +53,20 @@ ValidationResult KanValidator::validate(const HypothesisProposal& proposal) cons
         );
     }
 
-    // Step 3: Create and train KAN
-    auto kan = std::make_shared<KANModule>(
-        problem.suggested_topology,
-        config_.default_num_knots
-    );
+    // Step 3: Create KAN (warm-start from cache if available)
+    std::shared_ptr<KANModule> kan;
+    if (config_.enable_model_cache) {
+        auto cached = model_cache_.get(problem.pattern);
+        if (cached) {
+            kan = cached->clone();
+        }
+    }
+    if (!kan) {
+        kan = std::make_shared<KANModule>(
+            problem.suggested_topology,
+            config_.default_num_knots
+        );
+    }
 
     KanTrainingConfig train_config = problem.suggested_config;
     // M2 FIX: Only override translator suggestions when explicitly configured
@@ -85,8 +96,13 @@ ValidationResult KanValidator::validate(const HypothesisProposal& proposal) cons
         problem.training_data.size()
     );
 
-    bool validated = assessment.converged && 
+    bool validated = assessment.converged &&
                      assessment.metadata.type != EpistemicType::SPECULATION;
+
+    // Cache the trained model if it performed well
+    if (config_.enable_model_cache && validated) {
+        model_cache_.store(problem.pattern, kan, training_result.final_loss);
+    }
 
     return ValidationResult(
         validated,
@@ -95,6 +111,83 @@ ValidationResult KanValidator::validate(const HypothesisProposal& proposal) cons
         kan,
         assessment.explanation
     );
+}
+
+// =============================================================================
+// CHAIN VALIDATION
+// =============================================================================
+
+ChainValidationResult KanValidator::validate_chain(
+    const HypothesisProposal& proposal,
+    const LongTermMemory& ltm) const
+{
+    const auto& evidence = proposal.evidence_concepts;
+    if (evidence.size() < 3) {
+        return ChainValidationResult(false, 0.0, 0.0, "Chain too short");
+    }
+
+    std::vector<ValidationResult> edge_results;
+    double product = 1.0;
+    double weakest = 1.0;
+    size_t n_edges = 0;
+    std::ostringstream summary;
+
+    // Walk evidence_concepts as consecutive pairs
+    for (size_t i = 0; i + 1 < evidence.size(); ++i) {
+        ConceptId src = evidence[i];
+        ConceptId tgt = evidence[i + 1];
+
+        auto rels = ltm.get_relations_between(src, tgt);
+        if (rels.empty()) {
+            rels = ltm.get_relations_between(tgt, src);
+        }
+
+        if (rels.empty()) {
+            // No relation found — weak link
+            product *= 0.1;
+            weakest = std::min(weakest, 0.1);
+            ++n_edges;
+            continue;
+        }
+
+        // Build a single-edge hypothesis for validation
+        HypothesisProposal edge_hyp(
+            0,
+            {src, tgt},
+            "Edge: " + std::to_string(src) + " -> " + std::to_string(tgt),
+            "Chain edge validation",
+            std::vector<std::string>{"chain-edge", "proportional", "scales with"},
+            proposal.model_confidence,
+            proposal.source_model
+        );
+
+        try {
+            auto vr = validate(edge_hyp);
+            double edge_trust = vr.assessment.metadata.trust;
+            product *= edge_trust;
+            weakest = std::min(weakest, edge_trust);
+            edge_results.push_back(std::move(vr));
+        } catch (...) {
+            product *= 0.1;
+            weakest = std::min(weakest, 0.1);
+        }
+        ++n_edges;
+    }
+
+    if (n_edges == 0) {
+        return ChainValidationResult(false, 0.0, 0.0, "No edges in chain");
+    }
+
+    double geo_mean = std::pow(product, 1.0 / static_cast<double>(n_edges));
+    bool all_strong = weakest >= config_.min_chain_edge_confidence;
+
+    summary << n_edges << " edges, geo_mean=" << std::fixed;
+    summary.precision(3);
+    summary << geo_mean << ", weakest=" << weakest;
+
+    ChainValidationResult result(all_strong, geo_mean, weakest, summary.str());
+    result.edge_results = std::move(edge_results);
+    return result;
 }
 
 } // namespace brain19

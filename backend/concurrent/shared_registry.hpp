@@ -6,7 +6,7 @@
 // 3. SharedRegistry
 // 4. SharedEmbeddings
 
-#include "../micromodel/micro_model_registry.hpp"
+#include "../cmodel/concept_model_registry.hpp"
 #include <shared_mutex>
 #include <mutex>
 #include <memory>
@@ -14,12 +14,12 @@
 
 namespace brain19 {
 
-// Thread-safe wrapper around MicroModelRegistry.
+// Thread-safe wrapper around ConceptModelRegistry.
 // shared_mutex at registry level; per-model mutexes for training.
-// OPT-IN: single-threaded code can use MicroModelRegistry directly.
+// OPT-IN: single-threaded code can use ConceptModelRegistry directly.
 class SharedRegistry {
 public:
-    explicit SharedRegistry(MicroModelRegistry& reg) : reg_(reg) {}
+    explicit SharedRegistry(ConceptModelRegistry& reg) : reg_(reg) {}
 
     SharedRegistry(const SharedRegistry&) = delete;
     SharedRegistry& operator=(const SharedRegistry&) = delete;
@@ -63,7 +63,7 @@ public:
 
     // === READ operations (shared_lock on registry) ===
 
-    const MicroModel* get_model(ConceptId cid) const {
+    const ConceptModel* get_model(ConceptId cid) const {
         std::shared_lock lock(mtx_);
         return reg_.get_model(cid);
     }
@@ -108,14 +108,14 @@ public:
         }
         ModelGuard(const ModelGuard&) = delete;
         ModelGuard& operator=(const ModelGuard&) = delete;
-        MicroModel* operator->() { return model_; }
-        MicroModel* get() { return model_; }
+        ConceptModel* operator->() { return model_; }
+        ConceptModel* get() { return model_; }
         explicit operator bool() const { return model_ != nullptr; }
     private:
         SharedRegistry& reg_;
         ConceptId cid_;
         std::shared_lock<std::shared_mutex> reg_lock_;
-        MicroModel* model_;
+        ConceptModel* model_;
     };
 
     ModelGuard model_guard(ConceptId cid) {
@@ -123,7 +123,7 @@ public:
     }
 
 private:
-    MicroModelRegistry& reg_;
+    ConceptModelRegistry& reg_;
     mutable std::shared_mutex mtx_;
     mutable std::unordered_map<ConceptId, std::unique_ptr<std::mutex>> model_mutexes_;
 };

@@ -6,7 +6,7 @@ namespace brain19 {
 
 FocusCursor::FocusCursor(
     const LongTermMemory& ltm,
-    MicroModelRegistry& registry,
+    ConceptModelRegistry& registry,
     EmbeddingManager& embeddings,
     FocusCursorConfig config
 )
@@ -47,7 +47,7 @@ void FocusCursor::seed(ConceptId start, const Vec10& initial_context) {
 }
 
 double FocusCursor::evaluate_edge(ConceptId from, ConceptId to, RelationType type) const {
-    MicroModel* model = registry_.get_model(from);
+    ConceptModel* model = registry_.get_model(from);
     if (!model) return 0.0;
 
     const Vec10& e = embeddings_.get_relation_embedding(type);
@@ -62,7 +62,10 @@ double FocusCursor::evaluate_edge(ConceptId from, ConceptId to, RelationType typ
                     + config_.context_mix_rate * target_emb.core[i];
     }
 
-    return model->predict(e, c_mixed);
+    auto concept_from = embeddings_.concept_embeddings().get_or_default(from);
+    auto concept_to = embeddings_.concept_embeddings().get_or_default(to);
+
+    return model->predict_refined(e, c_mixed, concept_from, concept_to);
 }
 
 void FocusCursor::accumulate_context(ConceptId new_concept) {

@@ -38,6 +38,9 @@ public:
     //   Phase 2: full_similarity for top 50 -> top K
     std::vector<std::pair<ConceptId, double>> most_similar(ConceptId cid, size_t k);
 
+    // Get embedding for concept (returns hash_init if missing, does NOT modify store)
+    FlexEmbedding get_or_default(ConceptId cid) const;
+
     // Check if concept has an embedding
     bool has(ConceptId cid) const;
 

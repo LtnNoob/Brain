@@ -1,7 +1,7 @@
 #pragma once
 
 #include "investigation_request.hpp"
-#include "../micromodel/micro_model_registry.hpp"
+#include "../cmodel/concept_model_registry.hpp"
 #include "../micromodel/embedding_manager.hpp"
 #include "../ltm/long_term_memory.hpp"
 #include <vector>
@@ -37,11 +37,11 @@ public:
         Config() = default;
     };
 
-    KanGraphMonitor(const MicroModelRegistry& registry,
+    KanGraphMonitor(const ConceptModelRegistry& registry,
                     const EmbeddingManager& embeddings)
         : KanGraphMonitor(registry, embeddings, Config{}) {}
 
-    KanGraphMonitor(const MicroModelRegistry& registry,
+    KanGraphMonitor(const ConceptModelRegistry& registry,
                     const EmbeddingManager& embeddings,
                     Config config);
 
@@ -53,13 +53,13 @@ public:
     const Config& get_config() const { return config_; }
 
 private:
-    const MicroModelRegistry& registry_;
+    const ConceptModelRegistry& registry_;
     const EmbeddingManager& embeddings_;
     Config config_;
     mutable uint64_t request_counter_ = 0;
 
-    // Core helper: predict edge strength via MicroModel
-    double predict_edge(ConceptId from, RelationType type) const;
+    // Core helper: predict edge strength via MicroModel (target-aware)
+    double predict_edge(ConceptId from, ConceptId to, RelationType type) const;
 
     // Detection routines (append to results vector)
     void detect_weak_edges(

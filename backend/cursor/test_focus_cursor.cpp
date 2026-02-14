@@ -8,8 +8,8 @@
 #include "focus_cursor_manager.hpp"
 #include "goal_state.hpp"
 #include "../ltm/long_term_memory.hpp"
-#include "../micromodel/micro_model_registry.hpp"
-#include "../micromodel/micro_trainer.hpp"
+#include "../cmodel/concept_model_registry.hpp"
+#include "../cmodel/concept_trainer.hpp"
 #include "../micromodel/embedding_manager.hpp"
 #include "../memory/stm.hpp"
 #include <cassert>
@@ -23,9 +23,9 @@ using namespace brain19;
 // =============================================================================
 struct MiniGraph {
     LongTermMemory ltm;
-    MicroModelRegistry registry;
+    ConceptModelRegistry registry;
     EmbeddingManager embeddings;
-    MicroTrainer trainer;
+    ConceptTrainer trainer;
     ShortTermMemory stm;
 
     ConceptId eis, schmelzen, wasser, fluessig, dampf;

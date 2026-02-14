@@ -1,0 +1,6247 @@
+{
+  "source": "technology_engineering",
+  "concepts": [
+    {
+      "label": "Electric Motor",
+      "definition": "A machine that converts electrical energy into mechanical motion through electromagnetic induction",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "AC Motor",
+      "definition": "An electric motor driven by alternating current, commonly used in industrial applications",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "DC Motor",
+      "definition": "An electric motor that runs on direct current, offering precise speed control",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Stepper Motor",
+      "definition": "A brushless DC motor that divides full rotation into discrete steps for precise positioning",
+      "epistemic_type": "FACT",
+      "trust": 0.97
+    },
+    {
+      "label": "Servo Motor",
+      "definition": "A rotary actuator that allows for precise control of angular position, velocity and acceleration",
+      "epistemic_type": "FACT",
+      "trust": 0.97
+    },
+    {
+      "label": "Induction Motor",
+      "definition": "An AC motor where electric current in the rotor is induced by rotating magnetic field",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Synchronous Motor",
+      "definition": "An AC motor where rotor rotation is synchronized with frequency of supply current",
+      "epistemic_type": "FACT",
+      "trust": 0.97
+    },
+    {
+      "label": "Linear Motor",
+      "definition": "An electric motor that produces motion in a straight line rather than rotational motion",
+      "epistemic_type": "FACT",
+      "trust": 0.96
+    },
+    {
+      "label": "Brushless DC Motor",
+      "definition": "A synchronous motor using electronic commutation instead of brushes for higher efficiency",
+      "epistemic_type": "FACT",
+      "trust": 0.97
+    },
+    {
+      "label": "Universal Motor",
+      "definition": "A commutated series-wound motor that can operate on AC or DC supply",
+      "epistemic_type": "FACT",
+      "trust": 0.96
+    },
+    {
+      "label": "Transistor",
+      "definition": "A semiconductor device used to amplify or switch electronic signals",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "BJT",
+      "definition": "Bipolar Junction Transistor - a three-terminal device using both electrons and holes",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "MOSFET",
+      "definition": "Metal-Oxide-Semiconductor Field-Effect Transistor for voltage-controlled switching",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "JFET",
+      "definition": "Junction Field-Effect Transistor with high input impedance and voltage control",
+      "epistemic_type": "FACT",
+      "trust": 0.97
+    },
+    {
+      "label": "IGBT",
+      "definition": "Insulated Gate Bipolar Transistor combining MOSFET and BJT characteristics",
+      "epistemic_type": "FACT",
+      "trust": 0.97
+    },
+    {
+      "label": "Operational Amplifier",
+      "definition": "High-gain voltage amplifier with differential input and single-ended output",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Comparator",
+      "definition": "A circuit that compares two voltages and outputs a digital signal",
+      "epistemic_type": "FACT",
+      "trust": 0.97
+    },
+    {
+      "label": "Voltage Regulator",
+      "definition": "A circuit designed to maintain a constant voltage level",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Diode",
+      "definition": "A semiconductor device that allows current flow in only one direction",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "LED",
+      "definition": "Light Emitting Diode - a semiconductor that emits light when current passes through",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Resistor",
+      "definition": "A passive component that opposes the flow of electric current",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Capacitor",
+      "definition": "A passive component that stores electrical energy in an electric field",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Inductor",
+      "definition": "A passive component that stores energy in a magnetic field when current flows through it",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Transformer",
+      "definition": "A device that transfers electrical energy between circuits through electromagnetic induction",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Relay",
+      "definition": "An electrically operated switch using electromagnetic coil to control contacts",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Fuse",
+      "definition": "A safety device that melts to break circuit when current exceeds safe levels",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Circuit Breaker",
+      "definition": "An automatic electrical switch designed to protect circuits from damage",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Printed Circuit Board",
+      "definition": "A board that mechanically supports and electrically connects electronic components",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "IC",
+      "definition": "Integrated Circuit - a semiconductor containing multiple interconnected electronic components",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Microcontroller",
+      "definition": "A small computer on a single integrated circuit containing processor, memory and peripherals",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "CPU",
+      "definition": "Central Processing Unit - the primary component that executes instructions in a computer",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "GPU",
+      "definition": "Graphics Processing Unit - specialized processor designed for parallel graphics computations",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "RAM",
+      "definition": "Random Access Memory - volatile memory for temporary data storage during processing",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "ROM",
+      "definition": "Read-Only Memory - non-volatile memory typically containing firmware or boot instructions",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "SSD",
+      "definition": "Solid State Drive - data storage device using integrated circuit assemblies",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "HDD",
+      "definition": "Hard Disk Drive - data storage using magnetic storage on rotating disks",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Cache Memory",
+      "definition": "High-speed memory buffer between CPU and main memory for faster access",
+      "epistemic_type": "FACT",
+      "trust": 0.97
+    },
+    {
+      "label": "Motherboard",
+      "definition": "Main circuit board connecting all computer components together",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Power Supply Unit",
+      "definition": "Device that converts AC mains power to regulated DC power for computer components",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Heat Sink",
+      "definition": "Passive heat exchanger that transfers heat from electronic components to air",
+      "epistemic_type": "FACT",
+      "trust": 0.97
+    },
+    {
+      "label": "Network Interface Card",
+      "definition": "Hardware component that connects computer to network",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Ethernet",
+      "definition": "Family of wired networking technologies for local area networks",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "WiFi",
+      "definition": "Wireless networking technology using radio waves for local area connectivity",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Bluetooth",
+      "definition": "Short-range wireless technology for connecting devices over short distances",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Router",
+      "definition": "Networking device that forwards data packets between computer networks",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Switch",
+      "definition": "Networking device that connects devices on network by using MAC addresses",
+      "epistemic_type": "FACT",
+      "trust": 0.97
+    },
+    {
+      "label": "Firewall",
+      "definition": "Network security device that monitors and controls incoming and outgoing traffic",
+      "epistemic_type": "FACT",
+      "trust": 0.97
+    },
+    {
+      "label": "Load Balancer",
+      "definition": "Device that distributes network traffic across multiple servers",
+      "epistemic_type": "FACT",
+      "trust": 0.96
+    },
+    {
+      "label": "Modem",
+      "definition": "Device that modulates and demodulates signals for data transmission",
+      "epistemic_type": "FACT",
+      "trust": 0.97
+    },
+    {
+      "label": "Antenna",
+      "definition": "Device for transmitting or receiving electromagnetic waves",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Internal Combustion Engine",
+      "definition": "Heat engine where combustion of fuel occurs within engine cylinder",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Four Stroke Engine",
+      "definition": "Internal combustion engine with intake, compression, power and exhaust strokes",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Two Stroke Engine",
+      "definition": "Internal combustion engine completing power cycle in two piston strokes",
+      "epistemic_type": "FACT",
+      "trust": 0.97
+    },
+    {
+      "label": "Diesel Engine",
+      "definition": "Compression ignition engine using diesel fuel for combustion",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Gasoline Engine",
+      "definition": "Spark ignition engine using gasoline as fuel",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Turbocharger",
+      "definition": "Forced induction device that increases engine power using exhaust gases",
+      "epistemic_type": "FACT",
+      "trust": 0.97
+    },
+    {
+      "label": "Supercharger",
+      "definition": "Mechanically driven forced induction device for increasing engine power",
+      "epistemic_type": "FACT",
+      "trust": 0.96
+    },
+    {
+      "label": "Carburetor",
+      "definition": "Device that mixes air and fuel for internal combustion engines",
+      "epistemic_type": "FACT",
+      "trust": 0.97
+    },
+    {
+      "label": "Fuel Injection",
+      "definition": "System that delivers fuel into combustion chamber or intake manifold",
+      "epistemic_type": "FACT",
+      "trust": 0.97
+    },
+    {
+      "label": "Catalytic Converter",
+      "definition": "Emission control device that reduces toxic gases in exhaust",
+      "epistemic_type": "FACT",
+      "trust": 0.97
+    },
+    {
+      "label": "Manual Transmission",
+      "definition": "Multi-speed transmission where gear changes are made manually by driver",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Automatic Transmission",
+      "definition": "Multi-speed transmission that changes gears automatically",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "CVT",
+      "definition": "Continuously Variable Transmission providing seamless range of gear ratios",
+      "epistemic_type": "FACT",
+      "trust": 0.96
+    },
+    {
+      "label": "Differential",
+      "definition": "Gear system allowing wheels to rotate at different speeds while cornering",
+      "epistemic_type": "FACT",
+      "trust": 0.97
+    },
+    {
+      "label": "Clutch",
+      "definition": "Mechanical device for engaging and disengaging engine from transmission",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Torque Converter",
+      "definition": "Fluid coupling device for transferring rotating power from engine to transmission",
+      "epistemic_type": "FACT",
+      "trust": 0.96
+    },
+    {
+      "label": "Planetary Gear",
+      "definition": "Gear system with central sun gear surrounded by planet gears",
+      "epistemic_type": "FACT",
+      "trust": 0.95
+    },
+    {
+      "label": "Worm Gear",
+      "definition": "Gear arrangement with worm screw meshing with worm wheel",
+      "epistemic_type": "FACT",
+      "trust": 0.95
+    },
+    {
+      "label": "Helical Gear",
+      "definition": "Cylindrical gear with teeth cut at angle to axis for smooth operation",
+      "epistemic_type": "FACT",
+      "trust": 0.94
+    },
+    {
+      "label": "Bevel Gear",
+      "definition": "Conical gear for transmitting power between intersecting shafts",
+      "epistemic_type": "FACT",
+      "trust": 0.94
+    },
+    {
+      "label": "Hydraulic System",
+      "definition": "Power transmission system using pressurized liquid to generate mechanical force",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Hydraulic Pump",
+      "definition": "Mechanical device that converts mechanical power into hydraulic energy",
+      "epistemic_type": "FACT",
+      "trust": 0.97
+    },
+    {
+      "label": "Hydraulic Cylinder",
+      "definition": "Linear actuator powered by pressurized hydraulic fluid",
+      "epistemic_type": "FACT",
+      "trust": 0.97
+    },
+    {
+      "label": "Hydraulic Valve",
+      "definition": "Device for controlling direction, pressure, and flow rate of hydraulic fluid",
+      "epistemic_type": "FACT",
+      "trust": 0.96
+    },
+    {
+      "label": "Pneumatic System",
+      "definition": "Power transmission system using compressed air to generate mechanical force",
+      "epistemic_type": "FACT",
+      "trust": 0.97
+    },
+    {
+      "label": "Air Compressor",
+      "definition": "Machine that converts power into potential energy stored in pressurized air",
+      "epistemic_type": "FACT",
+      "trust": 0.97
+    },
+    {
+      "label": "Pneumatic Cylinder",
+      "definition": "Linear actuator powered by compressed air",
+      "epistemic_type": "FACT",
+      "trust": 0.96
+    },
+    {
+      "label": "Pressure Relief Valve",
+      "definition": "Safety device that relieves pressure when it exceeds set limit",
+      "epistemic_type": "FACT",
+      "trust": 0.96
+    },
+    {
+      "label": "Accumulator",
+      "definition": "Energy storage device that stores fluid under pressure",
+      "epistemic_type": "FACT",
+      "trust": 0.95
+    },
+    {
+      "label": "Filter",
+      "definition": "Device for removing contaminants from fluid systems",
+      "epistemic_type": "FACT",
+      "trust": 0.95
+    },
+    {
+      "label": "Bearing",
+      "definition": "Machine element that constrains relative motion between moving parts",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Ball Bearing",
+      "definition": "Rolling element bearing using balls to maintain separation between races",
+      "epistemic_type": "FACT",
+      "trust": 0.97
+    },
+    {
+      "label": "Roller Bearing",
+      "definition": "Rolling element bearing using cylindrical rollers instead of balls",
+      "epistemic_type": "FACT",
+      "trust": 0.96
+    },
+    {
+      "label": "Thrust Bearing",
+      "definition": "Bearing designed to handle axial loads rather than radial loads",
+      "epistemic_type": "FACT",
+      "trust": 0.95
+    },
+    {
+      "label": "Journal Bearing",
+      "definition": "Plain bearing that supports rotating shaft in radial direction",
+      "epistemic_type": "FACT",
+      "trust": 0.94
+    },
+    {
+      "label": "Seal",
+      "definition": "Device that prevents leakage between moving and stationary parts",
+      "epistemic_type": "FACT",
+      "trust": 0.96
+    },
+    {
+      "label": "O-Ring",
+      "definition": "Circular sealing element with round cross-section for static and dynamic sealing",
+      "epistemic_type": "FACT",
+      "trust": 0.95
+    },
+    {
+      "label": "Gasket",
+      "definition": "Mechanical seal filling space between two objects to prevent leakage",
+      "epistemic_type": "FACT",
+      "trust": 0.95
+    },
+    {
+      "label": "Spring",
+      "definition": "Elastic object that stores mechanical energy when compressed or extended",
+      "epistemic_type": "FACT",
+      "trust": 0.97
+    },
+    {
+      "label": "Coil Spring",
+      "definition": "Helical spring wound in coil form for compression or tension applications",
+      "epistemic_type": "FACT",
+      "trust": 0.95
+    },
+    {
+      "label": "Solar Panel",
+      "definition": "Device that converts sunlight into electricity using photovoltaic effect",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Solar Cell",
+      "definition": "Electronic device that converts light energy directly into electrical energy",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Wind Turbine",
+      "definition": "Device that converts kinetic energy from wind into electrical energy",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Wind Generator",
+      "definition": "Electrical generator driven by wind turbine for producing electricity",
+      "epistemic_type": "FACT",
+      "trust": 0.97
+    },
+    {
+      "label": "Hydroelectric Generator",
+      "definition": "Generator powered by flowing water to produce electricity",
+      "epistemic_type": "FACT",
+      "trust": 0.97
+    },
+    {
+      "label": "Nuclear Reactor",
+      "definition": "Device to initiate and control sustained nuclear chain reaction for energy",
+      "epistemic_type": "FACT",
+      "trust": 0.97
+    },
+    {
+      "label": "Steam Turbine",
+      "definition": "Turbine driven by steam pressure to generate rotational mechanical energy",
+      "epistemic_type": "FACT",
+      "trust": 0.97
+    },
+    {
+      "label": "Gas Turbine",
+      "definition": "Turbine engine using combustion gases to drive compressor and generate power",
+      "epistemic_type": "FACT",
+      "trust": 0.96
+    },
+    {
+      "label": "Generator",
+      "definition": "Device that converts mechanical energy into electrical energy",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Alternator",
+      "definition": "AC generator using electromagnetic induction to produce alternating current",
+      "epistemic_type": "FACT",
+      "trust": 0.97
+    },
+    {
+      "label": "Battery",
+      "definition": "Device that stores electrical energy and releases it as electric current",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Lithium Ion Battery",
+      "definition": "Rechargeable battery where lithium ions move between anode and cathode",
+      "epistemic_type": "FACT",
+      "trust": 0.97
+    },
+    {
+      "label": "Lead Acid Battery",
+      "definition": "Rechargeable battery using lead and sulfuric acid for automotive applications",
+      "epistemic_type": "FACT",
+      "trust": 0.97
+    },
+    {
+      "label": "Fuel Cell",
+      "definition": "Device that generates electricity through chemical reaction of hydrogen and oxygen",
+      "epistemic_type": "FACT",
+      "trust": 0.96
+    },
+    {
+      "label": "Capacitor Bank",
+      "definition": "Group of capacitors connected to store large amounts of electrical energy",
+      "epistemic_type": "FACT",
+      "trust": 0.95
+    },
+    {
+      "label": "Flywheel",
+      "definition": "Rotating mechanical device for storing kinetic energy",
+      "epistemic_type": "FACT",
+      "trust": 0.95
+    },
+    {
+      "label": "Inverter",
+      "definition": "Electronic device that converts DC power to AC power",
+      "epistemic_type": "FACT",
+      "trust": 0.96
+    },
+    {
+      "label": "Rectifier",
+      "definition": "Electronic device that converts AC power to DC power",
+      "epistemic_type": "FACT",
+      "trust": 0.96
+    },
+    {
+      "label": "UPS",
+      "definition": "Uninterruptible Power Supply providing backup power during outages",
+      "epistemic_type": "FACT",
+      "trust": 0.96
+    },
+    {
+      "label": "Power Grid",
+      "definition": "Interconnected network for delivering electricity from producers to consumers",
+      "epistemic_type": "FACT",
+      "trust": 0.97
+    },
+    {
+      "label": "Concrete",
+      "definition": "Composite material composed of cement, water, aggregates and admixtures",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Steel",
+      "definition": "Alloy of iron and carbon with improved strength and durability",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Reinforced Concrete",
+      "definition": "Concrete strengthened with steel rebar to handle tension and compression",
+      "epistemic_type": "FACT",
+      "trust": 0.97
+    },
+    {
+      "label": "Prestressed Concrete",
+      "definition": "Concrete compressed by tensioned cables before loading to improve performance",
+      "epistemic_type": "FACT",
+      "trust": 0.96
+    },
+    {
+      "label": "Rebar",
+      "definition": "Steel reinforcement bar used to strengthen concrete in tension",
+      "epistemic_type": "FACT",
+      "trust": 0.96
+    },
+    {
+      "label": "Beam",
+      "definition": "Structural element that withstands loads primarily by resisting bending",
+      "epistemic_type": "FACT",
+      "trust": 0.97
+    },
+    {
+      "label": "Column",
+      "definition": "Vertical structural element designed to transmit compressive loads",
+      "epistemic_type": "FACT",
+      "trust": 0.97
+    },
+    {
+      "label": "Foundation",
+      "definition": "Lower portion of structure that transfers loads to the ground",
+      "epistemic_type": "FACT",
+      "trust": 0.97
+    },
+    {
+      "label": "Truss",
+      "definition": "Framework of beams forming triangular units for structural strength",
+      "epistemic_type": "FACT",
+      "trust": 0.95
+    },
+    {
+      "label": "Arch",
+      "definition": "Curved structural element spanning opening and supporting load above",
+      "epistemic_type": "FACT",
+      "trust": 0.95
+    },
+    {
+      "label": "Welding",
+      "definition": "Process of joining materials by melting and fusing them together",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Arc Welding",
+      "definition": "Welding process using electric arc to melt and join metals",
+      "epistemic_type": "FACT",
+      "trust": 0.97
+    },
+    {
+      "label": "TIG Welding",
+      "definition": "Tungsten Inert Gas welding using tungsten electrode and inert gas shielding",
+      "epistemic_type": "FACT",
+      "trust": 0.96
+    },
+    {
+      "label": "MIG Welding",
+      "definition": "Metal Inert Gas welding using consumable wire electrode and gas shielding",
+      "epistemic_type": "FACT",
+      "trust": 0.96
+    },
+    {
+      "label": "Soldering",
+      "definition": "Process of joining metals using molten filler metal at low temperatures",
+      "epistemic_type": "FACT",
+      "trust": 0.95
+    },
+    {
+      "label": "Brazing",
+      "definition": "Metal joining process using molten filler metal at temperatures above 450\u00b0C",
+      "epistemic_type": "FACT",
+      "trust": 0.94
+    },
+    {
+      "label": "Machining",
+      "definition": "Manufacturing process removing material to create desired shape and finish",
+      "epistemic_type": "FACT",
+      "trust": 0.97
+    },
+    {
+      "label": "CNC Machine",
+      "definition": "Computer Numerical Control machine for automated machining operations",
+      "epistemic_type": "FACT",
+      "trust": 0.96
+    },
+    {
+      "label": "Lathe",
+      "definition": "Machine tool for rotating workpiece while cutting tool shapes the material",
+      "epistemic_type": "FACT",
+      "trust": 0.96
+    },
+    {
+      "label": "Milling Machine",
+      "definition": "Machine tool using rotating cutters to remove material from workpiece",
+      "epistemic_type": "FACT",
+      "trust": 0.95
+    },
+    {
+      "label": "3D Printer",
+      "definition": "Additive manufacturing device creating objects by depositing material layer by layer",
+      "epistemic_type": "FACT",
+      "trust": 0.96
+    },
+    {
+      "label": "FDM Printing",
+      "definition": "Fused Deposition Modeling - 3D printing by extruding thermoplastic filament",
+      "epistemic_type": "FACT",
+      "trust": 0.95
+    },
+    {
+      "label": "SLA Printing",
+      "definition": "Stereolithography - 3D printing using laser to cure photopolymer resin",
+      "epistemic_type": "FACT",
+      "trust": 0.94
+    },
+    {
+      "label": "SLS Printing",
+      "definition": "Selective Laser Sintering - 3D printing by sintering powder with laser",
+      "epistemic_type": "FACT",
+      "trust": 0.93
+    },
+    {
+      "label": "CAD",
+      "definition": "Computer Aided Design - software for creating technical drawings and models",
+      "epistemic_type": "FACT",
+      "trust": 0.96
+    },
+    {
+      "label": "CAM",
+      "definition": "Computer Aided Manufacturing - software for generating machine tool paths",
+      "epistemic_type": "FACT",
+      "trust": 0.95
+    },
+    {
+      "label": "CAE",
+      "definition": "Computer Aided Engineering - software for analysis and simulation",
+      "epistemic_type": "FACT",
+      "trust": 0.94
+    },
+    {
+      "label": "FEA",
+      "definition": "Finite Element Analysis - numerical method for solving engineering problems",
+      "epistemic_type": "FACT",
+      "trust": 0.94
+    },
+    {
+      "label": "CFD",
+      "definition": "Computational Fluid Dynamics - numerical analysis of fluid flow problems",
+      "epistemic_type": "FACT",
+      "trust": 0.93
+    },
+    {
+      "label": "Rapid Prototyping",
+      "definition": "Quick fabrication of physical parts using additive manufacturing",
+      "epistemic_type": "FACT",
+      "trust": 0.94
+    },
+    {
+      "label": "Robot",
+      "definition": "Programmable machine capable of carrying out complex actions automatically",
+      "epistemic_type": "FACT",
+      "trust": 0.97
+    },
+    {
+      "label": "Industrial Robot",
+      "definition": "Automatically controlled reprogrammable robot used in manufacturing",
+      "epistemic_type": "FACT",
+      "trust": 0.96
+    },
+    {
+      "label": "Robotic Arm",
+      "definition": "Multi-jointed manipulator designed to perform various tasks",
+      "epistemic_type": "FACT",
+      "trust": 0.95
+    },
+    {
+      "label": "End Effector",
+      "definition": "Device attached to robot arm for interacting with environment",
+      "epistemic_type": "FACT",
+      "trust": 0.94
+    },
+    {
+      "label": "Gripper",
+      "definition": "End effector designed to grasp and manipulate objects",
+      "epistemic_type": "FACT",
+      "trust": 0.94
+    },
+    {
+      "label": "Sensor",
+      "definition": "Device that detects and responds to physical input from environment",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Proximity Sensor",
+      "definition": "Sensor that detects presence of nearby objects without contact",
+      "epistemic_type": "FACT",
+      "trust": 0.95
+    },
+    {
+      "label": "Pressure Sensor",
+      "definition": "Device that measures pressure of gases or liquids",
+      "epistemic_type": "FACT",
+      "trust": 0.95
+    },
+    {
+      "label": "Temperature Sensor",
+      "definition": "Device that measures temperature and converts it to electrical signal",
+      "epistemic_type": "FACT",
+      "trust": 0.95
+    },
+    {
+      "label": "Position Sensor",
+      "definition": "Device that measures position or displacement of object",
+      "epistemic_type": "FACT",
+      "trust": 0.94
+    },
+    {
+      "label": "Encoder",
+      "definition": "Sensor that converts motion into electrical signals for position feedback",
+      "epistemic_type": "FACT",
+      "trust": 0.95
+    },
+    {
+      "label": "Absolute Encoder",
+      "definition": "Encoder that provides unique position value for each shaft position",
+      "epistemic_type": "FACT",
+      "trust": 0.94
+    },
+    {
+      "label": "Incremental Encoder",
+      "definition": "Encoder that provides relative position information from reference point",
+      "epistemic_type": "FACT",
+      "trust": 0.93
+    },
+    {
+      "label": "Resolver",
+      "definition": "Rotary transformer used for measuring degrees of rotation",
+      "epistemic_type": "FACT",
+      "trust": 0.92
+    },
+    {
+      "label": "LVDT",
+      "definition": "Linear Variable Differential Transformer for measuring linear displacement",
+      "epistemic_type": "FACT",
+      "trust": 0.91
+    },
+    {
+      "label": "Strain Gauge",
+      "definition": "Sensor for measuring strain or deformation in materials",
+      "epistemic_type": "FACT",
+      "trust": 0.94
+    },
+    {
+      "label": "Load Cell",
+      "definition": "Transducer that converts force into measurable electrical output",
+      "epistemic_type": "FACT",
+      "trust": 0.94
+    },
+    {
+      "label": "Accelerometer",
+      "definition": "Device that measures acceleration forces acting on object",
+      "epistemic_type": "FACT",
+      "trust": 0.94
+    },
+    {
+      "label": "Gyroscope",
+      "definition": "Device for measuring or maintaining orientation based on angular momentum",
+      "epistemic_type": "FACT",
+      "trust": 0.93
+    },
+    {
+      "label": "Magnetometer",
+      "definition": "Instrument for measuring magnetic field strength and direction",
+      "epistemic_type": "FACT",
+      "trust": 0.92
+    },
+    {
+      "label": "PLC",
+      "definition": "Programmable Logic Controller for industrial automation and control",
+      "epistemic_type": "FACT",
+      "trust": 0.96
+    },
+    {
+      "label": "HMI",
+      "definition": "Human Machine Interface for operator interaction with machines",
+      "epistemic_type": "FACT",
+      "trust": 0.95
+    },
+    {
+      "label": "SCADA",
+      "definition": "Supervisory Control and Data Acquisition system for monitoring processes",
+      "epistemic_type": "FACT",
+      "trust": 0.94
+    },
+    {
+      "label": "DCS",
+      "definition": "Distributed Control System for controlling distributed processes",
+      "epistemic_type": "FACT",
+      "trust": 0.93
+    },
+    {
+      "label": "PID Controller",
+      "definition": "Proportional-Integral-Derivative controller for process control",
+      "epistemic_type": "FACT",
+      "trust": 0.95
+    },
+    {
+      "label": "Feedback Control",
+      "definition": "Control system using output measurement to correct system behavior",
+      "epistemic_type": "FACT",
+      "trust": 0.95
+    },
+    {
+      "label": "Open Loop Control",
+      "definition": "Control system without feedback from output to input",
+      "epistemic_type": "FACT",
+      "trust": 0.93
+    },
+    {
+      "label": "Closed Loop Control",
+      "definition": "Control system using feedback to automatically correct output",
+      "epistemic_type": "FACT",
+      "trust": 0.94
+    },
+    {
+      "label": "Actuator",
+      "definition": "Component that moves or controls mechanism or system",
+      "epistemic_type": "FACT",
+      "trust": 0.95
+    },
+    {
+      "label": "Linear Actuator",
+      "definition": "Actuator that creates motion in straight line",
+      "epistemic_type": "FACT",
+      "trust": 0.93
+    },
+    {
+      "label": "Machine Vision",
+      "definition": "Technology for providing imaging-based automatic inspection and analysis",
+      "epistemic_type": "FACT",
+      "trust": 0.94
+    },
+    {
+      "label": "Computer Vision",
+      "definition": "Field of AI enabling computers to interpret visual information",
+      "epistemic_type": "FACT",
+      "trust": 0.94
+    },
+    {
+      "label": "Image Processing",
+      "definition": "Analysis and manipulation of digital images using algorithms",
+      "epistemic_type": "FACT",
+      "trust": 0.93
+    },
+    {
+      "label": "OCR",
+      "definition": "Optical Character Recognition - converting text images to machine-readable text",
+      "epistemic_type": "FACT",
+      "trust": 0.93
+    },
+    {
+      "label": "Barcode Scanner",
+      "definition": "Optical scanner for reading printed barcodes",
+      "epistemic_type": "FACT",
+      "trust": 0.94
+    },
+    {
+      "label": "QR Code",
+      "definition": "Two-dimensional barcode for storing information readable by imaging devices",
+      "epistemic_type": "FACT",
+      "trust": 0.93
+    },
+    {
+      "label": "RFID",
+      "definition": "Radio Frequency Identification using electromagnetic fields to identify objects",
+      "epistemic_type": "FACT",
+      "trust": 0.94
+    },
+    {
+      "label": "NFC",
+      "definition": "Near Field Communication for short-range wireless data exchange",
+      "epistemic_type": "FACT",
+      "trust": 0.93
+    },
+    {
+      "label": "GPS",
+      "definition": "Global Positioning System providing location and time information",
+      "epistemic_type": "FACT",
+      "trust": 0.96
+    },
+    {
+      "label": "LIDAR",
+      "definition": "Light Detection and Ranging using laser pulses to measure distances",
+      "epistemic_type": "FACT",
+      "trust": 0.93
+    },
+    {
+      "label": "TCP/IP",
+      "definition": "Transmission Control Protocol/Internet Protocol - fundamental internet communication",
+      "epistemic_type": "FACT",
+      "trust": 0.97
+    },
+    {
+      "label": "HTTP",
+      "definition": "HyperText Transfer Protocol for transferring web content",
+      "epistemic_type": "FACT",
+      "trust": 0.96
+    },
+    {
+      "label": "HTTPS",
+      "definition": "Secure HTTP using encryption for safe web communication",
+      "epistemic_type": "FACT",
+      "trust": 0.96
+    },
+    {
+      "label": "DNS",
+      "definition": "Domain Name System translating domain names to IP addresses",
+      "epistemic_type": "FACT",
+      "trust": 0.95
+    },
+    {
+      "label": "DHCP",
+      "definition": "Dynamic Host Configuration Protocol for automatic IP address assignment",
+      "epistemic_type": "FACT",
+      "trust": 0.94
+    },
+    {
+      "label": "FTP",
+      "definition": "File Transfer Protocol for transferring files over network",
+      "epistemic_type": "FACT",
+      "trust": 0.94
+    },
+    {
+      "label": "SSH",
+      "definition": "Secure Shell protocol for secure remote access and command execution",
+      "epistemic_type": "FACT",
+      "trust": 0.94
+    },
+    {
+      "label": "VPN",
+      "definition": "Virtual Private Network creating secure connection over public network",
+      "epistemic_type": "FACT",
+      "trust": 0.94
+    },
+    {
+      "label": "API",
+      "definition": "Application Programming Interface defining how software components interact",
+      "epistemic_type": "FACT",
+      "trust": 0.95
+    },
+    {
+      "label": "REST API",
+      "definition": "Representational State Transfer API using HTTP methods for web services",
+      "epistemic_type": "FACT",
+      "trust": 0.93
+    },
+    {
+      "label": "Database",
+      "definition": "Organized collection of structured information stored electronically",
+      "epistemic_type": "FACT",
+      "trust": 0.96
+    },
+    {
+      "label": "SQL",
+      "definition": "Structured Query Language for managing relational databases",
+      "epistemic_type": "FACT",
+      "trust": 0.96
+    },
+    {
+      "label": "NoSQL",
+      "definition": "Non-relational database systems for handling unstructured data",
+      "epistemic_type": "FACT",
+      "trust": 0.93
+    },
+    {
+      "label": "Cloud Computing",
+      "definition": "Delivery of computing services over internet including storage and processing",
+      "epistemic_type": "FACT",
+      "trust": 0.95
+    },
+    {
+      "label": "Server",
+      "definition": "Computer system providing services to other computers over network",
+      "epistemic_type": "FACT",
+      "trust": 0.96
+    },
+    {
+      "label": "Virtual Machine",
+      "definition": "Software emulation of computer system running on physical hardware",
+      "epistemic_type": "FACT",
+      "trust": 0.94
+    },
+    {
+      "label": "Container",
+      "definition": "Lightweight virtualization packaging application with dependencies",
+      "epistemic_type": "FACT",
+      "trust": 0.92
+    },
+    {
+      "label": "Microservices",
+      "definition": "Architectural approach using small, independent services for applications",
+      "epistemic_type": "FACT",
+      "trust": 0.91
+    },
+    {
+      "label": "Load Balancing",
+      "definition": "Distribution of network traffic across multiple servers for performance",
+      "epistemic_type": "FACT",
+      "trust": 0.92
+    },
+    {
+      "label": "CDN",
+      "definition": "Content Delivery Network distributing content across geographic locations",
+      "epistemic_type": "FACT",
+      "trust": 0.91
+    },
+    {
+      "label": "Artificial Intelligence",
+      "definition": "Computer systems able to perform tasks that typically require human intelligence",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.92
+    },
+    {
+      "label": "Machine Learning",
+      "definition": "AI technique enabling computers to learn without explicit programming",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.93
+    },
+    {
+      "label": "Neural Network",
+      "definition": "Computing system inspired by biological neural networks for pattern recognition",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.92
+    },
+    {
+      "label": "Deep Learning",
+      "definition": "Machine learning using artificial neural networks with multiple layers",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.91
+    },
+    {
+      "label": "Algorithm",
+      "definition": "Step-by-step procedure for solving problem or completing task",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.94
+    },
+    {
+      "label": "Data Mining",
+      "definition": "Process of discovering patterns in large datasets using computational methods",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.91
+    },
+    {
+      "label": "Big Data",
+      "definition": "Extremely large datasets requiring special tools and techniques for processing",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.9
+    },
+    {
+      "label": "IoT",
+      "definition": "Internet of Things - network of physical devices connected to internet",
+      "epistemic_type": "FACT",
+      "trust": 0.93
+    },
+    {
+      "label": "Edge Computing",
+      "definition": "Distributed computing bringing computation closer to data sources",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.89
+    },
+    {
+      "label": "Blockchain",
+      "definition": "Distributed ledger technology using cryptographic hashing for data integrity",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.88
+    },
+    {
+      "label": "Satellite",
+      "definition": "Artificial object orbiting Earth for communication or observation",
+      "epistemic_type": "FACT",
+      "trust": 0.96
+    },
+    {
+      "label": "Satellite Communication",
+      "definition": "Wireless communication using satellites as relay stations",
+      "epistemic_type": "FACT",
+      "trust": 0.95
+    },
+    {
+      "label": "Geostationary Orbit",
+      "definition": "Orbit where satellite remains above same point on Earth's surface",
+      "epistemic_type": "FACT",
+      "trust": 0.94
+    },
+    {
+      "label": "Low Earth Orbit",
+      "definition": "Orbit close to Earth's surface typically below 2000 km altitude",
+      "epistemic_type": "FACT",
+      "trust": 0.93
+    },
+    {
+      "label": "Radio Frequency",
+      "definition": "Electromagnetic radiation frequency range used for wireless communication",
+      "epistemic_type": "FACT",
+      "trust": 0.95
+    },
+    {
+      "label": "Microwave",
+      "definition": "High frequency electromagnetic radiation used for communication and heating",
+      "epistemic_type": "FACT",
+      "trust": 0.94
+    },
+    {
+      "label": "Fiber Optic Cable",
+      "definition": "High-speed data transmission medium using light pulses through glass fibers",
+      "epistemic_type": "FACT",
+      "trust": 0.95
+    },
+    {
+      "label": "Coaxial Cable",
+      "definition": "Electrical cable with central conductor surrounded by insulation and shield",
+      "epistemic_type": "FACT",
+      "trust": 0.94
+    },
+    {
+      "label": "Twisted Pair Cable",
+      "definition": "Cable with pairs of insulated copper wires twisted together",
+      "epistemic_type": "FACT",
+      "trust": 0.93
+    },
+    {
+      "label": "Cellular Network",
+      "definition": "Wireless network using cell towers for mobile communication coverage",
+      "epistemic_type": "FACT",
+      "trust": 0.94
+    },
+    {
+      "label": "5G Network",
+      "definition": "Fifth generation cellular network technology with high speed and low latency",
+      "epistemic_type": "FACT",
+      "trust": 0.92
+    },
+    {
+      "label": "4G LTE",
+      "definition": "Fourth generation Long Term Evolution cellular technology",
+      "epistemic_type": "FACT",
+      "trust": 0.93
+    },
+    {
+      "label": "WiFi 6",
+      "definition": "Sixth generation wireless networking standard with improved efficiency",
+      "epistemic_type": "FACT",
+      "trust": 0.91
+    },
+    {
+      "label": "Bandwidth",
+      "definition": "Range of frequencies or data transfer capacity of communication channel",
+      "epistemic_type": "FACT",
+      "trust": 0.94
+    },
+    {
+      "label": "Latency",
+      "definition": "Time delay between transmission and reception of data",
+      "epistemic_type": "FACT",
+      "trust": 0.93
+    },
+    {
+      "label": "Throughput",
+      "definition": "Rate of successful message delivery over communication channel",
+      "epistemic_type": "FACT",
+      "trust": 0.92
+    },
+    {
+      "label": "Packet Switching",
+      "definition": "Method of data transmission dividing data into packets for network routing",
+      "epistemic_type": "FACT",
+      "trust": 0.91
+    },
+    {
+      "label": "Circuit Switching",
+      "definition": "Communication method establishing dedicated connection for data transmission",
+      "epistemic_type": "FACT",
+      "trust": 0.9
+    },
+    {
+      "label": "Quality of Service",
+      "definition": "Network performance metrics ensuring acceptable service levels",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.89
+    },
+    {
+      "label": "Network Topology",
+      "definition": "Physical or logical arrangement of network elements and connections",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.91
+    },
+    {
+      "label": "Radar",
+      "definition": "Detection system using radio waves to determine range and speed of objects",
+      "epistemic_type": "FACT",
+      "trust": 0.95
+    },
+    {
+      "label": "Sonar",
+      "definition": "Sound navigation and ranging using acoustic waves underwater",
+      "epistemic_type": "FACT",
+      "trust": 0.94
+    },
+    {
+      "label": "Ultrasound",
+      "definition": "Sound waves above human hearing range used for imaging and measurement",
+      "epistemic_type": "FACT",
+      "trust": 0.93
+    },
+    {
+      "label": "X-Ray",
+      "definition": "Electromagnetic radiation for medical imaging and material inspection",
+      "epistemic_type": "FACT",
+      "trust": 0.94
+    },
+    {
+      "label": "CT Scanner",
+      "definition": "Computed Tomography using X-rays for cross-sectional body imaging",
+      "epistemic_type": "FACT",
+      "trust": 0.92
+    },
+    {
+      "label": "MRI",
+      "definition": "Magnetic Resonance Imaging using magnetic fields for detailed body imaging",
+      "epistemic_type": "FACT",
+      "trust": 0.91
+    },
+    {
+      "label": "Laser",
+      "definition": "Light Amplification by Stimulated Emission of Radiation producing coherent light",
+      "epistemic_type": "FACT",
+      "trust": 0.95
+    },
+    {
+      "label": "Fiber Laser",
+      "definition": "Laser using optical fiber doped with rare-earth elements as gain medium",
+      "epistemic_type": "FACT",
+      "trust": 0.9
+    },
+    {
+      "label": "Diode Laser",
+      "definition": "Semiconductor laser using p-n junction for light emission",
+      "epistemic_type": "FACT",
+      "trust": 0.89
+    },
+    {
+      "label": "Gas Laser",
+      "definition": "Laser using gas as gain medium for light amplification",
+      "epistemic_type": "FACT",
+      "trust": 0.88
+    },
+    {
+      "label": "Photovoltaic Cell",
+      "definition": "Device converting light energy directly into electrical energy",
+      "epistemic_type": "FACT",
+      "trust": 0.95
+    },
+    {
+      "label": "Silicon Solar Cell",
+      "definition": "Photovoltaic cell made from silicon semiconductor material",
+      "epistemic_type": "FACT",
+      "trust": 0.94
+    },
+    {
+      "label": "Thin Film Solar Cell",
+      "definition": "Photovoltaic cell made by depositing thin layers of photovoltaic material",
+      "epistemic_type": "FACT",
+      "trust": 0.91
+    },
+    {
+      "label": "Concentrated Solar Power",
+      "definition": "Solar thermal technology using mirrors to concentrate sunlight for heat generation",
+      "epistemic_type": "FACT",
+      "trust": 0.9
+    },
+    {
+      "label": "Solar Inverter",
+      "definition": "Device converting DC power from solar panels to AC power for grid use",
+      "epistemic_type": "FACT",
+      "trust": 0.92
+    },
+    {
+      "label": "Maximum Power Point Tracking",
+      "definition": "Algorithm to optimize power output from solar panels",
+      "epistemic_type": "FACT",
+      "trust": 0.87
+    },
+    {
+      "label": "Net Metering",
+      "definition": "Billing arrangement crediting solar system owners for excess electricity",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.85
+    },
+    {
+      "label": "Grid Tie Inverter",
+      "definition": "Inverter connecting solar system to electrical grid",
+      "epistemic_type": "FACT",
+      "trust": 0.89
+    },
+    {
+      "label": "Off Grid System",
+      "definition": "Solar power system operating independently from electrical grid",
+      "epistemic_type": "FACT",
+      "trust": 0.9
+    },
+    {
+      "label": "Battery Storage System",
+      "definition": "System storing electrical energy for later use in renewable energy applications",
+      "epistemic_type": "FACT",
+      "trust": 0.91
+    },
+    {
+      "label": "Wind Farm",
+      "definition": "Group of wind turbines generating electricity at same location",
+      "epistemic_type": "FACT",
+      "trust": 0.93
+    },
+    {
+      "label": "Horizontal Axis Wind Turbine",
+      "definition": "Wind turbine with rotor axis parallel to ground",
+      "epistemic_type": "FACT",
+      "trust": 0.91
+    },
+    {
+      "label": "Vertical Axis Wind Turbine",
+      "definition": "Wind turbine with rotor axis perpendicular to ground",
+      "epistemic_type": "FACT",
+      "trust": 0.88
+    },
+    {
+      "label": "Wind Speed Sensor",
+      "definition": "Device measuring wind velocity for turbine control and monitoring",
+      "epistemic_type": "FACT",
+      "trust": 0.89
+    },
+    {
+      "label": "Pitch Control",
+      "definition": "System adjusting blade angle to optimize power output and protect turbine",
+      "epistemic_type": "FACT",
+      "trust": 0.87
+    },
+    {
+      "label": "Yaw System",
+      "definition": "Mechanism orienting wind turbine rotor to face wind direction",
+      "epistemic_type": "FACT",
+      "trust": 0.86
+    },
+    {
+      "label": "Gearbox",
+      "definition": "Mechanical device increasing rotational speed from rotor to generator",
+      "epistemic_type": "FACT",
+      "trust": 0.92
+    },
+    {
+      "label": "Direct Drive Generator",
+      "definition": "Wind turbine generator directly connected to rotor without gearbox",
+      "epistemic_type": "FACT",
+      "trust": 0.85
+    },
+    {
+      "label": "Power Curve",
+      "definition": "Graph showing wind turbine power output versus wind speed",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.84
+    },
+    {
+      "label": "Cut-in Speed",
+      "definition": "Minimum wind speed at which turbine starts generating power",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.83
+    },
+    {
+      "label": "Thermal Power Plant",
+      "definition": "Power station using heat to generate steam for electricity production",
+      "epistemic_type": "FACT",
+      "trust": 0.94
+    },
+    {
+      "label": "Combined Cycle Power Plant",
+      "definition": "Power plant using gas and steam turbines for higher efficiency",
+      "epistemic_type": "FACT",
+      "trust": 0.9
+    },
+    {
+      "label": "Cogeneration",
+      "definition": "Simultaneous production of electricity and useful heat from same energy source",
+      "epistemic_type": "FACT",
+      "trust": 0.89
+    },
+    {
+      "label": "Heat Exchanger",
+      "definition": "Device transferring heat between two or more fluids",
+      "epistemic_type": "FACT",
+      "trust": 0.93
+    },
+    {
+      "label": "Boiler",
+      "definition": "Pressure vessel generating steam by heating water using fuel combustion",
+      "epistemic_type": "FACT",
+      "trust": 0.94
+    },
+    {
+      "label": "Condenser",
+      "definition": "Device converting steam back to liquid water in power plants",
+      "epistemic_type": "FACT",
+      "trust": 0.92
+    },
+    {
+      "label": "Cooling Tower",
+      "definition": "Structure for removing waste heat from power plant cooling water",
+      "epistemic_type": "FACT",
+      "trust": 0.91
+    },
+    {
+      "label": "Rankine Cycle",
+      "definition": "Thermodynamic cycle used in steam power plants for energy conversion",
+      "epistemic_type": "FACT",
+      "trust": 0.88
+    },
+    {
+      "label": "Brayton Cycle",
+      "definition": "Thermodynamic cycle used in gas turbines for power generation",
+      "epistemic_type": "FACT",
+      "trust": 0.86
+    },
+    {
+      "label": "Otto Cycle",
+      "definition": "Thermodynamic cycle used in gasoline internal combustion engines",
+      "epistemic_type": "FACT",
+      "trust": 0.87
+    },
+    {
+      "label": "Nuclear Fission",
+      "definition": "Nuclear reaction splitting atomic nucleus into smaller fragments releasing energy",
+      "epistemic_type": "FACT",
+      "trust": 0.95
+    },
+    {
+      "label": "Nuclear Fuel",
+      "definition": "Fissile material used in nuclear reactor to sustain nuclear reactions",
+      "epistemic_type": "FACT",
+      "trust": 0.94
+    },
+    {
+      "label": "Control Rod",
+      "definition": "Device containing neutron-absorbing material for controlling nuclear reaction rate",
+      "epistemic_type": "FACT",
+      "trust": 0.93
+    },
+    {
+      "label": "Reactor Core",
+      "definition": "Central part of nuclear reactor containing fuel assemblies",
+      "epistemic_type": "FACT",
+      "trust": 0.92
+    },
+    {
+      "label": "Pressurized Water Reactor",
+      "definition": "Nuclear reactor using pressurized water as coolant and moderator",
+      "epistemic_type": "FACT",
+      "trust": 0.9
+    },
+    {
+      "label": "Boiling Water Reactor",
+      "definition": "Nuclear reactor where water boils in reactor core to generate steam",
+      "epistemic_type": "FACT",
+      "trust": 0.89
+    },
+    {
+      "label": "Moderator",
+      "definition": "Material slowing down neutrons to sustain nuclear chain reaction",
+      "epistemic_type": "FACT",
+      "trust": 0.88
+    },
+    {
+      "label": "Coolant",
+      "definition": "Fluid removing heat from nuclear reactor core",
+      "epistemic_type": "FACT",
+      "trust": 0.9
+    },
+    {
+      "label": "Containment Structure",
+      "definition": "Barrier designed to prevent release of radioactive materials",
+      "epistemic_type": "FACT",
+      "trust": 0.91
+    },
+    {
+      "label": "Nuclear Waste",
+      "definition": "Radioactive waste material from nuclear power generation",
+      "epistemic_type": "FACT",
+      "trust": 0.92
+    },
+    {
+      "label": "Electric Vehicle",
+      "definition": "Vehicle using electric motors powered by rechargeable battery packs",
+      "epistemic_type": "FACT",
+      "trust": 0.96
+    },
+    {
+      "label": "Hybrid Electric Vehicle",
+      "definition": "Vehicle combining internal combustion engine with electric motor",
+      "epistemic_type": "FACT",
+      "trust": 0.95
+    },
+    {
+      "label": "Plug-in Hybrid",
+      "definition": "Hybrid vehicle with larger battery rechargeable from external power source",
+      "epistemic_type": "FACT",
+      "trust": 0.93
+    },
+    {
+      "label": "Regenerative Braking",
+      "definition": "System recovering energy during braking to recharge vehicle battery",
+      "epistemic_type": "FACT",
+      "trust": 0.92
+    },
+    {
+      "label": "Electric Vehicle Charging",
+      "definition": "Process of supplying electrical energy to recharge electric vehicle battery",
+      "epistemic_type": "FACT",
+      "trust": 0.94
+    },
+    {
+      "label": "Fast Charging",
+      "definition": "High-power charging system for rapid electric vehicle battery charging",
+      "epistemic_type": "FACT",
+      "trust": 0.91
+    },
+    {
+      "label": "Battery Management System",
+      "definition": "Electronic system monitoring and managing rechargeable battery pack",
+      "epistemic_type": "FACT",
+      "trust": 0.9
+    },
+    {
+      "label": "Electric Motor Controller",
+      "definition": "Device controlling speed and torque of electric motor in vehicles",
+      "epistemic_type": "FACT",
+      "trust": 0.89
+    },
+    {
+      "label": "Traction Battery",
+      "definition": "High-voltage battery pack providing power to electric vehicle motor",
+      "epistemic_type": "FACT",
+      "trust": 0.88
+    },
+    {
+      "label": "Range Extender",
+      "definition": "Small generator extending electric vehicle range when battery depletes",
+      "epistemic_type": "FACT",
+      "trust": 0.85
+    },
+    {
+      "label": "Automotive Engine Management",
+      "definition": "Electronic system controlling various engine functions for optimal performance",
+      "epistemic_type": "FACT",
+      "trust": 0.91
+    },
+    {
+      "label": "ECU",
+      "definition": "Electronic Control Unit managing various automotive systems",
+      "epistemic_type": "FACT",
+      "trust": 0.92
+    },
+    {
+      "label": "CAN Bus",
+      "definition": "Controller Area Network for communication between automotive electronic systems",
+      "epistemic_type": "FACT",
+      "trust": 0.9
+    },
+    {
+      "label": "OBD",
+      "definition": "On-Board Diagnostics system for vehicle self-diagnostic and reporting",
+      "epistemic_type": "FACT",
+      "trust": 0.89
+    },
+    {
+      "label": "Anti-lock Braking System",
+      "definition": "Safety system preventing wheels from locking during braking",
+      "epistemic_type": "FACT",
+      "trust": 0.93
+    },
+    {
+      "label": "Electronic Stability Control",
+      "definition": "System improving vehicle stability by detecting and reducing loss of traction",
+      "epistemic_type": "FACT",
+      "trust": 0.91
+    },
+    {
+      "label": "Traction Control System",
+      "definition": "System preventing wheel spin by reducing engine power or applying brakes",
+      "epistemic_type": "FACT",
+      "trust": 0.9
+    },
+    {
+      "label": "Airbag System",
+      "definition": "Passive safety system deploying inflatable cushions during collision",
+      "epistemic_type": "FACT",
+      "trust": 0.93
+    },
+    {
+      "label": "Cruise Control",
+      "definition": "System automatically maintaining constant vehicle speed",
+      "epistemic_type": "FACT",
+      "trust": 0.91
+    },
+    {
+      "label": "Adaptive Cruise Control",
+      "definition": "Cruise control system maintaining safe distance from vehicles ahead",
+      "epistemic_type": "FACT",
+      "trust": 0.88
+    },
+    {
+      "label": "Autonomous Vehicle",
+      "definition": "Vehicle capable of sensing environment and operating without human input",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.85
+    },
+    {
+      "label": "ADAS",
+      "definition": "Advanced Driver Assistance Systems helping drivers with safety features",
+      "epistemic_type": "FACT",
+      "trust": 0.87
+    },
+    {
+      "label": "Lane Keeping Assist",
+      "definition": "System automatically steering vehicle to stay within lane markings",
+      "epistemic_type": "FACT",
+      "trust": 0.86
+    },
+    {
+      "label": "Blind Spot Monitoring",
+      "definition": "System alerting driver of vehicles in blind spot areas",
+      "epistemic_type": "FACT",
+      "trust": 0.87
+    },
+    {
+      "label": "Automatic Emergency Braking",
+      "definition": "System automatically applying brakes to prevent or reduce collision impact",
+      "epistemic_type": "FACT",
+      "trust": 0.88
+    },
+    {
+      "label": "Parking Assist System",
+      "definition": "System helping driver park vehicle using sensors and automated steering",
+      "epistemic_type": "FACT",
+      "trust": 0.85
+    },
+    {
+      "label": "Vehicle-to-Vehicle Communication",
+      "definition": "Wireless communication system allowing vehicles to exchange information",
+      "epistemic_type": "FACT",
+      "trust": 0.82
+    },
+    {
+      "label": "Traffic Sign Recognition",
+      "definition": "System using cameras to identify and interpret road signs",
+      "epistemic_type": "FACT",
+      "trust": 0.83
+    },
+    {
+      "label": "Night Vision System",
+      "definition": "System using infrared technology to detect objects in dark conditions",
+      "epistemic_type": "FACT",
+      "trust": 0.84
+    },
+    {
+      "label": "Head-Up Display",
+      "definition": "Display projecting information onto windshield for driver visibility",
+      "epistemic_type": "FACT",
+      "trust": 0.86
+    },
+    {
+      "label": "Suspension System",
+      "definition": "Vehicle system connecting wheels to chassis and absorbing road impacts",
+      "epistemic_type": "FACT",
+      "trust": 0.94
+    },
+    {
+      "label": "MacPherson Strut",
+      "definition": "Front suspension design combining shock absorber and spring in single unit",
+      "epistemic_type": "FACT",
+      "trust": 0.9
+    },
+    {
+      "label": "Double Wishbone Suspension",
+      "definition": "Suspension using two wishbone-shaped arms for wheel control",
+      "epistemic_type": "FACT",
+      "trust": 0.88
+    },
+    {
+      "label": "Independent Suspension",
+      "definition": "Suspension allowing each wheel to move independently of others",
+      "epistemic_type": "FACT",
+      "trust": 0.89
+    },
+    {
+      "label": "Air Suspension",
+      "definition": "Suspension system using air springs instead of conventional springs",
+      "epistemic_type": "FACT",
+      "trust": 0.85
+    },
+    {
+      "label": "Shock Absorber",
+      "definition": "Hydraulic device dampening suspension movement and vibrations",
+      "epistemic_type": "FACT",
+      "trust": 0.91
+    },
+    {
+      "label": "Stabilizer Bar",
+      "definition": "Torsion bar reducing vehicle body roll during cornering",
+      "epistemic_type": "FACT",
+      "trust": 0.87
+    },
+    {
+      "label": "Coil Spring",
+      "definition": "Helical spring supporting vehicle weight and absorbing impacts",
+      "epistemic_type": "FACT",
+      "trust": 0.9
+    },
+    {
+      "label": "Leaf Spring",
+      "definition": "Simple spring using layered metal strips for heavy-duty applications",
+      "epistemic_type": "FACT",
+      "trust": 0.88
+    },
+    {
+      "label": "Ball Joint",
+      "definition": "Spherical bearing connecting suspension control arms to steering knuckles",
+      "epistemic_type": "FACT",
+      "trust": 0.86
+    },
+    {
+      "label": "Steering System",
+      "definition": "Vehicle system allowing driver to control direction of travel",
+      "epistemic_type": "FACT",
+      "trust": 0.95
+    },
+    {
+      "label": "Power Steering",
+      "definition": "System assisting driver steering effort using hydraulic or electric power",
+      "epistemic_type": "FACT",
+      "trust": 0.92
+    },
+    {
+      "label": "Electric Power Steering",
+      "definition": "Steering assistance system using electric motor instead of hydraulic pump",
+      "epistemic_type": "FACT",
+      "trust": 0.89
+    },
+    {
+      "label": "Rack and Pinion Steering",
+      "definition": "Steering mechanism using pinion gear moving toothed rack",
+      "epistemic_type": "FACT",
+      "trust": 0.88
+    },
+    {
+      "label": "Steering Wheel",
+      "definition": "Circular control device for driver to direct vehicle movement",
+      "epistemic_type": "FACT",
+      "trust": 0.95
+    },
+    {
+      "label": "Tie Rod",
+      "definition": "Connection between steering rack and steering knuckle for wheel turning",
+      "epistemic_type": "FACT",
+      "trust": 0.85
+    },
+    {
+      "label": "Steering Column",
+      "definition": "Shaft connecting steering wheel to steering gear mechanism",
+      "epistemic_type": "FACT",
+      "trust": 0.87
+    },
+    {
+      "label": "Ackermann Steering",
+      "definition": "Steering geometry ensuring all wheels follow proper turning radius",
+      "epistemic_type": "FACT",
+      "trust": 0.82
+    },
+    {
+      "label": "Four Wheel Steering",
+      "definition": "System allowing both front and rear wheels to steer for improved maneuverability",
+      "epistemic_type": "FACT",
+      "trust": 0.8
+    },
+    {
+      "label": "Variable Ratio Steering",
+      "definition": "Steering system with changing gear ratio for different driving conditions",
+      "epistemic_type": "FACT",
+      "trust": 0.78
+    },
+    {
+      "label": "Brake System",
+      "definition": "Vehicle system for slowing or stopping motion using friction",
+      "epistemic_type": "FACT",
+      "trust": 0.96
+    },
+    {
+      "label": "Disc Brake",
+      "definition": "Brake system using brake pads clamping rotating disc for stopping power",
+      "epistemic_type": "FACT",
+      "trust": 0.94
+    },
+    {
+      "label": "Drum Brake",
+      "definition": "Brake system using brake shoes pressing against inside of rotating drum",
+      "epistemic_type": "FACT",
+      "trust": 0.92
+    },
+    {
+      "label": "Brake Pad",
+      "definition": "Friction material pressed against brake disc to create stopping force",
+      "epistemic_type": "FACT",
+      "trust": 0.93
+    },
+    {
+      "label": "Brake Fluid",
+      "definition": "Hydraulic fluid transmitting force from brake pedal to brake components",
+      "epistemic_type": "FACT",
+      "trust": 0.91
+    },
+    {
+      "label": "Master Cylinder",
+      "definition": "Primary component converting brake pedal force to hydraulic pressure",
+      "epistemic_type": "FACT",
+      "trust": 0.9
+    },
+    {
+      "label": "Brake Caliper",
+      "definition": "Component holding brake pads and pressing them against brake disc",
+      "epistemic_type": "FACT",
+      "trust": 0.89
+    },
+    {
+      "label": "Brake Booster",
+      "definition": "Device amplifying brake pedal force for easier braking",
+      "epistemic_type": "FACT",
+      "trust": 0.88
+    },
+    {
+      "label": "Parking Brake",
+      "definition": "Secondary brake system for keeping vehicle stationary when parked",
+      "epistemic_type": "FACT",
+      "trust": 0.92
+    },
+    {
+      "label": "Brake Rotor",
+      "definition": "Metal disc attached to wheel hub for disc brake system",
+      "epistemic_type": "FACT",
+      "trust": 0.9
+    },
+    {
+      "label": "Transmission Fluid",
+      "definition": "Specialized fluid for lubrication and hydraulic operation of transmissions",
+      "epistemic_type": "FACT",
+      "trust": 0.91
+    },
+    {
+      "label": "Engine Oil",
+      "definition": "Lubricant reducing friction and cooling internal combustion engine components",
+      "epistemic_type": "FACT",
+      "trust": 0.94
+    },
+    {
+      "label": "Coolant",
+      "definition": "Fluid circulating through engine to maintain optimal operating temperature",
+      "epistemic_type": "FACT",
+      "trust": 0.93
+    },
+    {
+      "label": "Radiator",
+      "definition": "Heat exchanger cooling engine coolant using airflow",
+      "epistemic_type": "FACT",
+      "trust": 0.92
+    },
+    {
+      "label": "Water Pump",
+      "definition": "Pump circulating coolant through engine cooling system",
+      "epistemic_type": "FACT",
+      "trust": 0.9
+    },
+    {
+      "label": "Thermostat",
+      "definition": "Temperature-controlled valve regulating coolant flow in engine",
+      "epistemic_type": "FACT",
+      "trust": 0.89
+    },
+    {
+      "label": "Oil Filter",
+      "definition": "Filter removing contaminants from engine oil for protection",
+      "epistemic_type": "FACT",
+      "trust": 0.9
+    },
+    {
+      "label": "Air Filter",
+      "definition": "Filter cleaning air entering engine for combustion",
+      "epistemic_type": "FACT",
+      "trust": 0.91
+    },
+    {
+      "label": "Fuel Filter",
+      "definition": "Filter removing impurities from fuel before reaching engine",
+      "epistemic_type": "FACT",
+      "trust": 0.89
+    },
+    {
+      "label": "Timing Belt",
+      "definition": "Belt synchronizing crankshaft and camshaft rotation in engine",
+      "epistemic_type": "FACT",
+      "trust": 0.88
+    },
+    {
+      "label": "Exhaust System",
+      "definition": "System collecting and directing engine exhaust gases away from vehicle",
+      "epistemic_type": "FACT",
+      "trust": 0.93
+    },
+    {
+      "label": "Muffler",
+      "definition": "Device reducing noise from engine exhaust gases",
+      "epistemic_type": "FACT",
+      "trust": 0.91
+    },
+    {
+      "label": "Exhaust Manifold",
+      "definition": "Component collecting exhaust gases from engine cylinders",
+      "epistemic_type": "FACT",
+      "trust": 0.89
+    },
+    {
+      "label": "Oxygen Sensor",
+      "definition": "Sensor measuring oxygen content in exhaust for fuel mixture control",
+      "epistemic_type": "FACT",
+      "trust": 0.88
+    },
+    {
+      "label": "EGR Valve",
+      "definition": "Exhaust Gas Recirculation valve reducing nitrogen oxide emissions",
+      "epistemic_type": "FACT",
+      "trust": 0.85
+    },
+    {
+      "label": "Particulate Filter",
+      "definition": "Filter capturing soot particles from diesel engine exhaust",
+      "epistemic_type": "FACT",
+      "trust": 0.84
+    },
+    {
+      "label": "Selective Catalytic Reduction",
+      "definition": "Emission control technology reducing nitrogen oxides using ammonia",
+      "epistemic_type": "FACT",
+      "trust": 0.81
+    },
+    {
+      "label": "Emission Control System",
+      "definition": "Integrated system reducing harmful exhaust emissions from vehicles",
+      "epistemic_type": "FACT",
+      "trust": 0.87
+    },
+    {
+      "label": "Exhaust Gas Temperature",
+      "definition": "Measurement of temperature in vehicle exhaust system",
+      "epistemic_type": "FACT",
+      "trust": 0.86
+    },
+    {
+      "label": "Backpressure",
+      "definition": "Resistance to exhaust gas flow in exhaust system",
+      "epistemic_type": "FACT",
+      "trust": 0.83
+    }
+  ],
+  "relations": [
+    {
+      "source": "Electric Motor",
+      "target": "Motor",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "AC Motor",
+      "target": "Electric Motor",
+      "type": "IS_A",
+      "weight": 0.94
+    },
+    {
+      "source": "DC Motor",
+      "target": "Electric Motor",
+      "type": "IS_A",
+      "weight": 0.94
+    },
+    {
+      "source": "Stepper Motor",
+      "target": "DC Motor",
+      "type": "IS_A",
+      "weight": 0.91
+    },
+    {
+      "source": "Servo Motor",
+      "target": "Electric Motor",
+      "type": "IS_A",
+      "weight": 0.92
+    },
+    {
+      "source": "Induction Motor",
+      "target": "AC Motor",
+      "type": "IS_A",
+      "weight": 0.93
+    },
+    {
+      "source": "Synchronous Motor",
+      "target": "AC Motor",
+      "type": "IS_A",
+      "weight": 0.92
+    },
+    {
+      "source": "Linear Motor",
+      "target": "Electric Motor",
+      "type": "IS_A",
+      "weight": 0.89
+    },
+    {
+      "source": "Brushless DC Motor",
+      "target": "DC Motor",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Universal Motor",
+      "target": "Electric Motor",
+      "type": "IS_A",
+      "weight": 0.88
+    },
+    {
+      "source": "BJT",
+      "target": "Transistor",
+      "type": "IS_A",
+      "weight": 0.94
+    },
+    {
+      "source": "MOSFET",
+      "target": "Transistor",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "JFET",
+      "target": "Transistor",
+      "type": "IS_A",
+      "weight": 0.92
+    },
+    {
+      "source": "IGBT",
+      "target": "Transistor",
+      "type": "IS_A",
+      "weight": 0.91
+    },
+    {
+      "source": "Transistor",
+      "target": "Semiconductor",
+      "type": "IS_A",
+      "weight": 0.96
+    },
+    {
+      "source": "Operational Amplifier",
+      "target": "IC",
+      "type": "IS_A",
+      "weight": 0.92
+    },
+    {
+      "source": "Comparator",
+      "target": "IC",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Voltage Regulator",
+      "target": "IC",
+      "type": "IS_A",
+      "weight": 0.91
+    },
+    {
+      "source": "Diode",
+      "target": "Semiconductor",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "LED",
+      "target": "Diode",
+      "type": "IS_A",
+      "weight": 0.93
+    },
+    {
+      "source": "Transistor",
+      "target": "Amplification",
+      "type": "HAS_PROPERTY",
+      "weight": 0.93
+    },
+    {
+      "source": "Transistor",
+      "target": "Switching",
+      "type": "HAS_PROPERTY",
+      "weight": 0.92
+    },
+    {
+      "source": "Resistor",
+      "target": "Current Limiting",
+      "type": "HAS_PROPERTY",
+      "weight": 0.94
+    },
+    {
+      "source": "Capacitor",
+      "target": "Energy Storage",
+      "type": "HAS_PROPERTY",
+      "weight": 0.95
+    },
+    {
+      "source": "Inductor",
+      "target": "Energy Storage",
+      "type": "HAS_PROPERTY",
+      "weight": 0.93
+    },
+    {
+      "source": "Transformer",
+      "target": "Voltage Conversion",
+      "type": "HAS_PROPERTY",
+      "weight": 0.96
+    },
+    {
+      "source": "Relay",
+      "target": "Switching",
+      "type": "HAS_PROPERTY",
+      "weight": 0.91
+    },
+    {
+      "source": "Fuse",
+      "target": "Protection",
+      "type": "HAS_PROPERTY",
+      "weight": 0.94
+    },
+    {
+      "source": "Circuit Breaker",
+      "target": "Protection",
+      "type": "HAS_PROPERTY",
+      "weight": 0.93
+    },
+    {
+      "source": "Printed Circuit Board",
+      "target": "Interconnection",
+      "type": "HAS_PROPERTY",
+      "weight": 0.95
+    },
+    {
+      "source": "CPU",
+      "target": "IC",
+      "type": "IS_A",
+      "weight": 0.94
+    },
+    {
+      "source": "GPU",
+      "target": "IC",
+      "type": "IS_A",
+      "weight": 0.93
+    },
+    {
+      "source": "Microcontroller",
+      "target": "IC",
+      "type": "IS_A",
+      "weight": 0.92
+    },
+    {
+      "source": "RAM",
+      "target": "Memory",
+      "type": "IS_A",
+      "weight": 0.96
+    },
+    {
+      "source": "ROM",
+      "target": "Memory",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "SSD",
+      "target": "Storage Device",
+      "type": "IS_A",
+      "weight": 0.94
+    },
+    {
+      "source": "HDD",
+      "target": "Storage Device",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Cache Memory",
+      "target": "Memory",
+      "type": "IS_A",
+      "weight": 0.91
+    },
+    {
+      "source": "Motherboard",
+      "target": "Printed Circuit Board",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Power Supply Unit",
+      "target": "Power Conversion",
+      "type": "HAS_PROPERTY",
+      "weight": 0.93
+    },
+    {
+      "source": "CPU",
+      "target": "Motherboard",
+      "type": "PART_OF",
+      "weight": 0.92
+    },
+    {
+      "source": "RAM",
+      "target": "Motherboard",
+      "type": "PART_OF",
+      "weight": 0.91
+    },
+    {
+      "source": "GPU",
+      "target": "Motherboard",
+      "type": "PART_OF",
+      "weight": 0.89
+    },
+    {
+      "source": "Power Supply Unit",
+      "target": "Computer",
+      "type": "PART_OF",
+      "weight": 0.9
+    },
+    {
+      "source": "Heat Sink",
+      "target": "Cooling System",
+      "type": "PART_OF",
+      "weight": 0.88
+    },
+    {
+      "source": "CPU",
+      "target": "Heat Sink",
+      "type": "requires",
+      "weight": 0.87
+    },
+    {
+      "source": "SSD",
+      "target": "Flash Memory",
+      "type": "uses",
+      "weight": 0.94
+    },
+    {
+      "source": "HDD",
+      "target": "Magnetic Storage",
+      "type": "uses",
+      "weight": 0.95
+    },
+    {
+      "source": "Cache Memory",
+      "target": "CPU",
+      "type": "SUPPORTS",
+      "weight": 0.89
+    },
+    {
+      "source": "GPU",
+      "target": "Parallel Processing",
+      "type": "HAS_PROPERTY",
+      "weight": 0.94
+    },
+    {
+      "source": "Network Interface Card",
+      "target": "Networking",
+      "type": "enables",
+      "weight": 0.93
+    },
+    {
+      "source": "Ethernet",
+      "target": "Network Interface Card",
+      "type": "uses",
+      "weight": 0.91
+    },
+    {
+      "source": "WiFi",
+      "target": "Network Interface Card",
+      "type": "uses",
+      "weight": 0.9
+    },
+    {
+      "source": "Bluetooth",
+      "target": "Wireless Communication",
+      "type": "IS_A",
+      "weight": 0.92
+    },
+    {
+      "source": "Router",
+      "target": "Networking Device",
+      "type": "IS_A",
+      "weight": 0.94
+    },
+    {
+      "source": "Switch",
+      "target": "Networking Device",
+      "type": "IS_A",
+      "weight": 0.93
+    },
+    {
+      "source": "Firewall",
+      "target": "Security Device",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Load Balancer",
+      "target": "Networking Device",
+      "type": "IS_A",
+      "weight": 0.89
+    },
+    {
+      "source": "Modem",
+      "target": "Communication Device",
+      "type": "IS_A",
+      "weight": 0.91
+    },
+    {
+      "source": "Antenna",
+      "target": "Communication Device",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Router",
+      "target": "Data Forwarding",
+      "type": "HAS_PROPERTY",
+      "weight": 0.92
+    },
+    {
+      "source": "Switch",
+      "target": "Layer 2 Switching",
+      "type": "HAS_PROPERTY",
+      "weight": 0.91
+    },
+    {
+      "source": "Firewall",
+      "target": "Traffic Filtering",
+      "type": "HAS_PROPERTY",
+      "weight": 0.93
+    },
+    {
+      "source": "Ethernet",
+      "target": "Wired Communication",
+      "type": "HAS_PROPERTY",
+      "weight": 0.94
+    },
+    {
+      "source": "WiFi",
+      "target": "Wireless Communication",
+      "type": "HAS_PROPERTY",
+      "weight": 0.95
+    },
+    {
+      "source": "Bluetooth",
+      "target": "Short Range Communication",
+      "type": "HAS_PROPERTY",
+      "weight": 0.92
+    },
+    {
+      "source": "Modem",
+      "target": "Signal Modulation",
+      "type": "HAS_PROPERTY",
+      "weight": 0.89
+    },
+    {
+      "source": "Antenna",
+      "target": "Signal Transmission",
+      "type": "HAS_PROPERTY",
+      "weight": 0.9
+    },
+    {
+      "source": "Load Balancer",
+      "target": "Traffic Distribution",
+      "type": "HAS_PROPERTY",
+      "weight": 0.88
+    },
+    {
+      "source": "Network Interface Card",
+      "target": "Computer",
+      "type": "PART_OF",
+      "weight": 0.87
+    },
+    {
+      "source": "Internal Combustion Engine",
+      "target": "Engine",
+      "type": "IS_A",
+      "weight": 0.96
+    },
+    {
+      "source": "Four Stroke Engine",
+      "target": "Internal Combustion Engine",
+      "type": "IS_A",
+      "weight": 0.94
+    },
+    {
+      "source": "Two Stroke Engine",
+      "target": "Internal Combustion Engine",
+      "type": "IS_A",
+      "weight": 0.93
+    },
+    {
+      "source": "Diesel Engine",
+      "target": "Internal Combustion Engine",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Gasoline Engine",
+      "target": "Internal Combustion Engine",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Turbocharger",
+      "target": "Forced Induction",
+      "type": "IS_A",
+      "weight": 0.92
+    },
+    {
+      "source": "Supercharger",
+      "target": "Forced Induction",
+      "type": "IS_A",
+      "weight": 0.91
+    },
+    {
+      "source": "Carburetor",
+      "target": "Fuel System",
+      "type": "PART_OF",
+      "weight": 0.9
+    },
+    {
+      "source": "Fuel Injection",
+      "target": "Fuel System",
+      "type": "PART_OF",
+      "weight": 0.92
+    },
+    {
+      "source": "Catalytic Converter",
+      "target": "Emission Control",
+      "type": "PART_OF",
+      "weight": 0.89
+    },
+    {
+      "source": "Turbocharger",
+      "target": "Engine",
+      "type": "PART_OF",
+      "weight": 0.88
+    },
+    {
+      "source": "Supercharger",
+      "target": "Engine",
+      "type": "PART_OF",
+      "weight": 0.87
+    },
+    {
+      "source": "Internal Combustion Engine",
+      "target": "Fuel",
+      "type": "requires",
+      "weight": 0.95
+    },
+    {
+      "source": "Internal Combustion Engine",
+      "target": "Air",
+      "type": "requires",
+      "weight": 0.94
+    },
+    {
+      "source": "Internal Combustion Engine",
+      "target": "Ignition",
+      "type": "requires",
+      "weight": 0.93
+    },
+    {
+      "source": "Turbocharger",
+      "target": "Power Increase",
+      "type": "produces",
+      "weight": 0.9
+    },
+    {
+      "source": "Supercharger",
+      "target": "Power Increase",
+      "type": "produces",
+      "weight": 0.89
+    },
+    {
+      "source": "Catalytic Converter",
+      "target": "Emission Reduction",
+      "type": "produces",
+      "weight": 0.91
+    },
+    {
+      "source": "Fuel Injection",
+      "target": "Precise Fuel Control",
+      "type": "HAS_PROPERTY",
+      "weight": 0.88
+    },
+    {
+      "source": "Carburetor",
+      "target": "Mechanical Fuel Mixing",
+      "type": "HAS_PROPERTY",
+      "weight": 0.86
+    },
+    {
+      "source": "Manual Transmission",
+      "target": "Transmission",
+      "type": "IS_A",
+      "weight": 0.94
+    },
+    {
+      "source": "Automatic Transmission",
+      "target": "Transmission",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "CVT",
+      "target": "Transmission",
+      "type": "IS_A",
+      "weight": 0.91
+    },
+    {
+      "source": "Differential",
+      "target": "Drivetrain",
+      "type": "PART_OF",
+      "weight": 0.9
+    },
+    {
+      "source": "Clutch",
+      "target": "Manual Transmission",
+      "type": "PART_OF",
+      "weight": 0.92
+    },
+    {
+      "source": "Torque Converter",
+      "target": "Automatic Transmission",
+      "type": "PART_OF",
+      "weight": 0.91
+    },
+    {
+      "source": "Planetary Gear",
+      "target": "Automatic Transmission",
+      "type": "PART_OF",
+      "weight": 0.89
+    },
+    {
+      "source": "Worm Gear",
+      "target": "Gear System",
+      "type": "IS_A",
+      "weight": 0.88
+    },
+    {
+      "source": "Helical Gear",
+      "target": "Gear System",
+      "type": "IS_A",
+      "weight": 0.89
+    },
+    {
+      "source": "Bevel Gear",
+      "target": "Gear System",
+      "type": "IS_A",
+      "weight": 0.87
+    },
+    {
+      "source": "Transmission",
+      "target": "Engine",
+      "type": "PART_OF",
+      "weight": 0.86
+    },
+    {
+      "source": "Manual Transmission",
+      "target": "Driver Control",
+      "type": "requires",
+      "weight": 0.91
+    },
+    {
+      "source": "Automatic Transmission",
+      "target": "Hydraulic Control",
+      "type": "uses",
+      "weight": 0.9
+    },
+    {
+      "source": "CVT",
+      "target": "Continuous Variation",
+      "type": "HAS_PROPERTY",
+      "weight": 0.88
+    },
+    {
+      "source": "Differential",
+      "target": "Speed Difference",
+      "type": "enables",
+      "weight": 0.87
+    },
+    {
+      "source": "Clutch",
+      "target": "Power Disconnection",
+      "type": "enables",
+      "weight": 0.89
+    },
+    {
+      "source": "Torque Converter",
+      "target": "Torque Multiplication",
+      "type": "HAS_PROPERTY",
+      "weight": 0.85
+    },
+    {
+      "source": "Planetary Gear",
+      "target": "Multiple Ratios",
+      "type": "provides",
+      "weight": 0.84
+    },
+    {
+      "source": "Helical Gear",
+      "target": "Smooth Operation",
+      "type": "HAS_PROPERTY",
+      "weight": 0.83
+    },
+    {
+      "source": "Worm Gear",
+      "target": "High Reduction",
+      "type": "HAS_PROPERTY",
+      "weight": 0.85
+    },
+    {
+      "source": "Hydraulic Pump",
+      "target": "Hydraulic System",
+      "type": "PART_OF",
+      "weight": 0.93
+    },
+    {
+      "source": "Hydraulic Cylinder",
+      "target": "Hydraulic System",
+      "type": "PART_OF",
+      "weight": 0.92
+    },
+    {
+      "source": "Hydraulic Valve",
+      "target": "Hydraulic System",
+      "type": "PART_OF",
+      "weight": 0.9
+    },
+    {
+      "source": "Air Compressor",
+      "target": "Pneumatic System",
+      "type": "PART_OF",
+      "weight": 0.91
+    },
+    {
+      "source": "Pneumatic Cylinder",
+      "target": "Pneumatic System",
+      "type": "PART_OF",
+      "weight": 0.89
+    },
+    {
+      "source": "Pressure Relief Valve",
+      "target": "Safety Device",
+      "type": "IS_A",
+      "weight": 0.88
+    },
+    {
+      "source": "Accumulator",
+      "target": "Hydraulic System",
+      "type": "PART_OF",
+      "weight": 0.86
+    },
+    {
+      "source": "Filter",
+      "target": "Hydraulic System",
+      "type": "PART_OF",
+      "weight": 0.85
+    },
+    {
+      "source": "Filter",
+      "target": "Pneumatic System",
+      "type": "PART_OF",
+      "weight": 0.84
+    },
+    {
+      "source": "Hydraulic System",
+      "target": "Pressurized Fluid",
+      "type": "uses",
+      "weight": 0.94
+    },
+    {
+      "source": "Hydraulic System",
+      "target": "High Force",
+      "type": "HAS_PROPERTY",
+      "weight": 0.92
+    },
+    {
+      "source": "Pneumatic System",
+      "target": "Clean Operation",
+      "type": "HAS_PROPERTY",
+      "weight": 0.89
+    },
+    {
+      "source": "Hydraulic Pump",
+      "target": "Pressure Generation",
+      "type": "HAS_PROPERTY",
+      "weight": 0.91
+    },
+    {
+      "source": "Hydraulic Cylinder",
+      "target": "Linear Motion",
+      "type": "produces",
+      "weight": 0.9
+    },
+    {
+      "source": "Pneumatic Cylinder",
+      "target": "Linear Motion",
+      "type": "produces",
+      "weight": 0.88
+    },
+    {
+      "source": "Air Compressor",
+      "target": "Compressed Air",
+      "type": "produces",
+      "weight": 0.87
+    },
+    {
+      "source": "Pressure Relief Valve",
+      "target": "Safety",
+      "type": "provides",
+      "weight": 0.86
+    },
+    {
+      "source": "Accumulator",
+      "target": "Energy Storage",
+      "type": "HAS_PROPERTY",
+      "weight": 0.85
+    },
+    {
+      "source": "Hydraulic Valve",
+      "target": "Flow Control",
+      "type": "HAS_PROPERTY",
+      "weight": 0.84
+    },
+    {
+      "source": "Filter",
+      "target": "Contamination Control",
+      "type": "HAS_PROPERTY",
+      "weight": 0.83
+    },
+    {
+      "source": "Ball Bearing",
+      "target": "Bearing",
+      "type": "IS_A",
+      "weight": 0.94
+    },
+    {
+      "source": "Roller Bearing",
+      "target": "Bearing",
+      "type": "IS_A",
+      "weight": 0.93
+    },
+    {
+      "source": "Thrust Bearing",
+      "target": "Bearing",
+      "type": "IS_A",
+      "weight": 0.91
+    },
+    {
+      "source": "Journal Bearing",
+      "target": "Bearing",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "O-Ring",
+      "target": "Seal",
+      "type": "IS_A",
+      "weight": 0.92
+    },
+    {
+      "source": "Gasket",
+      "target": "Seal",
+      "type": "IS_A",
+      "weight": 0.91
+    },
+    {
+      "source": "Coil Spring",
+      "target": "Spring",
+      "type": "IS_A",
+      "weight": 0.93
+    },
+    {
+      "source": "Bearing",
+      "target": "Friction Reduction",
+      "type": "HAS_PROPERTY",
+      "weight": 0.95
+    },
+    {
+      "source": "Seal",
+      "target": "Leakage Prevention",
+      "type": "HAS_PROPERTY",
+      "weight": 0.94
+    },
+    {
+      "source": "Spring",
+      "target": "Energy Storage",
+      "type": "HAS_PROPERTY",
+      "weight": 0.92
+    },
+    {
+      "source": "Bearing",
+      "target": "Machine",
+      "type": "PART_OF",
+      "weight": 0.89
+    },
+    {
+      "source": "Seal",
+      "target": "Machine",
+      "type": "PART_OF",
+      "weight": 0.87
+    },
+    {
+      "source": "Spring",
+      "target": "Machine",
+      "type": "PART_OF",
+      "weight": 0.86
+    },
+    {
+      "source": "Ball Bearing",
+      "target": "Low Friction",
+      "type": "HAS_PROPERTY",
+      "weight": 0.91
+    },
+    {
+      "source": "Roller Bearing",
+      "target": "High Load Capacity",
+      "type": "HAS_PROPERTY",
+      "weight": 0.9
+    },
+    {
+      "source": "Thrust Bearing",
+      "target": "Axial Load",
+      "type": "HAS_PROPERTY",
+      "weight": 0.89
+    },
+    {
+      "source": "O-Ring",
+      "target": "Versatile Sealing",
+      "type": "HAS_PROPERTY",
+      "weight": 0.88
+    },
+    {
+      "source": "Gasket",
+      "target": "Static Sealing",
+      "type": "HAS_PROPERTY",
+      "weight": 0.87
+    },
+    {
+      "source": "Coil Spring",
+      "target": "Compression Resistance",
+      "type": "HAS_PROPERTY",
+      "weight": 0.85
+    },
+    {
+      "source": "Journal Bearing",
+      "target": "Radial Support",
+      "type": "HAS_PROPERTY",
+      "weight": 0.84
+    },
+    {
+      "source": "Solar Cell",
+      "target": "Solar Panel",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Wind Generator",
+      "target": "Wind Turbine",
+      "type": "PART_OF",
+      "weight": 0.93
+    },
+    {
+      "source": "Steam Turbine",
+      "target": "Power Plant",
+      "type": "PART_OF",
+      "weight": 0.91
+    },
+    {
+      "source": "Gas Turbine",
+      "target": "Power Plant",
+      "type": "PART_OF",
+      "weight": 0.9
+    },
+    {
+      "source": "Alternator",
+      "target": "Generator",
+      "type": "IS_A",
+      "weight": 0.94
+    },
+    {
+      "source": "Solar Panel",
+      "target": "Renewable Energy",
+      "type": "produces",
+      "weight": 0.96
+    },
+    {
+      "source": "Wind Turbine",
+      "target": "Renewable Energy",
+      "type": "produces",
+      "weight": 0.95
+    },
+    {
+      "source": "Nuclear Reactor",
+      "target": "Nuclear Energy",
+      "type": "produces",
+      "weight": 0.94
+    },
+    {
+      "source": "Hydroelectric Generator",
+      "target": "Renewable Energy",
+      "type": "produces",
+      "weight": 0.93
+    },
+    {
+      "source": "Generator",
+      "target": "Electrical Energy",
+      "type": "produces",
+      "weight": 0.97
+    },
+    {
+      "source": "Solar Panel",
+      "target": "Sunlight",
+      "type": "requires",
+      "weight": 0.96
+    },
+    {
+      "source": "Wind Turbine",
+      "target": "Wind",
+      "type": "requires",
+      "weight": 0.95
+    },
+    {
+      "source": "Hydroelectric Generator",
+      "target": "Water Flow",
+      "type": "requires",
+      "weight": 0.94
+    },
+    {
+      "source": "Nuclear Reactor",
+      "target": "Nuclear Fuel",
+      "type": "requires",
+      "weight": 0.93
+    },
+    {
+      "source": "Steam Turbine",
+      "target": "Steam",
+      "type": "requires",
+      "weight": 0.92
+    },
+    {
+      "source": "Gas Turbine",
+      "target": "Fuel",
+      "type": "requires",
+      "weight": 0.91
+    },
+    {
+      "source": "Solar Cell",
+      "target": "Photovoltaic Effect",
+      "type": "uses",
+      "weight": 0.9
+    },
+    {
+      "source": "Wind Turbine",
+      "target": "Kinetic Energy",
+      "type": "converts",
+      "weight": 0.89
+    },
+    {
+      "source": "Nuclear Reactor",
+      "target": "Nuclear Fission",
+      "type": "uses",
+      "weight": 0.88
+    },
+    {
+      "source": "Alternator",
+      "target": "Electromagnetic Induction",
+      "type": "uses",
+      "weight": 0.87
+    },
+    {
+      "source": "Lithium Ion Battery",
+      "target": "Battery",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Lead Acid Battery",
+      "target": "Battery",
+      "type": "IS_A",
+      "weight": 0.94
+    },
+    {
+      "source": "Fuel Cell",
+      "target": "Energy Converter",
+      "type": "IS_A",
+      "weight": 0.91
+    },
+    {
+      "source": "Capacitor Bank",
+      "target": "Energy Storage",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Flywheel",
+      "target": "Energy Storage",
+      "type": "IS_A",
+      "weight": 0.89
+    },
+    {
+      "source": "Inverter",
+      "target": "Power Electronics",
+      "type": "IS_A",
+      "weight": 0.92
+    },
+    {
+      "source": "Rectifier",
+      "target": "Power Electronics",
+      "type": "IS_A",
+      "weight": 0.91
+    },
+    {
+      "source": "UPS",
+      "target": "Power Protection",
+      "type": "IS_A",
+      "weight": 0.88
+    },
+    {
+      "source": "Power Grid",
+      "target": "Infrastructure",
+      "type": "IS_A",
+      "weight": 0.87
+    },
+    {
+      "source": "Battery",
+      "target": "Chemical Energy",
+      "type": "uses",
+      "weight": 0.93
+    },
+    {
+      "source": "Battery",
+      "target": "Electrical Energy",
+      "type": "stores",
+      "weight": 0.96
+    },
+    {
+      "source": "Fuel Cell",
+      "target": "Chemical Reaction",
+      "type": "uses",
+      "weight": 0.92
+    },
+    {
+      "source": "Flywheel",
+      "target": "Kinetic Energy",
+      "type": "stores",
+      "weight": 0.91
+    },
+    {
+      "source": "Capacitor Bank",
+      "target": "Electrical Energy",
+      "type": "stores",
+      "weight": 0.9
+    },
+    {
+      "source": "Inverter",
+      "target": "AC Power",
+      "type": "produces",
+      "weight": 0.89
+    },
+    {
+      "source": "Rectifier",
+      "target": "DC Power",
+      "type": "produces",
+      "weight": 0.88
+    },
+    {
+      "source": "UPS",
+      "target": "Backup Power",
+      "type": "provides",
+      "weight": 0.87
+    },
+    {
+      "source": "Power Grid",
+      "target": "Electricity Distribution",
+      "type": "enables",
+      "weight": 0.86
+    },
+    {
+      "source": "Lithium Ion Battery",
+      "target": "High Energy Density",
+      "type": "HAS_PROPERTY",
+      "weight": 0.85
+    },
+    {
+      "source": "Lead Acid Battery",
+      "target": "Low Cost",
+      "type": "HAS_PROPERTY",
+      "weight": 0.84
+    },
+    {
+      "source": "Reinforced Concrete",
+      "target": "Concrete",
+      "type": "IS_A",
+      "weight": 0.94
+    },
+    {
+      "source": "Prestressed Concrete",
+      "target": "Reinforced Concrete",
+      "type": "IS_A",
+      "weight": 0.91
+    },
+    {
+      "source": "Rebar",
+      "target": "Steel",
+      "type": "IS_A",
+      "weight": 0.93
+    },
+    {
+      "source": "Beam",
+      "target": "Structural Element",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Column",
+      "target": "Structural Element",
+      "type": "IS_A",
+      "weight": 0.94
+    },
+    {
+      "source": "Foundation",
+      "target": "Structural Element",
+      "type": "IS_A",
+      "weight": 0.92
+    },
+    {
+      "source": "Truss",
+      "target": "Structural Element",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Arch",
+      "target": "Structural Element",
+      "type": "IS_A",
+      "weight": 0.89
+    },
+    {
+      "source": "Rebar",
+      "target": "Concrete",
+      "type": "PART_OF",
+      "weight": 0.88
+    },
+    {
+      "source": "Steel",
+      "target": "High Strength",
+      "type": "HAS_PROPERTY",
+      "weight": 0.87
+    },
+    {
+      "source": "Concrete",
+      "target": "Compression Strength",
+      "type": "HAS_PROPERTY",
+      "weight": 0.93
+    },
+    {
+      "source": "Steel",
+      "target": "Tension Strength",
+      "type": "HAS_PROPERTY",
+      "weight": 0.94
+    },
+    {
+      "source": "Reinforced Concrete",
+      "target": "Compression And Tension",
+      "type": "HAS_PROPERTY",
+      "weight": 0.91
+    },
+    {
+      "source": "Beam",
+      "target": "Bending Resistance",
+      "type": "HAS_PROPERTY",
+      "weight": 0.9
+    },
+    {
+      "source": "Column",
+      "target": "Compression Resistance",
+      "type": "HAS_PROPERTY",
+      "weight": 0.89
+    },
+    {
+      "source": "Foundation",
+      "target": "Load Transfer",
+      "type": "HAS_PROPERTY",
+      "weight": 0.88
+    },
+    {
+      "source": "Truss",
+      "target": "Structural Efficiency",
+      "type": "HAS_PROPERTY",
+      "weight": 0.87
+    },
+    {
+      "source": "Arch",
+      "target": "Compression Structure",
+      "type": "HAS_PROPERTY",
+      "weight": 0.86
+    },
+    {
+      "source": "Prestressed Concrete",
+      "target": "High Performance",
+      "type": "HAS_PROPERTY",
+      "weight": 0.85
+    },
+    {
+      "source": "Building",
+      "target": "Foundation",
+      "type": "requires",
+      "weight": 0.84
+    },
+    {
+      "source": "Arc Welding",
+      "target": "Welding",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "TIG Welding",
+      "target": "Arc Welding",
+      "type": "IS_A",
+      "weight": 0.92
+    },
+    {
+      "source": "MIG Welding",
+      "target": "Arc Welding",
+      "type": "IS_A",
+      "weight": 0.93
+    },
+    {
+      "source": "Soldering",
+      "target": "Joining Process",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Brazing",
+      "target": "Joining Process",
+      "type": "IS_A",
+      "weight": 0.89
+    },
+    {
+      "source": "CNC Machine",
+      "target": "Machining",
+      "type": "IS_A",
+      "weight": 0.91
+    },
+    {
+      "source": "Lathe",
+      "target": "Machine Tool",
+      "type": "IS_A",
+      "weight": 0.94
+    },
+    {
+      "source": "Milling Machine",
+      "target": "Machine Tool",
+      "type": "IS_A",
+      "weight": 0.93
+    },
+    {
+      "source": "Welding",
+      "target": "Metal Joining",
+      "type": "HAS_PROPERTY",
+      "weight": 0.88
+    },
+    {
+      "source": "Machining",
+      "target": "Material Removal",
+      "type": "HAS_PROPERTY",
+      "weight": 0.87
+    },
+    {
+      "source": "Welding",
+      "target": "Heat",
+      "type": "uses",
+      "weight": 0.91
+    },
+    {
+      "source": "Soldering",
+      "target": "Low Temperature",
+      "type": "HAS_PROPERTY",
+      "weight": 0.89
+    },
+    {
+      "source": "Brazing",
+      "target": "Medium Temperature",
+      "type": "HAS_PROPERTY",
+      "weight": 0.88
+    },
+    {
+      "source": "CNC Machine",
+      "target": "Computer Control",
+      "type": "uses",
+      "weight": 0.9
+    },
+    {
+      "source": "Lathe",
+      "target": "Rotating Workpiece",
+      "type": "uses",
+      "weight": 0.87
+    },
+    {
+      "source": "Milling Machine",
+      "target": "Rotating Cutter",
+      "type": "uses",
+      "weight": 0.86
+    },
+    {
+      "source": "TIG Welding",
+      "target": "High Precision",
+      "type": "HAS_PROPERTY",
+      "weight": 0.85
+    },
+    {
+      "source": "MIG Welding",
+      "target": "High Production",
+      "type": "HAS_PROPERTY",
+      "weight": 0.84
+    },
+    {
+      "source": "Arc Welding",
+      "target": "Electric Arc",
+      "type": "uses",
+      "weight": 0.83
+    },
+    {
+      "source": "Machining",
+      "target": "Cutting Tools",
+      "type": "requires",
+      "weight": 0.82
+    },
+    {
+      "source": "FDM Printing",
+      "target": "3D Printer",
+      "type": "IS_A",
+      "weight": 0.94
+    },
+    {
+      "source": "SLA Printing",
+      "target": "3D Printer",
+      "type": "IS_A",
+      "weight": 0.93
+    },
+    {
+      "source": "SLS Printing",
+      "target": "3D Printer",
+      "type": "IS_A",
+      "weight": 0.91
+    },
+    {
+      "source": "3D Printer",
+      "target": "Additive Manufacturing",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "CAD",
+      "target": "Design Software",
+      "type": "IS_A",
+      "weight": 0.92
+    },
+    {
+      "source": "CAM",
+      "target": "Manufacturing Software",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "CAE",
+      "target": "Engineering Software",
+      "type": "IS_A",
+      "weight": 0.89
+    },
+    {
+      "source": "FEA",
+      "target": "Analysis Method",
+      "type": "IS_A",
+      "weight": 0.88
+    },
+    {
+      "source": "CFD",
+      "target": "Analysis Method",
+      "type": "IS_A",
+      "weight": 0.87
+    },
+    {
+      "source": "Rapid Prototyping",
+      "target": "3D Printer",
+      "type": "uses",
+      "weight": 0.86
+    },
+    {
+      "source": "3D Printer",
+      "target": "Layer-by-Layer",
+      "type": "HAS_PROPERTY",
+      "weight": 0.91
+    },
+    {
+      "source": "FDM Printing",
+      "target": "Thermoplastic Extrusion",
+      "type": "uses",
+      "weight": 0.9
+    },
+    {
+      "source": "SLA Printing",
+      "target": "Photopolymer Resin",
+      "type": "uses",
+      "weight": 0.89
+    },
+    {
+      "source": "SLS Printing",
+      "target": "Powder Sintering",
+      "type": "uses",
+      "weight": 0.88
+    },
+    {
+      "source": "CAD",
+      "target": "3D Modeling",
+      "type": "enables",
+      "weight": 0.87
+    },
+    {
+      "source": "CAM",
+      "target": "CNC Machine",
+      "type": "controls",
+      "weight": 0.86
+    },
+    {
+      "source": "FEA",
+      "target": "Structural Analysis",
+      "type": "performs",
+      "weight": 0.85
+    },
+    {
+      "source": "CFD",
+      "target": "Fluid Analysis",
+      "type": "performs",
+      "weight": 0.84
+    },
+    {
+      "source": "CAE",
+      "target": "Design Validation",
+      "type": "enables",
+      "weight": 0.83
+    },
+    {
+      "source": "Rapid Prototyping",
+      "target": "Product Development",
+      "type": "accelerates",
+      "weight": 0.82
+    },
+    {
+      "source": "Industrial Robot",
+      "target": "Robot",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Robotic Arm",
+      "target": "Industrial Robot",
+      "type": "PART_OF",
+      "weight": 0.92
+    },
+    {
+      "source": "End Effector",
+      "target": "Robotic Arm",
+      "type": "PART_OF",
+      "weight": 0.9
+    },
+    {
+      "source": "Gripper",
+      "target": "End Effector",
+      "type": "IS_A",
+      "weight": 0.89
+    },
+    {
+      "source": "Robot",
+      "target": "Automation",
+      "type": "enables",
+      "weight": 0.93
+    },
+    {
+      "source": "Industrial Robot",
+      "target": "Manufacturing",
+      "type": "used-in",
+      "weight": 0.91
+    },
+    {
+      "source": "Robotic Arm",
+      "target": "Precise Movement",
+      "type": "HAS_PROPERTY",
+      "weight": 0.88
+    },
+    {
+      "source": "Gripper",
+      "target": "Object Manipulation",
+      "type": "enables",
+      "weight": 0.87
+    },
+    {
+      "source": "End Effector",
+      "target": "Task Specific",
+      "type": "HAS_PROPERTY",
+      "weight": 0.86
+    },
+    {
+      "source": "Robot",
+      "target": "Sensor",
+      "type": "requires",
+      "weight": 0.85
+    },
+    {
+      "source": "Proximity Sensor",
+      "target": "Sensor",
+      "type": "IS_A",
+      "weight": 0.94
+    },
+    {
+      "source": "Pressure Sensor",
+      "target": "Sensor",
+      "type": "IS_A",
+      "weight": 0.93
+    },
+    {
+      "source": "Temperature Sensor",
+      "target": "Sensor",
+      "type": "IS_A",
+      "weight": 0.92
+    },
+    {
+      "source": "Position Sensor",
+      "target": "Sensor",
+      "type": "IS_A",
+      "weight": 0.91
+    },
+    {
+      "source": "Encoder",
+      "target": "Position Sensor",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Absolute Encoder",
+      "target": "Encoder",
+      "type": "IS_A",
+      "weight": 0.89
+    },
+    {
+      "source": "Incremental Encoder",
+      "target": "Encoder",
+      "type": "IS_A",
+      "weight": 0.88
+    },
+    {
+      "source": "Resolver",
+      "target": "Position Sensor",
+      "type": "IS_A",
+      "weight": 0.87
+    },
+    {
+      "source": "LVDT",
+      "target": "Position Sensor",
+      "type": "IS_A",
+      "weight": 0.86
+    },
+    {
+      "source": "Strain Gauge",
+      "target": "Sensor",
+      "type": "IS_A",
+      "weight": 0.85
+    },
+    {
+      "source": "Load Cell",
+      "target": "Sensor",
+      "type": "IS_A",
+      "weight": 0.92
+    },
+    {
+      "source": "Accelerometer",
+      "target": "Sensor",
+      "type": "IS_A",
+      "weight": 0.91
+    },
+    {
+      "source": "Gyroscope",
+      "target": "Sensor",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Magnetometer",
+      "target": "Sensor",
+      "type": "IS_A",
+      "weight": 0.89
+    },
+    {
+      "source": "Sensor",
+      "target": "Measurement",
+      "type": "enables",
+      "weight": 0.94
+    },
+    {
+      "source": "Proximity Sensor",
+      "target": "Object Detection",
+      "type": "enables",
+      "weight": 0.91
+    },
+    {
+      "source": "Pressure Sensor",
+      "target": "Force Measurement",
+      "type": "enables",
+      "weight": 0.9
+    },
+    {
+      "source": "Temperature Sensor",
+      "target": "Thermal Monitoring",
+      "type": "enables",
+      "weight": 0.89
+    },
+    {
+      "source": "Encoder",
+      "target": "Motion Feedback",
+      "type": "provides",
+      "weight": 0.88
+    },
+    {
+      "source": "Strain Gauge",
+      "target": "Deformation Measurement",
+      "type": "enables",
+      "weight": 0.87
+    },
+    {
+      "source": "PLC",
+      "target": "Industrial Controller",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "HMI",
+      "target": "User Interface",
+      "type": "IS_A",
+      "weight": 0.92
+    },
+    {
+      "source": "SCADA",
+      "target": "Monitoring System",
+      "type": "IS_A",
+      "weight": 0.91
+    },
+    {
+      "source": "DCS",
+      "target": "Control System",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "PID Controller",
+      "target": "Control Algorithm",
+      "type": "IS_A",
+      "weight": 0.93
+    },
+    {
+      "source": "Feedback Control",
+      "target": "Control System",
+      "type": "IS_A",
+      "weight": 0.89
+    },
+    {
+      "source": "Open Loop Control",
+      "target": "Control System",
+      "type": "IS_A",
+      "weight": 0.87
+    },
+    {
+      "source": "Closed Loop Control",
+      "target": "Control System",
+      "type": "IS_A",
+      "weight": 0.88
+    },
+    {
+      "source": "Linear Actuator",
+      "target": "Actuator",
+      "type": "IS_A",
+      "weight": 0.86
+    },
+    {
+      "source": "PLC",
+      "target": "Industrial Automation",
+      "type": "enables",
+      "weight": 0.85
+    },
+    {
+      "source": "PLC",
+      "target": "Sensor",
+      "type": "uses",
+      "weight": 0.91
+    },
+    {
+      "source": "PLC",
+      "target": "Actuator",
+      "type": "controls",
+      "weight": 0.9
+    },
+    {
+      "source": "HMI",
+      "target": "PLC",
+      "type": "interfaces-with",
+      "weight": 0.89
+    },
+    {
+      "source": "SCADA",
+      "target": "PLC",
+      "type": "monitors",
+      "weight": 0.88
+    },
+    {
+      "source": "PID Controller",
+      "target": "Process Control",
+      "type": "used-in",
+      "weight": 0.87
+    },
+    {
+      "source": "Feedback Control",
+      "target": "Sensor",
+      "type": "requires",
+      "weight": 0.86
+    },
+    {
+      "source": "Closed Loop Control",
+      "target": "Feedback Control",
+      "type": "uses",
+      "weight": 0.85
+    },
+    {
+      "source": "Actuator",
+      "target": "Physical Action",
+      "type": "produces",
+      "weight": 0.84
+    },
+    {
+      "source": "Linear Actuator",
+      "target": "Linear Motion",
+      "type": "produces",
+      "weight": 0.83
+    },
+    {
+      "source": "Open Loop Control",
+      "target": "No Feedback",
+      "type": "HAS_PROPERTY",
+      "weight": 0.82
+    },
+    {
+      "source": "Machine Vision",
+      "target": "Computer Vision",
+      "type": "related-to",
+      "weight": 0.91
+    },
+    {
+      "source": "Computer Vision",
+      "target": "Image Processing",
+      "type": "uses",
+      "weight": 0.9
+    },
+    {
+      "source": "Image Processing",
+      "target": "Digital Signal Processing",
+      "type": "IS_A",
+      "weight": 0.89
+    },
+    {
+      "source": "OCR",
+      "target": "Computer Vision",
+      "type": "IS_A",
+      "weight": 0.88
+    },
+    {
+      "source": "Barcode Scanner",
+      "target": "Machine Vision",
+      "type": "uses",
+      "weight": 0.87
+    },
+    {
+      "source": "QR Code",
+      "target": "Barcode",
+      "type": "IS_A",
+      "weight": 0.86
+    },
+    {
+      "source": "RFID",
+      "target": "Identification Technology",
+      "type": "IS_A",
+      "weight": 0.85
+    },
+    {
+      "source": "NFC",
+      "target": "RFID",
+      "type": "IS_A",
+      "weight": 0.84
+    },
+    {
+      "source": "GPS",
+      "target": "Navigation System",
+      "type": "IS_A",
+      "weight": 0.93
+    },
+    {
+      "source": "LIDAR",
+      "target": "Ranging Technology",
+      "type": "IS_A",
+      "weight": 0.92
+    },
+    {
+      "source": "Machine Vision",
+      "target": "Quality Control",
+      "type": "enables",
+      "weight": 0.89
+    },
+    {
+      "source": "OCR",
+      "target": "Text Recognition",
+      "type": "performs",
+      "weight": 0.88
+    },
+    {
+      "source": "Barcode Scanner",
+      "target": "Data Capture",
+      "type": "enables",
+      "weight": 0.87
+    },
+    {
+      "source": "RFID",
+      "target": "Wireless Identification",
+      "type": "enables",
+      "weight": 0.86
+    },
+    {
+      "source": "GPS",
+      "target": "Satellite",
+      "type": "uses",
+      "weight": 0.9
+    },
+    {
+      "source": "LIDAR",
+      "target": "3D Mapping",
+      "type": "enables",
+      "weight": 0.85
+    },
+    {
+      "source": "Computer Vision",
+      "target": "Pattern Recognition",
+      "type": "enables",
+      "weight": 0.84
+    },
+    {
+      "source": "Image Processing",
+      "target": "Digital Enhancement",
+      "type": "enables",
+      "weight": 0.83
+    },
+    {
+      "source": "QR Code",
+      "target": "Data Storage",
+      "type": "enables",
+      "weight": 0.82
+    },
+    {
+      "source": "NFC",
+      "target": "Contactless Communication",
+      "type": "enables",
+      "weight": 0.81
+    },
+    {
+      "source": "TCP/IP",
+      "target": "Network Protocol",
+      "type": "IS_A",
+      "weight": 0.96
+    },
+    {
+      "source": "HTTP",
+      "target": "Application Protocol",
+      "type": "IS_A",
+      "weight": 0.94
+    },
+    {
+      "source": "HTTPS",
+      "target": "HTTP",
+      "type": "IS_A",
+      "weight": 0.93
+    },
+    {
+      "source": "DNS",
+      "target": "Network Service",
+      "type": "IS_A",
+      "weight": 0.92
+    },
+    {
+      "source": "DHCP",
+      "target": "Network Service",
+      "type": "IS_A",
+      "weight": 0.91
+    },
+    {
+      "source": "FTP",
+      "target": "File Transfer Protocol",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "SSH",
+      "target": "Secure Protocol",
+      "type": "IS_A",
+      "weight": 0.89
+    },
+    {
+      "source": "VPN",
+      "target": "Security Technology",
+      "type": "IS_A",
+      "weight": 0.88
+    },
+    {
+      "source": "API",
+      "target": "Software Interface",
+      "type": "IS_A",
+      "weight": 0.87
+    },
+    {
+      "source": "REST API",
+      "target": "API",
+      "type": "IS_A",
+      "weight": 0.86
+    },
+    {
+      "source": "TCP/IP",
+      "target": "Internet",
+      "type": "enables",
+      "weight": 0.95
+    },
+    {
+      "source": "HTTP",
+      "target": "Web",
+      "type": "enables",
+      "weight": 0.94
+    },
+    {
+      "source": "HTTPS",
+      "target": "Encryption",
+      "type": "uses",
+      "weight": 0.92
+    },
+    {
+      "source": "DNS",
+      "target": "Name Resolution",
+      "type": "performs",
+      "weight": 0.91
+    },
+    {
+      "source": "DHCP",
+      "target": "IP Assignment",
+      "type": "performs",
+      "weight": 0.9
+    },
+    {
+      "source": "FTP",
+      "target": "File Transfer",
+      "type": "enables",
+      "weight": 0.89
+    },
+    {
+      "source": "SSH",
+      "target": "Remote Access",
+      "type": "enables",
+      "weight": 0.88
+    },
+    {
+      "source": "VPN",
+      "target": "Secure Tunneling",
+      "type": "creates",
+      "weight": 0.87
+    },
+    {
+      "source": "API",
+      "target": "Software Integration",
+      "type": "enables",
+      "weight": 0.86
+    },
+    {
+      "source": "REST API",
+      "target": "Web Services",
+      "type": "enables",
+      "weight": 0.85
+    },
+    {
+      "source": "Database",
+      "target": "Data Storage",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "SQL",
+      "target": "Query Language",
+      "type": "IS_A",
+      "weight": 0.94
+    },
+    {
+      "source": "NoSQL",
+      "target": "Database",
+      "type": "IS_A",
+      "weight": 0.91
+    },
+    {
+      "source": "Cloud Computing",
+      "target": "Computing Service",
+      "type": "IS_A",
+      "weight": 0.93
+    },
+    {
+      "source": "Server",
+      "target": "Computer",
+      "type": "IS_A",
+      "weight": 0.92
+    },
+    {
+      "source": "Virtual Machine",
+      "target": "Virtualization",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Container",
+      "target": "Virtualization",
+      "type": "IS_A",
+      "weight": 0.89
+    },
+    {
+      "source": "Microservices",
+      "target": "Software Architecture",
+      "type": "IS_A",
+      "weight": 0.88
+    },
+    {
+      "source": "Load Balancing",
+      "target": "Traffic Distribution",
+      "type": "IS_A",
+      "weight": 0.87
+    },
+    {
+      "source": "CDN",
+      "target": "Content Distribution",
+      "type": "IS_A",
+      "weight": 0.86
+    },
+    {
+      "source": "SQL",
+      "target": "Database",
+      "type": "manages",
+      "weight": 0.93
+    },
+    {
+      "source": "NoSQL",
+      "target": "Unstructured Data",
+      "type": "handles",
+      "weight": 0.91
+    },
+    {
+      "source": "Cloud Computing",
+      "target": "Internet",
+      "type": "uses",
+      "weight": 0.9
+    },
+    {
+      "source": "Virtual Machine",
+      "target": "Physical Hardware",
+      "type": "abstracts",
+      "weight": 0.89
+    },
+    {
+      "source": "Container",
+      "target": "Application",
+      "type": "packages",
+      "weight": 0.88
+    },
+    {
+      "source": "Microservices",
+      "target": "Scalability",
+      "type": "enables",
+      "weight": 0.87
+    },
+    {
+      "source": "Load Balancing",
+      "target": "Server",
+      "type": "distributes-to",
+      "weight": 0.86
+    },
+    {
+      "source": "CDN",
+      "target": "Content Delivery",
+      "type": "optimizes",
+      "weight": 0.85
+    },
+    {
+      "source": "Database",
+      "target": "Data Management",
+      "type": "enables",
+      "weight": 0.84
+    },
+    {
+      "source": "Server",
+      "target": "Service Delivery",
+      "type": "enables",
+      "weight": 0.83
+    },
+    {
+      "source": "Artificial Intelligence",
+      "target": "Computer Science",
+      "type": "PART_OF",
+      "weight": 0.92
+    },
+    {
+      "source": "Machine Learning",
+      "target": "Artificial Intelligence",
+      "type": "PART_OF",
+      "weight": 0.94
+    },
+    {
+      "source": "Neural Network",
+      "target": "Machine Learning",
+      "type": "IS_A",
+      "weight": 0.91
+    },
+    {
+      "source": "Deep Learning",
+      "target": "Machine Learning",
+      "type": "IS_A",
+      "weight": 0.93
+    },
+    {
+      "source": "Algorithm",
+      "target": "Computer Science",
+      "type": "PART_OF",
+      "weight": 0.9
+    },
+    {
+      "source": "Data Mining",
+      "target": "Data Analysis",
+      "type": "IS_A",
+      "weight": 0.89
+    },
+    {
+      "source": "Big Data",
+      "target": "Data Management",
+      "type": "IS_A",
+      "weight": 0.88
+    },
+    {
+      "source": "IoT",
+      "target": "Connected Devices",
+      "type": "IS_A",
+      "weight": 0.87
+    },
+    {
+      "source": "Edge Computing",
+      "target": "Distributed Computing",
+      "type": "IS_A",
+      "weight": 0.86
+    },
+    {
+      "source": "Blockchain",
+      "target": "Distributed Ledger",
+      "type": "IS_A",
+      "weight": 0.85
+    },
+    {
+      "source": "Machine Learning",
+      "target": "Pattern Recognition",
+      "type": "enables",
+      "weight": 0.91
+    },
+    {
+      "source": "Neural Network",
+      "target": "Learning",
+      "type": "enables",
+      "weight": 0.9
+    },
+    {
+      "source": "Deep Learning",
+      "target": "Feature Learning",
+      "type": "enables",
+      "weight": 0.89
+    },
+    {
+      "source": "Data Mining",
+      "target": "Knowledge Discovery",
+      "type": "enables",
+      "weight": 0.88
+    },
+    {
+      "source": "Big Data",
+      "target": "Analytics",
+      "type": "enables",
+      "weight": 0.87
+    },
+    {
+      "source": "IoT",
+      "target": "Smart Automation",
+      "type": "enables",
+      "weight": 0.86
+    },
+    {
+      "source": "Edge Computing",
+      "target": "Low Latency",
+      "type": "provides",
+      "weight": 0.85
+    },
+    {
+      "source": "Blockchain",
+      "target": "Trust",
+      "type": "provides",
+      "weight": 0.84
+    },
+    {
+      "source": "Algorithm",
+      "target": "Problem Solving",
+      "type": "enables",
+      "weight": 0.83
+    },
+    {
+      "source": "Artificial Intelligence",
+      "target": "Automation",
+      "type": "enables",
+      "weight": 0.82
+    },
+    {
+      "source": "Satellite",
+      "target": "Space Technology",
+      "type": "IS_A",
+      "weight": 0.94
+    },
+    {
+      "source": "Satellite Communication",
+      "target": "Wireless Communication",
+      "type": "IS_A",
+      "weight": 0.93
+    },
+    {
+      "source": "Geostationary Orbit",
+      "target": "Orbital Mechanics",
+      "type": "PART_OF",
+      "weight": 0.91
+    },
+    {
+      "source": "Low Earth Orbit",
+      "target": "Orbital Mechanics",
+      "type": "PART_OF",
+      "weight": 0.9
+    },
+    {
+      "source": "Radio Frequency",
+      "target": "Electromagnetic Spectrum",
+      "type": "PART_OF",
+      "weight": 0.92
+    },
+    {
+      "source": "Microwave",
+      "target": "Radio Frequency",
+      "type": "IS_A",
+      "weight": 0.89
+    },
+    {
+      "source": "Fiber Optic Cable",
+      "target": "Communication Medium",
+      "type": "IS_A",
+      "weight": 0.88
+    },
+    {
+      "source": "Coaxial Cable",
+      "target": "Communication Medium",
+      "type": "IS_A",
+      "weight": 0.87
+    },
+    {
+      "source": "Twisted Pair Cable",
+      "target": "Communication Medium",
+      "type": "IS_A",
+      "weight": 0.86
+    },
+    {
+      "source": "Cellular Network",
+      "target": "Wireless Network",
+      "type": "IS_A",
+      "weight": 0.85
+    },
+    {
+      "source": "Satellite",
+      "target": "Communication",
+      "type": "enables",
+      "weight": 0.91
+    },
+    {
+      "source": "Satellite Communication",
+      "target": "Global Coverage",
+      "type": "provides",
+      "weight": 0.9
+    },
+    {
+      "source": "Geostationary Orbit",
+      "target": "Fixed Position",
+      "type": "provides",
+      "weight": 0.89
+    },
+    {
+      "source": "Low Earth Orbit",
+      "target": "Low Latency",
+      "type": "provides",
+      "weight": 0.88
+    },
+    {
+      "source": "Fiber Optic Cable",
+      "target": "High Bandwidth",
+      "type": "provides",
+      "weight": 0.87
+    },
+    {
+      "source": "Microwave",
+      "target": "Point-to-Point Communication",
+      "type": "enables",
+      "weight": 0.86
+    },
+    {
+      "source": "Coaxial Cable",
+      "target": "Shielded Transmission",
+      "type": "provides",
+      "weight": 0.85
+    },
+    {
+      "source": "Twisted Pair Cable",
+      "target": "Interference Reduction",
+      "type": "provides",
+      "weight": 0.84
+    },
+    {
+      "source": "Cellular Network",
+      "target": "Mobile Communication",
+      "type": "enables",
+      "weight": 0.83
+    },
+    {
+      "source": "Radio Frequency",
+      "target": "Wireless Transmission",
+      "type": "enables",
+      "weight": 0.82
+    },
+    {
+      "source": "5G Network",
+      "target": "Cellular Network",
+      "type": "IS_A",
+      "weight": 0.93
+    },
+    {
+      "source": "4G LTE",
+      "target": "Cellular Network",
+      "type": "IS_A",
+      "weight": 0.92
+    },
+    {
+      "source": "WiFi 6",
+      "target": "WiFi",
+      "type": "IS_A",
+      "weight": 0.91
+    },
+    {
+      "source": "Bandwidth",
+      "target": "Communication Capacity",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Latency",
+      "target": "Network Performance",
+      "type": "IS_A",
+      "weight": 0.89
+    },
+    {
+      "source": "Throughput",
+      "target": "Network Performance",
+      "type": "IS_A",
+      "weight": 0.88
+    },
+    {
+      "source": "Packet Switching",
+      "target": "Data Transmission",
+      "type": "IS_A",
+      "weight": 0.87
+    },
+    {
+      "source": "Circuit Switching",
+      "target": "Data Transmission",
+      "type": "IS_A",
+      "weight": 0.86
+    },
+    {
+      "source": "Quality of Service",
+      "target": "Network Management",
+      "type": "IS_A",
+      "weight": 0.85
+    },
+    {
+      "source": "Network Topology",
+      "target": "Network Design",
+      "type": "IS_A",
+      "weight": 0.84
+    },
+    {
+      "source": "5G Network",
+      "target": "High Speed",
+      "type": "provides",
+      "weight": 0.91
+    },
+    {
+      "source": "4G LTE",
+      "target": "Mobile Broadband",
+      "type": "enables",
+      "weight": 0.9
+    },
+    {
+      "source": "WiFi 6",
+      "target": "Improved Efficiency",
+      "type": "provides",
+      "weight": 0.89
+    },
+    {
+      "source": "Bandwidth",
+      "target": "Data Capacity",
+      "type": "measures",
+      "weight": 0.88
+    },
+    {
+      "source": "Latency",
+      "target": "Response Time",
+      "type": "measures",
+      "weight": 0.87
+    },
+    {
+      "source": "Packet Switching",
+      "target": "Efficient Routing",
+      "type": "enables",
+      "weight": 0.86
+    },
+    {
+      "source": "Circuit Switching",
+      "target": "Dedicated Connection",
+      "type": "provides",
+      "weight": 0.85
+    },
+    {
+      "source": "Quality of Service",
+      "target": "Performance Guarantee",
+      "type": "provides",
+      "weight": 0.84
+    },
+    {
+      "source": "Network Topology",
+      "target": "Connection Structure",
+      "type": "defines",
+      "weight": 0.83
+    },
+    {
+      "source": "Throughput",
+      "target": "Data Rate",
+      "type": "measures",
+      "weight": 0.82
+    },
+    {
+      "source": "Radar",
+      "target": "Detection System",
+      "type": "IS_A",
+      "weight": 0.94
+    },
+    {
+      "source": "Sonar",
+      "target": "Detection System",
+      "type": "IS_A",
+      "weight": 0.93
+    },
+    {
+      "source": "Ultrasound",
+      "target": "Sound Wave",
+      "type": "IS_A",
+      "weight": 0.92
+    },
+    {
+      "source": "X-Ray",
+      "target": "Electromagnetic Radiation",
+      "type": "IS_A",
+      "weight": 0.91
+    },
+    {
+      "source": "CT Scanner",
+      "target": "Medical Imaging",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "MRI",
+      "target": "Medical Imaging",
+      "type": "IS_A",
+      "weight": 0.89
+    },
+    {
+      "source": "Laser",
+      "target": "Coherent Light",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Fiber Laser",
+      "target": "Laser",
+      "type": "IS_A",
+      "weight": 0.88
+    },
+    {
+      "source": "Diode Laser",
+      "target": "Laser",
+      "type": "IS_A",
+      "weight": 0.87
+    },
+    {
+      "source": "Gas Laser",
+      "target": "Laser",
+      "type": "IS_A",
+      "weight": 0.86
+    },
+    {
+      "source": "Radar",
+      "target": "Radio Waves",
+      "type": "uses",
+      "weight": 0.92
+    },
+    {
+      "source": "Sonar",
+      "target": "Acoustic Waves",
+      "type": "uses",
+      "weight": 0.91
+    },
+    {
+      "source": "Radar",
+      "target": "Range Detection",
+      "type": "enables",
+      "weight": 0.9
+    },
+    {
+      "source": "Sonar",
+      "target": "Underwater Navigation",
+      "type": "enables",
+      "weight": 0.89
+    },
+    {
+      "source": "Ultrasound",
+      "target": "Medical Imaging",
+      "type": "enables",
+      "weight": 0.88
+    },
+    {
+      "source": "X-Ray",
+      "target": "Material Penetration",
+      "type": "enables",
+      "weight": 0.87
+    },
+    {
+      "source": "CT Scanner",
+      "target": "Cross-sectional Imaging",
+      "type": "provides",
+      "weight": 0.86
+    },
+    {
+      "source": "MRI",
+      "target": "Soft Tissue Imaging",
+      "type": "provides",
+      "weight": 0.85
+    },
+    {
+      "source": "Laser",
+      "target": "Precise Cutting",
+      "type": "enables",
+      "weight": 0.84
+    },
+    {
+      "source": "Fiber Laser",
+      "target": "Industrial Processing",
+      "type": "used-in",
+      "weight": 0.83
+    },
+    {
+      "source": "Photovoltaic Cell",
+      "target": "Solar Panel",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Silicon Solar Cell",
+      "target": "Photovoltaic Cell",
+      "type": "IS_A",
+      "weight": 0.94
+    },
+    {
+      "source": "Thin Film Solar Cell",
+      "target": "Photovoltaic Cell",
+      "type": "IS_A",
+      "weight": 0.91
+    },
+    {
+      "source": "Concentrated Solar Power",
+      "target": "Solar Technology",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Solar Inverter",
+      "target": "Power Electronics",
+      "type": "IS_A",
+      "weight": 0.92
+    },
+    {
+      "source": "Maximum Power Point Tracking",
+      "target": "Solar Optimization",
+      "type": "IS_A",
+      "weight": 0.87
+    },
+    {
+      "source": "Net Metering",
+      "target": "Grid Integration",
+      "type": "IS_A",
+      "weight": 0.85
+    },
+    {
+      "source": "Grid Tie Inverter",
+      "target": "Solar Inverter",
+      "type": "IS_A",
+      "weight": 0.89
+    },
+    {
+      "source": "Off Grid System",
+      "target": "Solar System",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Battery Storage System",
+      "target": "Energy Storage",
+      "type": "IS_A",
+      "weight": 0.91
+    },
+    {
+      "source": "Silicon Solar Cell",
+      "target": "High Efficiency",
+      "type": "HAS_PROPERTY",
+      "weight": 0.91
+    },
+    {
+      "source": "Thin Film Solar Cell",
+      "target": "Flexible Application",
+      "type": "enables",
+      "weight": 0.88
+    },
+    {
+      "source": "Concentrated Solar Power",
+      "target": "Heat Generation",
+      "type": "enables",
+      "weight": 0.87
+    },
+    {
+      "source": "Solar Inverter",
+      "target": "Grid Connection",
+      "type": "enables",
+      "weight": 0.89
+    },
+    {
+      "source": "Maximum Power Point Tracking",
+      "target": "Efficiency Optimization",
+      "type": "provides",
+      "weight": 0.86
+    },
+    {
+      "source": "Net Metering",
+      "target": "Electricity Credit",
+      "type": "provides",
+      "weight": 0.85
+    },
+    {
+      "source": "Off Grid System",
+      "target": "Energy Independence",
+      "type": "provides",
+      "weight": 0.84
+    },
+    {
+      "source": "Battery Storage System",
+      "target": "Energy Buffering",
+      "type": "provides",
+      "weight": 0.83
+    },
+    {
+      "source": "Grid Tie Inverter",
+      "target": "Grid Synchronization",
+      "type": "performs",
+      "weight": 0.82
+    },
+    {
+      "source": "Photovoltaic Cell",
+      "target": "Direct Conversion",
+      "type": "performs",
+      "weight": 0.9
+    },
+    {
+      "source": "Wind Farm",
+      "target": "Wind Energy",
+      "type": "IS_A",
+      "weight": 0.93
+    },
+    {
+      "source": "Horizontal Axis Wind Turbine",
+      "target": "Wind Turbine",
+      "type": "IS_A",
+      "weight": 0.91
+    },
+    {
+      "source": "Vertical Axis Wind Turbine",
+      "target": "Wind Turbine",
+      "type": "IS_A",
+      "weight": 0.88
+    },
+    {
+      "source": "Wind Speed Sensor",
+      "target": "Sensor",
+      "type": "IS_A",
+      "weight": 0.89
+    },
+    {
+      "source": "Pitch Control",
+      "target": "Control System",
+      "type": "IS_A",
+      "weight": 0.87
+    },
+    {
+      "source": "Yaw System",
+      "target": "Control System",
+      "type": "IS_A",
+      "weight": 0.86
+    },
+    {
+      "source": "Gearbox",
+      "target": "Transmission",
+      "type": "IS_A",
+      "weight": 0.92
+    },
+    {
+      "source": "Direct Drive Generator",
+      "target": "Generator",
+      "type": "IS_A",
+      "weight": 0.85
+    },
+    {
+      "source": "Power Curve",
+      "target": "Performance Characteristic",
+      "type": "IS_A",
+      "weight": 0.84
+    },
+    {
+      "source": "Cut-in Speed",
+      "target": "Operating Parameter",
+      "type": "IS_A",
+      "weight": 0.83
+    },
+    {
+      "source": "Wind Farm",
+      "target": "Renewable Energy",
+      "type": "produces",
+      "weight": 0.92
+    },
+    {
+      "source": "Horizontal Axis Wind Turbine",
+      "target": "High Efficiency",
+      "type": "HAS_PROPERTY",
+      "weight": 0.89
+    },
+    {
+      "source": "Vertical Axis Wind Turbine",
+      "target": "Omnidirectional",
+      "type": "HAS_PROPERTY",
+      "weight": 0.86
+    },
+    {
+      "source": "Wind Speed Sensor",
+      "target": "Wind Measurement",
+      "type": "performs",
+      "weight": 0.88
+    },
+    {
+      "source": "Pitch Control",
+      "target": "Blade Optimization",
+      "type": "performs",
+      "weight": 0.85
+    },
+    {
+      "source": "Yaw System",
+      "target": "Wind Tracking",
+      "type": "performs",
+      "weight": 0.84
+    },
+    {
+      "source": "Gearbox",
+      "target": "Speed Increase",
+      "type": "provides",
+      "weight": 0.91
+    },
+    {
+      "source": "Direct Drive Generator",
+      "target": "Low Maintenance",
+      "type": "HAS_PROPERTY",
+      "weight": 0.83
+    },
+    {
+      "source": "Power Curve",
+      "target": "Performance Prediction",
+      "type": "enables",
+      "weight": 0.82
+    },
+    {
+      "source": "Cut-in Speed",
+      "target": "Operation Threshold",
+      "type": "defines",
+      "weight": 0.81
+    },
+    {
+      "source": "Thermal Power Plant",
+      "target": "Power Plant",
+      "type": "IS_A",
+      "weight": 0.94
+    },
+    {
+      "source": "Combined Cycle Power Plant",
+      "target": "Power Plant",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Cogeneration",
+      "target": "Energy System",
+      "type": "IS_A",
+      "weight": 0.89
+    },
+    {
+      "source": "Heat Exchanger",
+      "target": "Thermal Device",
+      "type": "IS_A",
+      "weight": 0.93
+    },
+    {
+      "source": "Boiler",
+      "target": "Thermal Equipment",
+      "type": "IS_A",
+      "weight": 0.94
+    },
+    {
+      "source": "Condenser",
+      "target": "Thermal Equipment",
+      "type": "IS_A",
+      "weight": 0.92
+    },
+    {
+      "source": "Cooling Tower",
+      "target": "Thermal Equipment",
+      "type": "IS_A",
+      "weight": 0.91
+    },
+    {
+      "source": "Rankine Cycle",
+      "target": "Thermodynamic Cycle",
+      "type": "IS_A",
+      "weight": 0.88
+    },
+    {
+      "source": "Brayton Cycle",
+      "target": "Thermodynamic Cycle",
+      "type": "IS_A",
+      "weight": 0.86
+    },
+    {
+      "source": "Otto Cycle",
+      "target": "Thermodynamic Cycle",
+      "type": "IS_A",
+      "weight": 0.87
+    },
+    {
+      "source": "Thermal Power Plant",
+      "target": "Steam Generation",
+      "type": "uses",
+      "weight": 0.91
+    },
+    {
+      "source": "Combined Cycle Power Plant",
+      "target": "High Efficiency",
+      "type": "HAS_PROPERTY",
+      "weight": 0.88
+    },
+    {
+      "source": "Cogeneration",
+      "target": "Waste Heat Recovery",
+      "type": "performs",
+      "weight": 0.87
+    },
+    {
+      "source": "Heat Exchanger",
+      "target": "Heat Transfer",
+      "type": "performs",
+      "weight": 0.9
+    },
+    {
+      "source": "Boiler",
+      "target": "Steam Production",
+      "type": "performs",
+      "weight": 0.92
+    },
+    {
+      "source": "Condenser",
+      "target": "Steam Condensation",
+      "type": "performs",
+      "weight": 0.89
+    },
+    {
+      "source": "Cooling Tower",
+      "target": "Heat Rejection",
+      "type": "performs",
+      "weight": 0.86
+    },
+    {
+      "source": "Rankine Cycle",
+      "target": "Steam Power",
+      "type": "enables",
+      "weight": 0.85
+    },
+    {
+      "source": "Brayton Cycle",
+      "target": "Gas Turbine",
+      "type": "enables",
+      "weight": 0.84
+    },
+    {
+      "source": "Otto Cycle",
+      "target": "Gasoline Engine",
+      "type": "enables",
+      "weight": 0.83
+    },
+    {
+      "source": "Nuclear Fission",
+      "target": "Nuclear Process",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Nuclear Fuel",
+      "target": "Reactor Component",
+      "type": "IS_A",
+      "weight": 0.94
+    },
+    {
+      "source": "Control Rod",
+      "target": "Reactor Component",
+      "type": "IS_A",
+      "weight": 0.93
+    },
+    {
+      "source": "Reactor Core",
+      "target": "Reactor Component",
+      "type": "IS_A",
+      "weight": 0.92
+    },
+    {
+      "source": "Pressurized Water Reactor",
+      "target": "Nuclear Reactor",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Boiling Water Reactor",
+      "target": "Nuclear Reactor",
+      "type": "IS_A",
+      "weight": 0.89
+    },
+    {
+      "source": "Moderator",
+      "target": "Nuclear Material",
+      "type": "IS_A",
+      "weight": 0.88
+    },
+    {
+      "source": "Coolant",
+      "target": "Nuclear Material",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Containment Structure",
+      "target": "Safety System",
+      "type": "IS_A",
+      "weight": 0.91
+    },
+    {
+      "source": "Nuclear Waste",
+      "target": "Radioactive Material",
+      "type": "IS_A",
+      "weight": 0.92
+    },
+    {
+      "source": "Nuclear Fission",
+      "target": "Energy Release",
+      "type": "produces",
+      "weight": 0.93
+    },
+    {
+      "source": "Nuclear Fuel",
+      "target": "Nuclear Reaction",
+      "type": "enables",
+      "weight": 0.92
+    },
+    {
+      "source": "Control Rod",
+      "target": "Reaction Control",
+      "type": "provides",
+      "weight": 0.91
+    },
+    {
+      "source": "Reactor Core",
+      "target": "Nuclear Reaction",
+      "type": "contains",
+      "weight": 0.9
+    },
+    {
+      "source": "Moderator",
+      "target": "Neutron Slowing",
+      "type": "performs",
+      "weight": 0.87
+    },
+    {
+      "source": "Coolant",
+      "target": "Heat Removal",
+      "type": "performs",
+      "weight": 0.89
+    },
+    {
+      "source": "Containment Structure",
+      "target": "Radiation Protection",
+      "type": "provides",
+      "weight": 0.88
+    },
+    {
+      "source": "Nuclear Waste",
+      "target": "Long-term Storage",
+      "type": "requires",
+      "weight": 0.86
+    },
+    {
+      "source": "Pressurized Water Reactor",
+      "target": "Pressurized Water",
+      "type": "uses",
+      "weight": 0.85
+    },
+    {
+      "source": "Boiling Water Reactor",
+      "target": "Steam Generation",
+      "type": "performs",
+      "weight": 0.84
+    },
+    {
+      "source": "Electric Vehicle",
+      "target": "Vehicle",
+      "type": "IS_A",
+      "weight": 0.96
+    },
+    {
+      "source": "Hybrid Electric Vehicle",
+      "target": "Vehicle",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Plug-in Hybrid",
+      "target": "Hybrid Electric Vehicle",
+      "type": "IS_A",
+      "weight": 0.93
+    },
+    {
+      "source": "Regenerative Braking",
+      "target": "Braking System",
+      "type": "IS_A",
+      "weight": 0.92
+    },
+    {
+      "source": "Electric Vehicle Charging",
+      "target": "Energy Transfer",
+      "type": "IS_A",
+      "weight": 0.94
+    },
+    {
+      "source": "Fast Charging",
+      "target": "Electric Vehicle Charging",
+      "type": "IS_A",
+      "weight": 0.91
+    },
+    {
+      "source": "Battery Management System",
+      "target": "Control System",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Electric Motor Controller",
+      "target": "Control System",
+      "type": "IS_A",
+      "weight": 0.89
+    },
+    {
+      "source": "Traction Battery",
+      "target": "Battery",
+      "type": "IS_A",
+      "weight": 0.88
+    },
+    {
+      "source": "Range Extender",
+      "target": "Generator",
+      "type": "IS_A",
+      "weight": 0.85
+    },
+    {
+      "source": "Electric Vehicle",
+      "target": "Zero Emission",
+      "type": "HAS_PROPERTY",
+      "weight": 0.94
+    },
+    {
+      "source": "Hybrid Electric Vehicle",
+      "target": "Fuel Efficiency",
+      "type": "HAS_PROPERTY",
+      "weight": 0.91
+    },
+    {
+      "source": "Plug-in Hybrid",
+      "target": "Electric Range",
+      "type": "HAS_PROPERTY",
+      "weight": 0.89
+    },
+    {
+      "source": "Regenerative Braking",
+      "target": "Energy Recovery",
+      "type": "performs",
+      "weight": 0.9
+    },
+    {
+      "source": "Fast Charging",
+      "target": "Rapid Charging",
+      "type": "enables",
+      "weight": 0.88
+    },
+    {
+      "source": "Battery Management System",
+      "target": "Battery Protection",
+      "type": "provides",
+      "weight": 0.87
+    },
+    {
+      "source": "Electric Motor Controller",
+      "target": "Motor Control",
+      "type": "provides",
+      "weight": 0.86
+    },
+    {
+      "source": "Traction Battery",
+      "target": "Vehicle Propulsion",
+      "type": "powers",
+      "weight": 0.85
+    },
+    {
+      "source": "Range Extender",
+      "target": "Extended Range",
+      "type": "provides",
+      "weight": 0.83
+    },
+    {
+      "source": "Electric Vehicle Charging",
+      "target": "Battery Replenishment",
+      "type": "performs",
+      "weight": 0.84
+    },
+    {
+      "source": "Automotive Engine Management",
+      "target": "Engine Control",
+      "type": "IS_A",
+      "weight": 0.91
+    },
+    {
+      "source": "ECU",
+      "target": "Electronic Controller",
+      "type": "IS_A",
+      "weight": 0.92
+    },
+    {
+      "source": "CAN Bus",
+      "target": "Communication Bus",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "OBD",
+      "target": "Diagnostic System",
+      "type": "IS_A",
+      "weight": 0.89
+    },
+    {
+      "source": "Anti-lock Braking System",
+      "target": "Safety System",
+      "type": "IS_A",
+      "weight": 0.93
+    },
+    {
+      "source": "Electronic Stability Control",
+      "target": "Safety System",
+      "type": "IS_A",
+      "weight": 0.91
+    },
+    {
+      "source": "Traction Control System",
+      "target": "Safety System",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Airbag System",
+      "target": "Safety System",
+      "type": "IS_A",
+      "weight": 0.93
+    },
+    {
+      "source": "Cruise Control",
+      "target": "Driver Assistance",
+      "type": "IS_A",
+      "weight": 0.91
+    },
+    {
+      "source": "Adaptive Cruise Control",
+      "target": "Cruise Control",
+      "type": "IS_A",
+      "weight": 0.88
+    },
+    {
+      "source": "Automotive Engine Management",
+      "target": "Engine Optimization",
+      "type": "performs",
+      "weight": 0.89
+    },
+    {
+      "source": "ECU",
+      "target": "System Control",
+      "type": "performs",
+      "weight": 0.9
+    },
+    {
+      "source": "CAN Bus",
+      "target": "Data Exchange",
+      "type": "enables",
+      "weight": 0.88
+    },
+    {
+      "source": "OBD",
+      "target": "Fault Detection",
+      "type": "performs",
+      "weight": 0.87
+    },
+    {
+      "source": "Anti-lock Braking System",
+      "target": "Wheel Lock Prevention",
+      "type": "provides",
+      "weight": 0.91
+    },
+    {
+      "source": "Electronic Stability Control",
+      "target": "Vehicle Stability",
+      "type": "maintains",
+      "weight": 0.89
+    },
+    {
+      "source": "Traction Control System",
+      "target": "Wheel Spin Prevention",
+      "type": "provides",
+      "weight": 0.88
+    },
+    {
+      "source": "Airbag System",
+      "target": "Collision Protection",
+      "type": "provides",
+      "weight": 0.91
+    },
+    {
+      "source": "Cruise Control",
+      "target": "Speed Maintenance",
+      "type": "performs",
+      "weight": 0.89
+    },
+    {
+      "source": "Adaptive Cruise Control",
+      "target": "Safe Following",
+      "type": "maintains",
+      "weight": 0.86
+    },
+    {
+      "source": "Autonomous Vehicle",
+      "target": "Vehicle",
+      "type": "IS_A",
+      "weight": 0.85
+    },
+    {
+      "source": "ADAS",
+      "target": "Driver Assistance",
+      "type": "IS_A",
+      "weight": 0.87
+    },
+    {
+      "source": "Lane Keeping Assist",
+      "target": "ADAS",
+      "type": "IS_A",
+      "weight": 0.86
+    },
+    {
+      "source": "Blind Spot Monitoring",
+      "target": "ADAS",
+      "type": "IS_A",
+      "weight": 0.87
+    },
+    {
+      "source": "Automatic Emergency Braking",
+      "target": "ADAS",
+      "type": "IS_A",
+      "weight": 0.88
+    },
+    {
+      "source": "Parking Assist System",
+      "target": "ADAS",
+      "type": "IS_A",
+      "weight": 0.85
+    },
+    {
+      "source": "Vehicle-to-Vehicle Communication",
+      "target": "Communication Technology",
+      "type": "IS_A",
+      "weight": 0.82
+    },
+    {
+      "source": "Traffic Sign Recognition",
+      "target": "Computer Vision",
+      "type": "IS_A",
+      "weight": 0.83
+    },
+    {
+      "source": "Night Vision System",
+      "target": "Vision System",
+      "type": "IS_A",
+      "weight": 0.84
+    },
+    {
+      "source": "Head-Up Display",
+      "target": "Display System",
+      "type": "IS_A",
+      "weight": 0.86
+    },
+    {
+      "source": "Autonomous Vehicle",
+      "target": "Self-Driving",
+      "type": "HAS_PROPERTY",
+      "weight": 0.83
+    },
+    {
+      "source": "ADAS",
+      "target": "Safety Enhancement",
+      "type": "provides",
+      "weight": 0.85
+    },
+    {
+      "source": "Lane Keeping Assist",
+      "target": "Lane Maintenance",
+      "type": "performs",
+      "weight": 0.84
+    },
+    {
+      "source": "Blind Spot Monitoring",
+      "target": "Hazard Detection",
+      "type": "performs",
+      "weight": 0.85
+    },
+    {
+      "source": "Automatic Emergency Braking",
+      "target": "Collision Avoidance",
+      "type": "provides",
+      "weight": 0.86
+    },
+    {
+      "source": "Parking Assist System",
+      "target": "Parking Automation",
+      "type": "provides",
+      "weight": 0.83
+    },
+    {
+      "source": "Vehicle-to-Vehicle Communication",
+      "target": "Traffic Coordination",
+      "type": "enables",
+      "weight": 0.8
+    },
+    {
+      "source": "Traffic Sign Recognition",
+      "target": "Sign Interpretation",
+      "type": "performs",
+      "weight": 0.81
+    },
+    {
+      "source": "Night Vision System",
+      "target": "Low Light Detection",
+      "type": "enables",
+      "weight": 0.82
+    },
+    {
+      "source": "Head-Up Display",
+      "target": "Driver Information",
+      "type": "provides",
+      "weight": 0.84
+    },
+    {
+      "source": "MacPherson Strut",
+      "target": "Suspension System",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Double Wishbone Suspension",
+      "target": "Suspension System",
+      "type": "IS_A",
+      "weight": 0.88
+    },
+    {
+      "source": "Independent Suspension",
+      "target": "Suspension System",
+      "type": "IS_A",
+      "weight": 0.89
+    },
+    {
+      "source": "Air Suspension",
+      "target": "Suspension System",
+      "type": "IS_A",
+      "weight": 0.85
+    },
+    {
+      "source": "Shock Absorber",
+      "target": "Suspension Component",
+      "type": "IS_A",
+      "weight": 0.91
+    },
+    {
+      "source": "Stabilizer Bar",
+      "target": "Suspension Component",
+      "type": "IS_A",
+      "weight": 0.87
+    },
+    {
+      "source": "Coil Spring",
+      "target": "Suspension Component",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Leaf Spring",
+      "target": "Suspension Component",
+      "type": "IS_A",
+      "weight": 0.88
+    },
+    {
+      "source": "Ball Joint",
+      "target": "Suspension Component",
+      "type": "IS_A",
+      "weight": 0.86
+    },
+    {
+      "source": "Suspension System",
+      "target": "Ride Comfort",
+      "type": "provides",
+      "weight": 0.92
+    },
+    {
+      "source": "MacPherson Strut",
+      "target": "Compact Design",
+      "type": "HAS_PROPERTY",
+      "weight": 0.88
+    },
+    {
+      "source": "Double Wishbone Suspension",
+      "target": "Precise Control",
+      "type": "HAS_PROPERTY",
+      "weight": 0.86
+    },
+    {
+      "source": "Independent Suspension",
+      "target": "Improved Handling",
+      "type": "provides",
+      "weight": 0.87
+    },
+    {
+      "source": "Air Suspension",
+      "target": "Adjustable Height",
+      "type": "HAS_PROPERTY",
+      "weight": 0.83
+    },
+    {
+      "source": "Shock Absorber",
+      "target": "Vibration Damping",
+      "type": "performs",
+      "weight": 0.89
+    },
+    {
+      "source": "Stabilizer Bar",
+      "target": "Roll Control",
+      "type": "provides",
+      "weight": 0.85
+    },
+    {
+      "source": "Coil Spring",
+      "target": "Weight Support",
+      "type": "provides",
+      "weight": 0.88
+    },
+    {
+      "source": "Leaf Spring",
+      "target": "Heavy Duty",
+      "type": "HAS_PROPERTY",
+      "weight": 0.86
+    },
+    {
+      "source": "Ball Joint",
+      "target": "Articulation",
+      "type": "enables",
+      "weight": 0.84
+    },
+    {
+      "source": "Suspension System",
+      "target": "Road Impact Absorption",
+      "type": "performs",
+      "weight": 0.9
+    },
+    {
+      "source": "Power Steering",
+      "target": "Steering System",
+      "type": "IS_A",
+      "weight": 0.92
+    },
+    {
+      "source": "Electric Power Steering",
+      "target": "Power Steering",
+      "type": "IS_A",
+      "weight": 0.89
+    },
+    {
+      "source": "Rack and Pinion Steering",
+      "target": "Steering System",
+      "type": "IS_A",
+      "weight": 0.88
+    },
+    {
+      "source": "Steering Wheel",
+      "target": "Steering Component",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Tie Rod",
+      "target": "Steering Component",
+      "type": "IS_A",
+      "weight": 0.85
+    },
+    {
+      "source": "Steering Column",
+      "target": "Steering Component",
+      "type": "IS_A",
+      "weight": 0.87
+    },
+    {
+      "source": "Ackermann Steering",
+      "target": "Steering Geometry",
+      "type": "IS_A",
+      "weight": 0.82
+    },
+    {
+      "source": "Four Wheel Steering",
+      "target": "Steering System",
+      "type": "IS_A",
+      "weight": 0.8
+    },
+    {
+      "source": "Variable Ratio Steering",
+      "target": "Steering System",
+      "type": "IS_A",
+      "weight": 0.78
+    },
+    {
+      "source": "Steering System",
+      "target": "Direction Control",
+      "type": "enables",
+      "weight": 0.93
+    },
+    {
+      "source": "Power Steering",
+      "target": "Effort Reduction",
+      "type": "provides",
+      "weight": 0.9
+    },
+    {
+      "source": "Electric Power Steering",
+      "target": "Energy Efficiency",
+      "type": "HAS_PROPERTY",
+      "weight": 0.87
+    },
+    {
+      "source": "Rack and Pinion Steering",
+      "target": "Direct Response",
+      "type": "HAS_PROPERTY",
+      "weight": 0.86
+    },
+    {
+      "source": "Steering Wheel",
+      "target": "Driver Interface",
+      "type": "provides",
+      "weight": 0.93
+    },
+    {
+      "source": "Tie Rod",
+      "target": "Wheel Connection",
+      "type": "provides",
+      "weight": 0.83
+    },
+    {
+      "source": "Steering Column",
+      "target": "Force Transmission",
+      "type": "performs",
+      "weight": 0.85
+    },
+    {
+      "source": "Ackermann Steering",
+      "target": "Proper Turning Radius",
+      "type": "ensures",
+      "weight": 0.8
+    },
+    {
+      "source": "Four Wheel Steering",
+      "target": "Enhanced Maneuverability",
+      "type": "provides",
+      "weight": 0.78
+    },
+    {
+      "source": "Variable Ratio Steering",
+      "target": "Adaptive Response",
+      "type": "provides",
+      "weight": 0.76
+    },
+    {
+      "source": "Steering System",
+      "target": "Vehicle Control",
+      "type": "enables",
+      "weight": 0.91
+    },
+    {
+      "source": "Disc Brake",
+      "target": "Brake System",
+      "type": "IS_A",
+      "weight": 0.94
+    },
+    {
+      "source": "Drum Brake",
+      "target": "Brake System",
+      "type": "IS_A",
+      "weight": 0.92
+    },
+    {
+      "source": "Brake Pad",
+      "target": "Brake Component",
+      "type": "IS_A",
+      "weight": 0.93
+    },
+    {
+      "source": "Brake Fluid",
+      "target": "Hydraulic Fluid",
+      "type": "IS_A",
+      "weight": 0.91
+    },
+    {
+      "source": "Master Cylinder",
+      "target": "Brake Component",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Brake Caliper",
+      "target": "Brake Component",
+      "type": "IS_A",
+      "weight": 0.89
+    },
+    {
+      "source": "Brake Booster",
+      "target": "Brake Component",
+      "type": "IS_A",
+      "weight": 0.88
+    },
+    {
+      "source": "Parking Brake",
+      "target": "Brake System",
+      "type": "IS_A",
+      "weight": 0.92
+    },
+    {
+      "source": "Brake Rotor",
+      "target": "Brake Component",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Brake System",
+      "target": "Vehicle Safety",
+      "type": "ensures",
+      "weight": 0.94
+    },
+    {
+      "source": "Disc Brake",
+      "target": "Effective Stopping",
+      "type": "provides",
+      "weight": 0.92
+    },
+    {
+      "source": "Drum Brake",
+      "target": "Cost Effective",
+      "type": "HAS_PROPERTY",
+      "weight": 0.9
+    },
+    {
+      "source": "Brake Pad",
+      "target": "Friction",
+      "type": "creates",
+      "weight": 0.91
+    },
+    {
+      "source": "Brake Fluid",
+      "target": "Force Transmission",
+      "type": "enables",
+      "weight": 0.89
+    },
+    {
+      "source": "Master Cylinder",
+      "target": "Hydraulic Pressure",
+      "type": "generates",
+      "weight": 0.88
+    },
+    {
+      "source": "Brake Caliper",
+      "target": "Clamping Force",
+      "type": "applies",
+      "weight": 0.87
+    },
+    {
+      "source": "Brake Booster",
+      "target": "Force Amplification",
+      "type": "provides",
+      "weight": 0.86
+    },
+    {
+      "source": "Parking Brake",
+      "target": "Vehicle Retention",
+      "type": "provides",
+      "weight": 0.9
+    },
+    {
+      "source": "Brake Rotor",
+      "target": "Heat Dissipation",
+      "type": "performs",
+      "weight": 0.88
+    },
+    {
+      "source": "Brake System",
+      "target": "Motion Control",
+      "type": "enables",
+      "weight": 0.92
+    },
+    {
+      "source": "Transmission Fluid",
+      "target": "Automotive Fluid",
+      "type": "IS_A",
+      "weight": 0.91
+    },
+    {
+      "source": "Engine Oil",
+      "target": "Automotive Fluid",
+      "type": "IS_A",
+      "weight": 0.94
+    },
+    {
+      "source": "Coolant",
+      "target": "Automotive Fluid",
+      "type": "IS_A",
+      "weight": 0.93
+    },
+    {
+      "source": "Radiator",
+      "target": "Cooling System",
+      "type": "PART_OF",
+      "weight": 0.92
+    },
+    {
+      "source": "Water Pump",
+      "target": "Cooling System",
+      "type": "PART_OF",
+      "weight": 0.9
+    },
+    {
+      "source": "Thermostat",
+      "target": "Cooling System",
+      "type": "PART_OF",
+      "weight": 0.89
+    },
+    {
+      "source": "Oil Filter",
+      "target": "Filtration System",
+      "type": "PART_OF",
+      "weight": 0.9
+    },
+    {
+      "source": "Air Filter",
+      "target": "Filtration System",
+      "type": "PART_OF",
+      "weight": 0.91
+    },
+    {
+      "source": "Fuel Filter",
+      "target": "Filtration System",
+      "type": "PART_OF",
+      "weight": 0.89
+    },
+    {
+      "source": "Timing Belt",
+      "target": "Engine Component",
+      "type": "IS_A",
+      "weight": 0.88
+    },
+    {
+      "source": "Transmission Fluid",
+      "target": "Lubrication",
+      "type": "provides",
+      "weight": 0.89
+    },
+    {
+      "source": "Engine Oil",
+      "target": "Engine Protection",
+      "type": "provides",
+      "weight": 0.92
+    },
+    {
+      "source": "Coolant",
+      "target": "Temperature Control",
+      "type": "provides",
+      "weight": 0.91
+    },
+    {
+      "source": "Radiator",
+      "target": "Heat Removal",
+      "type": "performs",
+      "weight": 0.9
+    },
+    {
+      "source": "Water Pump",
+      "target": "Coolant Circulation",
+      "type": "performs",
+      "weight": 0.88
+    },
+    {
+      "source": "Thermostat",
+      "target": "Temperature Regulation",
+      "type": "performs",
+      "weight": 0.87
+    },
+    {
+      "source": "Oil Filter",
+      "target": "Oil Purification",
+      "type": "performs",
+      "weight": 0.88
+    },
+    {
+      "source": "Air Filter",
+      "target": "Air Purification",
+      "type": "performs",
+      "weight": 0.89
+    },
+    {
+      "source": "Fuel Filter",
+      "target": "Fuel Purification",
+      "type": "performs",
+      "weight": 0.87
+    },
+    {
+      "source": "Timing Belt",
+      "target": "Engine Synchronization",
+      "type": "ensures",
+      "weight": 0.86
+    },
+    {
+      "source": "Exhaust Manifold",
+      "target": "Exhaust System",
+      "type": "PART_OF",
+      "weight": 0.89
+    },
+    {
+      "source": "Muffler",
+      "target": "Exhaust System",
+      "type": "PART_OF",
+      "weight": 0.91
+    },
+    {
+      "source": "Oxygen Sensor",
+      "target": "Exhaust System",
+      "type": "PART_OF",
+      "weight": 0.88
+    },
+    {
+      "source": "EGR Valve",
+      "target": "Emission Control System",
+      "type": "PART_OF",
+      "weight": 0.85
+    },
+    {
+      "source": "Particulate Filter",
+      "target": "Emission Control System",
+      "type": "PART_OF",
+      "weight": 0.84
+    },
+    {
+      "source": "Selective Catalytic Reduction",
+      "target": "Emission Control System",
+      "type": "PART_OF",
+      "weight": 0.81
+    },
+    {
+      "source": "Emission Control System",
+      "target": "Exhaust System",
+      "type": "PART_OF",
+      "weight": 0.87
+    },
+    {
+      "source": "Exhaust Gas Temperature",
+      "target": "Monitoring Parameter",
+      "type": "IS_A",
+      "weight": 0.86
+    },
+    {
+      "source": "Backpressure",
+      "target": "System Parameter",
+      "type": "IS_A",
+      "weight": 0.83
+    },
+    {
+      "source": "Exhaust System",
+      "target": "Emission Control",
+      "type": "enables",
+      "weight": 0.91
+    },
+    {
+      "source": "Exhaust Manifold",
+      "target": "Gas Collection",
+      "type": "performs",
+      "weight": 0.87
+    },
+    {
+      "source": "Muffler",
+      "target": "Noise Reduction",
+      "type": "performs",
+      "weight": 0.89
+    },
+    {
+      "source": "Oxygen Sensor",
+      "target": "Fuel Mixture Control",
+      "type": "enables",
+      "weight": 0.86
+    },
+    {
+      "source": "EGR Valve",
+      "target": "NOx Reduction",
+      "type": "performs",
+      "weight": 0.83
+    },
+    {
+      "source": "Particulate Filter",
+      "target": "Soot Removal",
+      "type": "performs",
+      "weight": 0.82
+    },
+    {
+      "source": "Selective Catalytic Reduction",
+      "target": "NOx Reduction",
+      "type": "performs",
+      "weight": 0.79
+    },
+    {
+      "source": "Emission Control System",
+      "target": "Environmental Protection",
+      "type": "provides",
+      "weight": 0.85
+    },
+    {
+      "source": "Exhaust Gas Temperature",
+      "target": "System Monitoring",
+      "type": "enables",
+      "weight": 0.84
+    },
+    {
+      "source": "Backpressure",
+      "target": "Performance Impact",
+      "type": "affects",
+      "weight": 0.81
+    },
+    {
+      "source": "Exhaust System",
+      "target": "Gas Expulsion",
+      "type": "performs",
+      "weight": 0.89
+    }
+  ]
+}

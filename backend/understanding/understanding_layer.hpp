@@ -111,13 +111,14 @@ public:
     );
 
     // Generate hypothesis proposals based on evidence
-    // INPUT: Evidence concepts (READ-ONLY)
+    // INPUT: Evidence concepts (READ-ONLY), optional ThoughtPaths for multi-hop reasoning
     // OUTPUT: Hypothesis proposals (NOT accepted hypotheses!)
     std::vector<HypothesisProposal> propose_hypotheses(
         const std::vector<ConceptId>& evidence_concepts,
         const LongTermMemory& ltm,  // READ-ONLY!
         const ShortTermMemory& stm,  // READ-ONLY!
-        ContextId context
+        ContextId context,
+        const std::vector<ThoughtPath>& thought_paths = {}
     );
 
     // Detect structural analogies

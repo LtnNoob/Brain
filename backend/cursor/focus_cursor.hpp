@@ -3,7 +3,7 @@
 #include "traversal_types.hpp"
 #include "goal_state.hpp"
 #include "../ltm/long_term_memory.hpp"
-#include "../micromodel/micro_model_registry.hpp"
+#include "../cmodel/concept_model_registry.hpp"
 #include "../micromodel/embedding_manager.hpp"
 #include <vector>
 #include <optional>
@@ -29,7 +29,7 @@ class FocusCursor {
 public:
     FocusCursor(
         const LongTermMemory& ltm,
-        MicroModelRegistry& registry,
+        ConceptModelRegistry& registry,
         EmbeddingManager& embeddings,
         FocusCursorConfig config = {}
     );
@@ -80,7 +80,7 @@ public:
 
 private:
     const LongTermMemory& ltm_;
-    MicroModelRegistry& registry_;
+    ConceptModelRegistry& registry_;
     EmbeddingManager& embeddings_;
     FocusCursorConfig config_;
 

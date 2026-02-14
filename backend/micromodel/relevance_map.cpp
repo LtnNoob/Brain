@@ -12,7 +12,7 @@ namespace brain19 {
 
 RelevanceMap RelevanceMap::compute(
         ConceptId source,
-        MicroModelRegistry& registry,
+        ConceptModelRegistry& registry,
         EmbeddingManager& embeddings,
         const LongTermMemory& ltm,
         RelationType rel_type,
@@ -20,7 +20,7 @@ RelevanceMap RelevanceMap::compute(
 
     RelevanceMap map(source);
 
-    MicroModel* model = registry.get_model(source);
+    ConceptModel* model = registry.get_model(source);
     if (!model) return map;
 
     const Vec10& e = embeddings.get_relation_embedding(rel_type);

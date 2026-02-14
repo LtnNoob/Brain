@@ -1,0 +1,3223 @@
+{
+  "source": "basic_knowledge_2",
+  "concepts": [
+    {
+      "label": "Door",
+      "definition": "Hinged barrier that opens and closes to allow or prevent passage through an entrance",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Window",
+      "definition": "Opening in a wall or door fitted with glass to allow light and air to enter",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Roof",
+      "definition": "Structure covering the upper part of a building to protect it from weather",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Wall",
+      "definition": "Vertical structure that divides or encloses an area within a building",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Floor",
+      "definition": "Lower surface of a room on which one walks",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Ceiling",
+      "definition": "Upper interior surface of a room or other enclosed space",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Stairs",
+      "definition": "Set of steps leading from one floor to another in a building",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Basement",
+      "definition": "Room or floor below ground level in a building",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Attic",
+      "definition": "Space or room just below the roof of a building",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Garage",
+      "definition": "Building or space for housing motor vehicles",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Balcony",
+      "definition": "Platform projecting from the wall of a building with a railing",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Garden",
+      "definition": "Outdoor area where plants, flowers, or vegetables are grown",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Fence",
+      "definition": "Barrier made of posts and wire or wood to enclose an area",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Mailbox",
+      "definition": "Container for receiving mail delivered by postal service",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Living Room",
+      "definition": "Main room in a home where family gathers and entertains guests",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Bedroom",
+      "definition": "Room used primarily for sleeping",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Kitchen",
+      "definition": "Room where food is prepared and cooked",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Bathroom",
+      "definition": "Room containing toilet and washing facilities",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Hallway",
+      "definition": "Narrow passage connecting rooms in a building",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Closet",
+      "definition": "Small room or cupboard used for storage, especially clothes",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Dining Room",
+      "definition": "Room where meals are eaten",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Study",
+      "definition": "Room used for reading, writing, or academic work",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Pantry",
+      "definition": "Small room or cupboard for storing food and dishes",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Laundry Room",
+      "definition": "Room containing washing machine and facilities for cleaning clothes",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Porch",
+      "definition": "Covered entrance to a building, usually with a separate roof",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Chimney",
+      "definition": "Vertical channel conducting smoke from a fireplace to the outside",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Foundation",
+      "definition": "Base structure of a building that transfers loads to the ground",
+      "epistemic_type": "FACT",
+      "trust": 0.97
+    },
+    {
+      "label": "Gutter",
+      "definition": "Channel along roof edge for carrying away rainwater",
+      "epistemic_type": "FACT",
+      "trust": 0.97
+    },
+    {
+      "label": "Shutter",
+      "definition": "Hinged cover for a window that can be closed for security or privacy",
+      "epistemic_type": "FACT",
+      "trust": 0.97
+    },
+    {
+      "label": "Doorbell",
+      "definition": "Device that rings or chimes to announce a visitor at the door",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Doorknob",
+      "definition": "Handle used to open and close a door",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Lock",
+      "definition": "Mechanical or electronic device that secures doors or containers",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Key",
+      "definition": "Metal instrument used to operate a lock",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Hinge",
+      "definition": "Joint that allows a door or lid to open and close",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Threshold",
+      "definition": "Strip of material forming the bottom of a doorway",
+      "epistemic_type": "FACT",
+      "trust": 0.97
+    },
+    {
+      "label": "Window Frame",
+      "definition": "Structure that holds window glass and fits into wall opening",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Window Sill",
+      "definition": "Horizontal ledge at the bottom of a window",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Curtain",
+      "definition": "Piece of fabric hung to cover a window",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Blind",
+      "definition": "Screen for a window made of slats that can be adjusted",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Glass",
+      "definition": "Transparent material used in windows and containers",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Stove",
+      "definition": "Kitchen appliance used for cooking food with gas or electricity",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Oven",
+      "definition": "Enclosed compartment for baking or roasting food using heat",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Refrigerator",
+      "definition": "Appliance that keeps food cold to prevent spoilage",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Freezer",
+      "definition": "Compartment or appliance that freezes food for long-term storage",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Dishwasher",
+      "definition": "Machine that automatically cleans dishes and utensils",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Microwave",
+      "definition": "Oven that heats food using electromagnetic radiation",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Pot",
+      "definition": "Deep cooking vessel with a handle and sometimes a lid",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Pan",
+      "definition": "Shallow cooking vessel with a long handle used for frying",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Knife",
+      "definition": "Sharp-bladed instrument used for cutting food",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Fork",
+      "definition": "Utensil with prongs used for eating and serving food",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Spoon",
+      "definition": "Utensil with a bowl-shaped end used for eating liquid foods",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Plate",
+      "definition": "Flat dish for serving or eating food",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Bowl",
+      "definition": "Deep round dish for serving food or liquids",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Cup",
+      "definition": "Small container for drinking liquids, typically with a handle",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Glass",
+      "definition": "Container for drinking made of glass or similar material",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Cutting Board",
+      "definition": "Flat surface used for cutting and preparing food",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Blender",
+      "definition": "Electric appliance that mixes and purees food",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Toaster",
+      "definition": "Electric appliance for browning bread slices",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Coffee Maker",
+      "definition": "Appliance for brewing coffee automatically",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Can Opener",
+      "definition": "Tool used to open metal cans containing food",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Spatula",
+      "definition": "Flat tool used for flipping and serving food",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Whisk",
+      "definition": "Tool with wire loops used for beating eggs or cream",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Colander",
+      "definition": "Bowl with holes used for draining pasta or washing vegetables",
+      "epistemic_type": "FACT",
+      "trust": 0.97
+    },
+    {
+      "label": "Measuring Cup",
+      "definition": "Container marked with volume measurements for cooking",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Timer",
+      "definition": "Device that measures time intervals for cooking",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Cookbook",
+      "definition": "Book containing recipes and cooking instructions",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Apron",
+      "definition": "Protective garment worn while cooking to keep clothes clean",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Oven Mitt",
+      "definition": "Protective glove for handling hot cookware",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Kitchen Counter",
+      "definition": "Flat work surface in kitchen for food preparation",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Cabinet",
+      "definition": "Storage compartment with doors, typically mounted on walls",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Drawer",
+      "definition": "Sliding compartment in furniture for storage",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Sink",
+      "definition": "Basin with faucets used for washing dishes or hands",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Faucet",
+      "definition": "Device that controls flow of water from pipes",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Garbage Disposal",
+      "definition": "Electric device that grinds food waste in kitchen sink",
+      "epistemic_type": "FACT",
+      "trust": 0.97
+    },
+    {
+      "label": "Cooking",
+      "definition": "Process of preparing food by heating or combining ingredients",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.99
+    },
+    {
+      "label": "Frying",
+      "definition": "Method of cooking food in hot oil or fat",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.99
+    },
+    {
+      "label": "Baking",
+      "definition": "Method of cooking food using dry heat in an oven",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.99
+    },
+    {
+      "label": "Boiling",
+      "definition": "Method of cooking food in bubbling hot water",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.99
+    },
+    {
+      "label": "Grilling",
+      "definition": "Method of cooking food over direct heat or flame",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.99
+    },
+    {
+      "label": "Roasting",
+      "definition": "Method of cooking food with dry heat in oven or over fire",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.99
+    },
+    {
+      "label": "Steaming",
+      "definition": "Method of cooking food using steam from boiling water",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.98
+    },
+    {
+      "label": "Shower",
+      "definition": "Enclosed area with spray nozzles for washing the body",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Bathtub",
+      "definition": "Large container for holding water in which to bathe",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Toilet",
+      "definition": "Plumbing fixture used for urination and defecation",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Bathroom Sink",
+      "definition": "Small basin in bathroom for washing hands and face",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Mirror",
+      "definition": "Reflective surface used to see one's appearance",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Towel",
+      "definition": "Absorbent cloth used for drying the body after washing",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Soap",
+      "definition": "Cleansing agent used with water for washing",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Toothbrush",
+      "definition": "Small brush with bristles used for cleaning teeth",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Toothpaste",
+      "definition": "Paste used with toothbrush for cleaning teeth",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Shampoo",
+      "definition": "Liquid soap specifically for washing hair",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Conditioner",
+      "definition": "Hair care product that softens and smooths hair",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Body Wash",
+      "definition": "Liquid soap for washing the body during shower or bath",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Razor",
+      "definition": "Sharp tool used for removing body hair by cutting",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Toilet Paper",
+      "definition": "Soft paper used for personal hygiene after using toilet",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Bath Mat",
+      "definition": "Non-slip mat placed on bathroom floor for safety",
+      "epistemic_type": "FACT",
+      "trust": 0.97
+    },
+    {
+      "label": "Shower Curtain",
+      "definition": "Waterproof barrier that prevents water from leaving shower area",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Medicine Cabinet",
+      "definition": "Small cabinet typically behind bathroom mirror for storing medications",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Hair Dryer",
+      "definition": "Electric device that blows hot air to dry hair",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Lotion",
+      "definition": "Liquid or cream applied to skin for moisturizing",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Deodorant",
+      "definition": "Product applied to prevent or mask body odor",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Shirt",
+      "definition": "Garment worn on upper body with sleeves and collar",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "T-Shirt",
+      "definition": "Casual shirt with short sleeves and no collar",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Pants",
+      "definition": "Garment worn from waist to ankles covering both legs separately",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Jeans",
+      "definition": "Sturdy pants made of denim fabric",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Jacket",
+      "definition": "Short coat worn as outer garment",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Coat",
+      "definition": "Long outer garment worn for warmth or protection",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Shoes",
+      "definition": "Footwear that covers and protects feet",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Boots",
+      "definition": "Footwear that covers foot and ankle, sometimes extending to knee",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Sneakers",
+      "definition": "Casual athletic shoes with rubber soles",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Socks",
+      "definition": "Soft covering for feet worn inside shoes",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Hat",
+      "definition": "Head covering worn for protection, warmth, or fashion",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Cap",
+      "definition": "Soft hat with a visor, often worn for sports or casual wear",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Gloves",
+      "definition": "Covering for hands with separate sections for fingers",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Mittens",
+      "definition": "Hand covering with separate thumb but fingers together",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Scarf",
+      "definition": "Length of fabric worn around neck for warmth or fashion",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Belt",
+      "definition": "Strap worn around waist to support pants or for decoration",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Dress",
+      "definition": "One-piece garment for women extending from shoulders to legs",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Skirt",
+      "definition": "Garment worn by women hanging from waist down",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Sweater",
+      "definition": "Knitted garment worn on upper body for warmth",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Underwear",
+      "definition": "Garments worn next to skin beneath outer clothes",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Bra",
+      "definition": "Undergarment worn by women to support breasts",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Pajamas",
+      "definition": "Loose comfortable clothing worn for sleeping",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Shorts",
+      "definition": "Garment worn on lower body extending to thighs or knees",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Swimsuit",
+      "definition": "Clothing designed for swimming and water activities",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Cotton",
+      "definition": "Natural fiber obtained from cotton plants used in textiles",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Wool",
+      "definition": "Natural fiber obtained from sheep and other animals for textiles",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Silk",
+      "definition": "Natural fiber produced by silkworms used for fine textiles",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Polyester",
+      "definition": "Synthetic fiber commonly used in clothing and textiles",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Denim",
+      "definition": "Sturdy cotton fabric used primarily for making jeans",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Leather",
+      "definition": "Material made from animal hide used for shoes and accessories",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Hammer",
+      "definition": "Tool with heavy head used for hitting nails or breaking objects",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Screwdriver",
+      "definition": "Tool with tip shaped to turn screws",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Pliers",
+      "definition": "Tool with two hinged arms for gripping and twisting objects",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Saw",
+      "definition": "Tool with toothed blade for cutting wood or other materials",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Drill",
+      "definition": "Tool that rotates a bit to make holes in materials",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Wrench",
+      "definition": "Tool for gripping and turning nuts, bolts, and pipes",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Screw",
+      "definition": "Threaded fastener that is turned to join materials together",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Nail",
+      "definition": "Thin pointed fastener hammered into materials to join them",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Bolt",
+      "definition": "Threaded fastener used with nut to join materials",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Nut",
+      "definition": "Small metal block with threaded hole that fits on bolt",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Measuring Tape",
+      "definition": "Flexible ruler used for measuring distances and dimensions",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Level",
+      "definition": "Tool with bubble indicator used to check if surface is horizontal",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Ladder",
+      "definition": "Structure with steps used for climbing to reach higher places",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Toolbox",
+      "definition": "Container for organizing and storing tools",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Sandpaper",
+      "definition": "Abrasive material used for smoothing surfaces",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Chisel",
+      "definition": "Tool with sharp edge for cutting or shaping hard materials",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "File",
+      "definition": "Tool with rough surface for smoothing and shaping materials",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Clamp",
+      "definition": "Device used to hold objects tightly together",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Safety Glasses",
+      "definition": "Protective eyewear worn during work to prevent injury",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Work Gloves",
+      "definition": "Protective gloves worn during manual work",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Utility Knife",
+      "definition": "Cutting tool with retractable blade for general purposes",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Tape Measure",
+      "definition": "Retractable measuring device marked with length units",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Square",
+      "definition": "L-shaped tool used to mark and check right angles",
+      "epistemic_type": "FACT",
+      "trust": 0.97
+    },
+    {
+      "label": "Pen",
+      "definition": "Writing instrument that uses ink to make marks on paper",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Pencil",
+      "definition": "Writing instrument with graphite core encased in wood",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Paper",
+      "definition": "Thin sheets made from wood pulp used for writing or printing",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Scissors",
+      "definition": "Cutting instrument with two blades that pivot on joint",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Glue",
+      "definition": "Adhesive substance used to stick objects together",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Ruler",
+      "definition": "Straight edge marked with units for measuring length",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Eraser",
+      "definition": "Rubber object used to remove pencil marks",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Notebook",
+      "definition": "Book with blank pages for writing notes",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Binder",
+      "definition": "Folder with rings or clips for organizing loose papers",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Computer",
+      "definition": "Electronic device for processing data and performing calculations",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Monitor",
+      "definition": "Display screen connected to computer for viewing output",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Keyboard",
+      "definition": "Input device with keys for typing letters and commands",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Mouse",
+      "definition": "Pointing device used to control cursor on computer screen",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Printer",
+      "definition": "Device that produces paper copies of digital documents",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Scanner",
+      "definition": "Device that converts physical documents to digital images",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Desk",
+      "definition": "Table used for writing, reading, or working",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Chair",
+      "definition": "Seat with back support designed for one person",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Lamp",
+      "definition": "Device that produces light for illumination",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Calculator",
+      "definition": "Electronic device for performing mathematical calculations",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Stapler",
+      "definition": "Device that fastens papers together with metal staples",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Tape Dispenser",
+      "definition": "Device that holds and dispenses adhesive tape",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Paper Clips",
+      "definition": "Small metal fasteners used to hold papers together",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Whiteboard",
+      "definition": "White surface for writing with dry-erase markers",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Marker",
+      "definition": "Writing instrument with felt tip and liquid ink",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Highlighter",
+      "definition": "Marker with transparent fluorescent ink for emphasizing text",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Blackboard",
+      "definition": "Dark surface for writing with chalk in classrooms",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Chalk",
+      "definition": "White or colored sticks for writing on blackboards",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Eraser",
+      "definition": "Object used to remove chalk marks from blackboard",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Backpack",
+      "definition": "Bag carried on back with straps for transporting items",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Wheel",
+      "definition": "Circular object that rotates around central axis for movement",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Tire",
+      "definition": "Rubber covering fitted around wheel rim for vehicles",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Engine",
+      "definition": "Machine that converts fuel into mechanical energy for vehicles",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Steering Wheel",
+      "definition": "Circular control device used to steer vehicles",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Brake",
+      "definition": "Device that slows or stops vehicle movement",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Accelerator",
+      "definition": "Pedal that controls vehicle speed by regulating fuel flow",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Headlight",
+      "definition": "Front light on vehicle for illumination during driving",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Taillight",
+      "definition": "Red light at rear of vehicle for visibility and signaling",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Side Mirror",
+      "definition": "Mirror on vehicle side for viewing traffic behind and beside",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Rearview Mirror",
+      "definition": "Mirror inside vehicle for viewing traffic behind",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Gas Tank",
+      "definition": "Container that stores fuel for vehicle engine",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Exhaust Pipe",
+      "definition": "Pipe that carries waste gases from engine to outside",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Battery",
+      "definition": "Device that stores electrical energy for vehicle systems",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Seat",
+      "definition": "Cushioned furniture piece for sitting in vehicles",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Seatbelt",
+      "definition": "Safety strap that secures occupants in vehicle seats",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Dashboard",
+      "definition": "Panel in front of driver containing controls and instruments",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Speedometer",
+      "definition": "Instrument that displays vehicle's current speed",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Horn",
+      "definition": "Sound device used to alert other drivers or pedestrians",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Windshield",
+      "definition": "Front window of vehicle made of safety glass",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Windshield Wipers",
+      "definition": "Mechanical arms that clear rain and debris from windshield",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Bumper",
+      "definition": "Protective barrier at front and rear of vehicle",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Hood",
+      "definition": "Hinged cover over vehicle engine compartment",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Trunk",
+      "definition": "Storage compartment at rear of vehicle",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "License Plate",
+      "definition": "Metal plate displaying registration information on vehicle",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Turn Signal",
+      "definition": "Flashing light that indicates direction of vehicle turn",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Airbag",
+      "definition": "Safety device that inflates during collision to protect occupants",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Transmission",
+      "definition": "System that transfers power from engine to wheels",
+      "epistemic_type": "FACT",
+      "trust": 0.97
+    },
+    {
+      "label": "Radiator",
+      "definition": "Device that cools engine by circulating coolant",
+      "epistemic_type": "FACT",
+      "trust": 0.97
+    },
+    {
+      "label": "Spark Plug",
+      "definition": "Device that ignites fuel mixture in engine cylinder",
+      "epistemic_type": "FACT",
+      "trust": 0.97
+    },
+    {
+      "label": "Oil Filter",
+      "definition": "Device that removes contaminants from engine oil",
+      "epistemic_type": "FACT",
+      "trust": 0.97
+    },
+    {
+      "label": "Air Filter",
+      "definition": "Device that cleans air entering vehicle engine",
+      "epistemic_type": "FACT",
+      "trust": 0.97
+    },
+    {
+      "label": "Alternator",
+      "definition": "Generator that produces electricity for vehicle systems",
+      "epistemic_type": "FACT",
+      "trust": 0.96
+    },
+    {
+      "label": "Starter",
+      "definition": "Electric motor that starts vehicle engine",
+      "epistemic_type": "FACT",
+      "trust": 0.96
+    },
+    {
+      "label": "Fuel Pump",
+      "definition": "Device that moves gasoline from tank to engine",
+      "epistemic_type": "FACT",
+      "trust": 0.97
+    },
+    {
+      "label": "Carburetor",
+      "definition": "Device that mixes air and fuel for engine combustion",
+      "epistemic_type": "FACT",
+      "trust": 0.96
+    },
+    {
+      "label": "Muffler",
+      "definition": "Device that reduces noise from vehicle exhaust system",
+      "epistemic_type": "FACT",
+      "trust": 0.97
+    },
+    {
+      "label": "Suspension",
+      "definition": "System that absorbs road shocks for smooth vehicle ride",
+      "epistemic_type": "FACT",
+      "trust": 0.97
+    },
+    {
+      "label": "Clutch",
+      "definition": "Device that connects and disconnects engine from transmission",
+      "epistemic_type": "FACT",
+      "trust": 0.96
+    },
+    {
+      "label": "Brake Pad",
+      "definition": "Friction material that presses against rotor to stop vehicle",
+      "epistemic_type": "FACT",
+      "trust": 0.97
+    },
+    {
+      "label": "Brake Disc",
+      "definition": "Metal disc that brake pads grip to slow vehicle",
+      "epistemic_type": "FACT",
+      "trust": 0.96
+    },
+    {
+      "label": "Axle",
+      "definition": "Shaft that connects wheels and allows them to rotate",
+      "epistemic_type": "FACT",
+      "trust": 0.97
+    },
+    {
+      "label": "Drive Shaft",
+      "definition": "Rotating shaft that transmits power from transmission to wheels",
+      "epistemic_type": "FACT",
+      "trust": 0.96
+    },
+    {
+      "label": "Universal Joint",
+      "definition": "Coupling that allows drive shaft to bend and rotate",
+      "epistemic_type": "FACT",
+      "trust": 0.95
+    },
+    {
+      "label": "Piston",
+      "definition": "Moving component in engine cylinder that compresses fuel mixture",
+      "epistemic_type": "FACT",
+      "trust": 0.96
+    },
+    {
+      "label": "Connecting Rod",
+      "definition": "Component that connects piston to crankshaft in engine",
+      "epistemic_type": "FACT",
+      "trust": 0.95
+    },
+    {
+      "label": "Crankshaft",
+      "definition": "Rotating shaft that converts piston motion to rotational motion",
+      "epistemic_type": "FACT",
+      "trust": 0.96
+    },
+    {
+      "label": "Camshaft",
+      "definition": "Shaft that operates engine valves by rotating cams",
+      "epistemic_type": "FACT",
+      "trust": 0.95
+    },
+    {
+      "label": "Valve",
+      "definition": "Device that controls flow of air and fuel into engine cylinder",
+      "epistemic_type": "FACT",
+      "trust": 0.96
+    },
+    {
+      "label": "Timing Belt",
+      "definition": "Belt that synchronizes crankshaft and camshaft rotation",
+      "epistemic_type": "FACT",
+      "trust": 0.96
+    },
+    {
+      "label": "Water Pump",
+      "definition": "Device that circulates coolant through engine cooling system",
+      "epistemic_type": "FACT",
+      "trust": 0.96
+    },
+    {
+      "label": "Thermostat",
+      "definition": "Device that regulates coolant flow to maintain engine temperature",
+      "epistemic_type": "FACT",
+      "trust": 0.96
+    },
+    {
+      "label": "Power Steering",
+      "definition": "System that assists driver in steering vehicle with reduced effort",
+      "epistemic_type": "FACT",
+      "trust": 0.97
+    },
+    {
+      "label": "Car",
+      "definition": "Four-wheeled motor vehicle designed for passenger transportation",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Truck",
+      "definition": "Large motor vehicle designed for transporting cargo",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Motorcycle",
+      "definition": "Two-wheeled motor vehicle for one or two riders",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Bicycle",
+      "definition": "Two-wheeled vehicle powered by pedaling",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Bus",
+      "definition": "Large motor vehicle designed to carry many passengers",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Train",
+      "definition": "Connected series of vehicles that run on railway tracks",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Airplane",
+      "definition": "Powered flying vehicle with fixed wings for air transport",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Boat",
+      "definition": "Watercraft designed for travel on water",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Ship",
+      "definition": "Large watercraft for carrying passengers or cargo on water",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Building",
+      "definition": "Structure with walls and roof designed for human occupancy",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "House",
+      "definition": "Building designed as dwelling for family or small group",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Apartment",
+      "definition": "Self-contained housing unit within larger building",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Office",
+      "definition": "Room or building used for commercial or professional work",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "School",
+      "definition": "Institution for educating students",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Hospital",
+      "definition": "Institution providing medical treatment for sick or injured",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Store",
+      "definition": "Building where goods are sold to customers",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Restaurant",
+      "definition": "Business where meals are prepared and served to customers",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Wood",
+      "definition": "Hard fibrous material from trees used in construction and manufacturing",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Metal",
+      "definition": "Hard shiny material such as iron, steel, or aluminum",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Plastic",
+      "definition": "Synthetic material that can be molded into various shapes",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Stone",
+      "definition": "Hard solid mineral matter used in construction",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Concrete",
+      "definition": "Hard building material made from cement, sand, and gravel",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Brick",
+      "definition": "Rectangular block made of clay used in construction",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Steel",
+      "definition": "Strong alloy of iron and carbon used in construction",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Aluminum",
+      "definition": "Lightweight silvery metal resistant to corrosion",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Copper",
+      "definition": "Reddish-brown metal that conducts electricity well",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Iron",
+      "definition": "Strong magnetic metallic element used to make steel",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Rubber",
+      "definition": "Elastic material obtained from trees or made synthetically",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Fabric",
+      "definition": "Cloth material woven or knitted from fibers",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Ceramic",
+      "definition": "Hard material made by heating clay to high temperatures",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Paint",
+      "definition": "Liquid mixture that dries to form decorative or protective coating",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Electricity",
+      "definition": "Form of energy resulting from charged particles",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Wire",
+      "definition": "Thin flexible strand of metal for conducting electricity",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Cable",
+      "definition": "Thick rope of wires for transmitting electricity or signals",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Switch",
+      "definition": "Device for controlling flow of electricity in circuit",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Outlet",
+      "definition": "Socket in wall for connecting electrical devices",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Plug",
+      "definition": "Connector that fits into outlet to supply electricity",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Light Bulb",
+      "definition": "Glass bulb containing filament that produces light when heated",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Water",
+      "definition": "Clear liquid essential for life, composed of hydrogen and oxygen",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Pipe",
+      "definition": "Tube for conveying water, gas, or other fluids",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Valve",
+      "definition": "Device for controlling flow of liquids or gases through pipes",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Pump",
+      "definition": "Machine for moving liquids or gases from one place to another",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Filter",
+      "definition": "Device that removes impurities from liquids or gases",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Heater",
+      "definition": "Device that produces heat for warming spaces or water",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Air Conditioner",
+      "definition": "System that cools and dehumidifies air in buildings",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Fan",
+      "definition": "Device with rotating blades that moves air for cooling",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Thermostat",
+      "definition": "Device that automatically regulates temperature",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    }
+  ],
+  "relations": [
+    {
+      "source": "Door",
+      "target": "Building",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Door",
+      "target": "Wood",
+      "type": "made-from",
+      "weight": 0.90
+    },
+    {
+      "source": "Key",
+      "target": "Door",
+      "type": "used-for",
+      "weight": 0.95
+    },
+    {
+      "source": "Lock",
+      "target": "Door",
+      "type": "PART_OF",
+      "weight": 0.92
+    },
+    {
+      "source": "Doorknob",
+      "target": "Door",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Hinge",
+      "target": "Door",
+      "type": "PART_OF",
+      "weight": 0.90
+    },
+    {
+      "source": "Window",
+      "target": "Building",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Window",
+      "target": "Glass",
+      "type": "made-from",
+      "weight": 0.95
+    },
+    {
+      "source": "Curtain",
+      "target": "Window",
+      "type": "used-for",
+      "weight": 0.90
+    },
+    {
+      "source": "Blind",
+      "target": "Window",
+      "type": "used-for",
+      "weight": 0.88
+    },
+    {
+      "source": "Window Frame",
+      "target": "Window",
+      "type": "PART_OF",
+      "weight": 0.92
+    },
+    {
+      "source": "Window Sill",
+      "target": "Window",
+      "type": "PART_OF",
+      "weight": 0.90
+    },
+    {
+      "source": "Roof",
+      "target": "Building",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Chimney",
+      "target": "Roof",
+      "type": "PART_OF",
+      "weight": 0.88
+    },
+    {
+      "source": "Gutter",
+      "target": "Roof",
+      "type": "PART_OF",
+      "weight": 0.87
+    },
+    {
+      "source": "Wall",
+      "target": "Building",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Floor",
+      "target": "Building",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Ceiling",
+      "target": "Building",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Foundation",
+      "target": "Building",
+      "type": "PART_OF",
+      "weight": 0.90
+    },
+    {
+      "source": "Stairs",
+      "target": "Building",
+      "type": "PART_OF",
+      "weight": 0.92
+    },
+    {
+      "source": "Basement",
+      "target": "Building",
+      "type": "PART_OF",
+      "weight": 0.88
+    },
+    {
+      "source": "Attic",
+      "target": "Building",
+      "type": "PART_OF",
+      "weight": 0.88
+    },
+    {
+      "source": "Living Room",
+      "target": "House",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Bedroom",
+      "target": "House",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Kitchen",
+      "target": "House",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Bathroom",
+      "target": "House",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Dining Room",
+      "target": "House",
+      "type": "PART_OF",
+      "weight": 0.90
+    },
+    {
+      "source": "Hallway",
+      "target": "House",
+      "type": "PART_OF",
+      "weight": 0.92
+    },
+    {
+      "source": "Closet",
+      "target": "House",
+      "type": "PART_OF",
+      "weight": 0.90
+    },
+    {
+      "source": "Garage",
+      "target": "House",
+      "type": "PART_OF",
+      "weight": 0.88
+    },
+    {
+      "source": "Balcony",
+      "target": "Building",
+      "type": "PART_OF",
+      "weight": 0.87
+    },
+    {
+      "source": "Garden",
+      "target": "House",
+      "type": "related-to",
+      "weight": 0.85
+    },
+    {
+      "source": "Fence",
+      "target": "Garden",
+      "type": "PART_OF",
+      "weight": 0.88
+    },
+    {
+      "source": "Mailbox",
+      "target": "House",
+      "type": "related-to",
+      "weight": 0.87
+    },
+    {
+      "source": "Stove",
+      "target": "Kitchen",
+      "type": "located-in",
+      "weight": 0.95
+    },
+    {
+      "source": "Oven",
+      "target": "Kitchen",
+      "type": "located-in",
+      "weight": 0.95
+    },
+    {
+      "source": "Refrigerator",
+      "target": "Kitchen",
+      "type": "located-in",
+      "weight": 0.95
+    },
+    {
+      "source": "Dishwasher",
+      "target": "Kitchen",
+      "type": "located-in",
+      "weight": 0.92
+    },
+    {
+      "source": "Microwave",
+      "target": "Kitchen",
+      "type": "located-in",
+      "weight": 0.90
+    },
+    {
+      "source": "Sink",
+      "target": "Kitchen",
+      "type": "located-in",
+      "weight": 0.95
+    },
+    {
+      "source": "Faucet",
+      "target": "Sink",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Cabinet",
+      "target": "Kitchen",
+      "type": "located-in",
+      "weight": 0.92
+    },
+    {
+      "source": "Drawer",
+      "target": "Kitchen",
+      "type": "located-in",
+      "weight": 0.90
+    },
+    {
+      "source": "Kitchen Counter",
+      "target": "Kitchen",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Pot",
+      "target": "Kitchen",
+      "type": "located-in",
+      "weight": 0.90
+    },
+    {
+      "source": "Pan",
+      "target": "Kitchen",
+      "type": "located-in",
+      "weight": 0.90
+    },
+    {
+      "source": "Knife",
+      "target": "Kitchen",
+      "type": "located-in",
+      "weight": 0.90
+    },
+    {
+      "source": "Fork",
+      "target": "Kitchen",
+      "type": "located-in",
+      "weight": 0.88
+    },
+    {
+      "source": "Spoon",
+      "target": "Kitchen",
+      "type": "located-in",
+      "weight": 0.88
+    },
+    {
+      "source": "Plate",
+      "target": "Kitchen",
+      "type": "located-in",
+      "weight": 0.88
+    },
+    {
+      "source": "Bowl",
+      "target": "Kitchen",
+      "type": "located-in",
+      "weight": 0.88
+    },
+    {
+      "source": "Cup",
+      "target": "Kitchen",
+      "type": "located-in",
+      "weight": 0.88
+    },
+    {
+      "source": "Cutting Board",
+      "target": "Kitchen",
+      "type": "located-in",
+      "weight": 0.90
+    },
+    {
+      "source": "Blender",
+      "target": "Kitchen",
+      "type": "located-in",
+      "weight": 0.87
+    },
+    {
+      "source": "Toaster",
+      "target": "Kitchen",
+      "type": "located-in",
+      "weight": 0.87
+    },
+    {
+      "source": "Coffee Maker",
+      "target": "Kitchen",
+      "type": "located-in",
+      "weight": 0.87
+    },
+    {
+      "source": "Pot",
+      "target": "Cooking",
+      "type": "used-for",
+      "weight": 0.92
+    },
+    {
+      "source": "Pan",
+      "target": "Frying",
+      "type": "used-for",
+      "weight": 0.95
+    },
+    {
+      "source": "Oven",
+      "target": "Baking",
+      "type": "used-for",
+      "weight": 0.95
+    },
+    {
+      "source": "Stove",
+      "target": "Cooking",
+      "type": "used-for",
+      "weight": 0.95
+    },
+    {
+      "source": "Knife",
+      "target": "Cutting Board",
+      "type": "uses",
+      "weight": 0.88
+    },
+    {
+      "source": "Fork",
+      "target": "Plate",
+      "type": "uses",
+      "weight": 0.87
+    },
+    {
+      "source": "Spoon",
+      "target": "Bowl",
+      "type": "uses",
+      "weight": 0.87
+    },
+    {
+      "source": "Shower",
+      "target": "Bathroom",
+      "type": "located-in",
+      "weight": 0.95
+    },
+    {
+      "source": "Bathtub",
+      "target": "Bathroom",
+      "type": "located-in",
+      "weight": 0.95
+    },
+    {
+      "source": "Toilet",
+      "target": "Bathroom",
+      "type": "located-in",
+      "weight": 0.95
+    },
+    {
+      "source": "Bathroom Sink",
+      "target": "Bathroom",
+      "type": "located-in",
+      "weight": 0.95
+    },
+    {
+      "source": "Mirror",
+      "target": "Bathroom",
+      "type": "located-in",
+      "weight": 0.92
+    },
+    {
+      "source": "Towel",
+      "target": "Bathroom",
+      "type": "located-in",
+      "weight": 0.90
+    },
+    {
+      "source": "Soap",
+      "target": "Bathroom",
+      "type": "located-in",
+      "weight": 0.90
+    },
+    {
+      "source": "Toothbrush",
+      "target": "Bathroom",
+      "type": "located-in",
+      "weight": 0.90
+    },
+    {
+      "source": "Toothpaste",
+      "target": "Toothbrush",
+      "type": "uses",
+      "weight": 0.95
+    },
+    {
+      "source": "Shampoo",
+      "target": "Shower",
+      "type": "used-for",
+      "weight": 0.92
+    },
+    {
+      "source": "Soap",
+      "target": "Water",
+      "type": "uses",
+      "weight": 0.90
+    },
+    {
+      "source": "Towel",
+      "target": "Water",
+      "type": "opposite-of",
+      "weight": 0.85
+    },
+    {
+      "source": "Shower Curtain",
+      "target": "Shower",
+      "type": "PART_OF",
+      "weight": 0.88
+    },
+    {
+      "source": "Medicine Cabinet",
+      "target": "Bathroom",
+      "type": "located-in",
+      "weight": 0.87
+    },
+    {
+      "source": "Hair Dryer",
+      "target": "Bathroom",
+      "type": "located-in",
+      "weight": 0.85
+    },
+    {
+      "source": "Shirt",
+      "target": "Cotton",
+      "type": "made-from",
+      "weight": 0.88
+    },
+    {
+      "source": "T-Shirt",
+      "target": "Cotton",
+      "type": "made-from",
+      "weight": 0.90
+    },
+    {
+      "source": "Jeans",
+      "target": "Denim",
+      "type": "made-from",
+      "weight": 0.95
+    },
+    {
+      "source": "Jacket",
+      "target": "Polyester",
+      "type": "made-from",
+      "weight": 0.85
+    },
+    {
+      "source": "Sweater",
+      "target": "Wool",
+      "type": "made-from",
+      "weight": 0.90
+    },
+    {
+      "source": "Shoes",
+      "target": "Leather",
+      "type": "made-from",
+      "weight": 0.88
+    },
+    {
+      "source": "Socks",
+      "target": "Cotton",
+      "type": "made-from",
+      "weight": 0.87
+    },
+    {
+      "source": "Belt",
+      "target": "Leather",
+      "type": "made-from",
+      "weight": 0.90
+    },
+    {
+      "source": "Gloves",
+      "target": "Wool",
+      "type": "made-from",
+      "weight": 0.85
+    },
+    {
+      "source": "Scarf",
+      "target": "Wool",
+      "type": "made-from",
+      "weight": 0.88
+    },
+    {
+      "source": "Hat",
+      "target": "Fabric",
+      "type": "made-from",
+      "weight": 0.87
+    },
+    {
+      "source": "Dress",
+      "target": "Silk",
+      "type": "made-from",
+      "weight": 0.85
+    },
+    {
+      "source": "Underwear",
+      "target": "Cotton",
+      "type": "made-from",
+      "weight": 0.90
+    },
+    {
+      "source": "Pajamas",
+      "target": "Cotton",
+      "type": "made-from",
+      "weight": 0.88
+    },
+    {
+      "source": "Swimsuit",
+      "target": "Polyester",
+      "type": "made-from",
+      "weight": 0.87
+    },
+    {
+      "source": "Belt",
+      "target": "Pants",
+      "type": "used-for",
+      "weight": 0.92
+    },
+    {
+      "source": "Socks",
+      "target": "Shoes",
+      "type": "used-for",
+      "weight": 0.90
+    },
+    {
+      "source": "Hat",
+      "target": "Head",
+      "type": "used-for",
+      "weight": 0.95
+    },
+    {
+      "source": "Gloves",
+      "target": "Hand",
+      "type": "used-for",
+      "weight": 0.95
+    },
+    {
+      "source": "Hammer",
+      "target": "Nail",
+      "type": "used-for",
+      "weight": 0.95
+    },
+    {
+      "source": "Screwdriver",
+      "target": "Screw",
+      "type": "used-for",
+      "weight": 0.95
+    },
+    {
+      "source": "Drill",
+      "target": "Wood",
+      "type": "used-for",
+      "weight": 0.90
+    },
+    {
+      "source": "Saw",
+      "target": "Wood",
+      "type": "used-for",
+      "weight": 0.95
+    },
+    {
+      "source": "Pliers",
+      "target": "Wire",
+      "type": "used-for",
+      "weight": 0.90
+    },
+    {
+      "source": "Wrench",
+      "target": "Bolt",
+      "type": "used-for",
+      "weight": 0.92
+    },
+    {
+      "source": "Measuring Tape",
+      "target": "Construction",
+      "type": "used-for",
+      "weight": 0.88
+    },
+    {
+      "source": "Level",
+      "target": "Construction",
+      "type": "used-for",
+      "weight": 0.88
+    },
+    {
+      "source": "Ladder",
+      "target": "Construction",
+      "type": "used-for",
+      "weight": 0.90
+    },
+    {
+      "source": "Toolbox",
+      "target": "Hammer",
+      "type": "contains",
+      "weight": 0.88
+    },
+    {
+      "source": "Toolbox",
+      "target": "Screwdriver",
+      "type": "contains",
+      "weight": 0.88
+    },
+    {
+      "source": "Screw",
+      "target": "Metal",
+      "type": "made-from",
+      "weight": 0.90
+    },
+    {
+      "source": "Nail",
+      "target": "Metal",
+      "type": "made-from",
+      "weight": 0.90
+    },
+    {
+      "source": "Hammer",
+      "target": "Metal",
+      "type": "made-from",
+      "weight": 0.85
+    },
+    {
+      "source": "Hammer",
+      "target": "Wood",
+      "type": "HAS_PROPERTY",
+      "weight": 0.80
+    },
+    {
+      "source": "Sandpaper",
+      "target": "Wood",
+      "type": "used-for",
+      "weight": 0.90
+    },
+    {
+      "source": "Chisel",
+      "target": "Wood",
+      "type": "used-for",
+      "weight": 0.88
+    },
+    {
+      "source": "File",
+      "target": "Metal",
+      "type": "used-for",
+      "weight": 0.88
+    },
+    {
+      "source": "Safety Glasses",
+      "target": "Construction",
+      "type": "used-for",
+      "weight": 0.85
+    },
+    {
+      "source": "Work Gloves",
+      "target": "Construction",
+      "type": "used-for",
+      "weight": 0.85
+    },
+    {
+      "source": "Pen",
+      "target": "Paper",
+      "type": "used-for",
+      "weight": 0.95
+    },
+    {
+      "source": "Pencil",
+      "target": "Paper",
+      "type": "used-for",
+      "weight": 0.95
+    },
+    {
+      "source": "Scissors",
+      "target": "Paper",
+      "type": "used-for",
+      "weight": 0.92
+    },
+    {
+      "source": "Glue",
+      "target": "Paper",
+      "type": "used-for",
+      "weight": 0.88
+    },
+    {
+      "source": "Ruler",
+      "target": "Paper",
+      "type": "used-for",
+      "weight": 0.90
+    },
+    {
+      "source": "Eraser",
+      "target": "Pencil",
+      "type": "used-for",
+      "weight": 0.95
+    },
+    {
+      "source": "Notebook",
+      "target": "Paper",
+      "type": "made-from",
+      "weight": 0.95
+    },
+    {
+      "source": "Binder",
+      "target": "Paper",
+      "type": "contains",
+      "weight": 0.90
+    },
+    {
+      "source": "Computer",
+      "target": "Office",
+      "type": "located-in",
+      "weight": 0.90
+    },
+    {
+      "source": "Monitor",
+      "target": "Computer",
+      "type": "PART_OF",
+      "weight": 0.92
+    },
+    {
+      "source": "Keyboard",
+      "target": "Computer",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Mouse",
+      "target": "Computer",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Printer",
+      "target": "Office",
+      "type": "located-in",
+      "weight": 0.88
+    },
+    {
+      "source": "Printer",
+      "target": "Paper",
+      "type": "uses",
+      "weight": 0.95
+    },
+    {
+      "source": "Scanner",
+      "target": "Office",
+      "type": "located-in",
+      "weight": 0.85
+    },
+    {
+      "source": "Desk",
+      "target": "Office",
+      "type": "located-in",
+      "weight": 0.95
+    },
+    {
+      "source": "Chair",
+      "target": "Desk",
+      "type": "used-for",
+      "weight": 0.92
+    },
+    {
+      "source": "Lamp",
+      "target": "Desk",
+      "type": "located-in",
+      "weight": 0.88
+    },
+    {
+      "source": "Calculator",
+      "target": "Office",
+      "type": "located-in",
+      "weight": 0.87
+    },
+    {
+      "source": "Stapler",
+      "target": "Paper",
+      "type": "used-for",
+      "weight": 0.90
+    },
+    {
+      "source": "Paper Clips",
+      "target": "Paper",
+      "type": "used-for",
+      "weight": 0.88
+    },
+    {
+      "source": "Whiteboard",
+      "target": "Office",
+      "type": "located-in",
+      "weight": 0.85
+    },
+    {
+      "source": "Marker",
+      "target": "Whiteboard",
+      "type": "used-for",
+      "weight": 0.95
+    },
+    {
+      "source": "Blackboard",
+      "target": "School",
+      "type": "located-in",
+      "weight": 0.90
+    },
+    {
+      "source": "Chalk",
+      "target": "Blackboard",
+      "type": "used-for",
+      "weight": 0.95
+    },
+    {
+      "source": "Highlighter",
+      "target": "Paper",
+      "type": "used-for",
+      "weight": 0.88
+    },
+    {
+      "source": "Backpack",
+      "target": "School",
+      "type": "used-for",
+      "weight": 0.88
+    },
+    {
+      "source": "Desk",
+      "target": "Wood",
+      "type": "made-from",
+      "weight": 0.88
+    },
+    {
+      "source": "Chair",
+      "target": "Wood",
+      "type": "made-from",
+      "weight": 0.85
+    },
+    {
+      "source": "Chair",
+      "target": "Plastic",
+      "type": "made-from",
+      "weight": 0.80
+    },
+    {
+      "source": "Wheel",
+      "target": "Car",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Tire",
+      "target": "Wheel",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Engine",
+      "target": "Car",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Steering Wheel",
+      "target": "Car",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Brake",
+      "target": "Car",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Headlight",
+      "target": "Car",
+      "type": "PART_OF",
+      "weight": 0.92
+    },
+    {
+      "source": "Side Mirror",
+      "target": "Car",
+      "type": "PART_OF",
+      "weight": 0.90
+    },
+    {
+      "source": "Gas Tank",
+      "target": "Car",
+      "type": "PART_OF",
+      "weight": 0.90
+    },
+    {
+      "source": "Battery",
+      "target": "Car",
+      "type": "PART_OF",
+      "weight": 0.88
+    },
+    {
+      "source": "Seat",
+      "target": "Car",
+      "type": "PART_OF",
+      "weight": 0.92
+    },
+    {
+      "source": "Seatbelt",
+      "target": "Seat",
+      "type": "PART_OF",
+      "weight": 0.90
+    },
+    {
+      "source": "Dashboard",
+      "target": "Car",
+      "type": "PART_OF",
+      "weight": 0.88
+    },
+    {
+      "source": "Speedometer",
+      "target": "Dashboard",
+      "type": "PART_OF",
+      "weight": 0.90
+    },
+    {
+      "source": "Horn",
+      "target": "Car",
+      "type": "PART_OF",
+      "weight": 0.85
+    },
+    {
+      "source": "Windshield",
+      "target": "Car",
+      "type": "PART_OF",
+      "weight": 0.92
+    },
+    {
+      "source": "Windshield Wipers",
+      "target": "Windshield",
+      "type": "PART_OF",
+      "weight": 0.90
+    },
+    {
+      "source": "Bumper",
+      "target": "Car",
+      "type": "PART_OF",
+      "weight": 0.88
+    },
+    {
+      "source": "Hood",
+      "target": "Car",
+      "type": "PART_OF",
+      "weight": 0.90
+    },
+    {
+      "source": "Trunk",
+      "target": "Car",
+      "type": "PART_OF",
+      "weight": 0.88
+    },
+    {
+      "source": "License Plate",
+      "target": "Car",
+      "type": "PART_OF",
+      "weight": 0.85
+    },
+    {
+      "source": "Turn Signal",
+      "target": "Car",
+      "type": "PART_OF",
+      "weight": 0.85
+    },
+    {
+      "source": "Airbag",
+      "target": "Car",
+      "type": "PART_OF",
+      "weight": 0.87
+    },
+    {
+      "source": "Transmission",
+      "target": "Car",
+      "type": "PART_OF",
+      "weight": 0.85
+    },
+    {
+      "source": "Radiator",
+      "target": "Engine",
+      "type": "PART_OF",
+      "weight": 0.85
+    },
+    {
+      "source": "Spark Plug",
+      "target": "Engine",
+      "type": "PART_OF",
+      "weight": 0.87
+    },
+    {
+      "source": "Oil Filter",
+      "target": "Engine",
+      "type": "PART_OF",
+      "weight": 0.85
+    },
+    {
+      "source": "Air Filter",
+      "target": "Engine",
+      "type": "PART_OF",
+      "weight": 0.85
+    },
+    {
+      "source": "Alternator",
+      "target": "Engine",
+      "type": "PART_OF",
+      "weight": 0.83
+    },
+    {
+      "source": "Starter",
+      "target": "Engine",
+      "type": "PART_OF",
+      "weight": 0.83
+    },
+    {
+      "source": "Fuel Pump",
+      "target": "Engine",
+      "type": "PART_OF",
+      "weight": 0.85
+    },
+    {
+      "source": "Piston",
+      "target": "Engine",
+      "type": "PART_OF",
+      "weight": 0.88
+    },
+    {
+      "source": "Crankshaft",
+      "target": "Engine",
+      "type": "PART_OF",
+      "weight": 0.87
+    },
+    {
+      "source": "Camshaft",
+      "target": "Engine",
+      "type": "PART_OF",
+      "weight": 0.86
+    },
+    {
+      "source": "Valve",
+      "target": "Engine",
+      "type": "PART_OF",
+      "weight": 0.87
+    },
+    {
+      "source": "Connecting Rod",
+      "target": "Piston",
+      "type": "PART_OF",
+      "weight": 0.90
+    },
+    {
+      "source": "Timing Belt",
+      "target": "Engine",
+      "type": "PART_OF",
+      "weight": 0.85
+    },
+    {
+      "source": "Water Pump",
+      "target": "Engine",
+      "type": "PART_OF",
+      "weight": 0.83
+    },
+    {
+      "source": "Thermostat",
+      "target": "Engine",
+      "type": "PART_OF",
+      "weight": 0.82
+    },
+    {
+      "source": "Brake Pad",
+      "target": "Brake",
+      "type": "PART_OF",
+      "weight": 0.90
+    },
+    {
+      "source": "Brake Disc",
+      "target": "Brake",
+      "type": "PART_OF",
+      "weight": 0.88
+    },
+    {
+      "source": "Axle",
+      "target": "Wheel",
+      "type": "PART_OF",
+      "weight": 0.90
+    },
+    {
+      "source": "Drive Shaft",
+      "target": "Transmission",
+      "type": "PART_OF",
+      "weight": 0.85
+    },
+    {
+      "source": "Universal Joint",
+      "target": "Drive Shaft",
+      "type": "PART_OF",
+      "weight": 0.85
+    },
+    {
+      "source": "Power Steering",
+      "target": "Steering Wheel",
+      "type": "PART_OF",
+      "weight": 0.85
+    },
+    {
+      "source": "Tire",
+      "target": "Rubber",
+      "type": "made-from",
+      "weight": 0.95
+    },
+    {
+      "source": "Engine",
+      "target": "Metal",
+      "type": "made-from",
+      "weight": 0.90
+    },
+    {
+      "source": "Body",
+      "target": "Steel",
+      "type": "made-from",
+      "weight": 0.88
+    },
+    {
+      "source": "Windshield",
+      "target": "Glass",
+      "type": "made-from",
+      "weight": 0.95
+    },
+    {
+      "source": "Seat",
+      "target": "Fabric",
+      "type": "made-from",
+      "weight": 0.85
+    },
+    {
+      "source": "Dashboard",
+      "target": "Plastic",
+      "type": "made-from",
+      "weight": 0.87
+    },
+    {
+      "source": "Wire",
+      "target": "Copper",
+      "type": "made-from",
+      "weight": 0.90
+    },
+    {
+      "source": "Battery",
+      "target": "Lead",
+      "type": "contains",
+      "weight": 0.85
+    },
+    {
+      "source": "Radiator",
+      "target": "Aluminum",
+      "type": "made-from",
+      "weight": 0.85
+    },
+    {
+      "source": "Exhaust Pipe",
+      "target": "Steel",
+      "type": "made-from",
+      "weight": 0.87
+    },
+    {
+      "source": "License Plate",
+      "target": "Metal",
+      "type": "made-from",
+      "weight": 0.90
+    },
+    {
+      "source": "Car",
+      "target": "Transportation",
+      "type": "used-for",
+      "weight": 0.95
+    },
+    {
+      "source": "Truck",
+      "target": "Transportation",
+      "type": "used-for",
+      "weight": 0.95
+    },
+    {
+      "source": "Motorcycle",
+      "target": "Transportation",
+      "type": "used-for",
+      "weight": 0.95
+    },
+    {
+      "source": "Bicycle",
+      "target": "Transportation",
+      "type": "used-for",
+      "weight": 0.95
+    },
+    {
+      "source": "Bus",
+      "target": "Transportation",
+      "type": "used-for",
+      "weight": 0.95
+    },
+    {
+      "source": "Train",
+      "target": "Transportation",
+      "type": "used-for",
+      "weight": 0.95
+    },
+    {
+      "source": "Airplane",
+      "target": "Transportation",
+      "type": "used-for",
+      "weight": 0.95
+    },
+    {
+      "source": "Boat",
+      "target": "Transportation",
+      "type": "used-for",
+      "weight": 0.95
+    },
+    {
+      "source": "Ship",
+      "target": "Transportation",
+      "type": "used-for",
+      "weight": 0.95
+    },
+    {
+      "source": "Garage",
+      "target": "Car",
+      "type": "contains",
+      "weight": 0.90
+    },
+    {
+      "source": "Gas Tank",
+      "target": "Gasoline",
+      "type": "contains",
+      "weight": 0.90
+    },
+    {
+      "source": "Key",
+      "target": "Car",
+      "type": "used-for",
+      "weight": 0.88
+    },
+    {
+      "source": "House",
+      "target": "Building",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Apartment",
+      "target": "Building",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Office",
+      "target": "Building",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "School",
+      "target": "Building",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Hospital",
+      "target": "Building",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Store",
+      "target": "Building",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Restaurant",
+      "target": "Building",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Wall",
+      "target": "Brick",
+      "type": "made-from",
+      "weight": 0.85
+    },
+    {
+      "source": "Foundation",
+      "target": "Concrete",
+      "type": "made-from",
+      "weight": 0.90
+    },
+    {
+      "source": "Floor",
+      "target": "Wood",
+      "type": "made-from",
+      "weight": 0.85
+    },
+    {
+      "source": "Roof",
+      "target": "Metal",
+      "type": "made-from",
+      "weight": 0.80
+    },
+    {
+      "source": "Door",
+      "target": "Metal",
+      "type": "made-from",
+      "weight": 0.80
+    },
+    {
+      "source": "Window Frame",
+      "target": "Aluminum",
+      "type": "made-from",
+      "weight": 0.85
+    },
+    {
+      "source": "Pipe",
+      "target": "Copper",
+      "type": "made-from",
+      "weight": 0.85
+    },
+    {
+      "source": "Pipe",
+      "target": "Plastic",
+      "type": "made-from",
+      "weight": 0.80
+    },
+    {
+      "source": "Wire",
+      "target": "Electricity",
+      "type": "carries",
+      "weight": 0.95
+    },
+    {
+      "source": "Cable",
+      "target": "Electricity",
+      "type": "carries",
+      "weight": 0.95
+    },
+    {
+      "source": "Switch",
+      "target": "Electricity",
+      "type": "controls",
+      "weight": 0.92
+    },
+    {
+      "source": "Outlet",
+      "target": "Electricity",
+      "type": "provides",
+      "weight": 0.95
+    },
+    {
+      "source": "Plug",
+      "target": "Outlet",
+      "type": "uses",
+      "weight": 0.95
+    },
+    {
+      "source": "Light Bulb",
+      "target": "Electricity",
+      "type": "uses",
+      "weight": 0.95
+    },
+    {
+      "source": "Lamp",
+      "target": "Light Bulb",
+      "type": "contains",
+      "weight": 0.90
+    },
+    {
+      "source": "Pipe",
+      "target": "Water",
+      "type": "carries",
+      "weight": 0.95
+    },
+    {
+      "source": "Faucet",
+      "target": "Water",
+      "type": "controls",
+      "weight": 0.95
+    },
+    {
+      "source": "Valve",
+      "target": "Water",
+      "type": "controls",
+      "weight": 0.90
+    },
+    {
+      "source": "Pump",
+      "target": "Water",
+      "type": "moves",
+      "weight": 0.90
+    },
+    {
+      "source": "Filter",
+      "target": "Water",
+      "type": "cleans",
+      "weight": 0.88
+    },
+    {
+      "source": "Heater",
+      "target": "Water",
+      "type": "heats",
+      "weight": 0.90
+    },
+    {
+      "source": "Heater",
+      "target": "Electricity",
+      "type": "uses",
+      "weight": 0.85
+    },
+    {
+      "source": "Air Conditioner",
+      "target": "Electricity",
+      "type": "uses",
+      "weight": 0.90
+    },
+    {
+      "source": "Fan",
+      "target": "Electricity",
+      "type": "uses",
+      "weight": 0.88
+    },
+    {
+      "source": "Thermostat",
+      "target": "Heater",
+      "type": "controls",
+      "weight": 0.90
+    },
+    {
+      "source": "Thermostat",
+      "target": "Air Conditioner",
+      "type": "controls",
+      "weight": 0.90
+    },
+    {
+      "source": "Refrigerator",
+      "target": "Electricity",
+      "type": "uses",
+      "weight": 0.95
+    },
+    {
+      "source": "Dishwasher",
+      "target": "Water",
+      "type": "uses",
+      "weight": 0.95
+    },
+    {
+      "source": "Washing Machine",
+      "target": "Water",
+      "type": "uses",
+      "weight": 0.95
+    },
+    {
+      "source": "Shower",
+      "target": "Water",
+      "type": "uses",
+      "weight": 0.95
+    },
+    {
+      "source": "Bathtub",
+      "target": "Water",
+      "type": "uses",
+      "weight": 0.95
+    },
+    {
+      "source": "Toilet",
+      "target": "Water",
+      "type": "uses",
+      "weight": 0.92
+    },
+    {
+      "source": "Garden",
+      "target": "Water",
+      "type": "requires",
+      "weight": 0.88
+    }
+  ]
+}

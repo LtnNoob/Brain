@@ -13,7 +13,7 @@ namespace brain19 {
 class BrainController;
 class CuriosityEngine;
 class CognitiveDynamics;
-class MicroModelRegistry;
+class ConceptModelRegistry;
 class LongTermMemory;  // Added for epistemic metadata access
 struct SystemObservation;
 
@@ -37,7 +37,7 @@ public:
         const CuriosityEngine* curiosity,
         ContextId context_id,
         const CognitiveDynamics* cognitive = nullptr,
-        const MicroModelRegistry* micro_models = nullptr
+        const ConceptModelRegistry* micro_models = nullptr
     ) const;
     
 private:

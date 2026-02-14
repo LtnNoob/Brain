@@ -12,9 +12,9 @@
 #include "../memory/brain_controller.hpp"
 #include "../cognitive/cognitive_dynamics.hpp"
 #include "../curiosity/curiosity_engine.hpp"
-#include "../micromodel/micro_model_registry.hpp"
+#include "../cmodel/concept_model_registry.hpp"
+#include "../cmodel/concept_trainer.hpp"
 #include "../micromodel/embedding_manager.hpp"
-#include "../micromodel/micro_trainer.hpp"
 #include "../understanding/understanding_layer.hpp"
 #include "../cursor/template_engine.hpp"
 #include <cassert>
@@ -30,9 +30,9 @@ struct TestEnv {
     BrainController brain;
     CognitiveDynamics cognitive;
     CuriosityEngine curiosity;
-    MicroModelRegistry registry;
+    ConceptModelRegistry registry;
     EmbeddingManager embeddings;
-    MicroTrainer trainer;
+    ConceptTrainer trainer;
     UnderstandingLayer understanding;
 
     ConceptId eis, schmelzen, wasser, fluessig;

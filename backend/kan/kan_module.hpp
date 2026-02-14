@@ -60,6 +60,9 @@ public:
     // Validation
     double compute_mse(const std::vector<DataPoint>& dataset) const;
     
+    // Deep copy for warm-start training
+    std::shared_ptr<KANModule> clone() const;
+
     // Dimensions
     size_t input_dim() const { return input_dim_; }
     size_t output_dim() const { return output_dim_; }

@@ -5,7 +5,6 @@ LDFLAGS =
 # Understanding Layer objects
 UNDERSTANDING_OBJS = \
     understanding/mini_llm.o \
-    understanding/mini_llm_factory.o \
     understanding/understanding_layer.o
 
 # Cognitive Dynamics objects (dependency)

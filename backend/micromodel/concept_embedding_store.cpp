@@ -110,6 +110,12 @@ std::vector<std::pair<ConceptId, double>> ConceptEmbeddingStore::most_similar(Co
     return candidates;
 }
 
+FlexEmbedding ConceptEmbeddingStore::get_or_default(ConceptId cid) const {
+    auto it = store_.find(cid);
+    if (it != store_.end()) return it->second;
+    return hash_init(cid);
+}
+
 bool ConceptEmbeddingStore::has(ConceptId cid) const {
     return store_.count(cid) > 0;
 }

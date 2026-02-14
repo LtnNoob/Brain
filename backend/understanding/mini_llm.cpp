@@ -64,8 +64,9 @@ std::vector<MeaningProposal> StubMiniLLM::extract_meaning(
 std::vector<HypothesisProposal> StubMiniLLM::generate_hypotheses(
     const std::vector<ConceptId>& evidence_concepts,
     const LongTermMemory& ltm,
-    const ShortTermMemory& stm,
-    ContextId context
+    const ShortTermMemory& /*stm*/,
+    ContextId /*context*/,
+    const std::vector<ThoughtPath>& /*thought_paths*/
 ) const {
     std::vector<HypothesisProposal> proposals;
 

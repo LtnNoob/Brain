@@ -1,7 +1,7 @@
 #pragma once
 
 #include "micro_model.hpp"
-#include "micro_model_registry.hpp"
+#include "../cmodel/concept_model_registry.hpp"
 #include "embedding_manager.hpp"
 #include "../ltm/long_term_memory.hpp"
 
@@ -36,7 +36,7 @@ public:
 
     // Compute relevance map for a source concept over all KG nodes
     static RelevanceMap compute(ConceptId source,
-                                MicroModelRegistry& registry,
+                                ConceptModelRegistry& registry,
                                 EmbeddingManager& embeddings,
                                 const LongTermMemory& ltm,
                                 RelationType rel_type,

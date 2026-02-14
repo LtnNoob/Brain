@@ -1,5 +1,5 @@
 #include "thinking_pipeline.hpp"
-#include "../understanding/kan_aware_mini_llm.hpp"
+#include "../cmodel/concept_pattern_engine.hpp"
 #include "../hybrid/kan_graph_monitor.hpp"
 #include "../hybrid/topology_router.hpp"
 #include "../hybrid/refinement_loop.hpp"
@@ -26,7 +26,7 @@ ThinkingResult ThinkingPipeline::execute(
     BrainController& brain,
     CognitiveDynamics& cognitive,
     CuriosityEngine& curiosity,
-    MicroModelRegistry& registry,
+    ConceptModelRegistry& registry,
     EmbeddingManager& embeddings,
     UnderstandingLayer* understanding,
     KanValidator* kan_validator,
@@ -115,10 +115,11 @@ ThinkingResult ThinkingPipeline::execute(
             salient_ids, registry, embeddings, ltm);
     }
 
-    // Step 8: UnderstandingLayer
+    // Step 8: UnderstandingLayer — pass ThoughtPaths for multi-hop reasoning
     if (config_.enable_understanding && understanding) {
         result.understanding = step_understanding(
-            salient_ids, context, *understanding, cognitive, ltm, stm);
+            salient_ids, context, *understanding, cognitive, ltm, stm,
+            result.best_paths);
     }
     result.steps_completed = 8;
 
@@ -131,11 +132,11 @@ ThinkingResult ThinkingPipeline::execute(
         }
     }
 
-    // Step 9: KAN-LLM Validation
+    // Step 9: KAN-LLM Validation — pass LTM for chain validation
     if (config_.enable_kan_validation && kan_validator &&
         !result.understanding.hypothesis_proposals.empty()) {
         result.validated_hypotheses = step_kan_validation(
-            result.understanding.hypothesis_proposals, *kan_validator);
+            result.understanding.hypothesis_proposals, *kan_validator, &ltm);
     }
     result.steps_completed = 9;
 
@@ -158,10 +159,10 @@ ThinkingResult ThinkingPipeline::execute(
             type, vr.assessment.metadata.status, capped);
     }
 
-    // Step 9.5B: Feed validation back to KanAwareMiniLLMs
+    // Step 9.5B: Feed validation back to ConceptPatternEngines
     if (understanding && !result.validated_hypotheses.empty()) {
         understanding->for_each_mini_llm([&](MiniLLM& llm) {
-            auto* kan_aware = dynamic_cast<KanAwareMiniLLM*>(&llm);
+            auto* kan_aware = dynamic_cast<ConceptPatternEngine*>(&llm);
             if (kan_aware) {
                 kan_aware->train_from_validation(result.validated_hypotheses);
             }
@@ -206,7 +207,7 @@ std::vector<SalienceScore> ThinkingPipeline::step_salience(
 
 RelevanceMap ThinkingPipeline::step_relevance(
     const std::vector<SalienceScore>& salient,
-    MicroModelRegistry& registry, EmbeddingManager& embeddings,
+    ConceptModelRegistry& registry, EmbeddingManager& embeddings,
     LongTermMemory& ltm)
 {
     std::vector<RelevanceMap> maps;
@@ -265,7 +266,8 @@ std::vector<CuriosityTrigger> ThinkingPipeline::step_curiosity(
 UnderstandingLayer::UnderstandingResult ThinkingPipeline::step_understanding(
     const std::vector<ConceptId>& salient_ids, ContextId ctx,
     UnderstandingLayer& understanding, CognitiveDynamics& /*cognitive*/,
-    LongTermMemory& ltm, ShortTermMemory& stm)
+    LongTermMemory& ltm, ShortTermMemory& stm,
+    const std::vector<ThoughtPath>& thought_paths)
 {
     if (salient_ids.empty()) {
         return {};
@@ -281,7 +283,7 @@ UnderstandingLayer::UnderstandingResult ThinkingPipeline::step_understanding(
         salient_ids, ltm, stm, ctx);
 
     result.hypothesis_proposals = understanding.propose_hypotheses(
-        salient_ids, ltm, stm, ctx);
+        salient_ids, ltm, stm, ctx, thought_paths);
 
     result.contradiction_proposals = understanding.check_contradictions(
         salient_ids, ltm, stm, ctx);
@@ -306,12 +308,43 @@ UnderstandingLayer::UnderstandingResult ThinkingPipeline::step_understanding(
 
 std::vector<ValidationResult> ThinkingPipeline::step_kan_validation(
     const std::vector<HypothesisProposal>& hypotheses,
-    KanValidator& validator)
+    KanValidator& validator,
+    LongTermMemory* ltm)
 {
     std::vector<ValidationResult> results;
-    for (auto& hyp : hypotheses) {
+    for (const auto& hyp : hypotheses) {
         try {
-            results.push_back(validator.validate(hyp));
+            // Check if this is a multi-hop chain hypothesis
+            bool is_chain = false;
+            if (ltm && hyp.evidence_concepts.size() >= 3) {
+                for (const auto& pat : hyp.detected_patterns) {
+                    if (pat == "multi-hop-chain") { is_chain = true; break; }
+                }
+            }
+
+            if (is_chain) {
+                auto chain_result = validator.validate_chain(hyp, *ltm);
+                if (chain_result.chain_valid) {
+                    // Build ValidationResult from chain validation
+                    EpistemicAssessment chain_assess(
+                        EpistemicMetadata(EpistemicType::HYPOTHESIS, EpistemicStatus::ACTIVE,
+                                          chain_result.geometric_mean_trust),
+                        chain_result.geometric_mean_trust, true,
+                        static_cast<size_t>(chain_result.edge_results.size()), 0.0,
+                        chain_result.chain_summary, true
+                    );
+                    results.emplace_back(
+                        true, std::move(chain_assess),
+                        RelationshipPattern::LINEAR, nullptr,
+                        "Chain[" + std::to_string(hyp.evidence_concepts.size()) + " nodes]: " + chain_result.chain_summary
+                    );
+                } else {
+                    // Chain invalid, fallback to standard validation
+                    results.push_back(validator.validate(hyp));
+                }
+            } else {
+                results.push_back(validator.validate(hyp));
+            }
         } catch (const std::exception& e) {
             std::cerr << "[ThinkingPipeline] KAN validation failed: " << e.what() << "\n";
         }
@@ -326,7 +359,7 @@ QueryResult ThinkingPipeline::step_focus_cursor(
     ContextId ctx,
     LongTermMemory& ltm,
     ShortTermMemory& stm,
-    MicroModelRegistry& registry,
+    ConceptModelRegistry& registry,
     EmbeddingManager& embeddings,
     const GoalState& goal)
 {
@@ -347,7 +380,7 @@ QueryResult ThinkingPipeline::step_focus_cursor(
 
 std::vector<InvestigationRequest> ThinkingPipeline::step_kan_graph_scan(
     const std::vector<ConceptId>& salient_ids,
-    MicroModelRegistry& registry,
+    ConceptModelRegistry& registry,
     EmbeddingManager& embeddings,
     LongTermMemory& ltm)
 {
@@ -364,9 +397,9 @@ std::vector<HypothesisProposal> ThinkingPipeline::step_topology_a(
 {
     std::vector<HypothesisProposal> all_hypotheses;
 
-    // Use KanAwareMiniLLMs to investigate anomalies
+    // Use ConceptPatternEngines to investigate anomalies
     understanding.for_each_mini_llm([&](MiniLLM& llm) {
-        auto* kan_aware = dynamic_cast<KanAwareMiniLLM*>(&llm);
+        auto* kan_aware = dynamic_cast<ConceptPatternEngine*>(&llm);
         if (kan_aware) {
             auto hypotheses = kan_aware->investigate_anomalies(
                 anomalies, ltm, stm, context);
@@ -436,7 +469,7 @@ ThinkingResult ThinkingPipeline::execute_with_goal(
     BrainController& brain,
     CognitiveDynamics& cognitive,
     CuriosityEngine& curiosity,
-    MicroModelRegistry& registry,
+    ConceptModelRegistry& registry,
     EmbeddingManager& embeddings,
     UnderstandingLayer* understanding,
     KanValidator* kan_validator,
@@ -525,10 +558,11 @@ ThinkingResult ThinkingPipeline::execute_with_goal(
                 salient_ids, registry, embeddings, ltm);
         }
 
-        // Step 8: UnderstandingLayer
+        // Step 8: UnderstandingLayer — pass ThoughtPaths for multi-hop reasoning
         if (config_.enable_understanding && understanding) {
             result.understanding = step_understanding(
-                salient_ids, context, *understanding, cognitive, ltm, stm);
+                salient_ids, context, *understanding, cognitive, ltm, stm,
+                result.best_paths);
         }
         result.steps_completed = 8;
 
@@ -542,11 +576,11 @@ ThinkingResult ThinkingPipeline::execute_with_goal(
         }
     }
 
-    // Step 9: KAN-LLM Validation
+    // Step 9: KAN-LLM Validation — pass LTM for chain validation
     if (config_.enable_kan_validation && kan_validator &&
         !result.understanding.hypothesis_proposals.empty()) {
         result.validated_hypotheses = step_kan_validation(
-            result.understanding.hypothesis_proposals, *kan_validator);
+            result.understanding.hypothesis_proposals, *kan_validator, &ltm);
     }
     result.steps_completed = 9;
 
@@ -569,10 +603,10 @@ ThinkingResult ThinkingPipeline::execute_with_goal(
             type, vr.assessment.metadata.status, capped);
     }
 
-    // Step 9.5B: Feed validation back to KanAwareMiniLLMs
+    // Step 9.5B: Feed validation back to ConceptPatternEngines
     if (understanding && !result.validated_hypotheses.empty()) {
         understanding->for_each_mini_llm([&](MiniLLM& llm) {
-            auto* kan_aware = dynamic_cast<KanAwareMiniLLM*>(&llm);
+            auto* kan_aware = dynamic_cast<ConceptPatternEngine*>(&llm);
             if (kan_aware) {
                 kan_aware->train_from_validation(result.validated_hypotheses);
             }

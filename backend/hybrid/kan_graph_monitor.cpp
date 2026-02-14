@@ -7,7 +7,7 @@
 namespace brain19 {
 
 KanGraphMonitor::KanGraphMonitor(
-    const MicroModelRegistry& registry,
+    const ConceptModelRegistry& registry,
     const EmbeddingManager& embeddings,
     Config config)
     : registry_(registry)
@@ -19,14 +19,18 @@ KanGraphMonitor::KanGraphMonitor(
 // PREDICT EDGE VIA MICROMODEL
 // =============================================================================
 
-double KanGraphMonitor::predict_edge(ConceptId from, RelationType type) const {
-    const MicroModel* model = registry_.get_model(from);
+double KanGraphMonitor::predict_edge(ConceptId from, ConceptId to, RelationType type) const {
+    const ConceptModel* model = registry_.get_model(from);
     if (!model) return 0.0;
 
     const auto& rel_emb = embeddings_.get_relation_embedding(type);
-    auto ctx_emb = embeddings_.make_context_embedding("query");
+    static const size_t QUERY_HASH = std::hash<std::string>{}("query");
+    auto ctx_emb = embeddings_.make_target_embedding(QUERY_HASH, from, to);
 
-    return model->predict(rel_emb, ctx_emb);
+    auto concept_from = embeddings_.concept_embeddings().get_or_default(from);
+    auto concept_to = embeddings_.concept_embeddings().get_or_default(to);
+
+    return model->predict_refined(rel_emb, ctx_emb, concept_from, concept_to);
 }
 
 // =============================================================================
@@ -77,7 +81,7 @@ void KanGraphMonitor::detect_weak_edges(
     for (const auto& r : rels) {
         if (r.weight > config_.weak_edge_ltm_max) continue;
 
-        double kan = predict_edge(r.source, r.type);
+        double kan = predict_edge(r.source, r.target, r.type);
         if (kan < config_.weak_edge_kan_min) continue;
 
         double strength = kan - r.weight;
@@ -115,7 +119,7 @@ void KanGraphMonitor::detect_contradictions(
 {
     auto rels = ltm.get_outgoing_relations(cid);
     for (const auto& r : rels) {
-        double kan = predict_edge(r.source, r.type);
+        double kan = predict_edge(r.source, r.target, r.type);
         double mismatch = std::abs(r.weight - kan);
 
         if (mismatch < config_.contradiction_mismatch_min) continue;
@@ -161,7 +165,7 @@ void KanGraphMonitor::detect_stale_relations(
     for (const auto& r : rels) {
         if (r.weight < config_.stale_ltm_min) continue;
 
-        double kan = predict_edge(r.source, r.type);
+        double kan = predict_edge(r.source, r.target, r.type);
         if (kan > config_.stale_kan_max) continue;
 
         double strength = r.weight - kan;
@@ -220,7 +224,7 @@ void KanGraphMonitor::detect_missing_links(
             ++checks;
             if (checks > config_.max_missing_link_checks) break;
 
-            double kan = predict_edge(cid, rtype);
+            double kan = predict_edge(cid, other_cid, rtype);
             if (kan < config_.missing_link_kan_min) continue;
 
             auto src_info = ltm.retrieve_concept(cid);

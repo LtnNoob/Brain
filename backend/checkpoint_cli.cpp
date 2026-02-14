@@ -105,7 +105,7 @@ int cmd_restore(int argc, char** argv) {
     }
     
     STMSnapshotData stm_data;
-    MicroModelRegistry models;
+    ConceptModelRegistry models;
     CognitiveState cognitive;
     CheckpointConfig config;
     

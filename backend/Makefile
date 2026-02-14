@@ -16,7 +16,10 @@ MICROMODEL_SOURCES = micromodel/micro_model.cpp micromodel/micro_model_registry.
                      micromodel/relevance_map.cpp micromodel/persistence.cpp \
                      micromodel/concept_embedding_store.cpp
 COGNITIVE_SOURCES = cognitive/cognitive_dynamics.cpp cognitive/global_dynamics_operator.cpp
-UNDERSTANDING_SOURCES = understanding/understanding_layer.cpp understanding/mini_llm.cpp understanding/mini_llm_factory.cpp understanding/kan_aware_mini_llm.cpp
+UNDERSTANDING_SOURCES = understanding/understanding_layer.cpp understanding/mini_llm.cpp
+CMODEL_SOURCES = cmodel/concept_model.cpp cmodel/concept_model_registry.cpp \
+                 cmodel/concept_trainer.cpp cmodel/concept_pattern_engine.cpp \
+                 cmodel/concept_persistence.cpp
 LLM_SOURCES = llm/chat_interface.cpp
 IMPORTER_SOURCES = importers/wikipedia_importer.cpp importers/scholar_importer.cpp \
                    importers/http_client.cpp
@@ -44,7 +47,8 @@ CORE_APP_SOURCES = core/system_orchestrator.cpp core/brain19_app.cpp \
 # Core library (everything except mains)
 CORE_SOURCES = $(MEMORY_SOURCES) $(KAN_SOURCES) $(ADAPTER_SOURCES) \
                $(CURIOSITY_SOURCES) $(SNAPSHOT_SOURCES) $(LTM_SOURCES) \
-               $(MICROMODEL_SOURCES) $(COGNITIVE_SOURCES) $(UNDERSTANDING_SOURCES) \
+               $(MICROMODEL_SOURCES) $(CMODEL_SOURCES) $(COGNITIVE_SOURCES) \
+               $(UNDERSTANDING_SOURCES) \
                $(LLM_SOURCES) $(IMPORTER_SOURCES) $(INGESTOR_SOURCES) \
                $(PERSISTENT_SOURCES) $(HYBRID_SOURCES) $(EVOLUTION_SOURCES) \
                $(BOOTSTRAP_SOURCES) $(STREAMS_SOURCES) $(CORE_APP_SOURCES) \

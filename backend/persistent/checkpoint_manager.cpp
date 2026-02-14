@@ -350,7 +350,7 @@ std::string CheckpointManager::make_timestamp_dirname(const std::string& tag) {
 std::string CheckpointManager::save(
     PersistentLTM*              ltm,
     const STMSnapshotData*      stm_data,
-    const MicroModelRegistry*   models,
+    const ConceptModelRegistry*   models,
     const std::vector<std::pair<std::string, KANModule*>>* kan_modules,
     const CognitiveState*       cognitive,
     const CheckpointConfig*     config
@@ -574,25 +574,25 @@ ComponentHash CheckpointManager::write_stm(const std::string& dir, const STMSnap
     return ch;
 }
 
-ComponentHash CheckpointManager::write_micromodels(const std::string& dir, const MicroModelRegistry& reg) {
+ComponentHash CheckpointManager::write_micromodels(const std::string& dir, const ConceptModelRegistry& reg) {
     std::string path = dir + "/micromodels.bin";
     std::ofstream f(path, std::ios::binary);
     if (!f) throw std::runtime_error("Cannot write micromodels.bin");
-    
+
     constexpr uint32_t MAGIC = 0x4D4D4442; // "MMDB"
-    constexpr uint16_t VERSION = 1;
+    constexpr uint16_t VERSION = 3;  // v3: ConceptModel (CM_FLAT_SIZE=1900)
     write_pod(f, MAGIC);
     write_pod(f, VERSION);
-    
+
     auto ids = reg.get_model_ids();
     uint64_t n = ids.size();
     write_pod(f, n);
-    
+
     for (auto id : ids) {
-        const MicroModel* model = reg.get_model(id);
+        const ConceptModel* model = reg.get_model(id);
         if (!model) continue;
         write_pod(f, id);
-        std::array<double, FLAT_SIZE> flat;
+        std::array<double, CM_FLAT_SIZE> flat;
         model->to_flat(flat);
         f.write(reinterpret_cast<const char*>(flat.data()), sizeof(flat));
     }

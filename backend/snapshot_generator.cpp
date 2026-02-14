@@ -5,7 +5,8 @@
 #include "epistemic/epistemic_metadata.hpp"
 #include "curiosity/curiosity_engine.hpp"
 #include "cognitive/cognitive_dynamics.hpp"
-#include "micromodel/micro_model_registry.hpp"
+#include "cmodel/concept_model_registry.hpp"
+#include "cmodel/concept_model.hpp"
 #include <sstream>
 #include <iomanip>
 
@@ -23,7 +24,7 @@ std::string SnapshotGenerator::generate_json_snapshot(
     const CuriosityEngine* curiosity,
     ContextId context_id,
     const CognitiveDynamics* cognitive,
-    const MicroModelRegistry* micro_models
+    const ConceptModelRegistry* micro_models
 ) const {
     if (!brain) {
         return "{}";
@@ -163,10 +164,11 @@ std::string SnapshotGenerator::generate_json_snapshot(
             const auto* model = micro_models->get_model(cid);
             if (model) {
                 // Access training state via to_flat - extract last_loss
-                std::array<double, FLAT_SIZE> flat;
+                std::array<double, CM_FLAT_SIZE> flat;
                 model->to_flat(flat);
-                // last_loss is at offset: 100(W) + 10(b) + 10(e_init) + 10(c_init) + 100(dW_mom) + 10(db_mom) + 100(dW_var) + 10(db_var) + 10(e_grad) + 10(c_grad) + 1(timestep) + 0 = index 371
-                double last_loss = flat[371]; // TrainingState::last_loss
+                // last_loss at: 256(W) + 16(b) + 16(e) + 16(c) + 256(dW_mom) + 16(db_mom)
+                //             + 256(dW_var) + 16(db_var) + 16(e_grad) + 16(c_grad) + 1(timestep) = 881
+                double last_loss = flat[881]; // TrainingState::last_loss
                 total_loss += last_loss;
                 loss_count++;
             }

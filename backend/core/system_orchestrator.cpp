@@ -1,7 +1,6 @@
 #include "system_orchestrator.hpp"
 #include "../bootstrap/foundation_concepts.hpp"
-#include "../understanding/mini_llm_factory.hpp"
-#include "../understanding/kan_aware_mini_llm.hpp"
+#include "../cmodel/concept_pattern_engine.hpp"
 
 #include <algorithm>
 #include <cctype>
@@ -77,11 +76,11 @@ bool SystemOrchestrator::initialize() {
         brain_->initialize();
         init_stage_ = 3;
 
-        // ── Stage 4: MicroModels ────────────────────────────────────────
-        log("  [4/15] MicroModels...");
+        // ── Stage 4: ConceptModels ──────────────────────────────────────
+        log("  [4/15] ConceptModels...");
         embeddings_ = std::make_unique<EmbeddingManager>();
-        registry_ = std::make_unique<MicroModelRegistry>();
-        trainer_ = std::make_unique<MicroTrainer>();
+        registry_ = std::make_unique<ConceptModelRegistry>();
+        trainer_ = std::make_unique<ConceptTrainer>();
         init_stage_ = 4;
 
         // ── Stage 5: CognitiveDynamics ──────────────────────────────────
@@ -106,9 +105,9 @@ bool SystemOrchestrator::initialize() {
         // ── Stage 8: UnderstandingLayer + MiniLLMs ──────────────────────
         log("  [8/15] UnderstandingLayer...");
         understanding_ = std::make_unique<UnderstandingLayer>();
-        // Register KAN-aware MiniLLM (Topology B: reads KG + KAN predictions)
+        // Register ConceptPatternEngine (per-concept pattern weights + ConceptModel predictions)
         understanding_->register_mini_llm(
-            std::make_unique<KanAwareMiniLLM>(*registry_, *embeddings_));
+            std::make_unique<ConceptPatternEngine>(*registry_, *embeddings_));
         init_stage_ = 8;
 
         // ── Stage 9: KAN-LLM Hybrid ────────────────────────────────────
@@ -176,60 +175,21 @@ bool SystemOrchestrator::initialize() {
         }
         init_stage_ = 15;
 
-        // ── Create domain-specific MiniLLMs from IS_A hierarchy ─────────
-        {
-            auto active_ids = ltm_->get_active_concepts();
-            if (!active_ids.empty()) {
-                MiniLLMFactory factory;
-                // Cluster by IS_A root: walk IS_A edges upward
-                std::unordered_map<ConceptId, std::vector<ConceptId>> root_clusters;
-                for (auto cid : active_ids) {
-                    ConceptId current = cid;
-                    std::unordered_set<ConceptId> visited;
-                    for (size_t depth = 0; depth < 20; ++depth) {
-                        visited.insert(current);
-                        auto rels = ltm_->get_outgoing_relations(current);
-                        ConceptId parent = 0;
-                        bool found = false;
-                        for (const auto& r : rels) {
-                            if (r.type == RelationType::IS_A && !visited.count(r.target)) {
-                                parent = r.target;
-                                found = true;
-                                break;
-                            }
-                        }
-                        if (!found) break;
-                        current = parent;
-                    }
-                    root_clusters[current].push_back(cid);
-                }
-                for (auto& [root_id, members] : root_clusters) {
-                    if (members.size() < 3) continue;
-                    auto ri = ltm_->retrieve_concept(root_id);
-                    std::string nm = ri ? ri->label : "domain-" + std::to_string(root_id);
-                    understanding_->register_mini_llm(
-                        factory.create_specialized_mini_llm(members, *ltm_, nm));
-                }
-                log("    Created " + std::to_string(factory.get_created_count()) +
-                    " domain MiniLLMs from IS_A hierarchy");
-            }
-        }
-
         // ── ThinkingPipeline ────────────────────────────────────────────
         thinking_ = std::make_unique<ThinkingPipeline>(config_.thinking_config);
 
         // Create active context
         active_context_ = brain_->create_context();
 
-        // Ensure MicroModels for all concepts
+        // Ensure ConceptModels for all concepts
         registry_->ensure_models_for(*ltm_);
 
-        // Initial MicroModel training from KG structure
+        // Initial ConceptModel training from KG structure
         // Without this, all predictions are ~0.50 (untrained) and KAN validation
         // always refutes. Train once at startup so existing KG data produces
         // meaningful predictions immediately.
         if (trainer_ && registry_->size() > 0) {
-            log("    Training MicroModels from KG...");
+            log("    Training ConceptModels from KG...");
             auto stats = trainer_->train_all(*registry_, *embeddings_, *ltm_);
             log("    Trained " + std::to_string(stats.models_trained) + " models ("
                 + std::to_string(stats.models_converged) + " converged, avg loss "
@@ -1071,7 +1031,7 @@ std::string SystemOrchestrator::get_status() const {
     ss << "Running: " << (running_ ? "yes" : "no") << "\n";
     ss << "Concepts: " << concept_count() << "\n";
     ss << "Relations: " << relation_count() << "\n";
-    ss << "MicroModels: " << (registry_ ? registry_->size() : 0) << "\n";
+    ss << "ConceptModels: " << (registry_ ? registry_->size() : 0) << "\n";
     ss << "MiniLLMs: " << (understanding_ ? understanding_->get_mini_llm_count() : 0) << "\n";
     ss << "Chat LLM: " << (chat_ && chat_->is_llm_available() ? "available" : "unavailable") << "\n";
     ss << "Active context: " << active_context_ << "\n";
@@ -1193,7 +1153,7 @@ void SystemOrchestrator::run_periodic_maintenance() {
             std::to_string(maintenance_result.promotions) + " promotions, " +
             std::to_string(maintenance_result.demotions) + " demotions");
             
-        // Update MicroModels for promoted/demoted concepts
+        // Update ConceptModels for promoted/demoted concepts
         if (registry_ && (maintenance_result.promotions > 0 || maintenance_result.demotions > 0)) {
             // For now, ensure all concepts have models (could be optimized)
             registry_->ensure_models_for(*ltm_);
@@ -1290,13 +1250,13 @@ void SystemOrchestrator::run_evolution_after_thinking(const ThinkingResult& resu
         }
     }
 
-    // Targeted MicroModel training for activated concepts
+    // Targeted ConceptModel training for activated concepts
     // Only train models that were active in this thinking cycle, not train_all().
     // This keeps predictions fresh as the KG evolves without O(N) overhead per query.
     if (trainer_ && registry_ && embeddings_ && !result.activated_concepts.empty()) {
         size_t trained = 0;
         for (auto cid : result.activated_concepts) {
-            MicroModel* model = registry_->get_model(cid);
+            ConceptModel* model = registry_->get_model(cid);
             if (!model) continue;
             auto samples = trainer_->generate_samples(cid, *embeddings_, *ltm_);
             if (samples.empty()) continue;

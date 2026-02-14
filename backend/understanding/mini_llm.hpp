@@ -3,6 +3,7 @@
 #include "understanding_proposals.hpp"
 #include "../ltm/long_term_memory.hpp"
 #include "../memory/stm.hpp"
+#include "../cognitive/cognitive_config.hpp"
 #include <vector>
 #include <string>
 #include <memory>
@@ -61,13 +62,14 @@ public:
     // =========================================================================
 
     // Generate hypothesis proposals based on patterns
-    // INPUT: Evidence concepts (READ-ONLY)
+    // INPUT: Evidence concepts (READ-ONLY), optional ThoughtPaths for multi-hop reasoning
     // OUTPUT: Hypothesis proposals (NOT accepted hypotheses!)
     virtual std::vector<HypothesisProposal> generate_hypotheses(
         const std::vector<ConceptId>& evidence_concepts,
         const LongTermMemory& ltm,  // READ-ONLY!
         const ShortTermMemory& stm,  // READ-ONLY!
-        ContextId context
+        ContextId context,
+        const std::vector<ThoughtPath>& thought_paths = {}
     ) const = 0;
 
     // =========================================================================
@@ -130,7 +132,8 @@ public:
         const std::vector<ConceptId>& evidence_concepts,
         const LongTermMemory& ltm,
         const ShortTermMemory& stm,
-        ContextId context
+        ContextId context,
+        const std::vector<ThoughtPath>& thought_paths = {}
     ) const override;
 
     std::vector<AnalogyProposal> detect_analogies(

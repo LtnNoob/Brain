@@ -83,7 +83,7 @@ public:
         uint8_t components,
         PersistentLTM*              ltm,
         STMSnapshotData*            stm_out,
-        MicroModelRegistry*         models,
+        ConceptModelRegistry*         models,
         std::vector<std::pair<std::string, KANModule*>>* kan_modules,
         CognitiveState*             cognitive,
         CheckpointConfig*           config
@@ -108,7 +108,7 @@ private:
     // Read helpers
     static bool restore_ltm(const std::string& path, PersistentLTM& ltm);
     static bool restore_stm(const std::string& path, STMSnapshotData& out);
-    static bool restore_micromodels(const std::string& path, MicroModelRegistry& reg);
+    static bool restore_micromodels(const std::string& path, ConceptModelRegistry& reg);
     static bool restore_kan_modules(const std::string& path,
         std::vector<std::pair<std::string, KANModule*>>& modules);
     static bool restore_cognitive(const std::string& path, CognitiveState& out);

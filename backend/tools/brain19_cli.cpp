@@ -6,9 +6,9 @@
 //   ./tools/brain19_cli --review  # Review mode (manual approve/reject)
 
 #include "../ingestor/ingestion_pipeline.hpp"
-#include "../micromodel/micro_model_registry.hpp"
+#include "../cmodel/concept_model_registry.hpp"
+#include "../cmodel/concept_trainer.hpp"
 #include "../micromodel/embedding_manager.hpp"
-#include "../micromodel/micro_trainer.hpp"
 #include "../micromodel/relevance_map.hpp"
 
 #include <iostream>
@@ -176,9 +176,9 @@ static void action_review(IngestionPipeline& pipeline) {
               << r.relations_stored << " relation(s)\n";
 }
 
-static void action_train(MicroModelRegistry& registry,
+static void action_train(ConceptModelRegistry& registry,
                          EmbeddingManager& embeddings,
-                         MicroTrainer& trainer,
+                         ConceptTrainer& trainer,
                          LongTermMemory& ltm) {
     std::string input = read_line("Concept ID (or 'all')");
     if (input.empty()) { std::cout << "  (skipped)\n"; return; }
@@ -213,7 +213,7 @@ static void action_train(MicroModelRegistry& registry,
             std::cout << "  Created model for concept " << cid << "\n";
         }
 
-        MicroModel* model = registry.get_model(cid);
+        ConceptModel* model = registry.get_model(cid);
         auto result = trainer.train_single(cid, *model, embeddings, ltm);
         std::cout << "  Epochs: " << result.epochs_run
                   << "  Loss: " << std::fixed << std::setprecision(6) << result.final_loss
@@ -221,7 +221,7 @@ static void action_train(MicroModelRegistry& registry,
     }
 }
 
-static void action_relevance_map(MicroModelRegistry& registry,
+static void action_relevance_map(ConceptModelRegistry& registry,
                                  EmbeddingManager& embeddings,
                                  LongTermMemory& ltm) {
     std::string cid_str = read_line("Source concept ID");
@@ -283,9 +283,9 @@ static void action_relevance_map(MicroModelRegistry& registry,
     }
 }
 
-static void action_train_all_stats(MicroModelRegistry& registry,
+static void action_train_all_stats(ConceptModelRegistry& registry,
                                    EmbeddingManager& embeddings,
-                                   MicroTrainer& trainer,
+                                   ConceptTrainer& trainer,
                                    LongTermMemory& ltm) {
     size_t created = registry.ensure_models_for(ltm);
     std::cout << "  Models created: " << created
@@ -334,9 +334,9 @@ int main(int argc, char* argv[]) {
 
     LongTermMemory ltm;
     IngestionPipeline pipeline(ltm);
-    MicroModelRegistry registry;
+    ConceptModelRegistry registry;
     EmbeddingManager embeddings;
-    MicroTrainer trainer;
+    ConceptTrainer trainer;
 
     std::cout << "=== Brain19 CLI ===\n"
               << "Mode: " << (review_mode ? "review" : "direct") << "\n\n";

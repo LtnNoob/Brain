@@ -21,26 +21,26 @@ std::vector<TrainingSample> MicroTrainer::generate_samples(
     std::vector<TrainingSample> samples;
     std::unordered_set<ConceptId> connected;
 
-    const Vec10& recall_ctx = embeddings.recall_context();
+    static const size_t RECALL_HASH = std::hash<std::string>{}("recall");
 
-    // Positive samples from outgoing relations
+    // Positive samples from outgoing relations — target-aware embedding
     auto outgoing = ltm.get_outgoing_relations(cid);
     for (const auto& rel : outgoing) {
         connected.insert(rel.target);
         TrainingSample sample;
         sample.relation_embedding = embeddings.get_relation_embedding(rel.type);
-        sample.context_embedding = recall_ctx;
+        sample.context_embedding = embeddings.make_target_embedding(RECALL_HASH, cid, rel.target);
         sample.target = rel.weight;
         samples.push_back(sample);
     }
 
-    // Positive samples from incoming relations (discounted)
+    // Positive samples from incoming relations (discounted) — target-aware embedding
     auto incoming = ltm.get_incoming_relations(cid);
     for (const auto& rel : incoming) {
         connected.insert(rel.source);
         TrainingSample sample;
         sample.relation_embedding = embeddings.get_relation_embedding(rel.type);
-        sample.context_embedding = recall_ctx;
+        sample.context_embedding = embeddings.make_target_embedding(RECALL_HASH, cid, rel.source);
         sample.target = rel.weight * config_.incoming_discount;
         samples.push_back(sample);
     }
@@ -74,7 +74,7 @@ std::vector<TrainingSample> MicroTrainer::generate_samples(
         RelationType neg_type = static_cast<RelationType>(neg_count % 10);
         TrainingSample sample;
         sample.relation_embedding = embeddings.get_relation_embedding(neg_type);
-        sample.context_embedding = recall_ctx;
+        sample.context_embedding = embeddings.make_target_embedding(RECALL_HASH, cid, candidate);
         sample.target = config_.neg_target;
         samples.push_back(sample);
         ++neg_count;

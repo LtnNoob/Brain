@@ -6,7 +6,7 @@
 #include "streams/stream_scheduler.hpp"
 #include "ltm/long_term_memory.hpp"
 #include "memory/stm.hpp"
-#include "micromodel/micro_model_registry.hpp"
+#include "cmodel/concept_model_registry.hpp"
 #include "micromodel/embedding_manager.hpp"
 #include "concurrent/shared_ltm.hpp"
 #include "concurrent/shared_stm.hpp"
@@ -34,7 +34,7 @@ int main(int argc, char* argv[]) {
     // Bootstrap minimal runtime
     brain19::LongTermMemory ltm_raw;
     brain19::ShortTermMemory stm_raw;
-    brain19::MicroModelRegistry reg_raw;
+    brain19::ConceptModelRegistry reg_raw;
     brain19::EmbeddingManager emb_raw;
 
     brain19::SharedLTM ltm(ltm_raw);

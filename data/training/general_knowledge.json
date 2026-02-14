@@ -1,0 +1,4993 @@
+{
+  "source": "general_knowledge_foundation",
+  "concepts": [
+    {
+      "label": "Automobile",
+      "definition": "A four-wheeled motor vehicle designed for passenger transportation on roads",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Bicycle",
+      "definition": "A human-powered vehicle with two wheels, typically propelled by pedaling",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Bus",
+      "definition": "A large motor vehicle designed to carry many passengers on public transportation routes",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Train",
+      "definition": "A series of connected vehicles that run on railway tracks for transporting people or goods",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Airplane",
+      "definition": "A powered flying vehicle with fixed wings capable of atmospheric flight",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "House",
+      "definition": "A building designed for human habitation, typically containing multiple rooms",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Apartment",
+      "definition": "A self-contained housing unit that occupies part of a building",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Table",
+      "definition": "A piece of furniture with a flat top and legs, used for various activities",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Chair",
+      "definition": "A seat for one person, typically having four legs and a back",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Bed",
+      "definition": "A piece of furniture designed for sleeping or resting",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Kitchen",
+      "definition": "A room or area where food is prepared and cooked",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Computer",
+      "definition": "An electronic device capable of processing data and executing programs",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Telephone",
+      "definition": "A device for transmitting voice communications over distances",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Television",
+      "definition": "An electronic device that receives and displays moving visual images with sound",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Refrigerator",
+      "definition": "An appliance that keeps food and drinks cool by refrigeration",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Lamp",
+      "definition": "A device that produces artificial light, typically electric",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Book",
+      "definition": "A written or printed work consisting of pages bound together",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Clothing",
+      "definition": "Items worn to cover the body, providing protection and style",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Shoes",
+      "definition": "Footwear designed to protect and comfort feet while walking",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Money",
+      "definition": "A medium of exchange used for transactions and storing value",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Bank",
+      "definition": "A financial institution that handles money, loans, and financial services",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Supermarket",
+      "definition": "A large self-service store selling groceries and household goods",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Restaurant",
+      "definition": "An establishment where meals are prepared and served to customers",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "School",
+      "definition": "An institution for educating children and young people",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "University",
+      "definition": "A higher education institution offering undergraduate and graduate degrees",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Hospital",
+      "definition": "A medical facility providing patient treatment and healthcare services",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Street",
+      "definition": "A public road in a city or town for vehicle and pedestrian traffic",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Bridge",
+      "definition": "A structure built to span a physical obstacle like water or roads",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "City",
+      "definition": "A large urban area with significant population and infrastructure",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Village",
+      "definition": "A small community in a rural area with fewer inhabitants than a city",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Dog",
+      "definition": "A domesticated carnivorous mammal commonly kept as a pet",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Cat",
+      "definition": "A small domesticated carnivorous mammal often kept as a pet",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Horse",
+      "definition": "A large domesticated mammal used for riding, racing, and work",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Cow",
+      "definition": "A large domesticated bovine animal raised for milk and meat",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Pig",
+      "definition": "A domesticated mammal raised for meat production",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Chicken",
+      "definition": "A domesticated fowl raised for eggs and meat",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Fish",
+      "definition": "Aquatic vertebrate animals that breathe through gills",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Bird",
+      "definition": "Warm-blooded vertebrates with feathers, wings, and beaks",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Insect",
+      "definition": "Small invertebrate animals with six legs and segmented bodies",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Snake",
+      "definition": "Elongated legless reptiles that move by slithering",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Elephant",
+      "definition": "Large mammal with a trunk, known for intelligence and memory",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Lion",
+      "definition": "Large carnivorous feline known as the king of the jungle",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Tiger",
+      "definition": "Large striped carnivorous feline found in Asia",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Bear",
+      "definition": "Large omnivorous mammal with thick fur and strong claws",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Wolf",
+      "definition": "Wild carnivorous mammal and ancestor of domestic dogs",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Eagle",
+      "definition": "Large bird of prey with excellent eyesight and powerful talons",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Dolphin",
+      "definition": "Highly intelligent marine mammal known for echolocation",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Whale",
+      "definition": "Large marine mammal that breathes air through blowholes",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Shark",
+      "definition": "Cartilaginous fish with powerful jaws and sharp teeth",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Spider",
+      "definition": "Arachnid that spins webs to catch prey",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Bee",
+      "definition": "Flying insect that collects nectar and produces honey",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Ant",
+      "definition": "Social insect living in organized colonies",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Butterfly",
+      "definition": "Insect with colorful wings that undergoes metamorphosis",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Bread",
+      "definition": "Baked food made from flour, water, and yeast",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Water",
+      "definition": "Clear liquid essential for all life, composed of hydrogen and oxygen",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Milk",
+      "definition": "White liquid produced by mammals to feed their young",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Meat",
+      "definition": "Animal flesh used as food",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Vegetable",
+      "definition": "Edible plant or plant part used in cooking",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Fruit",
+      "definition": "Sweet or savory seed-bearing structure of flowering plants",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Rice",
+      "definition": "Cereal grain that is a staple food for much of the world",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Pasta",
+      "definition": "Italian food made from wheat flour and water, shaped into various forms",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Potato",
+      "definition": "Starchy tuber vegetable that is a common food staple",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Tomato",
+      "definition": "Red fruit commonly used as a vegetable in cooking",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Apple",
+      "definition": "Round fruit with sweet or tart flesh and edible skin",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Banana",
+      "definition": "Yellow curved fruit with sweet flesh and peelable skin",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Cheese",
+      "definition": "Dairy product made by curdling milk",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Butter",
+      "definition": "Yellow dairy product made by churning cream",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Egg",
+      "definition": "Oval reproductive body laid by birds, commonly used as food",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Salt",
+      "definition": "White crystalline substance used to season and preserve food",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Sugar",
+      "definition": "Sweet crystalline substance used to sweeten food and drinks",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Coffee",
+      "definition": "Dark beverage made from roasted coffee beans",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Tea",
+      "definition": "Aromatic beverage made by steeping tea leaves in hot water",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Beer",
+      "definition": "Alcoholic beverage made from fermented grains",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Wine",
+      "definition": "Alcoholic beverage made from fermented grapes",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Europe",
+      "definition": "Continent located primarily in the Eastern and Northern hemispheres",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Asia",
+      "definition": "Largest continent on Earth, covering about 30% of land area",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Africa",
+      "definition": "Second-largest continent, covering about 20% of Earth's land area",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "North America",
+      "definition": "Continent in the Northern Hemisphere containing countries like USA and Canada",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "South America",
+      "definition": "Continent in the Southern Hemisphere containing countries like Brazil and Argentina",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Germany",
+      "definition": "European country in Central Europe known for its history and culture",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "France",
+      "definition": "European country known for its culture, cuisine, and landmarks",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "United States",
+      "definition": "Large country in North America consisting of 50 states",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "China",
+      "definition": "Most populous country in the world, located in East Asia",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Japan",
+      "definition": "Island nation in East Asia known for technology and culture",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Russia",
+      "definition": "Largest country in the world by land area, spanning Europe and Asia",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Berlin",
+      "definition": "Capital city of Germany",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Paris",
+      "definition": "Capital city of France, known as the City of Light",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "London",
+      "definition": "Capital city of the United Kingdom",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "New York",
+      "definition": "Major city in the United States, known for its skyscrapers",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Tokyo",
+      "definition": "Capital city of Japan and one of the world's largest metropolitan areas",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Ocean",
+      "definition": "Large body of salt water covering most of Earth's surface",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Sea",
+      "definition": "Large body of salt water smaller than an ocean",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "River",
+      "definition": "Natural watercourse flowing towards an ocean, sea, or lake",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Mountain",
+      "definition": "Large natural elevation of the earth's surface",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Forest",
+      "definition": "Large area covered with trees and undergrowth",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Desert",
+      "definition": "Dry region with little rainfall and sparse vegetation",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Island",
+      "definition": "Land area completely surrounded by water",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Continent",
+      "definition": "Large continuous mass of land conventionally regarded as a collective region",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Heart",
+      "definition": "Muscular organ that pumps blood through the circulatory system",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Lung",
+      "definition": "Respiratory organ that extracts oxygen from air and removes carbon dioxide",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Brain",
+      "definition": "Central organ of the nervous system controlling thought and behavior",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Eye",
+      "definition": "Organ of sight that detects light and converts it to neural signals",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Ear",
+      "definition": "Organ of hearing and balance",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Hand",
+      "definition": "Prehensile appendage at the end of the arm used for grasping",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Foot",
+      "definition": "Terminal part of the leg used for standing and walking",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Bone",
+      "definition": "Hard tissue that forms the skeleton of vertebrates",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Muscle",
+      "definition": "Soft tissue that contracts to produce movement",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Blood",
+      "definition": "Red liquid that circulates through the body carrying oxygen and nutrients",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Skin",
+      "definition": "Outer covering of the body that protects internal organs",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Stomach",
+      "definition": "Digestive organ that breaks down food with acid",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Liver",
+      "definition": "Large organ that processes nutrients and filters toxins",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Kidney",
+      "definition": "Organ that filters waste from blood and produces urine",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Tooth",
+      "definition": "Hard structure in the mouth used for biting and chewing",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Hair",
+      "definition": "Protein filament that grows from follicles in the skin",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Doctor",
+      "definition": "Medical professional who diagnoses and treats illnesses",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Teacher",
+      "definition": "Person who instructs and educates students",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Engineer",
+      "definition": "Professional who designs and builds technical solutions",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Police Officer",
+      "definition": "Law enforcement official who maintains public safety",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Firefighter",
+      "definition": "Emergency responder who fights fires and rescues people",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Chef",
+      "definition": "Professional cook who prepares meals in restaurants",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Pilot",
+      "definition": "Person who operates aircraft",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Farmer",
+      "definition": "Person who cultivates crops and raises livestock",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Lawyer",
+      "definition": "Legal professional who represents clients in legal matters",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Judge",
+      "definition": "Official who presides over court proceedings and makes legal decisions",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Government",
+      "definition": "System by which a state or community is governed",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Democracy",
+      "definition": "Form of government where citizens participate in decision-making",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Law",
+      "definition": "System of rules created and enforced through social institutions",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Family",
+      "definition": "Group of people related by blood, marriage, or adoption",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Friendship",
+      "definition": "Mutual affection and support between people",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Sun",
+      "definition": "Star at the center of our solar system providing light and heat",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Moon",
+      "definition": "Earth's natural satellite that orbits our planet",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Star",
+      "definition": "Celestial body composed of gas that produces light and heat",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Rain",
+      "definition": "Water droplets falling from clouds in the sky",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Snow",
+      "definition": "Frozen precipitation in the form of ice crystals",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Wind",
+      "definition": "Moving air created by pressure differences in the atmosphere",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Cloud",
+      "definition": "Visible collection of water droplets or ice crystals in the sky",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Storm",
+      "definition": "Violent weather condition with strong winds and precipitation",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Spring",
+      "definition": "Season between winter and summer when plants begin to grow",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Summer",
+      "definition": "Warmest season of the year with long days and high temperatures",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Autumn",
+      "definition": "Season between summer and winter when leaves fall",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Winter",
+      "definition": "Coldest season of the year with short days and low temperatures",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Tree",
+      "definition": "Woody plant with a trunk and branches that grows tall",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Flower",
+      "definition": "Colorful reproductive structure of flowering plants",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Grass",
+      "definition": "Small green plants with narrow leaves that grow in dense patches",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Second",
+      "definition": "Basic unit of time equal to 1/60 of a minute",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Minute",
+      "definition": "Unit of time equal to 60 seconds",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Hour",
+      "definition": "Unit of time equal to 60 minutes",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Day",
+      "definition": "Period of time from one midnight to the next",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Week",
+      "definition": "Period of seven consecutive days",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Month",
+      "definition": "Period of time corresponding roughly to the lunar cycle",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Year",
+      "definition": "Period of time equal to 365 days or one orbit of Earth around the Sun",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Meter",
+      "definition": "Basic unit of length in the metric system",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Kilometer",
+      "definition": "Unit of length equal to 1000 meters",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Kilogram",
+      "definition": "Basic unit of mass in the metric system",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Liter",
+      "definition": "Unit of volume equal to 1000 cubic centimeters",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Degree Celsius",
+      "definition": "Unit of temperature measurement based on the freezing and boiling points of water",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Music",
+      "definition": "Art form using sound and rhythm to create aesthetic experiences",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Film",
+      "definition": "Visual medium that tells stories through moving images",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Sport",
+      "definition": "Physical activity involving skill and competition",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Football",
+      "definition": "Team sport played with a ball on a field with goals",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Art",
+      "definition": "Creative expression through visual, auditory, or performance mediums",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Theater",
+      "definition": "Performing art involving live actors presenting stories on stage",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Museum",
+      "definition": "Institution that preserves and displays artifacts and artworks",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Novel",
+      "definition": "Long fictional narrative in prose form",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Poem",
+      "definition": "Literary work expressing emotions and ideas through rhythm and imagery",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Dance",
+      "definition": "Art form involving rhythmic movement of the body",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Painting",
+      "definition": "Visual art created by applying pigment to a surface",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Photography",
+      "definition": "Art of creating images using light and cameras",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Smartphone",
+      "definition": "Portable electronic device combining phone, computer, and camera functions",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Door",
+      "definition": "Movable barrier used to open and close an entrance",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Window",
+      "definition": "Opening in a wall fitted with glass to admit light and air",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Roof",
+      "definition": "Top covering of a building that protects from weather",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Wall",
+      "definition": "Vertical structure that encloses or divides a space",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Floor",
+      "definition": "Lower surface of a room on which one walks",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Bathroom",
+      "definition": "Room containing a bathtub or shower and usually a sink and toilet",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Bedroom",
+      "definition": "Room used primarily for sleeping",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Key",
+      "definition": "Small metal instrument used to open or close a lock",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Clock",
+      "definition": "Device that measures and displays time",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Mirror",
+      "definition": "Reflective surface that shows images of objects in front of it",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Pen",
+      "definition": "Writing instrument that uses ink",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Paper",
+      "definition": "Thin material made from wood pulp used for writing and printing",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Scissors",
+      "definition": "Cutting tool with two blades joined at a pivot",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Bag",
+      "definition": "Flexible container used for carrying things",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Umbrella",
+      "definition": "Collapsible canopy used for protection from rain or sun",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Washing Machine",
+      "definition": "Appliance used to wash laundry automatically",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Oven",
+      "definition": "Enclosed compartment used for heating and baking food",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Newspaper",
+      "definition": "Printed publication containing news and articles",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Radio",
+      "definition": "Device that receives and plays audio broadcasts",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Internet",
+      "definition": "Global network of interconnected computers enabling communication and information sharing",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Electricity",
+      "definition": "Form of energy resulting from the flow of electric charge",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Battery",
+      "definition": "Device that stores and provides electrical energy",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Motorcycle",
+      "definition": "Two-wheeled motor vehicle for personal transportation",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Boat",
+      "definition": "Watercraft designed for traveling on water",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Ship",
+      "definition": "Large watercraft for transporting people or cargo across seas",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Helicopter",
+      "definition": "Aircraft that achieves flight through rotating blades",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Taxi",
+      "definition": "Vehicle for hire to transport passengers",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Subway",
+      "definition": "Underground railway system for urban transportation",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Frog",
+      "definition": "Small amphibian that lives both on land and in water",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Crocodile",
+      "definition": "Large predatory reptile that lives in tropical waterways",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Turtle",
+      "definition": "Reptile with a hard protective shell",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Penguin",
+      "definition": "Flightless seabird adapted for swimming in cold waters",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Parrot",
+      "definition": "Colorful bird known for its ability to mimic speech",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Owl",
+      "definition": "Nocturnal bird of prey with large eyes and silent flight",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Deer",
+      "definition": "Hoofed mammal known for antlers on males",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Rabbit",
+      "definition": "Small furry mammal with long ears known for fast reproduction",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Mouse",
+      "definition": "Small rodent found worldwide",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Rat",
+      "definition": "Medium-sized rodent larger than a mouse",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Mosquito",
+      "definition": "Small flying insect that feeds on blood",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Fly",
+      "definition": "Common winged insect found near food and waste",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Goat",
+      "definition": "Domesticated mammal raised for milk, meat, and fiber",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Sheep",
+      "definition": "Domesticated mammal raised for wool and meat",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Gorilla",
+      "definition": "Largest living primate found in African forests",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Monkey",
+      "definition": "Primate typically with a long tail living in tropical regions",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Giraffe",
+      "definition": "Tallest living animal with an extremely long neck",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Zebra",
+      "definition": "African equine with distinctive black and white stripes",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Orange",
+      "definition": "Round citrus fruit with sweet juicy flesh",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Lemon",
+      "definition": "Yellow citrus fruit with sour taste",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Grape",
+      "definition": "Small round fruit growing in clusters used for eating and winemaking",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Strawberry",
+      "definition": "Red heart-shaped fruit with seeds on the surface",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Onion",
+      "definition": "Bulb vegetable with pungent flavor used in cooking worldwide",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Carrot",
+      "definition": "Orange root vegetable rich in vitamins",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Pepper",
+      "definition": "Spice or vegetable used to add flavor or heat to food",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Garlic",
+      "definition": "Pungent bulb used as seasoning in cooking",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Chocolate",
+      "definition": "Sweet food made from roasted cacao beans",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Honey",
+      "definition": "Sweet viscous substance produced by bees from nectar",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Soup",
+      "definition": "Liquid food made by cooking ingredients in water or stock",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Pizza",
+      "definition": "Italian dish consisting of dough topped with sauce, cheese, and toppings",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Salad",
+      "definition": "Dish of mixed raw vegetables or other ingredients",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Juice",
+      "definition": "Liquid extracted from fruits or vegetables",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Ice Cream",
+      "definition": "Frozen dessert made from cream, sugar, and flavorings",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Flour",
+      "definition": "Powder made by grinding grain, used in baking",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Oil",
+      "definition": "Viscous liquid used for cooking, lubrication, or fuel",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Vinegar",
+      "definition": "Sour liquid made by fermenting alcohol, used in cooking",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Australia",
+      "definition": "Country and continent in the Southern Hemisphere",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Antarctica",
+      "definition": "Southernmost continent covered by ice, with no permanent residents",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "India",
+      "definition": "Large country in South Asia with the world's second-largest population",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Brazil",
+      "definition": "Largest country in South America known for the Amazon rainforest",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Italy",
+      "definition": "European country shaped like a boot, known for art and cuisine",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Spain",
+      "definition": "European country on the Iberian Peninsula",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "United Kingdom",
+      "definition": "Island nation in northwestern Europe comprising England, Scotland, Wales, and Northern Ireland",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Canada",
+      "definition": "Second-largest country in the world, located in North America",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Mexico",
+      "definition": "Country in North America south of the United States",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Egypt",
+      "definition": "Country in North Africa known for ancient pyramids",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Turkey",
+      "definition": "Country spanning Europe and Asia",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Rome",
+      "definition": "Capital of Italy and center of the ancient Roman Empire",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Moscow",
+      "definition": "Capital city of Russia",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Beijing",
+      "definition": "Capital city of China",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Sydney",
+      "definition": "Largest city in Australia known for its Opera House",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Lake",
+      "definition": "Large body of freshwater surrounded by land",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Valley",
+      "definition": "Low area between hills or mountains",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Volcano",
+      "definition": "Opening in Earth's crust through which lava erupts",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Cave",
+      "definition": "Natural underground hollow space in rock",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Glacier",
+      "definition": "Large mass of ice that moves slowly over land",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Earth",
+      "definition": "Third planet from the Sun and the only known planet with life",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Planet",
+      "definition": "Celestial body that orbits a star",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Arm",
+      "definition": "Upper limb of the human body from shoulder to hand",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Leg",
+      "definition": "Lower limb of the human body used for standing and walking",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Nose",
+      "definition": "Organ of smell and part of the respiratory system",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Mouth",
+      "definition": "Opening in the face used for eating and speaking",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Tongue",
+      "definition": "Muscular organ in the mouth used for tasting and speaking",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Spine",
+      "definition": "Column of vertebrae that supports the body and protects the spinal cord",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Rib",
+      "definition": "Curved bone forming the chest cavity protecting internal organs",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Skull",
+      "definition": "Bony framework of the head that protects the brain",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Nerve",
+      "definition": "Fiber that transmits electrical signals between body parts and brain",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Intestine",
+      "definition": "Long tubular organ where food is digested and nutrients absorbed",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Pancreas",
+      "definition": "Organ that produces insulin and digestive enzymes",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Vein",
+      "definition": "Blood vessel that carries blood toward the heart",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Artery",
+      "definition": "Blood vessel that carries blood away from the heart",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Shoulder",
+      "definition": "Joint connecting the arm to the torso",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Knee",
+      "definition": "Joint connecting the upper and lower leg",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Elbow",
+      "definition": "Joint connecting the upper and lower arm",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Nurse",
+      "definition": "Healthcare professional who cares for patients",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Scientist",
+      "definition": "Person who conducts research and experiments to understand the world",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Artist",
+      "definition": "Person who creates works of art",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Musician",
+      "definition": "Person who performs or composes music",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Architect",
+      "definition": "Professional who designs buildings and structures",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Journalist",
+      "definition": "Person who reports news and current events",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Soldier",
+      "definition": "Person who serves in the military",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Religion",
+      "definition": "System of beliefs and practices centered on spiritual or supernatural forces",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Language",
+      "definition": "System of communication using words and grammar",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Economy",
+      "definition": "System of production, distribution, and consumption of goods and services",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "War",
+      "definition": "Armed conflict between nations or groups",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Peace",
+      "definition": "State of absence of war and conflict",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Election",
+      "definition": "Formal process of selecting a person for public office by voting",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Tax",
+      "definition": "Compulsory financial charge imposed by government",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Marriage",
+      "definition": "Legal and social union between partners",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Lightning",
+      "definition": "Sudden electrostatic discharge during a thunderstorm",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Thunder",
+      "definition": "Sound caused by lightning heating the air rapidly",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Rainbow",
+      "definition": "Arc of colors visible in the sky caused by refraction of light in water droplets",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Fog",
+      "definition": "Thick cloud of water droplets near the ground reducing visibility",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Ice",
+      "definition": "Frozen form of water",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Fire",
+      "definition": "Rapid oxidation producing heat, light, and flame",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Air",
+      "definition": "Invisible mixture of gases surrounding the Earth",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Soil",
+      "definition": "Upper layer of earth where plants grow",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Rock",
+      "definition": "Solid mineral material forming part of the earth's surface",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Sand",
+      "definition": "Fine granular material composed of tiny rock particles",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Earthquake",
+      "definition": "Sudden shaking of the ground caused by tectonic movement",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Tsunami",
+      "definition": "Large ocean wave caused by underwater earthquakes",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Flood",
+      "definition": "Overflow of water that submerges normally dry land",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Drought",
+      "definition": "Prolonged period of abnormally low rainfall",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Seed",
+      "definition": "Embryonic plant enclosed in a protective covering",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Mushroom",
+      "definition": "Fleshy fruiting body of a fungus",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Basketball",
+      "definition": "Team sport where players score by shooting a ball through a hoop",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Tennis",
+      "definition": "Racket sport played on a court with a net",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Swimming",
+      "definition": "Moving through water using body movements",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Running",
+      "definition": "Moving rapidly on foot as exercise or sport",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Olympics",
+      "definition": "International multi-sport event held every four years",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Guitar",
+      "definition": "Stringed musical instrument played by plucking or strumming",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Piano",
+      "definition": "Keyboard instrument that produces sound by striking strings with hammers",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Violin",
+      "definition": "Four-stringed musical instrument played with a bow",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Drum",
+      "definition": "Percussion instrument played by striking a membrane",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Song",
+      "definition": "Musical composition intended to be sung",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Concert",
+      "definition": "Live musical performance before an audience",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Cinema",
+      "definition": "Place where films are shown to audiences",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Game",
+      "definition": "Structured activity played for enjoyment or competition",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Toy",
+      "definition": "Object designed for children to play with",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Holiday",
+      "definition": "Day of celebration or rest from work",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Festival",
+      "definition": "Organized series of events celebrating culture or occasion",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Gravity",
+      "definition": "Force that attracts objects toward each other, keeping us on Earth",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Oxygen",
+      "definition": "Chemical element essential for breathing and combustion",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Carbon Dioxide",
+      "definition": "Gas exhaled by animals and absorbed by plants",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Photosynthesis",
+      "definition": "Process by which plants convert sunlight into energy",
+      "epistemic_type": "THEORY",
+      "trust": 0.98
+    },
+    {
+      "label": "Evolution",
+      "definition": "Process of biological change in species over generations",
+      "epistemic_type": "THEORY",
+      "trust": 0.98
+    },
+    {
+      "label": "DNA",
+      "definition": "Molecule carrying genetic instructions for living organisms",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Cell",
+      "definition": "Basic structural unit of all living organisms",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Atom",
+      "definition": "Smallest unit of a chemical element",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Energy",
+      "definition": "Capacity to do work or produce change",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.99
+    },
+    {
+      "label": "Temperature",
+      "definition": "Measure of how hot or cold something is",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Speed",
+      "definition": "Rate at which an object moves",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.99
+    },
+    {
+      "label": "Light",
+      "definition": "Electromagnetic radiation visible to the human eye",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Sound",
+      "definition": "Vibrations that travel through air and are detected by the ear",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Color",
+      "definition": "Visual perception of different wavelengths of light",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Metal",
+      "definition": "Solid material that conducts heat and electricity",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Wood",
+      "definition": "Hard fibrous material from trees used in construction",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Glass",
+      "definition": "Hard transparent material made from melted sand",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Plastic",
+      "definition": "Synthetic material that can be molded into various shapes",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Gold",
+      "definition": "Precious yellow metal used in jewelry and as currency",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Iron",
+      "definition": "Common metal used in construction and manufacturing",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Diamond",
+      "definition": "Extremely hard crystalline form of carbon",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Human",
+      "definition": "Intelligent bipedal primate species (Homo sapiens)",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Animal",
+      "definition": "Multicellular organism that consumes organic matter",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.99
+    },
+    {
+      "label": "Plant",
+      "definition": "Multicellular organism that produces energy through photosynthesis",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.99
+    },
+    {
+      "label": "Vehicle",
+      "definition": "Machine used to transport people or goods",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.99
+    },
+    {
+      "label": "Food",
+      "definition": "Substance consumed to provide nutritional support for the body",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.99
+    },
+    {
+      "label": "Cooking",
+      "definition": "Process of preparing food by heating",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Education",
+      "definition": "Process of facilitating learning and acquiring knowledge",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.99
+    },
+    {
+      "label": "Healthcare",
+      "definition": "Organized provision of medical care to individuals",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.99
+    },
+    {
+      "label": "Transportation",
+      "definition": "Movement of people and goods from one place to another",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.99
+    }
+  ],
+  "relations": [
+    {
+      "source": "Automobile",
+      "target": "Vehicle",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Bicycle",
+      "target": "Vehicle",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Bus",
+      "target": "Vehicle",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Train",
+      "target": "Vehicle",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Airplane",
+      "target": "Vehicle",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "House",
+      "target": "Building",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Apartment",
+      "target": "Building",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Table",
+      "target": "Furniture",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Chair",
+      "target": "Furniture",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Bed",
+      "target": "Furniture",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Kitchen",
+      "target": "Room",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Computer",
+      "target": "Technology",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Telephone",
+      "target": "Technology",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Television",
+      "target": "Technology",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Refrigerator",
+      "target": "Appliance",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Lamp",
+      "target": "Lighting",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Book",
+      "target": "Literature",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Clothing",
+      "target": "Apparel",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Shoes",
+      "target": "Footwear",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Money",
+      "target": "Currency",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Bank",
+      "target": "Financial Institution",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Supermarket",
+      "target": "Store",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Restaurant",
+      "target": "Establishment",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "School",
+      "target": "Educational Institution",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "University",
+      "target": "Educational Institution",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Hospital",
+      "target": "Medical Facility",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Street",
+      "target": "Road",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Bridge",
+      "target": "Structure",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "City",
+      "target": "Settlement",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Village",
+      "target": "Settlement",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Dog",
+      "target": "Animal",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Cat",
+      "target": "Animal",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Horse",
+      "target": "Animal",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Cow",
+      "target": "Animal",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Pig",
+      "target": "Animal",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Chicken",
+      "target": "Bird",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Fish",
+      "target": "Animal",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Bird",
+      "target": "Animal",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Insect",
+      "target": "Animal",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Snake",
+      "target": "Reptile",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Elephant",
+      "target": "Mammal",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Lion",
+      "target": "Mammal",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Tiger",
+      "target": "Mammal",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Bear",
+      "target": "Mammal",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Wolf",
+      "target": "Mammal",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Eagle",
+      "target": "Bird",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Dolphin",
+      "target": "Mammal",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Whale",
+      "target": "Mammal",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Shark",
+      "target": "Fish",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Spider",
+      "target": "Arachnid",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Bee",
+      "target": "Insect",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Ant",
+      "target": "Insect",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Butterfly",
+      "target": "Insect",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Bread",
+      "target": "Food",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Water",
+      "target": "Liquid",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Milk",
+      "target": "Liquid",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Meat",
+      "target": "Food",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Vegetable",
+      "target": "Food",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Fruit",
+      "target": "Food",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Rice",
+      "target": "Grain",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Pasta",
+      "target": "Food",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Potato",
+      "target": "Vegetable",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Tomato",
+      "target": "Fruit",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Apple",
+      "target": "Fruit",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Banana",
+      "target": "Fruit",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Cheese",
+      "target": "Dairy",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Butter",
+      "target": "Dairy",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Egg",
+      "target": "Food",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Salt",
+      "target": "Seasoning",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Sugar",
+      "target": "Sweetener",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Coffee",
+      "target": "Beverage",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Tea",
+      "target": "Beverage",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Beer",
+      "target": "Alcoholic Beverage",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Wine",
+      "target": "Alcoholic Beverage",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Europe",
+      "target": "Continent",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Asia",
+      "target": "Continent",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Africa",
+      "target": "Continent",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "North America",
+      "target": "Continent",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "South America",
+      "target": "Continent",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Germany",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "France",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "United States",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "China",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Japan",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Russia",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Berlin",
+      "target": "City",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Paris",
+      "target": "City",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "London",
+      "target": "City",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "New York",
+      "target": "City",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Tokyo",
+      "target": "City",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Ocean",
+      "target": "Body of Water",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Sea",
+      "target": "Body of Water",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "River",
+      "target": "Body of Water",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Mountain",
+      "target": "Landform",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Forest",
+      "target": "Ecosystem",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Desert",
+      "target": "Ecosystem",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Island",
+      "target": "Landform",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Heart",
+      "target": "Organ",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Lung",
+      "target": "Organ",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Brain",
+      "target": "Organ",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Eye",
+      "target": "Organ",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Ear",
+      "target": "Organ",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Hand",
+      "target": "Body Part",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Foot",
+      "target": "Body Part",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Bone",
+      "target": "Tissue",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Muscle",
+      "target": "Tissue",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Blood",
+      "target": "Body Fluid",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Skin",
+      "target": "Organ",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Stomach",
+      "target": "Organ",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Liver",
+      "target": "Organ",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Kidney",
+      "target": "Organ",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Tooth",
+      "target": "Body Part",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Hair",
+      "target": "Body Part",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Doctor",
+      "target": "Profession",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Teacher",
+      "target": "Profession",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Engineer",
+      "target": "Profession",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Police Officer",
+      "target": "Profession",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Firefighter",
+      "target": "Profession",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Chef",
+      "target": "Profession",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Pilot",
+      "target": "Profession",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Farmer",
+      "target": "Profession",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Lawyer",
+      "target": "Profession",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Judge",
+      "target": "Profession",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Government",
+      "target": "System",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Democracy",
+      "target": "Government",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Law",
+      "target": "System",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Family",
+      "target": "Social Group",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Friendship",
+      "target": "Relationship",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Sun",
+      "target": "Star",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Moon",
+      "target": "Satellite",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Rain",
+      "target": "Weather",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Snow",
+      "target": "Weather",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Wind",
+      "target": "Weather",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Cloud",
+      "target": "Weather",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Storm",
+      "target": "Weather",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Spring",
+      "target": "Season",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Summer",
+      "target": "Season",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Autumn",
+      "target": "Season",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Winter",
+      "target": "Season",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Tree",
+      "target": "Plant",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Flower",
+      "target": "Plant",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Grass",
+      "target": "Plant",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Second",
+      "target": "Time Unit",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Minute",
+      "target": "Time Unit",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Hour",
+      "target": "Time Unit",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Day",
+      "target": "Time Unit",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Week",
+      "target": "Time Unit",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Month",
+      "target": "Time Unit",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Year",
+      "target": "Time Unit",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Meter",
+      "target": "Measurement Unit",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Kilometer",
+      "target": "Measurement Unit",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Kilogram",
+      "target": "Measurement Unit",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Liter",
+      "target": "Measurement Unit",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Degree Celsius",
+      "target": "Measurement Unit",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Music",
+      "target": "Art",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Film",
+      "target": "Art",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Sport",
+      "target": "Activity",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Football",
+      "target": "Sport",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Theater",
+      "target": "Art",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Museum",
+      "target": "Institution",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Novel",
+      "target": "Literature",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Poem",
+      "target": "Literature",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Dance",
+      "target": "Art",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Painting",
+      "target": "Art",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Photography",
+      "target": "Art",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Automobile",
+      "target": "Transportation",
+      "type": "uses",
+      "weight": 0.9
+    },
+    {
+      "source": "Kitchen",
+      "target": "Cooking",
+      "type": "enables",
+      "weight": 0.9
+    },
+    {
+      "source": "Computer",
+      "target": "Processing",
+      "type": "enables",
+      "weight": 0.9
+    },
+    {
+      "source": "Refrigerator",
+      "target": "Food Preservation",
+      "type": "enables",
+      "weight": 0.9
+    },
+    {
+      "source": "School",
+      "target": "Education",
+      "type": "provides",
+      "weight": 0.9
+    },
+    {
+      "source": "Hospital",
+      "target": "Healthcare",
+      "type": "provides",
+      "weight": 0.9
+    },
+    {
+      "source": "Dog",
+      "target": "Companionship",
+      "type": "provides",
+      "weight": 0.85
+    },
+    {
+      "source": "Bee",
+      "target": "Pollination",
+      "type": "enables",
+      "weight": 0.9
+    },
+    {
+      "source": "Water",
+      "target": "Life",
+      "type": "essential_for",
+      "weight": 0.99
+    },
+    {
+      "source": "Heart",
+      "target": "Blood Circulation",
+      "type": "enables",
+      "weight": 0.95
+    },
+    {
+      "source": "Lung",
+      "target": "Breathing",
+      "type": "enables",
+      "weight": 0.95
+    },
+    {
+      "source": "Brain",
+      "target": "Thinking",
+      "type": "enables",
+      "weight": 0.95
+    },
+    {
+      "source": "Eye",
+      "target": "Vision",
+      "type": "enables",
+      "weight": 0.95
+    },
+    {
+      "source": "Doctor",
+      "target": "Healthcare",
+      "type": "provides",
+      "weight": 0.9
+    },
+    {
+      "source": "Teacher",
+      "target": "Education",
+      "type": "provides",
+      "weight": 0.9
+    },
+    {
+      "source": "Sun",
+      "target": "Light",
+      "type": "produces",
+      "weight": 0.95
+    },
+    {
+      "source": "Sun",
+      "target": "Heat",
+      "type": "produces",
+      "weight": 0.95
+    },
+    {
+      "source": "Rain",
+      "target": "Water",
+      "type": "produces",
+      "weight": 0.9
+    },
+    {
+      "source": "Tree",
+      "target": "Oxygen",
+      "type": "produces",
+      "weight": 0.9
+    },
+    {
+      "source": "Kitchen",
+      "target": "House",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Wheel",
+      "target": "Automobile",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Engine",
+      "target": "Automobile",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Wing",
+      "target": "Bird",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Leaf",
+      "target": "Tree",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Root",
+      "target": "Tree",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Petal",
+      "target": "Flower",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Page",
+      "target": "Book",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Finger",
+      "target": "Hand",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Toe",
+      "target": "Foot",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Lens",
+      "target": "Eye",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Gill",
+      "target": "Fish",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Fin",
+      "target": "Fish",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Tail",
+      "target": "Dog",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Trunk",
+      "target": "Elephant",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Mane",
+      "target": "Lion",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Germany",
+      "target": "Europe",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "France",
+      "target": "Europe",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "China",
+      "target": "Asia",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Japan",
+      "target": "Asia",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "United States",
+      "target": "North America",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Berlin",
+      "target": "Germany",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Paris",
+      "target": "France",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Tokyo",
+      "target": "Japan",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Automobile",
+      "target": "Metal",
+      "type": "contains",
+      "weight": 0.9
+    },
+    {
+      "source": "Book",
+      "target": "Paper",
+      "type": "contains",
+      "weight": 0.9
+    },
+    {
+      "source": "Bread",
+      "target": "Flour",
+      "type": "contains",
+      "weight": 0.9
+    },
+    {
+      "source": "Milk",
+      "target": "Calcium",
+      "type": "contains",
+      "weight": 0.85
+    },
+    {
+      "source": "Apple",
+      "target": "Vitamin C",
+      "type": "contains",
+      "weight": 0.85
+    },
+    {
+      "source": "Ocean",
+      "target": "Salt Water",
+      "type": "contains",
+      "weight": 0.95
+    },
+    {
+      "source": "Forest",
+      "target": "Tree",
+      "type": "contains",
+      "weight": 0.95
+    },
+    {
+      "source": "City",
+      "target": "Building",
+      "type": "contains",
+      "weight": 0.9
+    },
+    {
+      "source": "Blood",
+      "target": "Red Blood Cell",
+      "type": "contains",
+      "weight": 0.95
+    },
+    {
+      "source": "Earth",
+      "target": "Continent",
+      "type": "contains",
+      "weight": 0.95
+    },
+    {
+      "source": "Automobile",
+      "target": "Speed",
+      "type": "HAS_PROPERTY",
+      "weight": 0.9
+    },
+    {
+      "source": "Water",
+      "target": "Liquid State",
+      "type": "HAS_PROPERTY",
+      "weight": 0.95
+    },
+    {
+      "source": "Fire",
+      "target": "Hot",
+      "type": "HAS_PROPERTY",
+      "weight": 0.95
+    },
+    {
+      "source": "Ice",
+      "target": "Cold",
+      "type": "HAS_PROPERTY",
+      "weight": 0.95
+    },
+    {
+      "source": "Sun",
+      "target": "Bright",
+      "type": "HAS_PROPERTY",
+      "weight": 0.95
+    },
+    {
+      "source": "Lion",
+      "target": "Strong",
+      "type": "HAS_PROPERTY",
+      "weight": 0.9
+    },
+    {
+      "source": "Sugar",
+      "target": "Sweet",
+      "type": "HAS_PROPERTY",
+      "weight": 0.95
+    },
+    {
+      "source": "Lemon",
+      "target": "Sour",
+      "type": "HAS_PROPERTY",
+      "weight": 0.95
+    },
+    {
+      "source": "Elephant",
+      "target": "Large",
+      "type": "HAS_PROPERTY",
+      "weight": 0.95
+    },
+    {
+      "source": "Mouse",
+      "target": "Small",
+      "type": "HAS_PROPERTY",
+      "weight": 0.95
+    },
+    {
+      "source": "Snake",
+      "target": "Long",
+      "type": "HAS_PROPERTY",
+      "weight": 0.9
+    },
+    {
+      "source": "Bird",
+      "target": "Flying",
+      "type": "HAS_PROPERTY",
+      "weight": 0.9
+    },
+    {
+      "source": "Fish",
+      "target": "Swimming",
+      "type": "HAS_PROPERTY",
+      "weight": 0.9
+    },
+    {
+      "source": "Cat",
+      "target": "Soft",
+      "type": "HAS_PROPERTY",
+      "weight": 0.85
+    },
+    {
+      "source": "Diamond",
+      "target": "Hard",
+      "type": "HAS_PROPERTY",
+      "weight": 0.95
+    },
+    {
+      "source": "Dog",
+      "target": "Cat",
+      "type": "SIMILAR_TO",
+      "weight": 0.85
+    },
+    {
+      "source": "Lion",
+      "target": "Tiger",
+      "type": "SIMILAR_TO",
+      "weight": 0.9
+    },
+    {
+      "source": "Apple",
+      "target": "Orange",
+      "type": "SIMILAR_TO",
+      "weight": 0.85
+    },
+    {
+      "source": "Car",
+      "target": "Bus",
+      "type": "SIMILAR_TO",
+      "weight": 0.85
+    },
+    {
+      "source": "Tea",
+      "target": "Coffee",
+      "type": "SIMILAR_TO",
+      "weight": 0.85
+    },
+    {
+      "source": "Book",
+      "target": "Magazine",
+      "type": "SIMILAR_TO",
+      "weight": 0.85
+    },
+    {
+      "source": "House",
+      "target": "Apartment",
+      "type": "SIMILAR_TO",
+      "weight": 0.85
+    },
+    {
+      "source": "Doctor",
+      "target": "Nurse",
+      "type": "SIMILAR_TO",
+      "weight": 0.85
+    },
+    {
+      "source": "Teacher",
+      "target": "Professor",
+      "type": "SIMILAR_TO",
+      "weight": 0.85
+    },
+    {
+      "source": "Rain",
+      "target": "Snow",
+      "type": "SIMILAR_TO",
+      "weight": 0.85
+    },
+    {
+      "source": "Spring",
+      "target": "Autumn",
+      "type": "SIMILAR_TO",
+      "weight": 0.8
+    },
+    {
+      "source": "Summer",
+      "target": "Winter",
+      "type": "related-to",
+      "weight": 0.8
+    },
+    {
+      "source": "Automobile",
+      "target": "Fuel",
+      "type": "requires",
+      "weight": 0.9
+    },
+    {
+      "source": "Plant",
+      "target": "Water",
+      "type": "requires",
+      "weight": 0.95
+    },
+    {
+      "source": "Plant",
+      "target": "Sunlight",
+      "type": "requires",
+      "weight": 0.95
+    },
+    {
+      "source": "Animal",
+      "target": "Food",
+      "type": "requires",
+      "weight": 0.95
+    },
+    {
+      "source": "Human",
+      "target": "Oxygen",
+      "type": "requires",
+      "weight": 0.99
+    },
+    {
+      "source": "Fish",
+      "target": "Water",
+      "type": "requires",
+      "weight": 0.99
+    },
+    {
+      "source": "Bird",
+      "target": "Air",
+      "type": "requires",
+      "weight": 0.95
+    },
+    {
+      "source": "Fire",
+      "target": "Oxygen",
+      "type": "requires",
+      "weight": 0.95
+    },
+    {
+      "source": "Engine",
+      "target": "Fuel",
+      "type": "requires",
+      "weight": 0.95
+    },
+    {
+      "source": "Computer",
+      "target": "Electricity",
+      "type": "requires",
+      "weight": 0.95
+    },
+    {
+      "source": "Television",
+      "target": "Electricity",
+      "type": "requires",
+      "weight": 0.95
+    },
+    {
+      "source": "Lamp",
+      "target": "Electricity",
+      "type": "requires",
+      "weight": 0.95
+    },
+    {
+      "source": "Refrigerator",
+      "target": "Electricity",
+      "type": "requires",
+      "weight": 0.95
+    },
+    {
+      "source": "Smartphone",
+      "target": "Battery",
+      "type": "requires",
+      "weight": 0.95
+    },
+    {
+      "source": "Cooking",
+      "target": "Heat",
+      "type": "requires",
+      "weight": 0.9
+    },
+    {
+      "source": "Virus",
+      "target": "Disease",
+      "type": "causes",
+      "weight": 0.9
+    },
+    {
+      "source": "Rain",
+      "target": "Flood",
+      "type": "causes",
+      "weight": 0.85
+    },
+    {
+      "source": "Heat",
+      "target": "Evaporation",
+      "type": "causes",
+      "weight": 0.9
+    },
+    {
+      "source": "Cold",
+      "target": "Freezing",
+      "type": "causes",
+      "weight": 0.9
+    },
+    {
+      "source": "Fire",
+      "target": "Smoke",
+      "type": "produces",
+      "weight": 0.95
+    },
+    {
+      "source": "Friction",
+      "target": "Heat",
+      "type": "produces",
+      "weight": 0.9
+    },
+    {
+      "source": "Exercise",
+      "target": "Sweat",
+      "type": "causes",
+      "weight": 0.9
+    },
+    {
+      "source": "Wind",
+      "target": "Wave",
+      "type": "causes",
+      "weight": 0.85
+    },
+    {
+      "source": "Education",
+      "target": "Knowledge",
+      "type": "produces",
+      "weight": 0.9
+    },
+    {
+      "source": "Practice",
+      "target": "Skill",
+      "type": "produces",
+      "weight": 0.9
+    },
+    {
+      "source": "Mammal",
+      "target": "Animal",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Reptile",
+      "target": "Animal",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Arachnid",
+      "target": "Animal",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Vehicle",
+      "target": "Machine",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Building",
+      "target": "Structure",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Furniture",
+      "target": "Object",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Technology",
+      "target": "Tool",
+      "type": "IS_A",
+      "weight": 0.85
+    },
+    {
+      "source": "Appliance",
+      "target": "Machine",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Lighting",
+      "target": "Equipment",
+      "type": "IS_A",
+      "weight": 0.85
+    },
+    {
+      "source": "Literature",
+      "target": "Art",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Apparel",
+      "target": "Object",
+      "type": "IS_A",
+      "weight": 0.85
+    },
+    {
+      "source": "Footwear",
+      "target": "Clothing",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Currency",
+      "target": "System",
+      "type": "IS_A",
+      "weight": 0.85
+    },
+    {
+      "source": "Financial Institution",
+      "target": "Organization",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Store",
+      "target": "Business",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Establishment",
+      "target": "Business",
+      "type": "IS_A",
+      "weight": 0.85
+    },
+    {
+      "source": "Educational Institution",
+      "target": "Organization",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Medical Facility",
+      "target": "Building",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Road",
+      "target": "Infrastructure",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Structure",
+      "target": "Construction",
+      "type": "IS_A",
+      "weight": 0.85
+    },
+    {
+      "source": "Settlement",
+      "target": "Community",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Country",
+      "target": "Political Entity",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Body of Water",
+      "target": "Natural Feature",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Landform",
+      "target": "Natural Feature",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Ecosystem",
+      "target": "Environment",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Organ",
+      "target": "Body Part",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Tissue",
+      "target": "Biological Material",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Body Fluid",
+      "target": "Biological Material",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Profession",
+      "target": "Occupation",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Social Group",
+      "target": "Group",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Relationship",
+      "target": "Connection",
+      "type": "IS_A",
+      "weight": 0.85
+    },
+    {
+      "source": "Satellite",
+      "target": "Celestial Body",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Weather",
+      "target": "Natural Phenomenon",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Season",
+      "target": "Time Period",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Plant",
+      "target": "Living Thing",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Time Unit",
+      "target": "Measurement",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Measurement Unit",
+      "target": "Standard",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Activity",
+      "target": "Action",
+      "type": "IS_A",
+      "weight": 0.85
+    },
+    {
+      "source": "Institution",
+      "target": "Organization",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Grain",
+      "target": "Food",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Dairy",
+      "target": "Food",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Seasoning",
+      "target": "Food Additive",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Sweetener",
+      "target": "Food Additive",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Beverage",
+      "target": "Drink",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Alcoholic Beverage",
+      "target": "Beverage",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Liquid",
+      "target": "State of Matter",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Smartphone",
+      "target": "Telephone",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Smartphone",
+      "target": "Computer",
+      "type": "SIMILAR_TO",
+      "weight": 0.85
+    },
+    {
+      "source": "Smartphone",
+      "target": "Internet",
+      "type": "uses",
+      "weight": 0.95
+    },
+    {
+      "source": "Door",
+      "target": "House",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Window",
+      "target": "House",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Roof",
+      "target": "House",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Wall",
+      "target": "House",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Floor",
+      "target": "House",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Bathroom",
+      "target": "House",
+      "type": "PART_OF",
+      "weight": 0.9
+    },
+    {
+      "source": "Bedroom",
+      "target": "House",
+      "type": "PART_OF",
+      "weight": 0.9
+    },
+    {
+      "source": "Motorcycle",
+      "target": "Vehicle",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Boat",
+      "target": "Vehicle",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Ship",
+      "target": "Vehicle",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Helicopter",
+      "target": "Vehicle",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Taxi",
+      "target": "Automobile",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Subway",
+      "target": "Train",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Frog",
+      "target": "Amphibian",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Crocodile",
+      "target": "Reptile",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Turtle",
+      "target": "Reptile",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Penguin",
+      "target": "Bird",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Parrot",
+      "target": "Bird",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Owl",
+      "target": "Bird",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Deer",
+      "target": "Mammal",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Rabbit",
+      "target": "Mammal",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Mouse",
+      "target": "Mammal",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Rat",
+      "target": "Mammal",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Mosquito",
+      "target": "Insect",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Fly",
+      "target": "Insect",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Goat",
+      "target": "Mammal",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Sheep",
+      "target": "Mammal",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Gorilla",
+      "target": "Mammal",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Monkey",
+      "target": "Mammal",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Giraffe",
+      "target": "Mammal",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Zebra",
+      "target": "Mammal",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Cow",
+      "target": "Milk",
+      "type": "produces",
+      "weight": 0.95
+    },
+    {
+      "source": "Chicken",
+      "target": "Egg",
+      "type": "produces",
+      "weight": 0.95
+    },
+    {
+      "source": "Sheep",
+      "target": "Wool",
+      "type": "produces",
+      "weight": 0.9
+    },
+    {
+      "source": "Bee",
+      "target": "Honey",
+      "type": "produces",
+      "weight": 0.95
+    },
+    {
+      "source": "Orange",
+      "target": "Fruit",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Lemon",
+      "target": "Fruit",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Grape",
+      "target": "Fruit",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Strawberry",
+      "target": "Fruit",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Onion",
+      "target": "Vegetable",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Carrot",
+      "target": "Vegetable",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Garlic",
+      "target": "Seasoning",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Chocolate",
+      "target": "Food",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Honey",
+      "target": "Food",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Soup",
+      "target": "Food",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Pizza",
+      "target": "Food",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Salad",
+      "target": "Food",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Juice",
+      "target": "Beverage",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Ice Cream",
+      "target": "Dessert",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Wine",
+      "target": "Grape",
+      "type": "uses",
+      "weight": 0.95
+    },
+    {
+      "source": "Bread",
+      "target": "Flour",
+      "type": "uses",
+      "weight": 0.95
+    },
+    {
+      "source": "Pizza",
+      "target": "Cheese",
+      "type": "contains",
+      "weight": 0.9
+    },
+    {
+      "source": "Chocolate",
+      "target": "Sugar",
+      "type": "contains",
+      "weight": 0.85
+    },
+    {
+      "source": "Australia",
+      "target": "Continent",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Antarctica",
+      "target": "Continent",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "India",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Brazil",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Italy",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Spain",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "United Kingdom",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Canada",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Mexico",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Egypt",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Turkey",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Rome",
+      "target": "City",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Moscow",
+      "target": "City",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Beijing",
+      "target": "City",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Sydney",
+      "target": "City",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "India",
+      "target": "Asia",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Brazil",
+      "target": "South America",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Italy",
+      "target": "Europe",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Spain",
+      "target": "Europe",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Canada",
+      "target": "North America",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Mexico",
+      "target": "North America",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Egypt",
+      "target": "Africa",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Rome",
+      "target": "Italy",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Moscow",
+      "target": "Russia",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Beijing",
+      "target": "China",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Sydney",
+      "target": "Australia",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "London",
+      "target": "United Kingdom",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "New York",
+      "target": "United States",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Lake",
+      "target": "Body of Water",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Valley",
+      "target": "Landform",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Volcano",
+      "target": "Landform",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Glacier",
+      "target": "Ice",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Earth",
+      "target": "Planet",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Arm",
+      "target": "Body Part",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Leg",
+      "target": "Body Part",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Nose",
+      "target": "Body Part",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Mouth",
+      "target": "Body Part",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Tongue",
+      "target": "Organ",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Spine",
+      "target": "Bone",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Skull",
+      "target": "Bone",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Rib",
+      "target": "Bone",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Nerve",
+      "target": "Tissue",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Intestine",
+      "target": "Organ",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Pancreas",
+      "target": "Organ",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Vein",
+      "target": "Blood Vessel",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Artery",
+      "target": "Blood Vessel",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Skull",
+      "target": "Brain",
+      "type": "contains",
+      "weight": 0.95
+    },
+    {
+      "source": "Ear",
+      "target": "Hearing",
+      "type": "enables",
+      "weight": 0.95
+    },
+    {
+      "source": "Nose",
+      "target": "Smell",
+      "type": "enables",
+      "weight": 0.95
+    },
+    {
+      "source": "Tongue",
+      "target": "Taste",
+      "type": "enables",
+      "weight": 0.95
+    },
+    {
+      "source": "Hand",
+      "target": "Arm",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Foot",
+      "target": "Leg",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Elbow",
+      "target": "Arm",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Knee",
+      "target": "Leg",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Nurse",
+      "target": "Profession",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Scientist",
+      "target": "Profession",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Artist",
+      "target": "Profession",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Musician",
+      "target": "Profession",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Architect",
+      "target": "Profession",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Journalist",
+      "target": "Profession",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Soldier",
+      "target": "Profession",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Election",
+      "target": "Democracy",
+      "type": "PART_OF",
+      "weight": 0.9
+    },
+    {
+      "source": "Tax",
+      "target": "Government",
+      "type": "PART_OF",
+      "weight": 0.85
+    },
+    {
+      "source": "Marriage",
+      "target": "Family",
+      "type": "related-to",
+      "weight": 0.9
+    },
+    {
+      "source": "War",
+      "target": "Peace",
+      "type": "related-to",
+      "weight": 0.85
+    },
+    {
+      "source": "Basketball",
+      "target": "Sport",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Tennis",
+      "target": "Sport",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Swimming",
+      "target": "Sport",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Running",
+      "target": "Sport",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Guitar",
+      "target": "Musical Instrument",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Piano",
+      "target": "Musical Instrument",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Violin",
+      "target": "Musical Instrument",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Drum",
+      "target": "Musical Instrument",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Song",
+      "target": "Music",
+      "type": "PART_OF",
+      "weight": 0.9
+    },
+    {
+      "source": "Concert",
+      "target": "Music",
+      "type": "related-to",
+      "weight": 0.9
+    },
+    {
+      "source": "Cinema",
+      "target": "Film",
+      "type": "related-to",
+      "weight": 0.9
+    },
+    {
+      "source": "Gravity",
+      "target": "Force",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Photosynthesis",
+      "target": "Plant",
+      "type": "enables",
+      "weight": 0.95
+    },
+    {
+      "source": "Photosynthesis",
+      "target": "Oxygen",
+      "type": "produces",
+      "weight": 0.95
+    },
+    {
+      "source": "Plant",
+      "target": "Carbon Dioxide",
+      "type": "uses",
+      "weight": 0.9
+    },
+    {
+      "source": "Human",
+      "target": "Carbon Dioxide",
+      "type": "produces",
+      "weight": 0.9
+    },
+    {
+      "source": "DNA",
+      "target": "Cell",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Cell",
+      "target": "Living Thing",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Atom",
+      "target": "Matter",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Gold",
+      "target": "Metal",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Iron",
+      "target": "Metal",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Wood",
+      "target": "Material",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Glass",
+      "target": "Material",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Plastic",
+      "target": "Material",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Diamond",
+      "target": "Mineral",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Human",
+      "target": "Mammal",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Light",
+      "target": "Energy",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Sound",
+      "target": "Energy",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Earthquake",
+      "target": "Tsunami",
+      "type": "causes",
+      "weight": 0.85
+    },
+    {
+      "source": "Volcano",
+      "target": "Lava",
+      "type": "produces",
+      "weight": 0.95
+    },
+    {
+      "source": "Lightning",
+      "target": "Thunder",
+      "type": "causes",
+      "weight": 0.95
+    },
+    {
+      "source": "Cloud",
+      "target": "Rain",
+      "type": "produces",
+      "weight": 0.9
+    },
+    {
+      "source": "Seed",
+      "target": "Plant",
+      "type": "produces",
+      "weight": 0.9
+    },
+    {
+      "source": "Tree",
+      "target": "Wood",
+      "type": "produces",
+      "weight": 0.9
+    },
+    {
+      "source": "Sand",
+      "target": "Glass",
+      "type": "uses",
+      "weight": 0.85
+    },
+    {
+      "source": "Gravity",
+      "target": "Earth",
+      "type": "HAS_PROPERTY",
+      "weight": 0.95
+    },
+    {
+      "source": "Giraffe",
+      "target": "Tall",
+      "type": "HAS_PROPERTY",
+      "weight": 0.95
+    },
+    {
+      "source": "Zebra",
+      "target": "Striped",
+      "type": "HAS_PROPERTY",
+      "weight": 0.95
+    },
+    {
+      "source": "Penguin",
+      "target": "Cold",
+      "type": "related-to",
+      "weight": 0.85
+    },
+    {
+      "source": "Desert",
+      "target": "Hot",
+      "type": "HAS_PROPERTY",
+      "weight": 0.9
+    },
+    {
+      "source": "Antarctica",
+      "target": "Cold",
+      "type": "HAS_PROPERTY",
+      "weight": 0.95
+    },
+    {
+      "source": "Oven",
+      "target": "Cooking",
+      "type": "enables",
+      "weight": 0.9
+    },
+    {
+      "source": "Washing Machine",
+      "target": "Appliance",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Oven",
+      "target": "Appliance",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Radio",
+      "target": "Technology",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Internet",
+      "target": "Technology",
+      "type": "IS_A",
+      "weight": 0.95
+    }
+  ]
+}

@@ -39,6 +39,27 @@ KANModule::KANModule(size_t input_dim, size_t output_dim, size_t num_knots)
     layers_.push_back(std::make_unique<KANLayer>(input_dim, output_dim, num_knots));
 }
 
+std::shared_ptr<KANModule> KANModule::clone() const {
+    // Determine num_knots from first layer's first node
+    size_t num_knots = 10;  // default
+    if (!layers_.empty() && layers_[0]->num_nodes() > 0) {
+        num_knots = layers_[0]->node(0, 0).get_coefficients().size();
+    }
+
+    auto copy = std::make_shared<KANModule>(layer_dims_, num_knots);
+
+    // Deep copy all B-spline coefficients
+    for (size_t k = 0; k < layers_.size(); ++k) {
+        const auto& src_nodes = layers_[k]->get_nodes();
+        auto& dst_nodes = copy->layers_[k]->get_nodes_mutable();
+        for (size_t n = 0; n < src_nodes.size(); ++n) {
+            dst_nodes[n]->set_coefficients(src_nodes[n]->get_coefficients());
+        }
+    }
+
+    return copy;
+}
+
 std::vector<std::vector<double>> KANModule::forward_all(const std::vector<double>& inputs) const {
     // Returns activations[0] = inputs, activations[k+1] = output of layer k
     std::vector<std::vector<double>> activations;

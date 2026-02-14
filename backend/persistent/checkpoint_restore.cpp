@@ -144,7 +144,7 @@ RestoreResult CheckpointRestore::restore(
     uint8_t components,
     PersistentLTM*              ltm,
     STMSnapshotData*            stm_out,
-    MicroModelRegistry*         models,
+    ConceptModelRegistry*         models,
     std::vector<std::pair<std::string, KANModule*>>* kan_modules,
     CognitiveState*             cognitive,
     CheckpointConfig*           config
@@ -338,30 +338,87 @@ bool CheckpointRestore::restore_stm(const std::string& path, STMSnapshotData& ou
     return true;
 }
 
-bool CheckpointRestore::restore_micromodels(const std::string& path, MicroModelRegistry& reg) {
+bool CheckpointRestore::restore_micromodels(const std::string& path, ConceptModelRegistry& reg) {
     std::ifstream f(path, std::ios::binary);
     if (!f) return false;
-    
+
     uint32_t magic; uint16_t version;
     if (!read_pod(f, magic) || magic != 0x4D4D4442) return false;
-    if (!read_pod(f, version) || version != 1) return false;
-    
+    // Accept v1 (legacy 940), v2 (ConceptModel 1300), v3 (ConceptModel 1900)
+    if (!read_pod(f, version) || (version != 1 && version != 2 && version != 3)) return false;
+
     uint64_t n;
     if (!read_pod(f, n)) return false;
-    
+
+    // Helper: initialize FlexKAN identity coefficients into flat array
+    auto init_flexkan_identity = [](std::array<double, CM_FLAT_SIZE>& flat, size_t kan_offset) {
+        auto safe_logit = [](double p) -> double {
+            p = std::max(0.01, std::min(0.99, p));
+            return std::log(p / (1.0 - p));
+        };
+        constexpr size_t HIDDEN_DIM = 4;
+        constexpr size_t NUM_KNOTS = 10;
+        constexpr size_t LAYER0_EDGES = 6 * HIDDEN_DIM;
+        size_t l0_edge = kan_offset + (4 * HIDDEN_DIM + 0) * NUM_KNOTS;
+        for (size_t k = 0; k < NUM_KNOTS; ++k) {
+            double x = static_cast<double>(k) / static_cast<double>(NUM_KNOTS - 1);
+            flat[l0_edge + k] = safe_logit(x);
+        }
+        size_t l1_edge = kan_offset + (LAYER0_EDGES + 0) * NUM_KNOTS;
+        for (size_t k = 0; k < NUM_KNOTS; ++k) {
+            double x = static_cast<double>(k) / static_cast<double>(NUM_KNOTS - 1);
+            flat[l1_edge + k] = safe_logit(x);
+        }
+    };
+
     for (uint64_t i = 0; i < n; ++i) {
         uint64_t id;
         if (!read_pod(f, id)) return false;
-        
-        std::array<double, FLAT_SIZE> flat;
-        f.read(reinterpret_cast<char*>(flat.data()), sizeof(flat));
-        if (!f.good()) return false;
-        
-        reg.create_model(id);
-        MicroModel* model = reg.get_model(id);
-        if (model) model->from_flat(flat);
+
+        if (version == 3) {
+            // v3: 1900 doubles — current format
+            std::array<double, CM_FLAT_SIZE> flat;
+            f.read(reinterpret_cast<char*>(flat.data()), sizeof(flat));
+            if (!f.good()) return false;
+            reg.create_model(id);
+            ConceptModel* model = reg.get_model(id);
+            if (model) model->from_flat(flat);
+        } else if (version == 2) {
+            // v2: 1300 doubles — migrate to 1900
+            constexpr size_t V2_SIZE = 1300;
+            std::array<double, V2_SIZE> old_flat;
+            f.read(reinterpret_cast<char*>(old_flat.data()), sizeof(old_flat));
+            if (!f.good()) return false;
+            std::array<double, CM_FLAT_SIZE> flat{};
+            // Copy bilinear core (940)
+            for (size_t j = 0; j < 940; ++j) flat[j] = old_flat[j];
+            // Skip old EmbeddedKAN (288 doubles at offsets 940..1227)
+            // MultiHeadBilinear at 940..1579: zeros
+            // FlexKAN at 1580..1859: identity init
+            init_flexkan_identity(flat, 1580);
+            // Copy pattern weights from old offsets 1228..1242 to 1860..1874
+            for (size_t j = 0; j < 15; ++j) flat[1860 + j] = old_flat[1228 + j];
+            reg.create_model(id);
+            ConceptModel* model = reg.get_model(id);
+            if (model) model->from_flat(flat);
+        } else {
+            // v1: legacy 940 doubles — migrate to 1900
+            std::array<double, FLAT_SIZE> old_flat;
+            f.read(reinterpret_cast<char*>(old_flat.data()), sizeof(old_flat));
+            if (!f.good()) return false;
+            std::array<double, CM_FLAT_SIZE> flat{};
+            std::copy(old_flat.begin(), old_flat.end(), flat.begin());
+            // FlexKAN identity init at 1580
+            init_flexkan_identity(flat, 1580);
+            // Default pattern weights at 1860
+            flat[1860] = 1.0; flat[1861] = 1.0; flat[1862] = 1.0;
+            flat[1863] = 1.0; flat[1864] = 1.0; flat[1865] = 0.85;
+            reg.create_model(id);
+            ConceptModel* model = reg.get_model(id);
+            if (model) model->from_flat(flat);
+        }
     }
-    
+
     return true;
 }
 

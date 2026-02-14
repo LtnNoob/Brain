@@ -79,7 +79,8 @@ std::vector<HypothesisProposal> UnderstandingLayer::propose_hypotheses(
     const std::vector<ConceptId>& evidence_concepts,
     const LongTermMemory& ltm,
     const ShortTermMemory& stm,
-    ContextId context
+    ContextId context,
+    const std::vector<ThoughtPath>& thought_paths
 ) {
     std::vector<HypothesisProposal> all_proposals;
 
@@ -90,7 +91,7 @@ std::vector<HypothesisProposal> UnderstandingLayer::propose_hypotheses(
 
     // Collect proposals from all Mini-LLMs
     for (const auto& mini_llm : mini_llms_) {
-        auto proposals = mini_llm->generate_hypotheses(evidence_concepts, ltm, stm, context);
+        auto proposals = mini_llm->generate_hypotheses(evidence_concepts, ltm, stm, context, thought_paths);
 
         // CRITICAL: Verify all proposals suggest HYPOTHESIS
         for (const auto& proposal : proposals) {

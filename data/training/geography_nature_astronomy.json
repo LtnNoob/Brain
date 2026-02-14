@@ -1,0 +1,5341 @@
+{
+  "source": "geography_nature_astronomy",
+  "concepts": [
+    {
+      "label": "Germany",
+      "definition": "Federal republic in Central Europe with capital Berlin, population approximately 84 million, member of European Union and NATO",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Berlin",
+      "definition": "Capital and largest city of Germany, population approximately 3.7 million, located in northeastern Germany",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "France",
+      "definition": "Republic in Western Europe with capital Paris, population approximately 68 million, largest country in the European Union by land area",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Paris",
+      "definition": "Capital and most populous city of France, population approximately 2.2 million in the city proper, major cultural and economic center",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "United Kingdom",
+      "definition": "Island nation in Northwestern Europe comprising England, Scotland, Wales, and Northern Ireland, capital London, population approximately 67 million",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "London",
+      "definition": "Capital and largest city of the United Kingdom, population approximately 9 million in Greater London, global financial center",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Italy",
+      "definition": "Republic in Southern Europe shaped like a boot, capital Rome, population approximately 60 million, known for rich history and culture",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Rome",
+      "definition": "Capital city of Italy, population approximately 2.8 million, historical center of the Roman Empire, home to Vatican City",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Spain",
+      "definition": "Kingdom in Southwestern Europe on the Iberian Peninsula, capital Madrid, population approximately 47 million, second-largest country in the EU by area",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Madrid",
+      "definition": "Capital and largest city of Spain, population approximately 3.3 million, located in the center of the country",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Portugal",
+      "definition": "Republic on the western coast of the Iberian Peninsula, capital Lisbon, population approximately 10.3 million, oldest nation-state in Europe",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Lisbon",
+      "definition": "Capital and largest city of Portugal, population approximately 547,000 in the city proper, major port on the Atlantic Ocean",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Netherlands",
+      "definition": "Kingdom in Northwestern Europe, capital Amsterdam, population approximately 17.5 million, much of the country below sea level",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Amsterdam",
+      "definition": "Capital and most populous city of the Netherlands, population approximately 872,000, famous for its canals and liberal culture",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Belgium",
+      "definition": "Federal monarchy in Western Europe, capital Brussels, population approximately 11.6 million, headquarters of the European Union",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Brussels",
+      "definition": "Capital city of Belgium and de facto capital of the European Union, population approximately 1.2 million in the Brussels Region",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Switzerland",
+      "definition": "Federal republic in Central Europe, capital Bern, population approximately 8.8 million, known for neutrality and banking",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Bern",
+      "definition": "Federal capital city of Switzerland, population approximately 144,000, seat of the Swiss government and parliament",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Austria",
+      "definition": "Federal republic in Central Europe, capital Vienna, population approximately 9 million, landlocked country in the Eastern Alps",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Vienna",
+      "definition": "Capital and largest city of Austria, population approximately 1.9 million, former imperial capital of the Austro-Hungarian Empire",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Poland",
+      "definition": "Republic in Central Europe, capital Warsaw, population approximately 37.9 million, largest country in Central Europe by population",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Warsaw",
+      "definition": "Capital and largest city of Poland, population approximately 1.8 million, rebuilt after World War II destruction",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Czech Republic",
+      "definition": "Republic in Central Europe, capital Prague, population approximately 10.5 million, landlocked country bordered by Germany, Austria, Slovakia, and Poland",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Prague",
+      "definition": "Capital and largest city of the Czech Republic, population approximately 1.3 million, famous for medieval architecture and historic city center",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Hungary",
+      "definition": "Republic in Central Europe, capital Budapest, population approximately 9.6 million, landlocked country in the Carpathian Basin",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Budapest",
+      "definition": "Capital and most populous city of Hungary, population approximately 1.8 million, formed by the merger of Buda and Pest in 1873",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Russia",
+      "definition": "Transcontinental country spanning Eastern Europe and North Asia, capital Moscow, population approximately 144 million, largest country in the world by land area",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Moscow",
+      "definition": "Capital and most populous city of Russia, population approximately 12.5 million, political and economic center of Russia",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "United States",
+      "definition": "Federal republic in North America, capital Washington D.C., population approximately 331 million, consisting of 50 states",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Washington D.C.",
+      "definition": "Capital city of the United States, population approximately 700,000, federal district not part of any state",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Canada",
+      "definition": "Federal parliamentary democracy in North America, capital Ottawa, population approximately 39 million, second-largest country in the world by total area",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Ottawa",
+      "definition": "Capital city of Canada, population approximately 1 million in the metropolitan area, located in southeastern Ontario",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Mexico",
+      "definition": "Federal republic in North America, capital Mexico City, population approximately 128 million, third-most populous country in North America",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Mexico City",
+      "definition": "Capital and most populous city of Mexico, population approximately 9.2 million in the city proper, one of the largest cities in the Americas",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Brazil",
+      "definition": "Federal republic in South America, capital Brasilia, population approximately 215 million, largest country in South America by area and population",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Brasilia",
+      "definition": "Capital city of Brazil, population approximately 3.1 million in the metropolitan area, planned city inaugurated in 1960",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Argentina",
+      "definition": "Federal republic in South America, capital Buenos Aires, population approximately 45.8 million, second-largest country in South America",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Buenos Aires",
+      "definition": "Capital and most populous city of Argentina, population approximately 3 million in the city proper, major port on the Rio de la Plata",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Chile",
+      "definition": "Republic on the western coast of South America, capital Santiago, population approximately 19.5 million, long narrow country along the Pacific Ocean",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Santiago",
+      "definition": "Capital and largest city of Chile, population approximately 7.1 million in the metropolitan area, located in the central valley",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Peru",
+      "definition": "Republic in western South America, capital Lima, population approximately 33 million, home to ancient Inca civilization",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Lima",
+      "definition": "Capital and largest city of Peru, population approximately 10.7 million in the metropolitan area, major port on the Pacific Ocean",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Colombia",
+      "definition": "Republic in northern South America, capital Bogot\u00e1, population approximately 51.3 million, only South American country with coastlines on both Pacific and Atlantic",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Bogot\u00e1",
+      "definition": "Capital and largest city of Colombia, population approximately 8.2 million in the metropolitan area, located on a high plateau in the Andes",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Venezuela",
+      "definition": "Federal republic in northern South America, capital Caracas, population approximately 28.2 million, has some of the world's largest oil reserves",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Caracas",
+      "definition": "Capital and largest city of Venezuela, population approximately 2.9 million in the city proper, located in a valley in the Venezuelan coastal mountain range",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "China",
+      "definition": "People's Republic in East Asia, capital Beijing, population approximately 1.4 billion, most populous country in the world and second-largest by land area",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Beijing",
+      "definition": "Capital city of China, population approximately 21.5 million in the metropolitan area, political and cultural center of China",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "India",
+      "definition": "Federal parliamentary republic in South Asia, capital New Delhi, population approximately 1.4 billion, seventh-largest country by land area",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "New Delhi",
+      "definition": "Capital city of India, part of the larger Delhi metropolitan area with over 30 million people, seat of the Government of India",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Japan",
+      "definition": "Island nation in East Asia, capital Tokyo, population approximately 125 million, archipelago of 6,852 islands",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Tokyo",
+      "definition": "Capital city of Japan, population approximately 14 million in the Greater Tokyo Area making it the most populous metropolitan area in the world",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "South Korea",
+      "definition": "Republic in East Asia on the Korean Peninsula, capital Seoul, population approximately 51.8 million, highly developed economy",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Seoul",
+      "definition": "Capital and largest metropolis of South Korea, population approximately 9.7 million in the city proper, major global city and technology hub",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Australia",
+      "definition": "Continental country and island nation in Oceania, capital Canberra, population approximately 25.7 million, sixth-largest country in the world by land area",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Canberra",
+      "definition": "Capital city of Australia, population approximately 453,000, planned city designed as the national capital in 1913",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "New Zealand",
+      "definition": "Island country in the southwestern Pacific Ocean, capital Wellington, population approximately 5.1 million, consists of two main islands",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Wellington",
+      "definition": "Capital city of New Zealand, population approximately 215,000, located at the southern tip of the North Island",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Egypt",
+      "definition": "Republic in northeastern Africa and the Sinai Peninsula, capital Cairo, population approximately 104 million, home to ancient Egyptian civilization",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Cairo",
+      "definition": "Capital and largest city of Egypt, population approximately 10.2 million in the metropolitan area, largest city in Africa and the Arab world",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "South Africa",
+      "definition": "Republic at the southern tip of Africa, executive capital Cape Town, legislative capital Cape Town, judicial capital Bloemfontein, population approximately 60.4 million",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Cape Town",
+      "definition": "Legislative capital and second-most populous city of South Africa, population approximately 4.7 million in the metropolitan area, located on the southwestern coast",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Nigeria",
+      "definition": "Federal republic in West Africa, capital Abuja, population approximately 218 million, most populous country in Africa",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Abuja",
+      "definition": "Capital city of Nigeria, population approximately 3.5 million in the metropolitan area, planned city that became capital in 1991",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Kenya",
+      "definition": "Republic in East Africa, capital Nairobi, population approximately 54.9 million, equatorial country known for wildlife and safaris",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Nairobi",
+      "definition": "Capital and largest city of Kenya, population approximately 4.9 million in the metropolitan area, major business hub in East Africa",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Europe",
+      "definition": "Continent located entirely in the Northern Hemisphere and mostly in the Eastern Hemisphere, area approximately 10.18 million square kilometers, population over 747 million",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Asia",
+      "definition": "Largest and most populous continent, located primarily in the Eastern and Northern Hemispheres, area approximately 44.58 million square kilometers, population over 4.6 billion",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "North America",
+      "definition": "Continent entirely within the Northern Hemisphere and almost all within the Western Hemisphere, area approximately 24.71 million square kilometers, population over 580 million",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "South America",
+      "definition": "Continent mostly in the Southern Hemisphere with small northern portion in Northern Hemisphere, area approximately 17.84 million square kilometers, population over 430 million",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Africa",
+      "definition": "Second-largest and second-most populous continent, area approximately 30.3 million square kilometers, population over 1.4 billion",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Antarctica",
+      "definition": "Southernmost continent, surrounding the South Pole, area approximately 14 million square kilometers, no permanent human population",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Oceania",
+      "definition": "Geographical region including Australasia, Melanesia, Micronesia, and Polynesia, smallest continent by land area at approximately 8.6 million square kilometers",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Atlantic Ocean",
+      "definition": "Second-largest ocean, separating the Americas from Europe and Africa, area approximately 106.46 million square kilometers, average depth 3,646 meters",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Pacific Ocean",
+      "definition": "Largest and deepest ocean, extending from the Arctic to the Antarctic between Asia-Australia and the Americas, area approximately 165.2 million square kilometers",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Indian Ocean",
+      "definition": "Third-largest ocean, bounded by Asia, Africa, Australia, and the Southern Ocean, area approximately 70.56 million square kilometers",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Arctic Ocean",
+      "definition": "Smallest and shallowest ocean, located at the North Pole, area approximately 14.06 million square kilometers, mostly covered by sea ice",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Southern Ocean",
+      "definition": "Ocean surrounding Antarctica, also known as the Antarctic Ocean, area approximately 20.33 million square kilometers, newest named ocean",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Mediterranean Sea",
+      "definition": "Sea connected to the Atlantic Ocean, surrounded by the Mediterranean Basin and almost completely enclosed by land, area approximately 2.5 million square kilometers",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Caribbean Sea",
+      "definition": "Sea of the Atlantic Ocean in the tropics of the Western Hemisphere, bordered by Central America, South America, and the Caribbean islands",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "North Sea",
+      "definition": "Marginal sea of the Atlantic Ocean located between Great Britain, Scandinavia, Germany, the Netherlands, Belgium, and France",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Baltic Sea",
+      "definition": "Arm of the Atlantic Ocean, enclosed by Denmark, Estonia, Finland, Germany, Latvia, Lithuania, Poland, Russia, and Sweden",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Black Sea",
+      "definition": "Marginal Mediterranean sea lying between Europe and Asia, bordered by Bulgaria, Georgia, Romania, Russia, Turkey, and Ukraine",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Red Sea",
+      "definition": "Seawater inlet of the Indian Ocean, lying between Africa and Asia, connected to the Mediterranean Sea via the Suez Canal",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Alps",
+      "definition": "Highest and most extensive mountain range in Europe, stretching across eight countries from France to Slovenia, highest peak Mont Blanc at 4,809 meters",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Himalayas",
+      "definition": "Mountain range in Asia separating the plains of the Indian subcontinent from the Tibetan Plateau, contains the world's highest peaks including Mount Everest",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Mount Everest",
+      "definition": "Highest mountain above sea level at 8,848.86 meters, located in the Himalayas on the border between Nepal and Tibet, first climbed in 1953",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Andes",
+      "definition": "Longest continental mountain range in the world, running along the western coast of South America for about 7,000 kilometers through seven countries",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Rocky Mountains",
+      "definition": "Major mountain range in western North America, stretching from Canada to New Mexico for about 4,800 kilometers, highest peak Mount Elbert at 4,401 meters",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Appalachian Mountains",
+      "definition": "Mountain system in eastern North America, extending from Canada to Alabama, formed approximately 480 million years ago, highest peak Mount Mitchell at 2,037 meters",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Ural Mountains",
+      "definition": "Mountain range running north to south through western Russia, traditionally considered the boundary between Europe and Asia, highest peak Mount Narodnaya at 1,895 meters",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Carpathian Mountains",
+      "definition": "Mountain system in Central and Eastern Europe, extending from Slovakia through Romania, highest peak Gerlachovsk\u00fd \u0161t\u00edt at 2,655 meters",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Atlas Mountains",
+      "definition": "Mountain range across northwestern Africa, extending through Morocco, Algeria, and Tunisia for about 2,500 kilometers, highest peak Toubkal at 4,167 meters",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Amazon River",
+      "definition": "Longest river in the world at approximately 6,400 kilometers, flows through South America from Peru to Brazil, largest river by discharge volume",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Nile River",
+      "definition": "Major north-flowing river in northeastern Africa, traditionally considered the longest river at 6,650 kilometers, flows through eleven countries to the Mediterranean",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Rhine River",
+      "definition": "European river beginning in the Swiss Alps and flowing through Germany and Netherlands to the North Sea, length 1,233 kilometers, major commercial waterway",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Danube River",
+      "definition": "Second-longest river in Europe at 2,850 kilometers, flows from Germany's Black Forest to the Black Sea through ten countries",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Mississippi River",
+      "definition": "Major river system in North America, length 3,730 kilometers from Minnesota to Gulf of Mexico, second-longest river system in North America",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Yangtze River",
+      "definition": "Longest river in Asia and third-longest in the world at 6,300 kilometers, flows through China from Tibet to East China Sea",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Congo River",
+      "definition": "Major river in central Africa, second-longest river in Africa at 4,700 kilometers, flows through Democratic Republic of Congo to Atlantic Ocean",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Ganges River",
+      "definition": "Trans-boundary river of Asia flowing through India and Bangladesh, length 2,525 kilometers, considered sacred in Hinduism",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Volga River",
+      "definition": "Longest river in Europe at 3,531 kilometers, flows through central Russia to the Caspian Sea, important commercial waterway",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Caspian Sea",
+      "definition": "World's largest enclosed inland body of water by area, bordered by Russia, Kazakhstan, Turkmenistan, Iran, and Azerbaijan, technically a lake",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Lake Superior",
+      "definition": "Largest of the Great Lakes of North America by surface area at 82,100 square kilometers, shared by United States and Canada",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Lake Victoria",
+      "definition": "Largest lake in Africa by area and second-largest freshwater lake in the world by area, shared by Tanzania, Uganda, and Kenya",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Lake Baikal",
+      "definition": "Rift lake in southern Siberia, Russia, deepest and oldest freshwater lake in the world, contains about 20% of the world's unfrozen fresh water",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Great Lakes",
+      "definition": "Series of interconnected freshwater lakes in the upper mid-east region of North America, consisting of Superior, Huron, Michigan, Erie, and Ontario",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Dead Sea",
+      "definition": "Salt lake bordered by Jordan to the east and Israel and Palestine to the west, lowest point on Earth's surface at 430.5 meters below sea level",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Sahara Desert",
+      "definition": "Largest hot desert in the world and third-largest desert overall, covering much of North Africa, area approximately 9 million square kilometers",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Arabian Desert",
+      "definition": "Vast desert wilderness in Western Asia, covering most of the Arabian Peninsula, fourth-largest desert in the world",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Gobi Desert",
+      "definition": "Large desert or brushland region in East Asia, spanning northern and northwestern China and southern Mongolia",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Kalahari Desert",
+      "definition": "Large semi-arid sandy savanna in Southern Africa extending through Botswana, Namibia, and South Africa",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Atacama Desert",
+      "definition": "Desert plateau in South America, covering parts of Chile, Peru, Bolivia, and Argentina, one of the driest places on Earth",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Antarctic Desert",
+      "definition": "Polar desert covering the continent of Antarctica, largest desert in the world by area at 14 million square kilometers",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Greenland",
+      "definition": "World's largest island, located between the Arctic and Atlantic oceans, autonomous territory within Denmark, area 2.17 million square kilometers",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Madagascar",
+      "definition": "Island country in the Indian Ocean off the coast of East Africa, fourth-largest island in the world, area 587,041 square kilometers",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Great Britain",
+      "definition": "Largest island in Europe, comprising England, Scotland, and Wales, separated from continental Europe by the English Channel",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Borneo",
+      "definition": "Third-largest island in the world, located in Southeast Asia, shared by Brunei, Indonesia, and Malaysia",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "New Guinea",
+      "definition": "Second-largest island in the world, located in the southwestern Pacific Ocean, shared by Papua New Guinea and Indonesia",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Honshu",
+      "definition": "Largest island of Japan, home to major cities including Tokyo, Osaka, and Kyoto, area 227,960 square kilometers",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Sicily",
+      "definition": "Largest island in the Mediterranean Sea, autonomous region of Italy, separated from the mainland by the Strait of Messina",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Arabian Peninsula",
+      "definition": "Peninsula in Western Asia, largest peninsula in the world, area approximately 3.2 million square kilometers, bordered by Red Sea and Persian Gulf",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Iberian Peninsula",
+      "definition": "Peninsula in southwestern Europe, comprising Spain and Portugal, separated from North Africa by the Strait of Gibraltar",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Korean Peninsula",
+      "definition": "Peninsula in East Asia, divided into North Korea and South Korea, extends southward from the Chinese mainland",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Italian Peninsula",
+      "definition": "Peninsula extending into the Mediterranean Sea from southern Europe, shaped like a boot, comprises mainland Italy",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Scandinavian Peninsula",
+      "definition": "Peninsula in Northern Europe, comprising Sweden, Norway, and parts of Finland and Russia, largest peninsula in Europe",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Tropical Climate",
+      "definition": "Hot and humid climate zone near the equator, characterized by year-round high temperatures and significant rainfall",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.95
+    },
+    {
+      "label": "Temperate Climate",
+      "definition": "Climate zone characterized by moderate temperatures and seasonal changes, located between tropical and polar regions",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.95
+    },
+    {
+      "label": "Continental Climate",
+      "definition": "Climate characterized by hot summers and cold winters with large temperature variations, typically found in interior regions",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.95
+    },
+    {
+      "label": "Mediterranean Climate",
+      "definition": "Climate characterized by hot, dry summers and mild, wet winters, found in regions around the Mediterranean Sea and similar latitudes",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.95
+    },
+    {
+      "label": "Desert Climate",
+      "definition": "Arid climate with very little precipitation, large temperature variations between day and night, found in hot and cold desert regions",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.95
+    },
+    {
+      "label": "Polar Climate",
+      "definition": "Climate characterized by extremely cold temperatures year-round, found in Arctic and Antarctic regions",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.95
+    },
+    {
+      "label": "Tundra",
+      "definition": "Biome characterized by treeless plains with permanently frozen subsoil, found in Arctic and high mountain regions",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.95
+    },
+    {
+      "label": "Taiga",
+      "definition": "Biome characterized by coniferous forests, also known as boreal forest, largest terrestrial biome covering northern regions",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.95
+    },
+    {
+      "label": "Grassland",
+      "definition": "Biome dominated by grasses and herbaceous plants, includes prairies, steppes, and savannas with few trees",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.95
+    },
+    {
+      "label": "Rainforest",
+      "definition": "Dense forest characterized by high rainfall and biodiversity, found in tropical and temperate regions",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.95
+    },
+    {
+      "label": "Deciduous Forest",
+      "definition": "Forest biome characterized by trees that shed their leaves seasonally, found in temperate regions with moderate climates",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.95
+    },
+    {
+      "label": "Coniferous Forest",
+      "definition": "Forest biome dominated by cone-bearing trees with needle-like leaves, adapted to cold climates and poor soils",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.95
+    },
+    {
+      "label": "Savanna",
+      "definition": "Grassland ecosystem with scattered trees, characterized by warm climate and distinct wet and dry seasons",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.95
+    },
+    {
+      "label": "Cumulus Cloud",
+      "definition": "Puffy, cotton-like cloud with flat base and rounded top, typically indicates fair weather when small",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.95
+    },
+    {
+      "label": "Stratus Cloud",
+      "definition": "Low, gray cloud layer that often covers the entire sky, typically produces light rain or drizzle",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.95
+    },
+    {
+      "label": "Cirrus Cloud",
+      "definition": "High-altitude, thin, wispy clouds composed of ice crystals, often indicates changing weather approaching",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.95
+    },
+    {
+      "label": "Cumulonimbus Cloud",
+      "definition": "Towering cloud that can reach extreme altitudes, produces thunderstorms, lightning, and heavy precipitation",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.95
+    },
+    {
+      "label": "Hurricane",
+      "definition": "Intense tropical cyclone with sustained winds exceeding 119 km/h, characterized by an eye and eyewall structure",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.95
+    },
+    {
+      "label": "Tornado",
+      "definition": "Violently rotating column of air extending from thunderstorm to ground, capable of extreme destruction in narrow path",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.95
+    },
+    {
+      "label": "Monsoon",
+      "definition": "Seasonal wind pattern bringing wet and dry periods, most notable in South and Southeast Asia",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.95
+    },
+    {
+      "label": "Blizzard",
+      "definition": "Severe snowstorm characterized by strong winds, low temperatures, and reduced visibility",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.95
+    },
+    {
+      "label": "Drought",
+      "definition": "Extended period of deficient precipitation resulting in water shortage and adverse environmental conditions",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.95
+    },
+    {
+      "label": "Earthquake",
+      "definition": "Sudden release of energy in Earth's crust causing ground shaking, measured on the Richter or moment magnitude scale",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.95
+    },
+    {
+      "label": "Volcano",
+      "definition": "Opening in Earth's crust through which molten rock, gas, and ash can escape, formed by tectonic activity",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.95
+    },
+    {
+      "label": "Tsunami",
+      "definition": "Series of large ocean waves caused by underwater earthquakes, volcanic eruptions, or landslides",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.95
+    },
+    {
+      "label": "Glacier",
+      "definition": "Large mass of ice formed from accumulated and compressed snow, moves slowly under its own weight",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.95
+    },
+    {
+      "label": "Spring",
+      "definition": "Season between winter and summer characterized by warming temperatures, longer days, and plant growth renewal",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.95
+    },
+    {
+      "label": "Summer",
+      "definition": "Warmest season of the year, characterized by highest temperatures, longest days, and peak plant growth",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.95
+    },
+    {
+      "label": "Autumn",
+      "definition": "Season between summer and winter characterized by cooling temperatures, shorter days, and leaf color changes",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.95
+    },
+    {
+      "label": "Winter",
+      "definition": "Coldest season of the year, characterized by lowest temperatures, shortest days, and plant dormancy",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.95
+    },
+    {
+      "label": "Climate Change",
+      "definition": "Long-term shifts in global temperatures and weather patterns, primarily caused by human activities since mid-20th century",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Greenhouse Effect",
+      "definition": "Natural process where certain gases trap heat in Earth's atmosphere, enhanced by human activities leading to global warming",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.96
+    },
+    {
+      "label": "Solar System",
+      "definition": "Star system consisting of the Sun and all celestial objects bound by its gravity, including eight planets and their moons",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Sun",
+      "definition": "Star at the center of our solar system, provides light and heat to Earth, composed primarily of hydrogen and helium",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Mercury",
+      "definition": "Smallest and innermost planet in the solar system, has extreme temperature variations, no atmosphere or moons",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Venus",
+      "definition": "Second planet from the Sun, hottest planet due to thick atmosphere, often called Earth's twin due to similar size",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Earth",
+      "definition": "Third planet from the Sun, only known planet with life, has one natural satellite (the Moon), mostly covered by water",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Mars",
+      "definition": "Fourth planet from the Sun, known as the Red Planet due to iron oxide on its surface, has two small moons",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Jupiter",
+      "definition": "Largest planet in the solar system, gas giant with more than 80 moons, famous for its Great Red Spot storm",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Saturn",
+      "definition": "Sixth planet from the Sun, known for its prominent ring system, second-largest planet, has numerous moons including Titan",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Uranus",
+      "definition": "Seventh planet from the Sun, ice giant that rotates on its side, has faint rings and 27 known moons",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Neptune",
+      "definition": "Eighth and outermost planet in the solar system, ice giant with the strongest winds, deep blue color from methane",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Moon",
+      "definition": "Earth's only natural satellite, influences tides, causes solar and lunar eclipses, slowly moving away from Earth",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Asteroid",
+      "definition": "Rocky object orbiting the Sun, mostly found in the asteroid belt between Mars and Jupiter, remnants from solar system formation",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.95
+    },
+    {
+      "label": "Comet",
+      "definition": "Icy celestial body that develops a tail when approaching the Sun, originates from outer regions of the solar system",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.95
+    },
+    {
+      "label": "Milky Way Galaxy",
+      "definition": "Spiral galaxy containing our solar system, estimated 100-400 billion stars, diameter approximately 100,000 light-years",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Star",
+      "definition": "Massive celestial body composed of hot gases that produce light and heat through nuclear fusion, primarily hydrogen to helium",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.96
+    },
+    {
+      "label": "Galaxy",
+      "definition": "Large collection of stars, gas, dust, and dark matter bound together by gravity, contains billions to trillions of stars",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.96
+    },
+    {
+      "label": "Black Hole",
+      "definition": "Region of spacetime with gravity so strong that nothing, not even light, can escape once past the event horizon",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.95
+    },
+    {
+      "label": "Nebula",
+      "definition": "Interstellar cloud of dust, hydrogen, helium, and other ionized gases, often stellar nurseries where new stars form",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.95
+    },
+    {
+      "label": "Supernova",
+      "definition": "Explosive death of a massive star, briefly outshining an entire galaxy, creates and disperses heavy elements",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.95
+    },
+    {
+      "label": "Light-year",
+      "definition": "Unit of distance measuring how far light travels in one year, approximately 9.46 trillion kilometers or 5.88 trillion miles",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.96
+    },
+    {
+      "label": "International Space Station",
+      "definition": "Large spacecraft in low Earth orbit serving as space laboratory, international cooperation between multiple space agencies",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Apollo 11",
+      "definition": "First crewed mission to land on the Moon in 1969, Neil Armstrong and Buzz Aldrin were first humans to walk on lunar surface",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Hubble Space Telescope",
+      "definition": "Space telescope launched in 1990, has provided detailed images of distant galaxies and helped measure universe expansion",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "James Webb Space Telescope",
+      "definition": "Largest and most powerful space telescope, launched in 2021, observes universe in infrared light from L2 Lagrange point",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Mars Rover",
+      "definition": "Robotic vehicle designed to explore the surface of Mars, examples include Spirit, Opportunity, Curiosity, and Perseverance",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.96
+    },
+    {
+      "label": "SpaceX",
+      "definition": "Private space exploration company founded by Elon Musk, known for reusable rockets and Dragon spacecraft",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "NASA",
+      "definition": "United States government agency responsible for civil space program, aeronautics research, and space exploration",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Igneous Rock",
+      "definition": "Type of rock formed through cooling and solidification of magma or lava, includes granite and basalt",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.95
+    },
+    {
+      "label": "Sedimentary Rock",
+      "definition": "Rock formed by accumulation and cementation of mineral and organic particles, often contains fossils",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.95
+    },
+    {
+      "label": "Metamorphic Rock",
+      "definition": "Rock formed by transformation of existing rock through heat, pressure, or chemical processes, includes marble and slate",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.95
+    },
+    {
+      "label": "Quartz",
+      "definition": "Hard mineral composed of silicon dioxide, second most abundant mineral in Earth's crust after feldspar",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.95
+    },
+    {
+      "label": "Granite",
+      "definition": "Common intrusive igneous rock composed mainly of quartz, feldspar, and mica, used widely in construction",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.95
+    },
+    {
+      "label": "Limestone",
+      "definition": "Sedimentary rock composed mainly of calcium carbonate, often formed from marine organisms, used in cement production",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.95
+    },
+    {
+      "label": "Marble",
+      "definition": "Metamorphic rock formed from limestone or dolomite through heat and pressure, prized for sculpture and architecture",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.95
+    },
+    {
+      "label": "Plate Tectonics",
+      "definition": "Scientific theory explaining movement of Earth's lithospheric plates, causes earthquakes, volcanoes, and mountain formation",
+      "epistemic_type": "THEORY",
+      "trust": 0.96
+    },
+    {
+      "label": "Continental Drift",
+      "definition": "Theory that continents move across Earth's surface over geological time, precursor to plate tectonics theory",
+      "epistemic_type": "THEORY",
+      "trust": 0.95
+    },
+    {
+      "label": "Pangaea",
+      "definition": "Supercontinent that existed during late Paleozoic and early Mesozoic eras, gradually broke apart to form current continents",
+      "epistemic_type": "FACT",
+      "trust": 0.96
+    },
+    {
+      "label": "Ring of Fire",
+      "definition": "Region around Pacific Ocean with high volcanic and seismic activity, contains about 75% of world's active volcanoes",
+      "epistemic_type": "FACT",
+      "trust": 0.96
+    },
+    {
+      "label": "Bavaria",
+      "definition": "Largest state in Germany by area, located in the southeast, capital Munich, known for Oktoberfest and Alpine culture",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Munich",
+      "definition": "Capital and most populous city of Bavaria, population approximately 1.5 million, famous for Oktoberfest and beer culture",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "North Rhine-Westphalia",
+      "definition": "Most populous German state, located in western Germany, capital D\u00fcsseldorf, industrial heartland of Germany",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "D\u00fcsseldorf",
+      "definition": "Capital city of North Rhine-Westphalia, population approximately 620,000, major business and financial center",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Baden-W\u00fcrttemberg",
+      "definition": "German state in the southwest, capital Stuttgart, known for automotive industry and high-tech companies",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Stuttgart",
+      "definition": "Capital of Baden-W\u00fcrttemberg, population approximately 630,000, headquarters of Mercedes-Benz and Porsche",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Lower Saxony",
+      "definition": "German state in the northwest, capital Hanover, second-largest German state by area after Bavaria",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Hanover",
+      "definition": "Capital of Lower Saxony, population approximately 535,000, major transportation hub and trade fair city",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Hesse",
+      "definition": "German state in central Germany, capital Wiesbaden, financial center with Frankfurt am Main",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Frankfurt Am Main",
+      "definition": "Largest city in Hesse, population approximately 750,000, major financial center and European Central Bank headquarters",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Saxony",
+      "definition": "German state in eastern Germany, capital Dresden, known for classical music tradition and Baroque architecture",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Dresden",
+      "definition": "Capital of Saxony, population approximately 560,000, famous for Frauenkirche and rebuilt historic city center",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Rhineland-Palatinate",
+      "definition": "German state in western Germany, capital Mainz, known for wine production and Rhine Valley",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Schleswig-Holstein",
+      "definition": "Northernmost German state, capital Kiel, bordered by Denmark and surrounded by North and Baltic Seas",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Brandenburg",
+      "definition": "German state surrounding Berlin, capital Potsdam, known for Sanssouci Palace and numerous lakes",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Potsdam",
+      "definition": "Capital of Brandenburg, population approximately 180,000, former residence of Prussian kings, UNESCO World Heritage site",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Thuringia",
+      "definition": "German state in central Germany, capital Erfurt, known as the green heart of Germany due to forests",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Mecklenburg-Vorpommern",
+      "definition": "German state in northeastern Germany, capital Schwerin, known for lakes, Baltic Sea coast, and R\u00fcgen island",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Saxony-Anhalt",
+      "definition": "German state in central Germany, capital Magdeburg, known for medieval architecture and Luther sites",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Saarland",
+      "definition": "Smallest German state by area and population, capital Saarbr\u00fccken, located near French and Luxembourg borders",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Bremen",
+      "definition": "Smallest German state, consists of cities Bremen and Bremerhaven, important port cities on the Weser River",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Hamburg",
+      "definition": "Second-largest city in Germany and city-state, population approximately 1.9 million, major port on the Elbe River",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Cologne",
+      "definition": "Largest city in North Rhine-Westphalia, population approximately 1.1 million, famous for Cologne Cathedral and cultural heritage",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Leipzig",
+      "definition": "Largest city in Saxony, population approximately 600,000, known as City of Music and peaceful revolution of 1989",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Nuremberg",
+      "definition": "Second-largest city in Bavaria, population approximately 520,000, known for Christmas market and historical significance",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Thailand",
+      "definition": "Kingdom in Southeast Asia, capital Bangkok, population approximately 70 million, known for Buddhism and tropical beaches",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Bangkok",
+      "definition": "Capital and most populous city of Thailand, population approximately 10.5 million in metropolitan area, major economic center of Southeast Asia",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Vietnam",
+      "definition": "Socialist republic in Southeast Asia, capital Hanoi, population approximately 98 million, long narrow country along South China Sea",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Hanoi",
+      "definition": "Capital city of Vietnam, population approximately 8.5 million in metropolitan area, political and cultural center",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Indonesia",
+      "definition": "Republic in Southeast Asia consisting of over 17,000 islands, capital Jakarta, population approximately 275 million, largest archipelago in the world",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Jakarta",
+      "definition": "Capital and largest city of Indonesia, population approximately 10.6 million in the city proper, major port city",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Malaysia",
+      "definition": "Federal constitutional monarchy in Southeast Asia, capital Kuala Lumpur, population approximately 33 million, consists of peninsular and island regions",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Kuala Lumpur",
+      "definition": "Federal capital of Malaysia, population approximately 1.8 million in the city proper, modern metropolis with iconic Petronas Towers",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Philippines",
+      "definition": "Archipelagic country in Southeast Asia, capital Manila, population approximately 110 million, consists of over 7,600 islands",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Manila",
+      "definition": "Capital city of the Philippines, population approximately 13.5 million in Greater Manila Area, major port on Manila Bay",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Singapore",
+      "definition": "City-state and island country in Southeast Asia, population approximately 6 million, major financial and trading hub",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Norway",
+      "definition": "Kingdom in Northern Europe on the Scandinavian Peninsula, capital Oslo, population approximately 5.4 million, known for fjords and oil wealth",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Oslo",
+      "definition": "Capital and most populous city of Norway, population approximately 1.1 million in metropolitan area, located at the head of the Oslofjord",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Sweden",
+      "definition": "Kingdom in Northern Europe on the Scandinavian Peninsula, capital Stockholm, population approximately 10.4 million, known for social democracy and innovation",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Stockholm",
+      "definition": "Capital and largest city of Sweden, population approximately 2.4 million in metropolitan area, built on 14 islands",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Finland",
+      "definition": "Republic in Northern Europe, capital Helsinki, population approximately 5.5 million, known as the land of a thousand lakes",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Helsinki",
+      "definition": "Capital and most populous city of Finland, population approximately 1.5 million in metropolitan area, located on the Baltic Sea",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Denmark",
+      "definition": "Kingdom in Northern Europe consisting of the Jutland Peninsula and numerous islands, capital Copenhagen, population approximately 5.9 million",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Copenhagen",
+      "definition": "Capital and most populous city of Denmark, population approximately 2.1 million in metropolitan area, major cultural and economic center",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Iceland",
+      "definition": "Nordic island country in the North Atlantic, capital Reykjavik, population approximately 370,000, known for geysers and volcanic activity",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Reykjavik",
+      "definition": "Capital and largest city of Iceland, population approximately 230,000 in metropolitan area, northernmost capital in the world",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Ireland",
+      "definition": "Island republic in the North Atlantic, capital Dublin, population approximately 5.1 million, known for green landscapes and Celtic culture",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Dublin",
+      "definition": "Capital and largest city of Ireland, population approximately 1.4 million in metropolitan area, major port on the Irish Sea",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Greece",
+      "definition": "Republic in Southeast Europe, capital Athens, population approximately 10.7 million, cradle of Western civilization and democracy",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Athens",
+      "definition": "Capital and largest city of Greece, population approximately 3.8 million in metropolitan area, ancient city with Acropolis and Parthenon",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Turkey",
+      "definition": "Transcontinental country located mainly in Asia Minor with smaller portion in Southeast Europe, capital Ankara, population approximately 84 million",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Ankara",
+      "definition": "Capital city of Turkey, population approximately 5.7 million in metropolitan area, political and administrative center",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Romania",
+      "definition": "Republic in Southeast Europe, capital Bucharest, population approximately 19 million, largest country in the Balkans by area",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Bucharest",
+      "definition": "Capital and largest city of Romania, population approximately 2.2 million in metropolitan area, known as Little Paris",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Bulgaria",
+      "definition": "Republic in Southeast Europe, capital Sofia, population approximately 6.9 million, known for rose oil production and Black Sea coast",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Sofia",
+      "definition": "Capital and largest city of Bulgaria, population approximately 1.4 million in metropolitan area, located in the Sofia Valley",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Croatia",
+      "definition": "Republic in Southeast Europe, capital Zagreb, population approximately 3.9 million, known for its Adriatic coastline and Dalmatian islands",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Zagreb",
+      "definition": "Capital and largest city of Croatia, population approximately 1.1 million in metropolitan area, cultural and economic center",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Serbia",
+      "definition": "Republic in the Balkans in Southeast Europe, capital Belgrade, population approximately 6.8 million, landlocked country",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Belgrade",
+      "definition": "Capital and largest city of Serbia, population approximately 1.7 million in metropolitan area, located at confluence of Sava and Danube rivers",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Slovakia",
+      "definition": "Republic in Central Europe, capital Bratislava, population approximately 5.5 million, landlocked country known for castles and mountains",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Bratislava",
+      "definition": "Capital and largest city of Slovakia, population approximately 440,000, located on the Danube River near Austrian and Hungarian borders",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Slovenia",
+      "definition": "Republic in Central Europe, capital Ljubljana, population approximately 2.1 million, small country between Alps and Adriatic Sea",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Ljubljana",
+      "definition": "Capital and largest city of Slovenia, population approximately 295,000, green city known for its medieval castle and Baroque architecture",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Estonia",
+      "definition": "Republic in Northern Europe, capital Tallinn, population approximately 1.3 million, northernmost Baltic state with advanced digital society",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Tallinn",
+      "definition": "Capital and largest city of Estonia, population approximately 450,000, medieval city with well-preserved Old Town",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Latvia",
+      "definition": "Republic in the Baltic region of Northern Europe, capital Riga, population approximately 1.9 million, known for Art Nouveau architecture",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Riga",
+      "definition": "Capital and largest city of Latvia, population approximately 630,000, major port city on the Baltic Sea with historic center",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Lithuania",
+      "definition": "Republic in the Baltic region of Northern Europe, capital Vilnius, population approximately 2.8 million, largest Baltic state",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Vilnius",
+      "definition": "Capital and largest city of Lithuania, population approximately 590,000, baroque Old Town with numerous churches and universities",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Iran",
+      "definition": "Islamic republic in Western Asia, capital Tehran, population approximately 85 million, ancient Persian civilization with rich cultural heritage",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Tehran",
+      "definition": "Capital and largest city of Iran, population approximately 15 million in metropolitan area, political and economic center at foot of Alborz Mountains",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Iraq",
+      "definition": "Federal republic in Western Asia, capital Baghdad, population approximately 41 million, cradle of civilization in Mesopotamia",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Baghdad",
+      "definition": "Capital and largest city of Iraq, population approximately 7.2 million, historic city on the Tigris River, center of Islamic Golden Age",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Afghanistan",
+      "definition": "Islamic emirate in Central and South Asia, capital Kabul, population approximately 40 million, landlocked mountainous country",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Kabul",
+      "definition": "Capital and largest city of Afghanistan, population approximately 4.6 million, located in the Kabul Valley in the Hindu Kush mountains",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Pakistan",
+      "definition": "Islamic republic in South Asia, capital Islamabad, population approximately 230 million, created in 1947 partition of British India",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Islamabad",
+      "definition": "Capital city of Pakistan, population approximately 1.2 million, planned city built in the 1960s to replace Karachi as capital",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Bangladesh",
+      "definition": "Parliamentary republic in South Asia, capital Dhaka, population approximately 166 million, formed from East Pakistan in 1971",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Dhaka",
+      "definition": "Capital and largest city of Bangladesh, population approximately 22 million in metropolitan area, major river port on the Ganges Delta",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Sri Lanka",
+      "definition": "Island republic in South Asia, capital Sri Jayawardenepura Kotte, population approximately 22 million, teardrop-shaped island south of India",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Sri Jayawardenepura Kotte",
+      "definition": "Administrative capital of Sri Lanka, population approximately 120,000, serves as the seat of parliament",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Myanmar",
+      "definition": "Republic in Southeast Asia, capital Naypyidaw, population approximately 55 million, also known as Burma, rich in natural resources",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Naypyidaw",
+      "definition": "Capital city of Myanmar, population approximately 1.2 million, planned city built in 2000s to replace Yangon as capital",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Cambodia",
+      "definition": "Kingdom in Southeast Asia, capital Phnom Penh, population approximately 17 million, home to ancient Khmer Empire and Angkor Wat",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Phnom Penh",
+      "definition": "Capital and largest city of Cambodia, population approximately 2.3 million, located at confluence of Mekong and Tonl\u00e9 Sap rivers",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Laos",
+      "definition": "Socialist republic in Southeast Asia, capital Vientiane, population approximately 7.3 million, landlocked country known as the Land of a Million Elephants",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Vientiane",
+      "definition": "Capital and largest city of Laos, population approximately 950,000, located on the banks of the Mekong River",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Brunei",
+      "definition": "Absolute monarchy on the island of Borneo, capital Bandar Seri Begawan, population approximately 440,000, wealthy oil-rich sultanate",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Bandar Seri Begawan",
+      "definition": "Capital city of Brunei, population approximately 180,000, home to the Sultan's palace and numerous mosques",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Mongolia",
+      "definition": "Landlocked republic in East Asia, capital Ulaanbaatar, population approximately 3.4 million, vast steppes between Russia and China",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Ulaanbaatar",
+      "definition": "Capital and largest city of Mongolia, population approximately 1.6 million, coldest capital city in the world",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "North Korea",
+      "definition": "Socialist republic in East Asia, capital Pyongyang, population approximately 26 million, isolated authoritarian state on Korean Peninsula",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Pyongyang",
+      "definition": "Capital and largest city of North Korea, population approximately 3.3 million, planned city with monumental architecture",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Kazakhstan",
+      "definition": "Republic in Central Asia, capital Nur-Sultan, population approximately 19.4 million, world's largest landlocked country",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Nur-Sultan",
+      "definition": "Capital city of Kazakhstan, population approximately 1.2 million, futuristic planned city formerly known as Astana",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Uzbekistan",
+      "definition": "Republic in Central Asia, capital Tashkent, population approximately 35 million, doubly landlocked country on the Silk Road",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Tashkent",
+      "definition": "Capital and largest city of Uzbekistan, population approximately 2.6 million, major cultural and economic center of Central Asia",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Kyrgyzstan",
+      "definition": "Republic in Central Asia, capital Bishkek, population approximately 6.7 million, mountainous landlocked country",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Bishkek",
+      "definition": "Capital and largest city of Kyrgyzstan, population approximately 1 million, located in the Chuy Valley near the Kyrgyz Ala-Too range",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Tajikistan",
+      "definition": "Republic in Central Asia, capital Dushanbe, population approximately 9.8 million, mountainous landlocked country",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Dushanbe",
+      "definition": "Capital and largest city of Tajikistan, population approximately 900,000, located in the Hissar Valley",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Turkmenistan",
+      "definition": "Republic in Central Asia, capital Ashgabat, population approximately 6 million, largely covered by the Karakum Desert",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Ashgabat",
+      "definition": "Capital and largest city of Turkmenistan, population approximately 1 million, known for its white marble buildings and golden statues",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Jordan",
+      "definition": "Constitutional monarchy in Western Asia, capital Amman, population approximately 10.3 million, largely arid country with access to Red Sea",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Amman",
+      "definition": "Capital and largest city of Jordan, population approximately 4.3 million in metropolitan area, ancient city built on seven hills",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Lebanon",
+      "definition": "Republic in Western Asia, capital Beirut, population approximately 6.8 million, small country on the Mediterranean coast",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Beirut",
+      "definition": "Capital and largest city of Lebanon, population approximately 2.4 million in metropolitan area, major port and cultural center",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Syria",
+      "definition": "Republic in Western Asia, capital Damascus, population approximately 18.3 million, ancient land with rich historical heritage",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Damascus",
+      "definition": "Capital and largest city of Syria, population approximately 2.3 million, one of the oldest continuously inhabited cities in the world",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Israel",
+      "definition": "Parliamentary republic in Western Asia, capital Jerusalem, population approximately 9.5 million, Jewish state established in 1948",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Jerusalem",
+      "definition": "Capital city of Israel, population approximately 950,000, holy city for Judaism, Christianity, and Islam",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Palestine",
+      "definition": "Partially recognized state in Western Asia, capital East Jerusalem, population approximately 5.2 million, occupied territories",
+      "epistemic_type": "FACT",
+      "trust": 0.95
+    },
+    {
+      "label": "Saudi Arabia",
+      "definition": "Absolute monarchy in Western Asia, capital Riyadh, population approximately 35 million, largest country in the Middle East",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Riyadh",
+      "definition": "Capital and largest city of Saudi Arabia, population approximately 7.6 million in metropolitan area, political and administrative center",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Kuwait",
+      "definition": "Constitutional monarchy in Western Asia, capital Kuwait City, population approximately 4.3 million, small oil-rich country on the Persian Gulf",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Kuwait City",
+      "definition": "Capital and largest city of Kuwait, population approximately 4.1 million in metropolitan area, major port and financial center",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "United Arab Emirates",
+      "definition": "Federal monarchy in Western Asia, capital Abu Dhabi, population approximately 10 million, federation of seven emirates",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Abu Dhabi",
+      "definition": "Capital city of the United Arab Emirates, population approximately 1.5 million, largest emirate and oil capital",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Qatar",
+      "definition": "Absolute monarchy in Western Asia, capital Doha, population approximately 2.9 million, wealthy peninsular country on the Persian Gulf",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Doha",
+      "definition": "Capital and largest city of Qatar, population approximately 2.4 million in metropolitan area, modern city with futuristic skyline",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Bahrain",
+      "definition": "Constitutional monarchy in Western Asia, capital Manama, population approximately 1.7 million, island nation in the Persian Gulf",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Manama",
+      "definition": "Capital and largest city of Bahrain, population approximately 650,000, major financial center in the Gulf region",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Oman",
+      "definition": "Absolute monarchy in Western Asia, capital Muscat, population approximately 5.1 million, sultanate on the Arabian Peninsula",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Muscat",
+      "definition": "Capital and largest city of Oman, population approximately 1.6 million in metropolitan area, port city on the Gulf of Oman",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Yemen",
+      "definition": "Republic in Western Asia, capital Sanaa, population approximately 30.5 million, located on the southern tip of the Arabian Peninsula",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Sanaa",
+      "definition": "Capital city of Yemen, population approximately 2.9 million, one of the oldest continuously inhabited cities, UNESCO World Heritage site",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Maldives",
+      "definition": "Republic in the Indian Ocean, capital Mal\u00e9, population approximately 540,000, archipelago of 1,192 coral islands",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Mal\u00e9",
+      "definition": "Capital and most populous city of Maldives, population approximately 220,000, one of the most densely populated cities in the world",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Nepal",
+      "definition": "Federal republic in South Asia, capital Kathmandu, population approximately 30 million, landlocked country home to Mount Everest",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Kathmandu",
+      "definition": "Capital and largest city of Nepal, population approximately 1.4 million in the valley, historic city with numerous temples and palaces",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Bhutan",
+      "definition": "Constitutional monarchy in South Asia, capital Thimphu, population approximately 770,000, landlocked Himalayan kingdom",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Thimphu",
+      "definition": "Capital and largest city of Bhutan, population approximately 115,000, located in the Thimphu Valley in the Himalayas",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Proxima Centauri",
+      "definition": "Closest known star to the Sun at 4.24 light-years away, red dwarf star in the Alpha Centauri system",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Alpha Centauri",
+      "definition": "Closest star system to the Solar System at 4.37 light-years away, triple star system in the constellation Centaurus",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Sirius",
+      "definition": "Brightest star in the night sky, binary star system in the constellation Canis Major, located 8.6 light-years from Earth",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Vega",
+      "definition": "Bright star in the constellation Lyra, fifth-brightest star in the night sky, located 25 light-years from Earth",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Betelgeuse",
+      "definition": "Red supergiant star in the constellation Orion, one of the largest known stars, expected to explode as supernova",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Polaris",
+      "definition": "Current pole star located in the constellation Ursa Minor, appears stationary in the northern sky",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Rigel",
+      "definition": "Blue supergiant star in the constellation Orion, seventh-brightest star in the night sky, extremely luminous",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Capella",
+      "definition": "Sixth-brightest star in the night sky, multiple star system in the constellation Auriga",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Arcturus",
+      "definition": "Fourth-brightest star in the night sky, orange giant in the constellation Bo\u00f6tes, relatively close at 37 light-years",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Andromeda Galaxy",
+      "definition": "Nearest major galaxy to the Milky Way at 2.5 million light-years away, spiral galaxy on collision course with Milky Way",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Large Magellanic Cloud",
+      "definition": "Irregular galaxy satellite of the Milky Way, located 160,000 light-years away, visible from Southern Hemisphere",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Small Magellanic Cloud",
+      "definition": "Dwarf galaxy satellite of the Milky Way, located 200,000 light-years away, visible from Southern Hemisphere",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Orion Nebula",
+      "definition": "Bright nebula in the constellation Orion, stellar nursery where new stars are forming, visible to naked eye",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Crab Nebula",
+      "definition": "Supernova remnant in the constellation Taurus, result of supernova observed by Chinese astronomers in 1054 AD",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Eagle Nebula",
+      "definition": "Star-forming region in the constellation Serpens, famous for Pillars of Creation photographed by Hubble Space Telescope",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Horsehead Nebula",
+      "definition": "Dark nebula in the constellation Orion, distinctive horse-head silhouette against bright background",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Ring Nebula",
+      "definition": "Planetary nebula in the constellation Lyra, formed by dying star expelling its outer layers",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Cat's Eye Nebula",
+      "definition": "Planetary nebula in the constellation Draco, complex structure with knots and jets created by dying star",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Sagittarius A*",
+      "definition": "Supermassive black hole at the center of the Milky Way galaxy, mass equivalent to 4 million suns",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Event Horizon",
+      "definition": "Boundary around a black hole beyond which nothing can escape, point of no return for matter and light",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.95
+    },
+    {
+      "label": "Wormhole",
+      "definition": "Theoretical passage through spacetime that could create shortcuts for long journeys across the universe",
+      "epistemic_type": "THEORY",
+      "trust": 0.9
+    },
+    {
+      "label": "White Dwarf",
+      "definition": "Dense stellar remnant left when a star has exhausted its nuclear fuel, extremely hot but small and dim",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.95
+    },
+    {
+      "label": "Neutron Star",
+      "definition": "Extremely dense stellar remnant composed almost entirely of neutrons, result of massive star supernova collapse",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.95
+    },
+    {
+      "label": "Pulsar",
+      "definition": "Rapidly rotating neutron star that emits regular pulses of radiation, lighthouse-like beam sweeping across space",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.95
+    },
+    {
+      "label": "Quasar",
+      "definition": "Extremely luminous active galactic nucleus powered by supermassive black hole, among the most distant and bright objects",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.95
+    },
+    {
+      "label": "Red Giant",
+      "definition": "Type of large, cool star in later stages of stellar evolution, expanded outer layers giving red appearance",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.95
+    },
+    {
+      "label": "Blue Giant",
+      "definition": "Type of massive, hot star that burns fuel rapidly and has short lifespan, extremely luminous and blue",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.95
+    },
+    {
+      "label": "Brown Dwarf",
+      "definition": "Substellar object too small to sustain nuclear fusion, intermediate between largest planets and smallest stars",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.95
+    },
+    {
+      "label": "Exoplanet",
+      "definition": "Planet that orbits a star outside the Solar System, thousands have been discovered using various detection methods",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.95
+    },
+    {
+      "label": "Hot Jupiter",
+      "definition": "Type of exoplanet similar to Jupiter but orbiting very close to its star, tidally locked with extreme temperatures",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.95
+    },
+    {
+      "label": "Super-Earth",
+      "definition": "Type of exoplanet larger than Earth but smaller than Neptune, potentially rocky with thick atmospheres",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.95
+    },
+    {
+      "label": "Goldilocks Zone",
+      "definition": "Habitable zone around a star where liquid water could exist on planetary surface, not too hot or cold",
+      "epistemic_type": "DEFINITION",
+      "trust": 0.95
+    },
+    {
+      "label": "Drake Equation",
+      "definition": "Formula to estimate the number of active, communicative extraterrestrial civilizations in the Milky Way",
+      "epistemic_type": "THEORY",
+      "trust": 0.9
+    },
+    {
+      "label": "Fermi Paradox",
+      "definition": "Contradiction between high probability of extraterrestrial life and lack of evidence for such civilizations",
+      "epistemic_type": "THEORY",
+      "trust": 0.9
+    },
+    {
+      "label": "SETI",
+      "definition": "Search for Extraterrestrial Intelligence, scientific effort to detect signs of intelligent life beyond Earth",
+      "epistemic_type": "FACT",
+      "trust": 0.95
+    },
+    {
+      "label": "Kepler Space Telescope",
+      "definition": "Space observatory designed to survey a portion of the Milky Way for Earth-like planets, discovered thousands of exoplanets",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "TESS",
+      "definition": "Transiting Exoplanet Survey Satellite, space telescope searching for exoplanets around nearby stars",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Voyager 1",
+      "definition": "Space probe launched in 1977, first human-made object to enter interstellar space, carries Golden Record",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Voyager 2",
+      "definition": "Space probe launched in 1977, only spacecraft to visit all four outer planets, still operating in interstellar space",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Pioneer 10",
+      "definition": "Space probe launched in 1972, first spacecraft to travel through asteroid belt and obtain close-up images of Jupiter",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Pioneer 11",
+      "definition": "Space probe launched in 1973, first to study Saturn up close and discover its rings and moons",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Cassini-Huygens",
+      "definition": "Space mission to Saturn launched in 1997, provided detailed study of Saturn's rings and moons, Huygens landed on Titan",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "New Horizons",
+      "definition": "Space probe launched in 2006, first to visit Pluto and provide detailed images of the dwarf planet",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Juno",
+      "definition": "Space probe launched in 2011 to study Jupiter's composition, gravity field, magnetic field, and polar magnetosphere",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Parker Solar Probe",
+      "definition": "Space probe launched in 2018 to study the Sun's outer corona, closest approach to the Sun ever attempted",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Perseverance Rover",
+      "definition": "Mars rover launched in 2020, searching for signs of ancient life and collecting samples for future return to Earth",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Ingenuity Helicopter",
+      "definition": "Small helicopter deployed on Mars by Perseverance rover, first powered flight on another planet",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Europa Clipper",
+      "definition": "Planned NASA mission to Jupiter's moon Europa, will study the moon's ice-covered ocean for potential habitability",
+      "epistemic_type": "FACT",
+      "trust": 0.95
+    },
+    {
+      "label": "Artemis Program",
+      "definition": "NASA program aimed at returning humans to the Moon by 2025, establishing sustainable lunar presence",
+      "epistemic_type": "FACT",
+      "trust": 0.95
+    },
+    {
+      "label": "Gateway",
+      "definition": "Planned lunar space station as part of Artemis program, will serve as staging point for Moon missions",
+      "epistemic_type": "FACT",
+      "trust": 0.95
+    },
+    {
+      "label": "SLS",
+      "definition": "Space Launch System, NASA's powerful rocket designed for deep space missions including Moon and Mars",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Orion Spacecraft",
+      "definition": "NASA's crew vehicle designed for deep space exploration, part of Artemis program for lunar missions",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Falcon Heavy",
+      "definition": "Reusable heavy-lift launch vehicle by SpaceX, most powerful operational rocket as of 2023",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Starship",
+      "definition": "Fully reusable spacecraft system being developed by SpaceX for missions to Moon, Mars, and beyond",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Blue Origin",
+      "definition": "Private space company founded by Jeff Bezos, developing New Shepard and New Glenn rockets",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Virgin Galactic",
+      "definition": "Space tourism company developing suborbital flights for passengers, founded by Richard Branson",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "ESA",
+      "definition": "European Space Agency, intergovernmental organization of 22 European states dedicated to space exploration",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Roscosmos",
+      "definition": "Russian federal space agency responsible for the country's space program and international cooperation",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "CNSA",
+      "definition": "China National Space Administration, national space agency of China responsible for space program",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "ISRO",
+      "definition": "Indian Space Research Organisation, space agency of India known for cost-effective missions",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "JAXA",
+      "definition": "Japan Aerospace Exploration Agency, national space agency of Japan involved in space and planetary research",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Titan",
+      "definition": "Largest moon of Saturn, has thick atmosphere and liquid methane lakes, target for astrobiology studies",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Europa",
+      "definition": "Fourth largest moon of Jupiter, has subsurface ocean beneath ice shell, potential for extraterrestrial life",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Enceladus",
+      "definition": "Sixth largest moon of Saturn, has geysers of water ice erupting from south pole, subsurface ocean",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Io",
+      "definition": "Innermost Galilean moon of Jupiter, most volcanically active body in the Solar System",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Ganymede",
+      "definition": "Largest moon in the Solar System, orbits Jupiter, has its own magnetic field and possible subsurface ocean",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Callisto",
+      "definition": "Second largest moon of Jupiter, heavily cratered surface, possibly harbors subsurface ocean",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Triton",
+      "definition": "Largest moon of Neptune, orbits in retrograde direction, possibly captured Kuiper Belt object",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Charon",
+      "definition": "Largest moon of Pluto, nearly half the size of Pluto itself, tidally locked binary system",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Phobos",
+      "definition": "Larger and inner moon of Mars, irregularly shaped and very close to Mars, may be captured asteroid",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Deimos",
+      "definition": "Smaller and outer moon of Mars, irregularly shaped, possibly captured asteroid from asteroid belt",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Ceres",
+      "definition": "Largest object in the asteroid belt, classified as dwarf planet, contains significant amounts of water ice",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Vesta",
+      "definition": "Second most massive asteroid in the asteroid belt, has differentiated structure with core, mantle, and crust",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Pallas",
+      "definition": "Third largest asteroid in the asteroid belt, highly inclined orbit, irregular shape",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Hygiea",
+      "definition": "Fourth largest asteroid in the asteroid belt, spherical shape may qualify it as dwarf planet",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Eris",
+      "definition": "Dwarf planet in scattered disk beyond Neptune, slightly smaller than Pluto but more massive",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Makemake",
+      "definition": "Dwarf planet in the Kuiper Belt, named after Easter Island creator deity, lacks significant atmosphere",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Haumea",
+      "definition": "Dwarf planet in Kuiper Belt with unusual elongated shape due to rapid rotation, has two moons",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Sedna",
+      "definition": "Trans-Neptunian object with extremely elliptical orbit, takes 11,400 years to orbit the Sun",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Kuiper Belt",
+      "definition": "Region beyond Neptune containing many icy bodies and remnants from Solar System formation",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Oort Cloud",
+      "definition": "Theoretical spherical shell of icy objects surrounding the Solar System at distances up to 100,000 AU",
+      "epistemic_type": "THEORY",
+      "trust": 0.95
+    },
+    {
+      "label": "Halley's Comet",
+      "definition": "Famous periodic comet visible from Earth every 75-76 years, last appeared in 1986",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Hale-Bopp",
+      "definition": "Long-period comet discovered in 1995, visible to naked eye for record 18 months",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Shoemaker-Levy 9",
+      "definition": "Comet that broke apart and collided with Jupiter in 1994, provided insights into Jupiter's atmosphere",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Apophis",
+      "definition": "Near-Earth asteroid that will make close approach to Earth in 2029, about 340 meters in diameter",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Bennu",
+      "definition": "Near-Earth asteroid studied by OSIRIS-REx mission, sample return completed in 2023",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Ryugu",
+      "definition": "Near-Earth asteroid studied by Japanese Hayabusa2 mission, samples returned to Earth in 2020",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Chicxulub Impactor",
+      "definition": "Asteroid that impacted Earth 66 million years ago, caused mass extinction including dinosaurs",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Tunguska Event",
+      "definition": "Large explosion over Siberia in 1908, likely caused by meteor or comet fragment, flattened 2,000 square kilometers",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Chelyabinsk Meteor",
+      "definition": "Meteor that exploded over Russia in 2013, caused widespread damage from shockwave, largest recorded since Tunguska",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Big Bang Theory",
+      "definition": "Scientific theory explaining the origin and evolution of the universe from an initial singularity 13.8 billion years ago",
+      "epistemic_type": "THEORY",
+      "trust": 0.96
+    },
+    {
+      "label": "Cosmic Microwave Background",
+      "definition": "Thermal radiation left over from the time of recombination in Big Bang cosmology, discovered in 1965",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Dark Matter",
+      "definition": "Hypothetical form of matter making up about 27% of the universe, does not interact electromagnetically",
+      "epistemic_type": "THEORY",
+      "trust": 0.95
+    },
+    {
+      "label": "Dark Energy",
+      "definition": "Hypothetical form of energy making up about 68% of the universe, responsible for accelerating expansion",
+      "epistemic_type": "THEORY",
+      "trust": 0.95
+    },
+    {
+      "label": "Hubble Constant",
+      "definition": "Measure of the rate of expansion of the universe, approximately 70 km/s/Mpc",
+      "epistemic_type": "FACT",
+      "trust": 0.96
+    },
+    {
+      "label": "Redshift",
+      "definition": "Phenomenon where light from distant objects is shifted to longer wavelengths due to universe expansion",
+      "epistemic_type": "FACT",
+      "trust": 0.96
+    },
+    {
+      "label": "Observable Universe",
+      "definition": "Spherical region of universe visible from Earth, radius about 46.5 billion light-years due to expansion",
+      "epistemic_type": "FACT",
+      "trust": 0.96
+    },
+    {
+      "label": "Planck Era",
+      "definition": "Earliest known period of universe from time zero to 10^-43 seconds, when quantum effects dominated",
+      "epistemic_type": "THEORY",
+      "trust": 0.9
+    },
+    {
+      "label": "Cosmic Inflation",
+      "definition": "Theory of exponential expansion of space in the early universe, explains uniformity of cosmic microwave background",
+      "epistemic_type": "THEORY",
+      "trust": 0.95
+    },
+    {
+      "label": "Multiverse",
+      "definition": "Hypothetical collection of multiple universes comprising everything that exists physically",
+      "epistemic_type": "THEORY",
+      "trust": 0.85
+    },
+    {
+      "label": "String Theory",
+      "definition": "Theoretical framework attempting to unify quantum mechanics and general relativity using vibrating strings",
+      "epistemic_type": "THEORY",
+      "trust": 0.9
+    },
+    {
+      "label": "General Relativity",
+      "definition": "Einstein's theory of gravitation describing gravity as curvature of spacetime, confirmed by many experiments",
+      "epistemic_type": "THEORY",
+      "trust": 0.98
+    },
+    {
+      "label": "Special Relativity",
+      "definition": "Einstein's theory relating space and time, showing that time and space are linked in spacetime",
+      "epistemic_type": "THEORY",
+      "trust": 0.98
+    },
+    {
+      "label": "Quantum Mechanics",
+      "definition": "Fundamental theory describing nature at atomic and subatomic scales, involves wave-particle duality",
+      "epistemic_type": "THEORY",
+      "trust": 0.98
+    },
+    {
+      "label": "Heisenberg Uncertainty Principle",
+      "definition": "Quantum physics principle stating impossibility of simultaneously knowing exact position and momentum of particle",
+      "epistemic_type": "THEORY",
+      "trust": 0.96
+    },
+    {
+      "label": "Schr\u00f6dinger's Cat",
+      "definition": "Thought experiment illustrating quantum superposition, cat simultaneously alive and dead until observed",
+      "epistemic_type": "THEORY",
+      "trust": 0.9
+    },
+    {
+      "label": "Wave-Particle Duality",
+      "definition": "Quantum physics concept where particles exhibit both wave and particle properties depending on observation",
+      "epistemic_type": "THEORY",
+      "trust": 0.96
+    }
+  ],
+  "relations": [
+    {
+      "source": "Germany",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Berlin",
+      "target": "Germany",
+      "type": "capital-of",
+      "weight": 0.99
+    },
+    {
+      "source": "Berlin",
+      "target": "City",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Germany",
+      "target": "Europe",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "France",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Paris",
+      "target": "France",
+      "type": "capital-of",
+      "weight": 0.99
+    },
+    {
+      "source": "Paris",
+      "target": "City",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "France",
+      "target": "Europe",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Germany",
+      "target": "France",
+      "type": "borders",
+      "weight": 0.95
+    },
+    {
+      "source": "United Kingdom",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "London",
+      "target": "United Kingdom",
+      "type": "capital-of",
+      "weight": 0.99
+    },
+    {
+      "source": "London",
+      "target": "City",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "United Kingdom",
+      "target": "Europe",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Italy",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Rome",
+      "target": "Italy",
+      "type": "capital-of",
+      "weight": 0.99
+    },
+    {
+      "source": "Rome",
+      "target": "City",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Italy",
+      "target": "Europe",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Spain",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Madrid",
+      "target": "Spain",
+      "type": "capital-of",
+      "weight": 0.99
+    },
+    {
+      "source": "Madrid",
+      "target": "City",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Spain",
+      "target": "Europe",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Portugal",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Lisbon",
+      "target": "Portugal",
+      "type": "capital-of",
+      "weight": 0.99
+    },
+    {
+      "source": "Lisbon",
+      "target": "City",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Portugal",
+      "target": "Europe",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Spain",
+      "target": "Portugal",
+      "type": "borders",
+      "weight": 0.95
+    },
+    {
+      "source": "Netherlands",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Amsterdam",
+      "target": "Netherlands",
+      "type": "capital-of",
+      "weight": 0.99
+    },
+    {
+      "source": "Amsterdam",
+      "target": "City",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Netherlands",
+      "target": "Europe",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Germany",
+      "target": "Netherlands",
+      "type": "borders",
+      "weight": 0.95
+    },
+    {
+      "source": "Belgium",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Brussels",
+      "target": "Belgium",
+      "type": "capital-of",
+      "weight": 0.99
+    },
+    {
+      "source": "Brussels",
+      "target": "City",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Belgium",
+      "target": "Europe",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Netherlands",
+      "target": "Belgium",
+      "type": "borders",
+      "weight": 0.95
+    },
+    {
+      "source": "Switzerland",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Bern",
+      "target": "Switzerland",
+      "type": "capital-of",
+      "weight": 0.99
+    },
+    {
+      "source": "Bern",
+      "target": "City",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Switzerland",
+      "target": "Europe",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Germany",
+      "target": "Switzerland",
+      "type": "borders",
+      "weight": 0.95
+    },
+    {
+      "source": "Austria",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Vienna",
+      "target": "Austria",
+      "type": "capital-of",
+      "weight": 0.99
+    },
+    {
+      "source": "Vienna",
+      "target": "City",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Austria",
+      "target": "Europe",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Germany",
+      "target": "Austria",
+      "type": "borders",
+      "weight": 0.95
+    },
+    {
+      "source": "Poland",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Warsaw",
+      "target": "Poland",
+      "type": "capital-of",
+      "weight": 0.99
+    },
+    {
+      "source": "Warsaw",
+      "target": "City",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Poland",
+      "target": "Europe",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Germany",
+      "target": "Poland",
+      "type": "borders",
+      "weight": 0.95
+    },
+    {
+      "source": "Czech Republic",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Prague",
+      "target": "Czech Republic",
+      "type": "capital-of",
+      "weight": 0.99
+    },
+    {
+      "source": "Prague",
+      "target": "City",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Czech Republic",
+      "target": "Europe",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Germany",
+      "target": "Czech Republic",
+      "type": "borders",
+      "weight": 0.95
+    },
+    {
+      "source": "Hungary",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Budapest",
+      "target": "Hungary",
+      "type": "capital-of",
+      "weight": 0.99
+    },
+    {
+      "source": "Budapest",
+      "target": "City",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Hungary",
+      "target": "Europe",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Russia",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Moscow",
+      "target": "Russia",
+      "type": "capital-of",
+      "weight": 0.99
+    },
+    {
+      "source": "Moscow",
+      "target": "City",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Russia",
+      "target": "Europe",
+      "type": "located-in",
+      "weight": 0.9
+    },
+    {
+      "source": "Russia",
+      "target": "Asia",
+      "type": "located-in",
+      "weight": 0.9
+    },
+    {
+      "source": "United States",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Washington D.C.",
+      "target": "United States",
+      "type": "capital-of",
+      "weight": 0.99
+    },
+    {
+      "source": "Washington D.C.",
+      "target": "City",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "United States",
+      "target": "North America",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Canada",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Ottawa",
+      "target": "Canada",
+      "type": "capital-of",
+      "weight": 0.99
+    },
+    {
+      "source": "Ottawa",
+      "target": "City",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Canada",
+      "target": "North America",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "United States",
+      "target": "Canada",
+      "type": "borders",
+      "weight": 0.95
+    },
+    {
+      "source": "Mexico",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Mexico City",
+      "target": "Mexico",
+      "type": "capital-of",
+      "weight": 0.99
+    },
+    {
+      "source": "Mexico City",
+      "target": "City",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Mexico",
+      "target": "North America",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "United States",
+      "target": "Mexico",
+      "type": "borders",
+      "weight": 0.95
+    },
+    {
+      "source": "Brazil",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Brasilia",
+      "target": "Brazil",
+      "type": "capital-of",
+      "weight": 0.99
+    },
+    {
+      "source": "Brasilia",
+      "target": "City",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Brazil",
+      "target": "South America",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Argentina",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Buenos Aires",
+      "target": "Argentina",
+      "type": "capital-of",
+      "weight": 0.99
+    },
+    {
+      "source": "Buenos Aires",
+      "target": "City",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Argentina",
+      "target": "South America",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Brazil",
+      "target": "Argentina",
+      "type": "borders",
+      "weight": 0.95
+    },
+    {
+      "source": "Chile",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Santiago",
+      "target": "Chile",
+      "type": "capital-of",
+      "weight": 0.99
+    },
+    {
+      "source": "Santiago",
+      "target": "City",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Chile",
+      "target": "South America",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Argentina",
+      "target": "Chile",
+      "type": "borders",
+      "weight": 0.95
+    },
+    {
+      "source": "Peru",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Lima",
+      "target": "Peru",
+      "type": "capital-of",
+      "weight": 0.99
+    },
+    {
+      "source": "Lima",
+      "target": "City",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Peru",
+      "target": "South America",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Brazil",
+      "target": "Peru",
+      "type": "borders",
+      "weight": 0.95
+    },
+    {
+      "source": "Colombia",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Bogot\u00e1",
+      "target": "Colombia",
+      "type": "capital-of",
+      "weight": 0.99
+    },
+    {
+      "source": "Bogot\u00e1",
+      "target": "City",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Colombia",
+      "target": "South America",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Brazil",
+      "target": "Colombia",
+      "type": "borders",
+      "weight": 0.95
+    },
+    {
+      "source": "Venezuela",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Caracas",
+      "target": "Venezuela",
+      "type": "capital-of",
+      "weight": 0.99
+    },
+    {
+      "source": "Caracas",
+      "target": "City",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Venezuela",
+      "target": "South America",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Brazil",
+      "target": "Venezuela",
+      "type": "borders",
+      "weight": 0.95
+    },
+    {
+      "source": "China",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Beijing",
+      "target": "China",
+      "type": "capital-of",
+      "weight": 0.99
+    },
+    {
+      "source": "Beijing",
+      "target": "City",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "China",
+      "target": "Asia",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "India",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "New Delhi",
+      "target": "India",
+      "type": "capital-of",
+      "weight": 0.99
+    },
+    {
+      "source": "New Delhi",
+      "target": "City",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "India",
+      "target": "Asia",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "China",
+      "target": "India",
+      "type": "borders",
+      "weight": 0.95
+    },
+    {
+      "source": "Japan",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Tokyo",
+      "target": "Japan",
+      "type": "capital-of",
+      "weight": 0.99
+    },
+    {
+      "source": "Tokyo",
+      "target": "City",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Japan",
+      "target": "Asia",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "South Korea",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Seoul",
+      "target": "South Korea",
+      "type": "capital-of",
+      "weight": 0.99
+    },
+    {
+      "source": "Seoul",
+      "target": "City",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "South Korea",
+      "target": "Asia",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Australia",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Canberra",
+      "target": "Australia",
+      "type": "capital-of",
+      "weight": 0.99
+    },
+    {
+      "source": "Canberra",
+      "target": "City",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Australia",
+      "target": "Oceania",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "New Zealand",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Wellington",
+      "target": "New Zealand",
+      "type": "capital-of",
+      "weight": 0.99
+    },
+    {
+      "source": "Wellington",
+      "target": "City",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "New Zealand",
+      "target": "Oceania",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Egypt",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Cairo",
+      "target": "Egypt",
+      "type": "capital-of",
+      "weight": 0.99
+    },
+    {
+      "source": "Cairo",
+      "target": "City",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Egypt",
+      "target": "Africa",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "South Africa",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Cape Town",
+      "target": "South Africa",
+      "type": "capital-of",
+      "weight": 0.99
+    },
+    {
+      "source": "Cape Town",
+      "target": "City",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "South Africa",
+      "target": "Africa",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Nigeria",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Abuja",
+      "target": "Nigeria",
+      "type": "capital-of",
+      "weight": 0.99
+    },
+    {
+      "source": "Abuja",
+      "target": "City",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Nigeria",
+      "target": "Africa",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Kenya",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Nairobi",
+      "target": "Kenya",
+      "type": "capital-of",
+      "weight": 0.99
+    },
+    {
+      "source": "Nairobi",
+      "target": "City",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Kenya",
+      "target": "Africa",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Atlantic Ocean",
+      "target": "Ocean",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Pacific Ocean",
+      "target": "Ocean",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Indian Ocean",
+      "target": "Ocean",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Arctic Ocean",
+      "target": "Ocean",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Southern Ocean",
+      "target": "Ocean",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Mediterranean Sea",
+      "target": "Sea",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Caribbean Sea",
+      "target": "Sea",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "North Sea",
+      "target": "Sea",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Baltic Sea",
+      "target": "Sea",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Black Sea",
+      "target": "Sea",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Red Sea",
+      "target": "Sea",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Alps",
+      "target": "Mountain Range",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Alps",
+      "target": "Europe",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Himalayas",
+      "target": "Mountain Range",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Himalayas",
+      "target": "Asia",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Mount Everest",
+      "target": "Mountain",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Mount Everest",
+      "target": "Himalayas",
+      "type": "PART_OF",
+      "weight": 0.99
+    },
+    {
+      "source": "Andes",
+      "target": "Mountain Range",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Andes",
+      "target": "South America",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Rocky Mountains",
+      "target": "Mountain Range",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Rocky Mountains",
+      "target": "North America",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Appalachian Mountains",
+      "target": "Mountain Range",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Appalachian Mountains",
+      "target": "North America",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Ural Mountains",
+      "target": "Mountain Range",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Ural Mountains",
+      "target": "Russia",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Carpathian Mountains",
+      "target": "Mountain Range",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Carpathian Mountains",
+      "target": "Europe",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Atlas Mountains",
+      "target": "Mountain Range",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Atlas Mountains",
+      "target": "Africa",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Amazon River",
+      "target": "River",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Amazon River",
+      "target": "South America",
+      "type": "flows-through",
+      "weight": 0.99
+    },
+    {
+      "source": "Nile River",
+      "target": "River",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Nile River",
+      "target": "Africa",
+      "type": "flows-through",
+      "weight": 0.99
+    },
+    {
+      "source": "Rhine River",
+      "target": "River",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Rhine River",
+      "target": "Europe",
+      "type": "flows-through",
+      "weight": 0.99
+    },
+    {
+      "source": "Danube River",
+      "target": "River",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Danube River",
+      "target": "Europe",
+      "type": "flows-through",
+      "weight": 0.99
+    },
+    {
+      "source": "Mississippi River",
+      "target": "River",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Mississippi River",
+      "target": "North America",
+      "type": "flows-through",
+      "weight": 0.99
+    },
+    {
+      "source": "Yangtze River",
+      "target": "River",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Yangtze River",
+      "target": "Asia",
+      "type": "flows-through",
+      "weight": 0.99
+    },
+    {
+      "source": "Congo River",
+      "target": "River",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Congo River",
+      "target": "Africa",
+      "type": "flows-through",
+      "weight": 0.99
+    },
+    {
+      "source": "Ganges River",
+      "target": "River",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Ganges River",
+      "target": "Asia",
+      "type": "flows-through",
+      "weight": 0.99
+    },
+    {
+      "source": "Volga River",
+      "target": "River",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Volga River",
+      "target": "Europe",
+      "type": "flows-through",
+      "weight": 0.99
+    },
+    {
+      "source": "Caspian Sea",
+      "target": "Lake",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Lake Superior",
+      "target": "Lake",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Lake Superior",
+      "target": "Great Lakes",
+      "type": "PART_OF",
+      "weight": 0.99
+    },
+    {
+      "source": "Lake Victoria",
+      "target": "Lake",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Lake Victoria",
+      "target": "Africa",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Lake Baikal",
+      "target": "Lake",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Lake Baikal",
+      "target": "Russia",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Great Lakes",
+      "target": "Lake System",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Great Lakes",
+      "target": "North America",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Dead Sea",
+      "target": "Lake",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Sahara Desert",
+      "target": "Desert",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Sahara Desert",
+      "target": "Africa",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Arabian Desert",
+      "target": "Desert",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Arabian Desert",
+      "target": "Asia",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Gobi Desert",
+      "target": "Desert",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Gobi Desert",
+      "target": "Asia",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Kalahari Desert",
+      "target": "Desert",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Kalahari Desert",
+      "target": "Africa",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Atacama Desert",
+      "target": "Desert",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Atacama Desert",
+      "target": "South America",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Antarctic Desert",
+      "target": "Desert",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Antarctic Desert",
+      "target": "Antarctica",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Greenland",
+      "target": "Island",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Madagascar",
+      "target": "Island",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Madagascar",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Great Britain",
+      "target": "Island",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Borneo",
+      "target": "Island",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "New Guinea",
+      "target": "Island",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Honshu",
+      "target": "Island",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Honshu",
+      "target": "Japan",
+      "type": "PART_OF",
+      "weight": 0.99
+    },
+    {
+      "source": "Sicily",
+      "target": "Island",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Sicily",
+      "target": "Italy",
+      "type": "PART_OF",
+      "weight": 0.99
+    },
+    {
+      "source": "Arabian Peninsula",
+      "target": "Peninsula",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Arabian Peninsula",
+      "target": "Asia",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Iberian Peninsula",
+      "target": "Peninsula",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Iberian Peninsula",
+      "target": "Europe",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Korean Peninsula",
+      "target": "Peninsula",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Korean Peninsula",
+      "target": "Asia",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Italian Peninsula",
+      "target": "Peninsula",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Italian Peninsula",
+      "target": "Europe",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Scandinavian Peninsula",
+      "target": "Peninsula",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Scandinavian Peninsula",
+      "target": "Europe",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Tropical Climate",
+      "target": "Climate",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Temperate Climate",
+      "target": "Climate",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Continental Climate",
+      "target": "Climate",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Mediterranean Climate",
+      "target": "Climate",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Desert Climate",
+      "target": "Climate",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Polar Climate",
+      "target": "Climate",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Tundra",
+      "target": "Biome",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Taiga",
+      "target": "Biome",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Grassland",
+      "target": "Biome",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Rainforest",
+      "target": "Biome",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Deciduous Forest",
+      "target": "Biome",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Coniferous Forest",
+      "target": "Biome",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Savanna",
+      "target": "Biome",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Cumulus Cloud",
+      "target": "Cloud",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Stratus Cloud",
+      "target": "Cloud",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Cirrus Cloud",
+      "target": "Cloud",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Cumulonimbus Cloud",
+      "target": "Cloud",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Hurricane",
+      "target": "Weather Phenomenon",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Tornado",
+      "target": "Weather Phenomenon",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Monsoon",
+      "target": "Weather Phenomenon",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Blizzard",
+      "target": "Weather Phenomenon",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Drought",
+      "target": "Weather Phenomenon",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Earthquake",
+      "target": "Natural Disaster",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Volcano",
+      "target": "Geological Feature",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Tsunami",
+      "target": "Natural Disaster",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Glacier",
+      "target": "Ice Formation",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Spring",
+      "target": "Season",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Summer",
+      "target": "Season",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Autumn",
+      "target": "Season",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Winter",
+      "target": "Season",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Climate Change",
+      "target": "Environmental Issue",
+      "type": "IS_A",
+      "weight": 0.96
+    },
+    {
+      "source": "Greenhouse Effect",
+      "target": "Atmospheric Process",
+      "type": "IS_A",
+      "weight": 0.96
+    },
+    {
+      "source": "Climate Change",
+      "target": "Greenhouse Effect",
+      "type": "HAS_PROPERTY",
+      "weight": 0.95
+    },
+    {
+      "source": "Solar System",
+      "target": "Star System",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Sun",
+      "target": "Star",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Sun",
+      "target": "Solar System",
+      "type": "PART_OF",
+      "weight": 0.99
+    },
+    {
+      "source": "Mercury",
+      "target": "Planet",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Mercury",
+      "target": "Solar System",
+      "type": "PART_OF",
+      "weight": 0.99
+    },
+    {
+      "source": "Venus",
+      "target": "Planet",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Venus",
+      "target": "Solar System",
+      "type": "PART_OF",
+      "weight": 0.99
+    },
+    {
+      "source": "Earth",
+      "target": "Planet",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Earth",
+      "target": "Solar System",
+      "type": "PART_OF",
+      "weight": 0.99
+    },
+    {
+      "source": "Mars",
+      "target": "Planet",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Mars",
+      "target": "Solar System",
+      "type": "PART_OF",
+      "weight": 0.99
+    },
+    {
+      "source": "Jupiter",
+      "target": "Planet",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Jupiter",
+      "target": "Solar System",
+      "type": "PART_OF",
+      "weight": 0.99
+    },
+    {
+      "source": "Saturn",
+      "target": "Planet",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Saturn",
+      "target": "Solar System",
+      "type": "PART_OF",
+      "weight": 0.99
+    },
+    {
+      "source": "Uranus",
+      "target": "Planet",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Uranus",
+      "target": "Solar System",
+      "type": "PART_OF",
+      "weight": 0.99
+    },
+    {
+      "source": "Neptune",
+      "target": "Planet",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Neptune",
+      "target": "Solar System",
+      "type": "PART_OF",
+      "weight": 0.99
+    },
+    {
+      "source": "Moon",
+      "target": "Satellite",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Moon",
+      "target": "Earth",
+      "type": "PART_OF",
+      "weight": 0.99
+    },
+    {
+      "source": "Asteroid",
+      "target": "Celestial Body",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Comet",
+      "target": "Celestial Body",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Milky Way Galaxy",
+      "target": "Galaxy",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Solar System",
+      "target": "Milky Way Galaxy",
+      "type": "PART_OF",
+      "weight": 0.99
+    },
+    {
+      "source": "Star",
+      "target": "Celestial Body",
+      "type": "IS_A",
+      "weight": 0.96
+    },
+    {
+      "source": "Galaxy",
+      "target": "Celestial Structure",
+      "type": "IS_A",
+      "weight": 0.96
+    },
+    {
+      "source": "Black Hole",
+      "target": "Celestial Object",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Nebula",
+      "target": "Celestial Object",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Supernova",
+      "target": "Stellar Event",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Light-year",
+      "target": "Distance Unit",
+      "type": "IS_A",
+      "weight": 0.96
+    },
+    {
+      "source": "International Space Station",
+      "target": "Spacecraft",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Apollo 11",
+      "target": "Space Mission",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Hubble Space Telescope",
+      "target": "Telescope",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "James Webb Space Telescope",
+      "target": "Telescope",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Mars Rover",
+      "target": "Spacecraft",
+      "type": "IS_A",
+      "weight": 0.96
+    },
+    {
+      "source": "SpaceX",
+      "target": "Space Company",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "NASA",
+      "target": "Space Agency",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Igneous Rock",
+      "target": "Rock",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Sedimentary Rock",
+      "target": "Rock",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Metamorphic Rock",
+      "target": "Rock",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Quartz",
+      "target": "Mineral",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Granite",
+      "target": "Igneous Rock",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Limestone",
+      "target": "Sedimentary Rock",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Marble",
+      "target": "Metamorphic Rock",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Plate Tectonics",
+      "target": "Geological Theory",
+      "type": "IS_A",
+      "weight": 0.96
+    },
+    {
+      "source": "Continental Drift",
+      "target": "Geological Theory",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Pangaea",
+      "target": "Supercontinent",
+      "type": "IS_A",
+      "weight": 0.96
+    },
+    {
+      "source": "Ring of Fire",
+      "target": "Geological Region",
+      "type": "IS_A",
+      "weight": 0.96
+    },
+    {
+      "source": "Ring of Fire",
+      "target": "Pacific Ocean",
+      "type": "located-in",
+      "weight": 0.95
+    },
+    {
+      "source": "Bavaria",
+      "target": "German State",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Bavaria",
+      "target": "Germany",
+      "type": "PART_OF",
+      "weight": 0.99
+    },
+    {
+      "source": "Munich",
+      "target": "Bavaria",
+      "type": "capital-of",
+      "weight": 0.99
+    },
+    {
+      "source": "North Rhine-Westphalia",
+      "target": "German State",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "North Rhine-Westphalia",
+      "target": "Germany",
+      "type": "PART_OF",
+      "weight": 0.99
+    },
+    {
+      "source": "D\u00fcsseldorf",
+      "target": "North Rhine-Westphalia",
+      "type": "capital-of",
+      "weight": 0.99
+    },
+    {
+      "source": "Baden-W\u00fcrttemberg",
+      "target": "German State",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Baden-W\u00fcrttemberg",
+      "target": "Germany",
+      "type": "PART_OF",
+      "weight": 0.99
+    },
+    {
+      "source": "Stuttgart",
+      "target": "Baden-W\u00fcrttemberg",
+      "type": "capital-of",
+      "weight": 0.99
+    },
+    {
+      "source": "Lower Saxony",
+      "target": "German State",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Lower Saxony",
+      "target": "Germany",
+      "type": "PART_OF",
+      "weight": 0.99
+    },
+    {
+      "source": "Hanover",
+      "target": "Lower Saxony",
+      "type": "capital-of",
+      "weight": 0.99
+    },
+    {
+      "source": "Hesse",
+      "target": "German State",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Hesse",
+      "target": "Germany",
+      "type": "PART_OF",
+      "weight": 0.99
+    },
+    {
+      "source": "Frankfurt Am Main",
+      "target": "Hesse",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Saxony",
+      "target": "German State",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Saxony",
+      "target": "Germany",
+      "type": "PART_OF",
+      "weight": 0.99
+    },
+    {
+      "source": "Dresden",
+      "target": "Saxony",
+      "type": "capital-of",
+      "weight": 0.99
+    },
+    {
+      "source": "Rhineland-Palatinate",
+      "target": "German State",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Rhineland-Palatinate",
+      "target": "Germany",
+      "type": "PART_OF",
+      "weight": 0.99
+    },
+    {
+      "source": "Schleswig-Holstein",
+      "target": "German State",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Schleswig-Holstein",
+      "target": "Germany",
+      "type": "PART_OF",
+      "weight": 0.99
+    },
+    {
+      "source": "Brandenburg",
+      "target": "German State",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Brandenburg",
+      "target": "Germany",
+      "type": "PART_OF",
+      "weight": 0.99
+    },
+    {
+      "source": "Potsdam",
+      "target": "Brandenburg",
+      "type": "capital-of",
+      "weight": 0.99
+    },
+    {
+      "source": "Thuringia",
+      "target": "German State",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Thuringia",
+      "target": "Germany",
+      "type": "PART_OF",
+      "weight": 0.99
+    },
+    {
+      "source": "Mecklenburg-Vorpommern",
+      "target": "German State",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Mecklenburg-Vorpommern",
+      "target": "Germany",
+      "type": "PART_OF",
+      "weight": 0.99
+    },
+    {
+      "source": "Saxony-Anhalt",
+      "target": "German State",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Saxony-Anhalt",
+      "target": "Germany",
+      "type": "PART_OF",
+      "weight": 0.99
+    },
+    {
+      "source": "Saarland",
+      "target": "German State",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Saarland",
+      "target": "Germany",
+      "type": "PART_OF",
+      "weight": 0.99
+    },
+    {
+      "source": "Bremen",
+      "target": "German State",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Bremen",
+      "target": "Germany",
+      "type": "PART_OF",
+      "weight": 0.99
+    },
+    {
+      "source": "Hamburg",
+      "target": "German State",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Hamburg",
+      "target": "Germany",
+      "type": "PART_OF",
+      "weight": 0.99
+    },
+    {
+      "source": "Cologne",
+      "target": "North Rhine-Westphalia",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Leipzig",
+      "target": "Saxony",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Nuremberg",
+      "target": "Bavaria",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Thailand",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Bangkok",
+      "target": "Thailand",
+      "type": "capital-of",
+      "weight": 0.99
+    },
+    {
+      "source": "Bangkok",
+      "target": "City",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Thailand",
+      "target": "Asia",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Vietnam",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Hanoi",
+      "target": "Vietnam",
+      "type": "capital-of",
+      "weight": 0.99
+    },
+    {
+      "source": "Hanoi",
+      "target": "City",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Vietnam",
+      "target": "Asia",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Indonesia",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Jakarta",
+      "target": "Indonesia",
+      "type": "capital-of",
+      "weight": 0.99
+    },
+    {
+      "source": "Jakarta",
+      "target": "City",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Indonesia",
+      "target": "Asia",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Malaysia",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Kuala Lumpur",
+      "target": "Malaysia",
+      "type": "capital-of",
+      "weight": 0.99
+    },
+    {
+      "source": "Kuala Lumpur",
+      "target": "City",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Malaysia",
+      "target": "Asia",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Philippines",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Manila",
+      "target": "Philippines",
+      "type": "capital-of",
+      "weight": 0.99
+    },
+    {
+      "source": "Manila",
+      "target": "City",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Philippines",
+      "target": "Asia",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Singapore",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Singapore",
+      "target": "City",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Singapore",
+      "target": "Asia",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Norway",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Oslo",
+      "target": "Norway",
+      "type": "capital-of",
+      "weight": 0.99
+    },
+    {
+      "source": "Oslo",
+      "target": "City",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Norway",
+      "target": "Europe",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Sweden",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Stockholm",
+      "target": "Sweden",
+      "type": "capital-of",
+      "weight": 0.99
+    },
+    {
+      "source": "Stockholm",
+      "target": "City",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Sweden",
+      "target": "Europe",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Finland",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Helsinki",
+      "target": "Finland",
+      "type": "capital-of",
+      "weight": 0.99
+    },
+    {
+      "source": "Helsinki",
+      "target": "City",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Finland",
+      "target": "Europe",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Denmark",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Copenhagen",
+      "target": "Denmark",
+      "type": "capital-of",
+      "weight": 0.99
+    },
+    {
+      "source": "Copenhagen",
+      "target": "City",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Denmark",
+      "target": "Europe",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Iceland",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Reykjavik",
+      "target": "Iceland",
+      "type": "capital-of",
+      "weight": 0.99
+    },
+    {
+      "source": "Reykjavik",
+      "target": "City",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Iceland",
+      "target": "Europe",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Ireland",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Dublin",
+      "target": "Ireland",
+      "type": "capital-of",
+      "weight": 0.99
+    },
+    {
+      "source": "Dublin",
+      "target": "City",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Ireland",
+      "target": "Europe",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Greece",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Athens",
+      "target": "Greece",
+      "type": "capital-of",
+      "weight": 0.99
+    },
+    {
+      "source": "Athens",
+      "target": "City",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Greece",
+      "target": "Europe",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Turkey",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Ankara",
+      "target": "Turkey",
+      "type": "capital-of",
+      "weight": 0.99
+    },
+    {
+      "source": "Ankara",
+      "target": "City",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Turkey",
+      "target": "Europe",
+      "type": "located-in",
+      "weight": 0.9
+    },
+    {
+      "source": "Turkey",
+      "target": "Asia",
+      "type": "located-in",
+      "weight": 0.9
+    },
+    {
+      "source": "Romania",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Bucharest",
+      "target": "Romania",
+      "type": "capital-of",
+      "weight": 0.99
+    },
+    {
+      "source": "Bucharest",
+      "target": "City",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Romania",
+      "target": "Europe",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Bulgaria",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Sofia",
+      "target": "Bulgaria",
+      "type": "capital-of",
+      "weight": 0.99
+    },
+    {
+      "source": "Sofia",
+      "target": "City",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Bulgaria",
+      "target": "Europe",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Croatia",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Zagreb",
+      "target": "Croatia",
+      "type": "capital-of",
+      "weight": 0.99
+    },
+    {
+      "source": "Zagreb",
+      "target": "City",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Croatia",
+      "target": "Europe",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Serbia",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Belgrade",
+      "target": "Serbia",
+      "type": "capital-of",
+      "weight": 0.99
+    },
+    {
+      "source": "Belgrade",
+      "target": "City",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Serbia",
+      "target": "Europe",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Slovakia",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Bratislava",
+      "target": "Slovakia",
+      "type": "capital-of",
+      "weight": 0.99
+    },
+    {
+      "source": "Bratislava",
+      "target": "City",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Slovakia",
+      "target": "Europe",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Slovenia",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Ljubljana",
+      "target": "Slovenia",
+      "type": "capital-of",
+      "weight": 0.99
+    },
+    {
+      "source": "Ljubljana",
+      "target": "City",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Slovenia",
+      "target": "Europe",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Estonia",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Tallinn",
+      "target": "Estonia",
+      "type": "capital-of",
+      "weight": 0.99
+    },
+    {
+      "source": "Tallinn",
+      "target": "City",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Estonia",
+      "target": "Europe",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Latvia",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Riga",
+      "target": "Latvia",
+      "type": "capital-of",
+      "weight": 0.99
+    },
+    {
+      "source": "Riga",
+      "target": "City",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Latvia",
+      "target": "Europe",
+      "type": "located-in",
+      "weight": 0.99
+    },
+    {
+      "source": "Lithuania",
+      "target": "Country",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Vilnius",
+      "target": "Lithuania",
+      "type": "capital-of",
+      "weight": 0.99
+    },
+    {
+      "source": "Vilnius",
+      "target": "City",
+      "type": "IS_A",
+      "weight": 0.99
+    },
+    {
+      "source": "Lithuania",
+      "target": "Europe",
+      "type": "located-in",
+      "weight": 0.99
+    }
+  ]
+}

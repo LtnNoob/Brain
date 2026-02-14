@@ -12,7 +12,7 @@
 #include "persistent_ltm.hpp"
 #include "stm_snapshot.hpp"
 #include "stm_snapshot_data.hpp"
-#include "../micromodel/micro_model_registry.hpp"
+#include "../cmodel/concept_model_registry.hpp"
 #include "../kan/kan_module.hpp"
 #include "../common/types.hpp"
 
@@ -108,7 +108,7 @@ public:
     std::string save(
         PersistentLTM*              ltm,
         const STMSnapshotData*      stm_data,
-        const MicroModelRegistry*   models,
+        const ConceptModelRegistry*   models,
         const std::vector<std::pair<std::string, KANModule*>>* kan_modules,
         const CognitiveState*       cognitive,
         const CheckpointConfig*     config
@@ -128,7 +128,7 @@ private:
     // Write individual component files and return their hashes
     ComponentHash write_ltm(const std::string& dir, PersistentLTM& ltm);
     ComponentHash write_stm(const std::string& dir, const STMSnapshotData& data);
-    ComponentHash write_micromodels(const std::string& dir, const MicroModelRegistry& reg);
+    ComponentHash write_micromodels(const std::string& dir, const ConceptModelRegistry& reg);
     ComponentHash write_kan_modules(const std::string& dir,
         const std::vector<std::pair<std::string, KANModule*>>& modules);
     ComponentHash write_cognitive(const std::string& dir, const CognitiveState& state);

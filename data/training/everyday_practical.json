@@ -1,0 +1,5239 @@
+{
+  "source": "everyday_practical_knowledge",
+  "concepts": [
+    {
+      "label": "Automobile",
+      "definition": "A four-wheeled motor vehicle designed primarily for passenger transportation on roads",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Engine",
+      "definition": "A machine that converts fuel into mechanical energy to power vehicles",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Steering Wheel",
+      "definition": "A wheel-shaped control device used to steer a vehicle",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Brake",
+      "definition": "A device for slowing or stopping the motion of a vehicle",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Tire",
+      "definition": "A rubber covering that fits around a wheel rim to provide traction and cushioning",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Headlight",
+      "definition": "A bright light at the front of a vehicle used for illumination while driving",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Seat Belt",
+      "definition": "A safety harness designed to secure occupants in a vehicle during collisions",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Windshield",
+      "definition": "The front window of a vehicle that protects occupants from wind and debris",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Fuel Tank",
+      "definition": "A container that stores fuel for an engine",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Transmission",
+      "definition": "A mechanical system that transmits power from the engine to the wheels",
+      "epistemic_type": "FACT",
+      "trust": 0.98
+    },
+    {
+      "label": "Bus",
+      "definition": "A large motor vehicle designed to carry many passengers",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Train",
+      "definition": "A series of connected vehicles that run on railway tracks",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Airplane",
+      "definition": "A powered aircraft with fixed wings that can fly through the air",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Bicycle",
+      "definition": "A two-wheeled vehicle powered by pedaling",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Motorcycle",
+      "definition": "A two-wheeled motor vehicle",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Ship",
+      "definition": "A large watercraft designed for maritime transportation",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Truck",
+      "definition": "A large motor vehicle designed for transporting cargo",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Subway",
+      "definition": "An underground railway system in urban areas",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Taxi",
+      "definition": "A vehicle for hire with a driver for transportation",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Ambulance",
+      "definition": "A vehicle equipped for transporting sick or injured people",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Chair",
+      "definition": "A piece of furniture with a seat, back, and often arms, for one person",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Table",
+      "definition": "A piece of furniture with a flat top supported by legs",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Bed",
+      "definition": "A piece of furniture used for sleeping or resting",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Sofa",
+      "definition": "A long upholstered seat for two or more people",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Wardrobe",
+      "definition": "A large cupboard for storing clothes",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Bookshelf",
+      "definition": "A shelf or set of shelves for storing books",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Desk",
+      "definition": "A piece of furniture with a flat surface for writing or working",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Drawer",
+      "definition": "A sliding compartment in furniture for storage",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Mirror",
+      "definition": "A reflective surface, typically glass coated with metal",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Lamp",
+      "definition": "A device that produces artificial light",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Refrigerator",
+      "definition": "An appliance that keeps food and drinks cold",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Oven",
+      "definition": "An enclosed compartment for cooking food using heat",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Microwave",
+      "definition": "An appliance that cooks food using electromagnetic radiation",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Dishwasher",
+      "definition": "An appliance that automatically washes dishes",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Washing Machine",
+      "definition": "An appliance that washes clothes and textiles",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Dryer",
+      "definition": "An appliance that removes moisture from wet clothes",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Vacuum Cleaner",
+      "definition": "An appliance that cleans floors and surfaces by suction",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Television",
+      "definition": "An electronic device for receiving and displaying broadcast programs",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Radio",
+      "definition": "An electronic device for receiving radio broadcasts",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Air Conditioner",
+      "definition": "An appliance that cools and dehumidifies indoor air",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Hammer",
+      "definition": "A tool with a heavy head for driving nails or breaking objects",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Screwdriver",
+      "definition": "A tool for turning screws with slotted or cross-shaped heads",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Wrench",
+      "definition": "A tool for gripping and turning nuts and bolts",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Saw",
+      "definition": "A tool with a serrated blade for cutting wood or metal",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Drill",
+      "definition": "A tool for making holes in various materials",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Pliers",
+      "definition": "A tool with two pivoted handles for gripping objects",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Measuring Tape",
+      "definition": "A flexible ruler used for measuring distances",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Level",
+      "definition": "A tool used to determine if a surface is horizontal or vertical",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Ladder",
+      "definition": "A structure with rungs or steps for climbing up or down",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Toolbox",
+      "definition": "A container for storing and organizing tools",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Kitchen Knife",
+      "definition": "A sharp blade used for cutting and preparing food",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Cutting Board",
+      "definition": "A flat surface used for cutting and preparing food",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Pan",
+      "definition": "A flat-bottomed cooking vessel with a handle",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Pot",
+      "definition": "A deep round cooking vessel with a handle and lid",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Plate",
+      "definition": "A flat round dish for serving food",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Bowl",
+      "definition": "A deep round dish for serving food or liquids",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Cup",
+      "definition": "A small container for drinking liquids",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Glass",
+      "definition": "A transparent container for drinking liquids",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Fork",
+      "definition": "A utensil with prongs for eating food",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Spoon",
+      "definition": "A utensil with a bowl-shaped end for eating liquids and soft foods",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Toilet",
+      "definition": "A plumbing fixture for waste disposal",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Bathtub",
+      "definition": "A large container for bathing",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Shower",
+      "definition": "A device that sprays water for bathing",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Sink",
+      "definition": "A basin with faucets for washing",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Faucet",
+      "definition": "A device that controls the flow of water from pipes",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Towel",
+      "definition": "An absorbent cloth for drying the body",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Toothbrush",
+      "definition": "A small brush for cleaning teeth",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Toothpaste",
+      "definition": "A paste for cleaning teeth with a toothbrush",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Soap",
+      "definition": "A substance used for washing and cleaning",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Shampoo",
+      "definition": "A liquid soap designed for washing hair",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Lawn Mower",
+      "definition": "A machine for cutting grass to an even length",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Shovel",
+      "definition": "A tool with a broad blade for digging",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Rake",
+      "definition": "A tool with prongs for gathering leaves and debris",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Hose",
+      "definition": "A flexible tube for conveying water",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Watering Can",
+      "definition": "A container with a spout for watering plants",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Wheelbarrow",
+      "definition": "A cart with one wheel for transporting materials",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Pruning Shears",
+      "definition": "A tool for trimming plants and small branches",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Garden Gloves",
+      "definition": "Protective gloves worn while gardening",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Fertilizer",
+      "definition": "A substance added to soil to promote plant growth",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Mulch",
+      "definition": "Material spread around plants to retain moisture and suppress weeds",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Bread",
+      "definition": "A baked food made from flour and water",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Rice",
+      "definition": "A cereal grain that is a staple food in many cultures",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Pasta",
+      "definition": "A food made from wheat flour and water, shaped into various forms",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Potato",
+      "definition": "A starchy tuber vegetable",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Tomato",
+      "definition": "A red fruit commonly used as a vegetable in cooking",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Onion",
+      "definition": "A bulbous vegetable with a strong flavor and aroma",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Carrot",
+      "definition": "An orange root vegetable high in vitamin A",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Lettuce",
+      "definition": "A leafy green vegetable commonly used in salads",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Apple",
+      "definition": "A sweet fruit that grows on trees",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Banana",
+      "definition": "A yellow curved fruit high in potassium",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Chicken",
+      "definition": "Poultry meat from domestic fowl",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Beef",
+      "definition": "Meat from cattle",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Pork",
+      "definition": "Meat from pigs",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Fish",
+      "definition": "Aquatic animals consumed as food",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Egg",
+      "definition": "A reproductive cell of birds, commonly eaten as food",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Milk",
+      "definition": "A white liquid produced by mammals for feeding their young",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Cheese",
+      "definition": "A dairy product made from milk",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Butter",
+      "definition": "A dairy product made by churning cream",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Yogurt",
+      "definition": "A fermented dairy product",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Ice Cream",
+      "definition": "A frozen dairy dessert",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Salt",
+      "definition": "A white crystalline substance used to flavor and preserve food",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Pepper",
+      "definition": "A spice made from ground peppercorns",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Sugar",
+      "definition": "A sweet crystalline substance used as a sweetener",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Garlic",
+      "definition": "A pungent bulbous plant used as seasoning",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Oregano",
+      "definition": "An aromatic herb used in Mediterranean cooking",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Basil",
+      "definition": "A fragrant herb used in cooking",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Cinnamon",
+      "definition": "A spice made from the bark of certain trees",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Paprika",
+      "definition": "A spice made from ground red peppers",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Vanilla",
+      "definition": "A flavoring extract from vanilla beans",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Olive Oil",
+      "definition": "Oil extracted from olives, used in cooking",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Water",
+      "definition": "A clear liquid essential for life",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Coffee",
+      "definition": "A beverage made from roasted coffee beans",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Tea",
+      "definition": "A beverage made by steeping tea leaves in hot water",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Juice",
+      "definition": "A liquid extracted from fruits or vegetables",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Soda",
+      "definition": "A carbonated soft drink",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Beer",
+      "definition": "An alcoholic beverage made from fermented grains",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Wine",
+      "definition": "An alcoholic beverage made from fermented grapes",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Whiskey",
+      "definition": "A distilled alcoholic beverage made from grain",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Vodka",
+      "definition": "A clear distilled alcoholic beverage",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Lemonade",
+      "definition": "A sweet drink made from lemon juice, water, and sugar",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Boiling",
+      "definition": "Cooking food in boiling water or liquid",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Frying",
+      "definition": "Cooking food in hot oil or fat",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Baking",
+      "definition": "Cooking food in an oven using dry heat",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Grilling",
+      "definition": "Cooking food over direct heat",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Steaming",
+      "definition": "Cooking food using steam from boiling water",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Roasting",
+      "definition": "Cooking food in an oven with dry heat",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Saut\u00e9ing",
+      "definition": "Cooking food quickly in a small amount of fat",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Simmering",
+      "definition": "Cooking food in liquid at just below boiling point",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Marinating",
+      "definition": "Soaking food in a seasoned liquid before cooking",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Seasoning",
+      "definition": "Adding salt, herbs, or spices to enhance flavor",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Shirt",
+      "definition": "A garment for the upper body with sleeves",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Pants",
+      "definition": "A garment covering the legs and waist",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Dress",
+      "definition": "A one-piece garment for women covering the body",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Skirt",
+      "definition": "A garment that hangs from the waist and covers the lower body",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Jacket",
+      "definition": "An outer garment worn on the upper body",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Coat",
+      "definition": "A long outer garment worn for warmth or protection",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Sweater",
+      "definition": "A knitted garment worn on the upper body for warmth",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "T-Shirt",
+      "definition": "A casual shirt with short sleeves and no collar",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Jeans",
+      "definition": "Casual pants made of denim",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Shorts",
+      "definition": "Short pants that end above the knee",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Shoes",
+      "definition": "Footwear that covers and protects the feet",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Socks",
+      "definition": "Garments worn on the feet inside shoes",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Hat",
+      "definition": "A covering for the head",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Gloves",
+      "definition": "Coverings for the hands with separate sections for fingers",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Scarf",
+      "definition": "A piece of fabric worn around the neck for warmth or fashion",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Belt",
+      "definition": "A strip of material worn around the waist",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Tie",
+      "definition": "A narrow strip of fabric worn around the neck",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Watch",
+      "definition": "A timepiece worn on the wrist",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Ring",
+      "definition": "A circular band worn as jewelry on a finger",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Necklace",
+      "definition": "Jewelry worn around the neck",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Cotton",
+      "definition": "A soft white fibrous substance from cotton plants used in textiles",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Wool",
+      "definition": "Fiber from sheep and other animals used in textiles",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Silk",
+      "definition": "A fine lustrous fiber produced by silkworms",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Leather",
+      "definition": "Material made from animal hides",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Polyester",
+      "definition": "A synthetic polymer used in textiles",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Denim",
+      "definition": "A sturdy cotton fabric used for jeans",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Lace",
+      "definition": "A delicate fabric made of yarn or thread in open web patterns",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Velvet",
+      "definition": "A soft fabric with a dense pile",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Corduroy",
+      "definition": "A fabric with raised cords or ridges",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Flannel",
+      "definition": "A soft woven fabric typically made of wool or cotton",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "House",
+      "definition": "A building designed for human habitation",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Apartment",
+      "definition": "A self-contained housing unit in a larger building",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Office",
+      "definition": "A building or room used for business activities",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Factory",
+      "definition": "A building where goods are manufactured",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "School",
+      "definition": "A building where education takes place",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Hospital",
+      "definition": "A building where medical treatment is provided",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Restaurant",
+      "definition": "A building where food is prepared and served to customers",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Hotel",
+      "definition": "A building that provides lodging for travelers",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Bank",
+      "definition": "A building where financial services are provided",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Church",
+      "definition": "A building used for Christian worship",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Room",
+      "definition": "A space within a building enclosed by walls",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Kitchen",
+      "definition": "A room where food is prepared and cooked",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Bathroom",
+      "definition": "A room containing facilities for personal hygiene",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Living Room",
+      "definition": "A room in a home used for relaxation and entertainment",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Bedroom",
+      "definition": "A room used primarily for sleeping",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Dining Room",
+      "definition": "A room used for eating meals",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Garage",
+      "definition": "A building or space for parking vehicles",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Basement",
+      "definition": "The lowest floor of a building, typically underground",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Attic",
+      "definition": "A space directly below the roof of a building",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Balcony",
+      "definition": "A platform projecting from the wall of a building",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Door",
+      "definition": "A movable barrier used to open and close an entrance",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Window",
+      "definition": "An opening in a wall fitted with glass to admit light",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Wall",
+      "definition": "A vertical structure that divides or encloses a space",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Roof",
+      "definition": "The structure covering the top of a building",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Floor",
+      "definition": "The bottom surface of a room",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Ceiling",
+      "definition": "The upper interior surface of a room",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Stairs",
+      "definition": "A series of steps for moving between floors",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Hallway",
+      "definition": "A corridor in a building connecting rooms",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Chimney",
+      "definition": "A vertical structure for venting smoke from fireplaces",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Foundation",
+      "definition": "The base structure that supports a building",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Road",
+      "definition": "A paved way for vehicles to travel",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Highway",
+      "definition": "A major road designed for fast vehicle traffic",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Street",
+      "definition": "A public road in a city or town",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Sidewalk",
+      "definition": "A paved path for pedestrians alongside a road",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Bridge",
+      "definition": "A structure carrying a road over an obstacle",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Tunnel",
+      "definition": "An underground passage for transportation",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Railway",
+      "definition": "A track for trains to travel on",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Airport",
+      "definition": "A facility for aircraft takeoff and landing",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Port",
+      "definition": "A harbor facility for ships and boats",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Parking Lot",
+      "definition": "An area designated for parking vehicles",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Traffic Light",
+      "definition": "A signaling device to control vehicle and pedestrian traffic",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Stop Sign",
+      "definition": "A traffic sign requiring vehicles to come to a complete stop",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Speed Limit",
+      "definition": "The maximum legal speed for vehicles on a road",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Crosswalk",
+      "definition": "A designated path for pedestrians to cross a road",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Yield Sign",
+      "definition": "A traffic sign requiring drivers to give way to other traffic",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Lane",
+      "definition": "A marked division of a road for traffic flow",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Roundabout",
+      "definition": "A circular intersection where traffic flows around a central island",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Toll Booth",
+      "definition": "A checkpoint where drivers pay fees to use certain roads",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Gas Station",
+      "definition": "A facility that sells fuel for vehicles",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Rest Area",
+      "definition": "A designated area for travelers to stop and rest",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Telephone",
+      "definition": "A device for transmitting voice over distances",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Mobile Phone",
+      "definition": "A portable telephone that can make calls via radio waves",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Computer",
+      "definition": "An electronic device for processing and storing information",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Internet",
+      "definition": "A global network of interconnected computers",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Email",
+      "definition": "Electronic mail sent over the internet",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Website",
+      "definition": "A collection of web pages accessible via the internet",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Social Media",
+      "definition": "Online platforms for social interaction and content sharing",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Text Message",
+      "definition": "A short electronic message sent between phones",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Video Call",
+      "definition": "A telephone call that includes video transmission",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Letter",
+      "definition": "A written message sent through postal mail",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Money",
+      "definition": "A medium of exchange for goods and services",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Cash",
+      "definition": "Physical money in the form of coins and banknotes",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Credit Card",
+      "definition": "A plastic card used to borrow money for purchases",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Debit Card",
+      "definition": "A plastic card used to withdraw money directly from a bank account",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Bank Account",
+      "definition": "A financial account held at a bank for storing money",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Loan",
+      "definition": "Money borrowed that must be repaid with interest",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Interest",
+      "definition": "The cost of borrowing money or the return on savings",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Insurance",
+      "definition": "Financial protection against potential losses",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Tax",
+      "definition": "A compulsory contribution to government revenue",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Investment",
+      "definition": "The action of putting money into financial schemes for profit",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "School",
+      "definition": "An institution for educating children and young people",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "University",
+      "definition": "A higher education institution offering degrees",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Teacher",
+      "definition": "A person who instructs students in academic subjects",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Student",
+      "definition": "A person who is studying at a school or university",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Classroom",
+      "definition": "A room where classes are taught",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Textbook",
+      "definition": "A book used as a standard work for study",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Homework",
+      "definition": "School assignments to be completed outside of class",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Exam",
+      "definition": "A formal test of knowledge or ability",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Degree",
+      "definition": "An academic qualification awarded by a university",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Graduation",
+      "definition": "The completion of a course of study",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Mathematics",
+      "definition": "The study of numbers, shapes, and patterns",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Science",
+      "definition": "The systematic study of the natural world",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "History",
+      "definition": "The study of past events",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Geography",
+      "definition": "The study of Earth's features and human activities",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Language Arts",
+      "definition": "The study of reading, writing, and communication",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Physical Education",
+      "definition": "Classes focused on physical fitness and sports",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Art",
+      "definition": "Creative expression through visual and performing media",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Music",
+      "definition": "The art of arranging sounds in time",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Chemistry",
+      "definition": "The science of matter and its interactions",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Biology",
+      "definition": "The science of living organisms",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Doctor",
+      "definition": "A medical professional who diagnoses and treats illnesses",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Nurse",
+      "definition": "A healthcare professional who cares for patients",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Lawyer",
+      "definition": "A professional who practices law and represents clients",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Engineer",
+      "definition": "A professional who designs and builds systems and structures",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Police Officer",
+      "definition": "A law enforcement professional who maintains public order",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Firefighter",
+      "definition": "A professional who fights fires and responds to emergencies",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Pilot",
+      "definition": "A professional who operates aircraft",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Chef",
+      "definition": "A professional cook who prepares food in restaurants",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Farmer",
+      "definition": "A person who grows crops and raises animals for food",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Carpenter",
+      "definition": "A skilled worker who builds and repairs wooden structures",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Electrician",
+      "definition": "A skilled worker who installs and repairs electrical systems",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Plumber",
+      "definition": "A skilled worker who installs and repairs plumbing systems",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Mechanic",
+      "definition": "A skilled worker who repairs and maintains vehicles",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Architect",
+      "definition": "A professional who designs buildings and structures",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Accountant",
+      "definition": "A professional who manages financial records and taxes",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Librarian",
+      "definition": "A professional who manages library resources and assists patrons",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Pharmacist",
+      "definition": "A healthcare professional who dispenses medications",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Dentist",
+      "definition": "A medical professional who specializes in oral health",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Veterinarian",
+      "definition": "A medical professional who treats animals",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Artist",
+      "definition": "A person who creates works of art",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Journalist",
+      "definition": "A professional who researches and reports news",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Photographer",
+      "definition": "A professional who takes photographs",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Programmer",
+      "definition": "A professional who writes computer software",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Scientist",
+      "definition": "A professional who conducts scientific research",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Secretary",
+      "definition": "A professional who provides administrative support",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Manager",
+      "definition": "A professional who oversees and coordinates work activities",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Sales Representative",
+      "definition": "A professional who sells products or services",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Construction Worker",
+      "definition": "A worker who builds and maintains structures",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Delivery Driver",
+      "definition": "A professional who transports goods to customers",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Cashier",
+      "definition": "A worker who processes customer payments",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Dog",
+      "definition": "A domesticated carnivorous mammal kept as a pet",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Cat",
+      "definition": "A small domesticated carnivorous mammal kept as a pet",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Fish",
+      "definition": "Aquatic vertebrates with gills and fins",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Bird",
+      "definition": "Feathered vertebrates with wings and beaks",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Rabbit",
+      "definition": "A small mammal with long ears and powerful hind legs",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Hamster",
+      "definition": "A small rodent often kept as a pet",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Guinea Pig",
+      "definition": "A small domesticated rodent kept as a pet",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Turtle",
+      "definition": "A reptile with a shell covering its body",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Snake",
+      "definition": "A legless reptile with an elongated body",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Lizard",
+      "definition": "A reptile with four legs and a long tail",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Cow",
+      "definition": "A large domesticated mammal raised for milk and meat",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Pig",
+      "definition": "A domesticated mammal raised for meat",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Chicken",
+      "definition": "A domesticated bird raised for eggs and meat",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Sheep",
+      "definition": "A domesticated mammal raised for wool and meat",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Goat",
+      "definition": "A domesticated mammal raised for milk and meat",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Horse",
+      "definition": "A large domesticated mammal used for riding and work",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Duck",
+      "definition": "A waterfowl with webbed feet and a broad bill",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Turkey",
+      "definition": "A large bird native to North America, often raised for meat",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Donkey",
+      "definition": "A domesticated animal related to horses, used for carrying loads",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Llama",
+      "definition": "A domesticated South American mammal used for wool and packing",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Lion",
+      "definition": "A large carnivorous cat native to Africa",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Tiger",
+      "definition": "A large striped carnivorous cat native to Asia",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Elephant",
+      "definition": "A large mammal with a trunk and tusks",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Bear",
+      "definition": "A large omnivorous mammal with thick fur",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Wolf",
+      "definition": "A wild carnivorous mammal and ancestor of dogs",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Fox",
+      "definition": "A small carnivorous mammal with a bushy tail",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Deer",
+      "definition": "A herbivorous mammal with antlers in males",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Squirrel",
+      "definition": "A small rodent with a bushy tail that lives in trees",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Raccoon",
+      "definition": "A nocturnal mammal with distinctive facial markings",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Monkey",
+      "definition": "A primate with long arms and often a tail",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Bee",
+      "definition": "A flying insect that produces honey and pollinates plants",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Butterfly",
+      "definition": "A flying insect with colorful wings that undergoes metamorphosis",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Ant",
+      "definition": "A small social insect that lives in colonies",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Spider",
+      "definition": "An arachnid that spins webs to catch prey",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Fly",
+      "definition": "A small flying insect with two wings",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Mosquito",
+      "definition": "A small flying insect that feeds on blood",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Ladybug",
+      "definition": "A small beetle that is beneficial for gardens",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Grasshopper",
+      "definition": "A jumping insect that feeds on plants",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Cricket",
+      "definition": "A jumping insect known for its chirping sound",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Dragonfly",
+      "definition": "A flying insect with large wings and excellent vision",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Oak Tree",
+      "definition": "A deciduous tree known for its acorns and strong wood",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Pine Tree",
+      "definition": "An evergreen coniferous tree with needle-like leaves",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Maple Tree",
+      "definition": "A deciduous tree known for its colorful fall leaves and syrup",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Palm Tree",
+      "definition": "A tropical tree with large leaves at the top",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Willow Tree",
+      "definition": "A tree with long, drooping branches and narrow leaves",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Birch Tree",
+      "definition": "A tree with distinctive white bark",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Cedar Tree",
+      "definition": "An evergreen tree with aromatic wood",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Fruit Tree",
+      "definition": "A tree that produces edible fruit",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Cherry Tree",
+      "definition": "A tree that produces small red or pink fruits",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Apple Tree",
+      "definition": "A tree that produces apples",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Rose",
+      "definition": "A flowering plant known for its beauty and fragrance",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Tulip",
+      "definition": "A spring flowering plant with cup-shaped blooms",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Sunflower",
+      "definition": "A tall plant with large yellow flowers that follow the sun",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Daisy",
+      "definition": "A small flowering plant with white petals and yellow center",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Lily",
+      "definition": "A flowering plant with large, often fragrant blooms",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Violet",
+      "definition": "A small flowering plant with purple or blue blooms",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Orchid",
+      "definition": "An exotic flowering plant with complex blooms",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Carnation",
+      "definition": "A flowering plant with ruffled petals",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Iris",
+      "definition": "A flowering plant with sword-like leaves and colorful blooms",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Daffodil",
+      "definition": "A spring flowering plant with yellow trumpet-shaped blooms",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Spinach",
+      "definition": "A leafy green vegetable high in iron",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Broccoli",
+      "definition": "A green vegetable with tree-like florets",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Cabbage",
+      "definition": "A leafy vegetable with tightly packed leaves",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Cucumber",
+      "definition": "A long green vegetable with high water content",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Pepper",
+      "definition": "A colorful vegetable that can be sweet or hot",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Corn",
+      "definition": "A cereal grain with kernels on a cob",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Peas",
+      "definition": "Small round green seeds eaten as a vegetable",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Beans",
+      "definition": "Edible seeds that grow in pods",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Radish",
+      "definition": "A small root vegetable with a spicy flavor",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Beet",
+      "definition": "A root vegetable with a sweet earthy flavor",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Orange",
+      "definition": "A citrus fruit with orange-colored skin and sweet juice",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Grape",
+      "definition": "Small round fruits that grow in clusters",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Strawberry",
+      "definition": "A red berry with seeds on its surface",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Blueberry",
+      "definition": "A small blue berry rich in antioxidants",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Pear",
+      "definition": "A sweet fruit with a distinctive shape",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Peach",
+      "definition": "A fuzzy fruit with sweet orange flesh",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Plum",
+      "definition": "A smooth-skinned fruit with sweet flesh",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Cherry",
+      "definition": "A small red fruit with a pit",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Watermelon",
+      "definition": "A large fruit with green skin and red flesh",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Pineapple",
+      "definition": "A tropical fruit with spiky skin and sweet yellow flesh",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Wheat",
+      "definition": "A cereal grain used to make flour and bread",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Barley",
+      "definition": "A cereal grain used in brewing and food",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Oats",
+      "definition": "A cereal grain commonly eaten as oatmeal",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Rye",
+      "definition": "A cereal grain used to make dark bread",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Quinoa",
+      "definition": "A grain-like seed that is high in protein",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Millet",
+      "definition": "A small grain used as food and bird feed",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Buckwheat",
+      "definition": "A plant whose seeds are used like grain",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Sorghum",
+      "definition": "A drought-resistant grain crop",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Amaranth",
+      "definition": "A plant with edible leaves and grain-like seeds",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Chia",
+      "definition": "Small seeds that are high in omega-3 fatty acids",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Wood",
+      "definition": "Hard fibrous material from trees used in construction",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Metal",
+      "definition": "A solid material that is typically hard and shiny",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Plastic",
+      "definition": "A synthetic material that can be molded into various shapes",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Glass",
+      "definition": "A transparent material made by heating sand",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Concrete",
+      "definition": "A building material made from cement, water, and aggregates",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Steel",
+      "definition": "An alloy of iron and carbon that is very strong",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Aluminum",
+      "definition": "A lightweight metal that resists corrosion",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Copper",
+      "definition": "A reddish-brown metal that conducts electricity well",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Brass",
+      "definition": "An alloy of copper and zinc",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Bronze",
+      "definition": "An alloy of copper and tin",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Rubber",
+      "definition": "An elastic material made from latex or synthetic polymers",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Ceramic",
+      "definition": "A hard material made by heating clay or other materials",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Paper",
+      "definition": "A thin material made from wood pulp used for writing",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Cardboard",
+      "definition": "A thick paper-based material used for packaging",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Fabric",
+      "definition": "Material made by weaving or knitting fibers",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Stone",
+      "definition": "Hard solid mineral matter from the earth",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Marble",
+      "definition": "A hard stone used in sculpture and construction",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Granite",
+      "definition": "A very hard rock used in construction",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Limestone",
+      "definition": "A sedimentary rock used in construction",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Brick",
+      "definition": "A rectangular block made from fired clay",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Vehicle",
+      "definition": "A means of transportation for people or goods",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Furniture",
+      "definition": "Movable objects designed to support human activities",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Appliance",
+      "definition": "A device designed to perform specific household tasks",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Tool",
+      "definition": "An implement used to carry out particular functions",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Food",
+      "definition": "Any substance consumed to provide nutritional support",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Clothing",
+      "definition": "Items worn on the body for protection and fashion",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Building",
+      "definition": "A structure with walls and roof for human use",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Animal",
+      "definition": "A living organism that feeds on organic matter",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Plant",
+      "definition": "A living organism that typically grows in soil",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    },
+    {
+      "label": "Material",
+      "definition": "The substance from which something is made",
+      "epistemic_type": "FACT",
+      "trust": 0.99
+    }
+  ],
+  "relations": [
+    {
+      "source": "Automobile",
+      "target": "Vehicle",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Automobile",
+      "target": "Engine",
+      "type": "HAS_PROPERTY",
+      "weight": 0.98
+    },
+    {
+      "source": "Automobile",
+      "target": "Steering Wheel",
+      "type": "HAS_PROPERTY",
+      "weight": 0.99
+    },
+    {
+      "source": "Automobile",
+      "target": "Brake",
+      "type": "HAS_PROPERTY",
+      "weight": 0.99
+    },
+    {
+      "source": "Automobile",
+      "target": "Tire",
+      "type": "HAS_PROPERTY",
+      "weight": 0.99
+    },
+    {
+      "source": "Automobile",
+      "target": "Headlight",
+      "type": "HAS_PROPERTY",
+      "weight": 0.98
+    },
+    {
+      "source": "Automobile",
+      "target": "Seat Belt",
+      "type": "HAS_PROPERTY",
+      "weight": 0.97
+    },
+    {
+      "source": "Automobile",
+      "target": "Windshield",
+      "type": "HAS_PROPERTY",
+      "weight": 0.98
+    },
+    {
+      "source": "Automobile",
+      "target": "Fuel Tank",
+      "type": "HAS_PROPERTY",
+      "weight": 0.98
+    },
+    {
+      "source": "Automobile",
+      "target": "Transmission",
+      "type": "HAS_PROPERTY",
+      "weight": 0.97
+    },
+    {
+      "source": "Bus",
+      "target": "Vehicle",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Train",
+      "target": "Vehicle",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Airplane",
+      "target": "Vehicle",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Bicycle",
+      "target": "Vehicle",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Motorcycle",
+      "target": "Vehicle",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Ship",
+      "target": "Vehicle",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Truck",
+      "target": "Vehicle",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Subway",
+      "target": "Vehicle",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Taxi",
+      "target": "Vehicle",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Ambulance",
+      "target": "Vehicle",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Chair",
+      "target": "Furniture",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Table",
+      "target": "Furniture",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Bed",
+      "target": "Furniture",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Sofa",
+      "target": "Furniture",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Wardrobe",
+      "target": "Furniture",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Bookshelf",
+      "target": "Furniture",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Desk",
+      "target": "Furniture",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Drawer",
+      "target": "Furniture",
+      "type": "PART_OF",
+      "weight": 0.92
+    },
+    {
+      "source": "Refrigerator",
+      "target": "Appliance",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Oven",
+      "target": "Appliance",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Microwave",
+      "target": "Appliance",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Dishwasher",
+      "target": "Appliance",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Washing Machine",
+      "target": "Appliance",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Dryer",
+      "target": "Appliance",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Vacuum Cleaner",
+      "target": "Appliance",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Television",
+      "target": "Appliance",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Radio",
+      "target": "Appliance",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Air Conditioner",
+      "target": "Appliance",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Hammer",
+      "target": "Tool",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Screwdriver",
+      "target": "Tool",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Wrench",
+      "target": "Tool",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Saw",
+      "target": "Tool",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Drill",
+      "target": "Tool",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Pliers",
+      "target": "Tool",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Measuring Tape",
+      "target": "Tool",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Level",
+      "target": "Tool",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Ladder",
+      "target": "Tool",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Kitchen Knife",
+      "target": "Tool",
+      "type": "IS_A",
+      "weight": 0.92
+    },
+    {
+      "source": "Pan",
+      "target": "Cooking",
+      "type": "used-for",
+      "weight": 0.95
+    },
+    {
+      "source": "Pot",
+      "target": "Cooking",
+      "type": "used-for",
+      "weight": 0.95
+    },
+    {
+      "source": "Fork",
+      "target": "Eating",
+      "type": "used-for",
+      "weight": 0.95
+    },
+    {
+      "source": "Spoon",
+      "target": "Eating",
+      "type": "used-for",
+      "weight": 0.95
+    },
+    {
+      "source": "Toilet",
+      "target": "Bathroom",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Bathtub",
+      "target": "Bathroom",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Shower",
+      "target": "Bathroom",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Sink",
+      "target": "Bathroom",
+      "type": "PART_OF",
+      "weight": 0.92
+    },
+    {
+      "source": "Sink",
+      "target": "Kitchen",
+      "type": "PART_OF",
+      "weight": 0.92
+    },
+    {
+      "source": "Faucet",
+      "target": "Sink",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Lawn Mower",
+      "target": "Garden",
+      "type": "used-for",
+      "weight": 0.95
+    },
+    {
+      "source": "Shovel",
+      "target": "Garden",
+      "type": "used-for",
+      "weight": 0.92
+    },
+    {
+      "source": "Rake",
+      "target": "Garden",
+      "type": "used-for",
+      "weight": 0.95
+    },
+    {
+      "source": "Hose",
+      "target": "Garden",
+      "type": "used-for",
+      "weight": 0.9
+    },
+    {
+      "source": "Watering Can",
+      "target": "Garden",
+      "type": "used-for",
+      "weight": 0.95
+    },
+    {
+      "source": "Bread",
+      "target": "Food",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Rice",
+      "target": "Food",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Pasta",
+      "target": "Food",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Potato",
+      "target": "Food",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Tomato",
+      "target": "Food",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Onion",
+      "target": "Food",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Carrot",
+      "target": "Food",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Lettuce",
+      "target": "Food",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Apple",
+      "target": "Food",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Banana",
+      "target": "Food",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Chicken",
+      "target": "Food",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Beef",
+      "target": "Food",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Pork",
+      "target": "Food",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Fish",
+      "target": "Food",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Egg",
+      "target": "Food",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Milk",
+      "target": "Food",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Cheese",
+      "target": "Food",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Butter",
+      "target": "Food",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Yogurt",
+      "target": "Food",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Ice Cream",
+      "target": "Food",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Salt",
+      "target": "Seasoning",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Pepper",
+      "target": "Seasoning",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Sugar",
+      "target": "Seasoning",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Garlic",
+      "target": "Seasoning",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Oregano",
+      "target": "Seasoning",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Basil",
+      "target": "Seasoning",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Cinnamon",
+      "target": "Seasoning",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Paprika",
+      "target": "Seasoning",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Vanilla",
+      "target": "Seasoning",
+      "type": "IS_A",
+      "weight": 0.92
+    },
+    {
+      "source": "Olive Oil",
+      "target": "Cooking",
+      "type": "used-for",
+      "weight": 0.95
+    },
+    {
+      "source": "Water",
+      "target": "Beverage",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Coffee",
+      "target": "Beverage",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Tea",
+      "target": "Beverage",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Juice",
+      "target": "Beverage",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Soda",
+      "target": "Beverage",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Beer",
+      "target": "Beverage",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Wine",
+      "target": "Beverage",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Whiskey",
+      "target": "Beverage",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Vodka",
+      "target": "Beverage",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Lemonade",
+      "target": "Beverage",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Boiling",
+      "target": "Cooking",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Frying",
+      "target": "Cooking",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Baking",
+      "target": "Cooking",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Grilling",
+      "target": "Cooking",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Steaming",
+      "target": "Cooking",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Roasting",
+      "target": "Cooking",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Saut\u00e9ing",
+      "target": "Cooking",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Simmering",
+      "target": "Cooking",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Marinating",
+      "target": "Cooking",
+      "type": "PART_OF",
+      "weight": 0.9
+    },
+    {
+      "source": "Seasoning",
+      "target": "Cooking",
+      "type": "PART_OF",
+      "weight": 0.92
+    },
+    {
+      "source": "Shirt",
+      "target": "Clothing",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Pants",
+      "target": "Clothing",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Dress",
+      "target": "Clothing",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Skirt",
+      "target": "Clothing",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Jacket",
+      "target": "Clothing",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Coat",
+      "target": "Clothing",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Sweater",
+      "target": "Clothing",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "T-Shirt",
+      "target": "Clothing",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Jeans",
+      "target": "Clothing",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Shorts",
+      "target": "Clothing",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Shoes",
+      "target": "Clothing",
+      "type": "IS_A",
+      "weight": 0.92
+    },
+    {
+      "source": "Socks",
+      "target": "Clothing",
+      "type": "IS_A",
+      "weight": 0.92
+    },
+    {
+      "source": "Hat",
+      "target": "Clothing",
+      "type": "IS_A",
+      "weight": 0.92
+    },
+    {
+      "source": "Gloves",
+      "target": "Clothing",
+      "type": "IS_A",
+      "weight": 0.92
+    },
+    {
+      "source": "Scarf",
+      "target": "Clothing",
+      "type": "IS_A",
+      "weight": 0.92
+    },
+    {
+      "source": "Belt",
+      "target": "Clothing",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Tie",
+      "target": "Clothing",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Watch",
+      "target": "Accessory",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Ring",
+      "target": "Accessory",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Necklace",
+      "target": "Accessory",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Cotton",
+      "target": "Material",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Wool",
+      "target": "Material",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Silk",
+      "target": "Material",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Leather",
+      "target": "Material",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Polyester",
+      "target": "Material",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Denim",
+      "target": "Material",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Lace",
+      "target": "Material",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Velvet",
+      "target": "Material",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Corduroy",
+      "target": "Material",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Flannel",
+      "target": "Material",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "House",
+      "target": "Building",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Apartment",
+      "target": "Building",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Office",
+      "target": "Building",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Factory",
+      "target": "Building",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "School",
+      "target": "Building",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Hospital",
+      "target": "Building",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Restaurant",
+      "target": "Building",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Hotel",
+      "target": "Building",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Bank",
+      "target": "Building",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Church",
+      "target": "Building",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Kitchen",
+      "target": "Room",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Bathroom",
+      "target": "Room",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Living Room",
+      "target": "Room",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Bedroom",
+      "target": "Room",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Dining Room",
+      "target": "Room",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Room",
+      "target": "House",
+      "type": "PART_OF",
+      "weight": 0.92
+    },
+    {
+      "source": "Room",
+      "target": "Building",
+      "type": "PART_OF",
+      "weight": 0.9
+    },
+    {
+      "source": "Door",
+      "target": "Building",
+      "type": "PART_OF",
+      "weight": 0.92
+    },
+    {
+      "source": "Window",
+      "target": "Building",
+      "type": "PART_OF",
+      "weight": 0.92
+    },
+    {
+      "source": "Wall",
+      "target": "Building",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Roof",
+      "target": "Building",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Floor",
+      "target": "Building",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Ceiling",
+      "target": "Building",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Stairs",
+      "target": "Building",
+      "type": "PART_OF",
+      "weight": 0.9
+    },
+    {
+      "source": "Hallway",
+      "target": "Building",
+      "type": "PART_OF",
+      "weight": 0.9
+    },
+    {
+      "source": "Chimney",
+      "target": "Building",
+      "type": "PART_OF",
+      "weight": 0.88
+    },
+    {
+      "source": "Foundation",
+      "target": "Building",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Road",
+      "target": "Transportation",
+      "type": "used-for",
+      "weight": 0.95
+    },
+    {
+      "source": "Highway",
+      "target": "Road",
+      "type": "type-of",
+      "weight": 0.95
+    },
+    {
+      "source": "Street",
+      "target": "Road",
+      "type": "type-of",
+      "weight": 0.95
+    },
+    {
+      "source": "Sidewalk",
+      "target": "Pedestrian",
+      "type": "used-for",
+      "weight": 0.95
+    },
+    {
+      "source": "Bridge",
+      "target": "Transportation",
+      "type": "enables",
+      "weight": 0.92
+    },
+    {
+      "source": "Tunnel",
+      "target": "Transportation",
+      "type": "enables",
+      "weight": 0.92
+    },
+    {
+      "source": "Railway",
+      "target": "Train",
+      "type": "used-for",
+      "weight": 0.95
+    },
+    {
+      "source": "Airport",
+      "target": "Airplane",
+      "type": "used-for",
+      "weight": 0.95
+    },
+    {
+      "source": "Port",
+      "target": "Ship",
+      "type": "used-for",
+      "weight": 0.95
+    },
+    {
+      "source": "Parking Lot",
+      "target": "Automobile",
+      "type": "used-for",
+      "weight": 0.92
+    },
+    {
+      "source": "Traffic Light",
+      "target": "Traffic",
+      "type": "used-for",
+      "weight": 0.95
+    },
+    {
+      "source": "Stop Sign",
+      "target": "Traffic",
+      "type": "used-for",
+      "weight": 0.95
+    },
+    {
+      "source": "Speed Limit",
+      "target": "Traffic",
+      "type": "regulates",
+      "weight": 0.95
+    },
+    {
+      "source": "Crosswalk",
+      "target": "Pedestrian",
+      "type": "used-for",
+      "weight": 0.95
+    },
+    {
+      "source": "Yield Sign",
+      "target": "Traffic",
+      "type": "used-for",
+      "weight": 0.95
+    },
+    {
+      "source": "Lane",
+      "target": "Road",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Roundabout",
+      "target": "Traffic",
+      "type": "used-for",
+      "weight": 0.92
+    },
+    {
+      "source": "Toll Booth",
+      "target": "Road",
+      "type": "PART_OF",
+      "weight": 0.88
+    },
+    {
+      "source": "Gas Station",
+      "target": "Vehicle",
+      "type": "used-for",
+      "weight": 0.92
+    },
+    {
+      "source": "Rest Area",
+      "target": "Travel",
+      "type": "used-for",
+      "weight": 0.9
+    },
+    {
+      "source": "Telephone",
+      "target": "Communication",
+      "type": "used-for",
+      "weight": 0.95
+    },
+    {
+      "source": "Mobile Phone",
+      "target": "Communication",
+      "type": "used-for",
+      "weight": 0.95
+    },
+    {
+      "source": "Computer",
+      "target": "Communication",
+      "type": "used-for",
+      "weight": 0.88
+    },
+    {
+      "source": "Internet",
+      "target": "Communication",
+      "type": "enables",
+      "weight": 0.95
+    },
+    {
+      "source": "Email",
+      "target": "Communication",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Website",
+      "target": "Internet",
+      "type": "PART_OF",
+      "weight": 0.92
+    },
+    {
+      "source": "Social Media",
+      "target": "Communication",
+      "type": "used-for",
+      "weight": 0.95
+    },
+    {
+      "source": "Text Message",
+      "target": "Communication",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Video Call",
+      "target": "Communication",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Letter",
+      "target": "Communication",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Cash",
+      "target": "Money",
+      "type": "type-of",
+      "weight": 0.95
+    },
+    {
+      "source": "Credit Card",
+      "target": "Money",
+      "type": "related-to",
+      "weight": 0.92
+    },
+    {
+      "source": "Debit Card",
+      "target": "Money",
+      "type": "related-to",
+      "weight": 0.92
+    },
+    {
+      "source": "Bank Account",
+      "target": "Money",
+      "type": "contains",
+      "weight": 0.95
+    },
+    {
+      "source": "Loan",
+      "target": "Money",
+      "type": "related-to",
+      "weight": 0.92
+    },
+    {
+      "source": "Interest",
+      "target": "Money",
+      "type": "related-to",
+      "weight": 0.9
+    },
+    {
+      "source": "Insurance",
+      "target": "Money",
+      "type": "related-to",
+      "weight": 0.88
+    },
+    {
+      "source": "Tax",
+      "target": "Money",
+      "type": "related-to",
+      "weight": 0.9
+    },
+    {
+      "source": "Investment",
+      "target": "Money",
+      "type": "uses",
+      "weight": 0.92
+    },
+    {
+      "source": "Teacher",
+      "target": "School",
+      "type": "works-at",
+      "weight": 0.95
+    },
+    {
+      "source": "Student",
+      "target": "School",
+      "type": "attends",
+      "weight": 0.95
+    },
+    {
+      "source": "Classroom",
+      "target": "School",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Textbook",
+      "target": "Education",
+      "type": "used-for",
+      "weight": 0.95
+    },
+    {
+      "source": "Homework",
+      "target": "Education",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Exam",
+      "target": "Education",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Degree",
+      "target": "University",
+      "type": "produced-by",
+      "weight": 0.95
+    },
+    {
+      "source": "Graduation",
+      "target": "Education",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Mathematics",
+      "target": "Education",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Science",
+      "target": "Education",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "History",
+      "target": "Education",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Geography",
+      "target": "Education",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Language Arts",
+      "target": "Education",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Physical Education",
+      "target": "Education",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Art",
+      "target": "Education",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Music",
+      "target": "Education",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Chemistry",
+      "target": "Science",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Biology",
+      "target": "Science",
+      "type": "PART_OF",
+      "weight": 0.95
+    },
+    {
+      "source": "Doctor",
+      "target": "Hospital",
+      "type": "works-at",
+      "weight": 0.9
+    },
+    {
+      "source": "Nurse",
+      "target": "Hospital",
+      "type": "works-at",
+      "weight": 0.9
+    },
+    {
+      "source": "Lawyer",
+      "target": "Law",
+      "type": "practices",
+      "weight": 0.95
+    },
+    {
+      "source": "Engineer",
+      "target": "Design",
+      "type": "performs",
+      "weight": 0.92
+    },
+    {
+      "source": "Police Officer",
+      "target": "Law Enforcement",
+      "type": "performs",
+      "weight": 0.95
+    },
+    {
+      "source": "Firefighter",
+      "target": "Emergency",
+      "type": "responds-to",
+      "weight": 0.95
+    },
+    {
+      "source": "Pilot",
+      "target": "Airplane",
+      "type": "operates",
+      "weight": 0.95
+    },
+    {
+      "source": "Chef",
+      "target": "Restaurant",
+      "type": "works-at",
+      "weight": 0.92
+    },
+    {
+      "source": "Farmer",
+      "target": "Agriculture",
+      "type": "practices",
+      "weight": 0.95
+    },
+    {
+      "source": "Carpenter",
+      "target": "Wood",
+      "type": "works-with",
+      "weight": 0.95
+    },
+    {
+      "source": "Electrician",
+      "target": "Electricity",
+      "type": "works-with",
+      "weight": 0.95
+    },
+    {
+      "source": "Plumber",
+      "target": "Water",
+      "type": "works-with",
+      "weight": 0.92
+    },
+    {
+      "source": "Mechanic",
+      "target": "Vehicle",
+      "type": "repairs",
+      "weight": 0.95
+    },
+    {
+      "source": "Architect",
+      "target": "Building",
+      "type": "designs",
+      "weight": 0.95
+    },
+    {
+      "source": "Accountant",
+      "target": "Money",
+      "type": "manages",
+      "weight": 0.92
+    },
+    {
+      "source": "Librarian",
+      "target": "Books",
+      "type": "manages",
+      "weight": 0.95
+    },
+    {
+      "source": "Pharmacist",
+      "target": "Medicine",
+      "type": "dispenses",
+      "weight": 0.95
+    },
+    {
+      "source": "Dentist",
+      "target": "Teeth",
+      "type": "treats",
+      "weight": 0.95
+    },
+    {
+      "source": "Veterinarian",
+      "target": "Animal",
+      "type": "treats",
+      "weight": 0.95
+    },
+    {
+      "source": "Artist",
+      "target": "Art",
+      "type": "creates",
+      "weight": 0.95
+    },
+    {
+      "source": "Dog",
+      "target": "Animal",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Cat",
+      "target": "Animal",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Fish",
+      "target": "Animal",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Bird",
+      "target": "Animal",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Rabbit",
+      "target": "Animal",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Hamster",
+      "target": "Animal",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Guinea Pig",
+      "target": "Animal",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Turtle",
+      "target": "Animal",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Snake",
+      "target": "Animal",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Lizard",
+      "target": "Animal",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Cow",
+      "target": "Animal",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Pig",
+      "target": "Animal",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Chicken",
+      "target": "Animal",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Sheep",
+      "target": "Animal",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Goat",
+      "target": "Animal",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Horse",
+      "target": "Animal",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Duck",
+      "target": "Animal",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Turkey",
+      "target": "Animal",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Donkey",
+      "target": "Animal",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Llama",
+      "target": "Animal",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Lion",
+      "target": "Animal",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Tiger",
+      "target": "Animal",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Elephant",
+      "target": "Animal",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Bear",
+      "target": "Animal",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Wolf",
+      "target": "Animal",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Fox",
+      "target": "Animal",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Deer",
+      "target": "Animal",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Squirrel",
+      "target": "Animal",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Raccoon",
+      "target": "Animal",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Monkey",
+      "target": "Animal",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Oak Tree",
+      "target": "Plant",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Pine Tree",
+      "target": "Plant",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Maple Tree",
+      "target": "Plant",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Palm Tree",
+      "target": "Plant",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Willow Tree",
+      "target": "Plant",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Birch Tree",
+      "target": "Plant",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Cedar Tree",
+      "target": "Plant",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Fruit Tree",
+      "target": "Plant",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Cherry Tree",
+      "target": "Plant",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Apple Tree",
+      "target": "Plant",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Rose",
+      "target": "Plant",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Tulip",
+      "target": "Plant",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Sunflower",
+      "target": "Plant",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Daisy",
+      "target": "Plant",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Lily",
+      "target": "Plant",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Violet",
+      "target": "Plant",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Orchid",
+      "target": "Plant",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Carnation",
+      "target": "Plant",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Iris",
+      "target": "Plant",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Daffodil",
+      "target": "Plant",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Spinach",
+      "target": "Plant",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Broccoli",
+      "target": "Plant",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Cabbage",
+      "target": "Plant",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Cucumber",
+      "target": "Plant",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Pepper",
+      "target": "Plant",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Corn",
+      "target": "Plant",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Peas",
+      "target": "Plant",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Beans",
+      "target": "Plant",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Radish",
+      "target": "Plant",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Beet",
+      "target": "Plant",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Orange",
+      "target": "Plant",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Grape",
+      "target": "Plant",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Strawberry",
+      "target": "Plant",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Blueberry",
+      "target": "Plant",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Pear",
+      "target": "Plant",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Peach",
+      "target": "Plant",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Plum",
+      "target": "Plant",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Cherry",
+      "target": "Plant",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Watermelon",
+      "target": "Plant",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Pineapple",
+      "target": "Plant",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Wheat",
+      "target": "Plant",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Barley",
+      "target": "Plant",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Oats",
+      "target": "Plant",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Rye",
+      "target": "Plant",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Quinoa",
+      "target": "Plant",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Millet",
+      "target": "Plant",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Buckwheat",
+      "target": "Plant",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Sorghum",
+      "target": "Plant",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Amaranth",
+      "target": "Plant",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Chia",
+      "target": "Plant",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Wood",
+      "target": "Material",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Metal",
+      "target": "Material",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Plastic",
+      "target": "Material",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Glass",
+      "target": "Material",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Concrete",
+      "target": "Material",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Steel",
+      "target": "Material",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Aluminum",
+      "target": "Material",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Copper",
+      "target": "Material",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Brass",
+      "target": "Material",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Bronze",
+      "target": "Material",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Rubber",
+      "target": "Material",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Ceramic",
+      "target": "Material",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Paper",
+      "target": "Material",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Cardboard",
+      "target": "Material",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Fabric",
+      "target": "Material",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Stone",
+      "target": "Material",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Marble",
+      "target": "Material",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Granite",
+      "target": "Material",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Limestone",
+      "target": "Material",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Brick",
+      "target": "Material",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Apple Tree",
+      "target": "Apple",
+      "type": "produces",
+      "weight": 0.95
+    },
+    {
+      "source": "Cherry Tree",
+      "target": "Cherry",
+      "type": "produces",
+      "weight": 0.95
+    },
+    {
+      "source": "Orange Tree",
+      "target": "Orange",
+      "type": "produces",
+      "weight": 0.95
+    },
+    {
+      "source": "Cow",
+      "target": "Milk",
+      "type": "produces",
+      "weight": 0.95
+    },
+    {
+      "source": "Chicken",
+      "target": "Egg",
+      "type": "produces",
+      "weight": 0.95
+    },
+    {
+      "source": "Bee",
+      "target": "Honey",
+      "type": "produces",
+      "weight": 0.95
+    },
+    {
+      "source": "Sheep",
+      "target": "Wool",
+      "type": "produces",
+      "weight": 0.95
+    },
+    {
+      "source": "Jeans",
+      "target": "Denim",
+      "type": "made-from",
+      "weight": 0.95
+    },
+    {
+      "source": "Sweater",
+      "target": "Wool",
+      "type": "made-from",
+      "weight": 0.9
+    },
+    {
+      "source": "T-Shirt",
+      "target": "Cotton",
+      "type": "made-from",
+      "weight": 0.9
+    },
+    {
+      "source": "Jacket",
+      "target": "Leather",
+      "type": "made-from",
+      "weight": 0.85
+    },
+    {
+      "source": "Shoes",
+      "target": "Leather",
+      "type": "made-from",
+      "weight": 0.85
+    },
+    {
+      "source": "Belt",
+      "target": "Leather",
+      "type": "made-from",
+      "weight": 0.9
+    },
+    {
+      "source": "Dress",
+      "target": "Fabric",
+      "type": "made-from",
+      "weight": 0.95
+    },
+    {
+      "source": "Table",
+      "target": "Wood",
+      "type": "made-from",
+      "weight": 0.85
+    },
+    {
+      "source": "Chair",
+      "target": "Wood",
+      "type": "made-from",
+      "weight": 0.85
+    },
+    {
+      "source": "Door",
+      "target": "Wood",
+      "type": "made-from",
+      "weight": 0.85
+    },
+    {
+      "source": "Window",
+      "target": "Glass",
+      "type": "made-from",
+      "weight": 0.95
+    },
+    {
+      "source": "Wall",
+      "target": "Concrete",
+      "type": "made-from",
+      "weight": 0.85
+    },
+    {
+      "source": "Wall",
+      "target": "Brick",
+      "type": "made-from",
+      "weight": 0.85
+    },
+    {
+      "source": "Roof",
+      "target": "Metal",
+      "type": "made-from",
+      "weight": 0.85
+    },
+    {
+      "source": "Pan",
+      "target": "Metal",
+      "type": "made-from",
+      "weight": 0.9
+    },
+    {
+      "source": "Pot",
+      "target": "Metal",
+      "type": "made-from",
+      "weight": 0.9
+    },
+    {
+      "source": "Glass",
+      "target": "Glass",
+      "type": "made-from",
+      "weight": 0.99
+    },
+    {
+      "source": "Plate",
+      "target": "Ceramic",
+      "type": "made-from",
+      "weight": 0.9
+    },
+    {
+      "source": "Bowl",
+      "target": "Ceramic",
+      "type": "made-from",
+      "weight": 0.9
+    },
+    {
+      "source": "Tire",
+      "target": "Rubber",
+      "type": "made-from",
+      "weight": 0.95
+    },
+    {
+      "source": "Engine",
+      "target": "Metal",
+      "type": "made-from",
+      "weight": 0.95
+    },
+    {
+      "source": "Windshield",
+      "target": "Glass",
+      "type": "made-from",
+      "weight": 0.95
+    },
+    {
+      "source": "Paper",
+      "target": "Wood",
+      "type": "made-from",
+      "weight": 0.9
+    },
+    {
+      "source": "Cardboard",
+      "target": "Paper",
+      "type": "made-from",
+      "weight": 0.95
+    },
+    {
+      "source": "Book",
+      "target": "Paper",
+      "type": "made-from",
+      "weight": 0.95
+    },
+    {
+      "source": "Newspaper",
+      "target": "Paper",
+      "type": "made-from",
+      "weight": 0.95
+    },
+    {
+      "source": "Doctor",
+      "target": "Medicine",
+      "type": "practices",
+      "weight": 0.95
+    },
+    {
+      "source": "Nurse",
+      "target": "Patient Care",
+      "type": "provides",
+      "weight": 0.95
+    },
+    {
+      "source": "Teacher",
+      "target": "Knowledge",
+      "type": "transmits",
+      "weight": 0.9
+    },
+    {
+      "source": "Engineer",
+      "target": "Problem Solving",
+      "type": "performs",
+      "weight": 0.9
+    },
+    {
+      "source": "Chef",
+      "target": "Food",
+      "type": "prepares",
+      "weight": 0.95
+    },
+    {
+      "source": "Farmer",
+      "target": "Food",
+      "type": "produces",
+      "weight": 0.95
+    },
+    {
+      "source": "Carpenter",
+      "target": "Furniture",
+      "type": "builds",
+      "weight": 0.9
+    },
+    {
+      "source": "Electrician",
+      "target": "Electrical System",
+      "type": "installs",
+      "weight": 0.95
+    },
+    {
+      "source": "Plumber",
+      "target": "Plumbing System",
+      "type": "installs",
+      "weight": 0.95
+    },
+    {
+      "source": "Mechanic",
+      "target": "Engine",
+      "type": "repairs",
+      "weight": 0.95
+    },
+    {
+      "source": "Kitchen",
+      "target": "Cooking",
+      "type": "used-for",
+      "weight": 0.95
+    },
+    {
+      "source": "Bedroom",
+      "target": "Sleeping",
+      "type": "used-for",
+      "weight": 0.95
+    },
+    {
+      "source": "Living Room",
+      "target": "Relaxation",
+      "type": "used-for",
+      "weight": 0.95
+    },
+    {
+      "source": "Bathroom",
+      "target": "Hygiene",
+      "type": "used-for",
+      "weight": 0.95
+    },
+    {
+      "source": "Dining Room",
+      "target": "Eating",
+      "type": "used-for",
+      "weight": 0.95
+    },
+    {
+      "source": "Office",
+      "target": "Work",
+      "type": "used-for",
+      "weight": 0.95
+    },
+    {
+      "source": "School",
+      "target": "Learning",
+      "type": "used-for",
+      "weight": 0.95
+    },
+    {
+      "source": "Hospital",
+      "target": "Medical Treatment",
+      "type": "provides",
+      "weight": 0.95
+    },
+    {
+      "source": "Restaurant",
+      "target": "Food Service",
+      "type": "provides",
+      "weight": 0.95
+    },
+    {
+      "source": "Bank",
+      "target": "Financial Services",
+      "type": "provides",
+      "weight": 0.95
+    },
+    {
+      "source": "Refrigerator",
+      "target": "Food",
+      "type": "stores",
+      "weight": 0.95
+    },
+    {
+      "source": "Oven",
+      "target": "Food",
+      "type": "cooks",
+      "weight": 0.95
+    },
+    {
+      "source": "Washing Machine",
+      "target": "Clothing",
+      "type": "cleans",
+      "weight": 0.95
+    },
+    {
+      "source": "Vacuum Cleaner",
+      "target": "Floor",
+      "type": "cleans",
+      "weight": 0.95
+    },
+    {
+      "source": "Dishwasher",
+      "target": "Dishes",
+      "type": "cleans",
+      "weight": 0.95
+    },
+    {
+      "source": "Automobile",
+      "target": "Road",
+      "type": "uses",
+      "weight": 0.95
+    },
+    {
+      "source": "Train",
+      "target": "Railway",
+      "type": "uses",
+      "weight": 0.95
+    },
+    {
+      "source": "Airplane",
+      "target": "Airport",
+      "type": "uses",
+      "weight": 0.95
+    },
+    {
+      "source": "Ship",
+      "target": "Port",
+      "type": "uses",
+      "weight": 0.95
+    },
+    {
+      "source": "Bicycle",
+      "target": "Road",
+      "type": "uses",
+      "weight": 0.9
+    },
+    {
+      "source": "Driver",
+      "target": "Automobile",
+      "type": "operates",
+      "weight": 0.95
+    },
+    {
+      "source": "Pilot",
+      "target": "Airplane",
+      "type": "operates",
+      "weight": 0.95
+    },
+    {
+      "source": "Captain",
+      "target": "Ship",
+      "type": "operates",
+      "weight": 0.95
+    },
+    {
+      "source": "Engineer",
+      "target": "Train",
+      "type": "operates",
+      "weight": 0.92
+    },
+    {
+      "source": "Dog",
+      "target": "Pet",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Cat",
+      "target": "Pet",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Fish",
+      "target": "Pet",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Bird",
+      "target": "Pet",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Rabbit",
+      "target": "Pet",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Hamster",
+      "target": "Pet",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Guinea Pig",
+      "target": "Pet",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Cow",
+      "target": "Livestock",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Pig",
+      "target": "Livestock",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Chicken",
+      "target": "Livestock",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Sheep",
+      "target": "Livestock",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Goat",
+      "target": "Livestock",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Horse",
+      "target": "Livestock",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Lion",
+      "target": "Wild Animal",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Tiger",
+      "target": "Wild Animal",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Elephant",
+      "target": "Wild Animal",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Bear",
+      "target": "Wild Animal",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Wolf",
+      "target": "Wild Animal",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Fox",
+      "target": "Wild Animal",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Mathematics",
+      "target": "School",
+      "type": "taught-at",
+      "weight": 0.95
+    },
+    {
+      "source": "Science",
+      "target": "School",
+      "type": "taught-at",
+      "weight": 0.95
+    },
+    {
+      "source": "History",
+      "target": "School",
+      "type": "taught-at",
+      "weight": 0.95
+    },
+    {
+      "source": "Geography",
+      "target": "School",
+      "type": "taught-at",
+      "weight": 0.95
+    },
+    {
+      "source": "Language Arts",
+      "target": "School",
+      "type": "taught-at",
+      "weight": 0.95
+    },
+    {
+      "source": "Physical Education",
+      "target": "School",
+      "type": "taught-at",
+      "weight": 0.95
+    },
+    {
+      "source": "Art",
+      "target": "School",
+      "type": "taught-at",
+      "weight": 0.95
+    },
+    {
+      "source": "Music",
+      "target": "School",
+      "type": "taught-at",
+      "weight": 0.95
+    },
+    {
+      "source": "Breakfast",
+      "target": "Meal",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Lunch",
+      "target": "Meal",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Dinner",
+      "target": "Meal",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Snack",
+      "target": "Food",
+      "type": "IS_A",
+      "weight": 0.9
+    },
+    {
+      "source": "Spring",
+      "target": "Season",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Summer",
+      "target": "Season",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Autumn",
+      "target": "Season",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Winter",
+      "target": "Season",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Morning",
+      "target": "Time",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Afternoon",
+      "target": "Time",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Evening",
+      "target": "Time",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Night",
+      "target": "Time",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Monday",
+      "target": "Day",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Tuesday",
+      "target": "Day",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Wednesday",
+      "target": "Day",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Thursday",
+      "target": "Day",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Friday",
+      "target": "Day",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Saturday",
+      "target": "Day",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "Sunday",
+      "target": "Day",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "January",
+      "target": "Month",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "February",
+      "target": "Month",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "March",
+      "target": "Month",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "April",
+      "target": "Month",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "May",
+      "target": "Month",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "June",
+      "target": "Month",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "July",
+      "target": "Month",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "August",
+      "target": "Month",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "September",
+      "target": "Month",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "October",
+      "target": "Month",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "November",
+      "target": "Month",
+      "type": "IS_A",
+      "weight": 0.95
+    },
+    {
+      "source": "December",
+      "target": "Month",
+      "type": "IS_A",
+      "weight": 0.95
+    }
+  ]
+}

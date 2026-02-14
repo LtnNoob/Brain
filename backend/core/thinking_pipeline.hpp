@@ -5,7 +5,7 @@
 #include "../curiosity/curiosity_engine.hpp"
 #include "../curiosity/goal_generator.hpp"
 #include "../micromodel/relevance_map.hpp"
-#include "../micromodel/micro_model_registry.hpp"
+#include "../cmodel/concept_model_registry.hpp"
 #include "../micromodel/embedding_manager.hpp"
 #include "../understanding/understanding_layer.hpp"
 #include "../hybrid/kan_validator.hpp"
@@ -107,7 +107,7 @@ public:
         BrainController& brain,
         CognitiveDynamics& cognitive,
         CuriosityEngine& curiosity,
-        MicroModelRegistry& registry,
+        ConceptModelRegistry& registry,
         EmbeddingManager& embeddings,
         UnderstandingLayer* understanding,  // nullable if no LLM
         KanValidator* kan_validator,         // nullable if no KAN validation
@@ -125,7 +125,7 @@ public:
         BrainController& brain,
         CognitiveDynamics& cognitive,
         CuriosityEngine& curiosity,
-        MicroModelRegistry& registry,
+        ConceptModelRegistry& registry,
         EmbeddingManager& embeddings,
         UnderstandingLayer* understanding,
         KanValidator* kan_validator,
@@ -153,7 +153,7 @@ private:
 
     RelevanceMap step_relevance(
         const std::vector<SalienceScore>& salient,
-        MicroModelRegistry& registry, EmbeddingManager& embeddings,
+        ConceptModelRegistry& registry, EmbeddingManager& embeddings,
         LongTermMemory& ltm);
 
     std::vector<ThoughtPath> step_thought_paths(
@@ -166,16 +166,18 @@ private:
     UnderstandingLayer::UnderstandingResult step_understanding(
         const std::vector<ConceptId>& salient_ids, ContextId ctx,
         UnderstandingLayer& understanding, CognitiveDynamics& cognitive,
-        LongTermMemory& ltm, ShortTermMemory& stm);
+        LongTermMemory& ltm, ShortTermMemory& stm,
+        const std::vector<ThoughtPath>& thought_paths = {});
 
     std::vector<ValidationResult> step_kan_validation(
         const std::vector<HypothesisProposal>& hypotheses,
-        KanValidator& validator);
+        KanValidator& validator,
+        LongTermMemory* ltm = nullptr);
 
     // Step 7.5: KAN Graph Scan (Topology A — detect anomalies)
     std::vector<InvestigationRequest> step_kan_graph_scan(
         const std::vector<ConceptId>& salient_ids,
-        MicroModelRegistry& registry,
+        ConceptModelRegistry& registry,
         EmbeddingManager& embeddings,
         LongTermMemory& ltm);
 
@@ -202,7 +204,7 @@ private:
         ContextId ctx,
         LongTermMemory& ltm,
         ShortTermMemory& stm,
-        MicroModelRegistry& registry,
+        ConceptModelRegistry& registry,
         EmbeddingManager& embeddings,
         const GoalState& goal);
 };

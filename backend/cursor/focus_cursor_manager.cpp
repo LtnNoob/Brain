@@ -7,7 +7,7 @@ namespace brain19 {
 
 FocusCursorManager::FocusCursorManager(
     const LongTermMemory& ltm,
-    MicroModelRegistry& registry,
+    ConceptModelRegistry& registry,
     EmbeddingManager& embeddings,
     ShortTermMemory& stm,
     FocusCursorConfig config

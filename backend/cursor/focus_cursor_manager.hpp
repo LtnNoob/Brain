@@ -22,7 +22,7 @@ class FocusCursorManager {
 public:
     FocusCursorManager(
         const LongTermMemory& ltm,
-        MicroModelRegistry& registry,
+        ConceptModelRegistry& registry,
         EmbeddingManager& embeddings,
         ShortTermMemory& stm,
         FocusCursorConfig config = {}
@@ -49,7 +49,7 @@ public:
 
 private:
     const LongTermMemory& ltm_;
-    MicroModelRegistry& registry_;
+    ConceptModelRegistry& registry_;
     EmbeddingManager& embeddings_;
     ShortTermMemory& stm_;
     FocusCursorConfig config_;

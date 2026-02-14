@@ -6,6 +6,7 @@
 #include "kan_decoder.hpp"
 #include "semantic_scorer.hpp"
 #include "fusion_layer.hpp"
+#include "dimensional_context.hpp"
 #include "../common/types.hpp"
 #include "../ltm/long_term_memory.hpp"
 #include "../cmodel/concept_model_registry.hpp"
@@ -60,6 +61,10 @@ public:
     // Is engine ready for generation?
     bool is_ready() const { return initialized_; }
 
+    // Rebuild dimensional context from current LTM state.
+    // Call this after LTM has been populated (e.g., after foundation seeding).
+    void rebuild_dimensional_context();
+
     // Individual pipeline phases (exposed for testing)
     std::vector<double> encode(const std::string& text) const;
     std::vector<ConceptId> find_seeds(const std::string& text) const;
@@ -71,6 +76,7 @@ public:
     SemanticScorer& scorer() { return scorer_; }
     FusionLayer& fusion() { return fusion_; }
     EmbeddingManager& embeddings() { return embeddings_; }
+    const DimensionalContext& dim_context() const { return dim_context_; }
 
     // Persistence
     void save(const std::string& dir) const;
@@ -86,6 +92,7 @@ private:
     KANDecoder decoder_;
     SemanticScorer scorer_;
     FusionLayer fusion_;
+    DimensionalContext dim_context_;
 
     // References to Brain19 core (not owned)
     LongTermMemory& ltm_;

@@ -178,6 +178,22 @@ std::vector<double> FusionLayer::build_raw_fused(
     return raw;
 }
 
+// =============================================================================
+// Extended Fused Vector
+// =============================================================================
+
+std::vector<double> FusedRepresentation::extended_fused_vector() const {
+    std::vector<double> result;
+    result.reserve(fused_vector.size() + dimensional_context.size());
+    result = fused_vector;
+    result.insert(result.end(), dimensional_context.begin(), dimensional_context.end());
+    return result;
+}
+
+// =============================================================================
+// Helpers
+// =============================================================================
+
 double FusionLayer::sigmoid(double x) {
     if (x > 20.0) return 1.0;
     if (x < -20.0) return 0.0;

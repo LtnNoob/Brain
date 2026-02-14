@@ -59,6 +59,12 @@ public:
     // Get decoder confidence threshold
     double confidence_threshold() const { return config_.decoder_confidence_threshold; }
 
+    // Re-initialize output projection for extended fused dimension.
+    // Called after DimensionalContext is built to size the projection
+    // for (FUSED_DIM + dim_context_decoder_dim) input.
+    void reinitialize_for_extended_dim(size_t extended_fused_dim);
+    size_t extended_fused_dim() const { return extended_fused_dim_; }
+
     // Set the active token vocabulary (tokens trained by decoder training)
     // At inference, all other tokens are suppressed to -inf logits.
     void set_trained_tokens(const std::vector<uint16_t>& tokens) {
@@ -77,6 +83,9 @@ private:
 
     // Output projection: R^FUSED_DIM → R^VOCAB_SIZE
     std::vector<std::vector<double>> output_projection_;
+
+    // Extended fused dimension (FUSED_DIM + dimensional context size, runtime)
+    size_t extended_fused_dim_ = LanguageConfig::FUSED_DIM;
 
     // Active token set (populated by training, used to suppress untrained tokens)
     std::unordered_set<uint16_t> trained_tokens_;

@@ -62,6 +62,7 @@ std::vector<LanguageTraining::DecoderPair> LanguageTraining::generate_decoder_da
 
     auto& concept_emb_store = engine_.embeddings().concept_embeddings();
     auto& projection = engine_.fusion().projection();
+    auto& dim_ctx = engine_.dim_context();
     auto all_ids = ltm_.get_all_concept_ids();
 
     const size_t ACT_DIM = LanguageConfig::ENCODER_QUERY_DIM;  // 16
@@ -79,7 +80,7 @@ std::vector<LanguageTraining::DecoderPair> LanguageTraining::generate_decoder_da
         // Single concept in slot 1, zeros in slots 2-3, DEFINITIONAL template
         std::vector<double> raw(3 * ACT_DIM + 5 + LanguageConfig::NUM_TEMPLATE_TYPES, 0.0);
 
-        // Slot 1: concept embedding × gate weight
+        // Slot 1: concept embedding x gate weight
         for (size_t d = 0; d < ACT_DIM; ++d) {
             raw[d] = cemb.core[d] * 0.8;
         }
@@ -93,7 +94,7 @@ std::vector<LanguageTraining::DecoderPair> LanguageTraining::generate_decoder_da
         raw[tpl_offset + 1] = 0.8;  // DEFINITIONAL
         raw[tpl_offset + 0] = 0.2;  // small GENERAL
 
-        // Project: raw × projection → R^64 (same as FusionLayer does)
+        // Project: raw x projection -> R^64 (same as FusionLayer does)
         std::vector<double> fused(FUSED, 0.0);
         size_t raw_dim = std::min(raw.size(), projection.size());
         for (size_t i = 0; i < raw_dim; ++i) {
@@ -101,6 +102,12 @@ std::vector<LanguageTraining::DecoderPair> LanguageTraining::generate_decoder_da
             for (size_t j = 0; j < FUSED; ++j) {
                 fused[j] += raw[i] * projection[i][j];
             }
+        }
+
+        // Append dimensional context (variable-length, emergent from graph)
+        if (dim_ctx.is_built()) {
+            auto dim_vec = dim_ctx.to_decoder_vec(cid);
+            fused.insert(fused.end(), dim_vec.begin(), dim_vec.end());
         }
 
         // Target: "Label is defined as definition."
@@ -179,6 +186,7 @@ std::vector<LanguageTraining::DecoderPair> LanguageTraining::generate_relation_d
     auto& concept_emb_store = engine_.embeddings().concept_embeddings();
     auto& rel_registry = RelationTypeRegistry::instance();
     auto& projection = engine_.fusion().projection();
+    auto& dim_ctx = engine_.dim_context();
     auto all_ids = ltm_.get_all_concept_ids();
 
     const size_t ACT_DIM = LanguageConfig::ENCODER_QUERY_DIM;  // 16
@@ -250,13 +258,13 @@ std::vector<LanguageTraining::DecoderPair> LanguageTraining::generate_relation_d
         // [slot1(16D) | slot2(16D) | slot3(16D) | gates(5D) | template_probs(4D)]
         std::vector<double> raw(3 * ACT_DIM + 5 + LanguageConfig::NUM_TEMPLATE_TYPES, 0.0);
 
-        // Slot 1: source concept embedding × 0.7
+        // Slot 1: source concept embedding x 0.7
         auto src_emb = concept_emb_store.get_or_default(cid);
         for (size_t d = 0; d < ACT_DIM; ++d) {
             raw[d] = src_emb.core[d] * 0.7;
         }
 
-        // Slot 2: mean of target embeddings × 0.5
+        // Slot 2: mean of target embeddings x 0.5
         if (!target_embeddings.empty()) {
             double inv_n = 0.5 / static_cast<double>(target_embeddings.size());
             for (const auto& temb : target_embeddings) {
@@ -266,7 +274,7 @@ std::vector<LanguageTraining::DecoderPair> LanguageTraining::generate_relation_d
             }
         }
 
-        // Slot 3: mean of relation type embeddings × 0.3
+        // Slot 3: mean of relation type embeddings x 0.3
         if (!rel_type_embeddings.empty()) {
             double inv_n = 0.3 / static_cast<double>(rel_type_embeddings.size());
             for (const auto& remb : rel_type_embeddings) {
@@ -302,7 +310,7 @@ std::vector<LanguageTraining::DecoderPair> LanguageTraining::generate_relation_d
             raw[tpl_offset + 1] = 0.2;
         }
 
-        // ── Project: raw × projection → R^64 ──
+        // ── Project: raw x projection -> R^64 ──
         std::vector<double> fused(FUSED, 0.0);
         size_t raw_dim = std::min(raw.size(), projection.size());
         for (size_t i = 0; i < raw_dim; ++i) {
@@ -310,6 +318,12 @@ std::vector<LanguageTraining::DecoderPair> LanguageTraining::generate_relation_d
             for (size_t j = 0; j < FUSED; ++j) {
                 fused[j] += raw[i] * projection[i][j];
             }
+        }
+
+        // Append dimensional context for source concept (variable-length)
+        if (dim_ctx.is_built()) {
+            auto dim_vec = dim_ctx.to_decoder_vec(cid);
+            fused.insert(fused.end(), dim_vec.begin(), dim_vec.end());
         }
 
         pairs.push_back({std::move(fused), std::move(paragraph)});
@@ -390,6 +404,16 @@ LanguageTrainingResult LanguageTraining::train_stage1(const LanguageConfig& conf
 
         auto t_start = std::chrono::steady_clock::now();
 
+        // ── Phase A: Closed-form ridge regression for output projection ──
+        // Gives MSE-optimal W in one shot (~50ms), then SGD fine-tunes with CE.
+        std::cerr << "[LanguageTraining]   Phase A: Closed-form ridge init...\n";
+        train_decoder_closedform(all_decoder_data, 1.0);
+        {
+            auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(
+                std::chrono::steady_clock::now() - t_start).count();
+            std::cerr << "[LanguageTraining]   Ridge init done (" << elapsed << "ms)\n";
+        }
+
         // ── Pre-tokenize ALL data ONCE (not per epoch) ──
         const size_t V = LanguageConfig::VOCAB_SIZE;
         auto& tok = engine_.tokenizer();
@@ -435,9 +459,15 @@ LanguageTrainingResult LanguageTraining::train_stage1(const LanguageConfig& conf
         auto& W = decoder.output_projection();
         auto& emb_table = engine_.encoder().embedding_table();
 
-        const size_t H = LanguageConfig::FUSED_DIM;
+        // H = extended fused dim (FUSED_DIM + dim context, runtime)
+        const size_t H = decoder.extended_fused_dim();
         const size_t H_EXT = 2 * H;
+        const size_t FUSED_BASE = LanguageConfig::FUSED_DIM;  // 64 (token embedding dims)
         const double lr = config.decoder_lr;
+
+        std::cerr << "[LanguageTraining]   Hidden dim H=" << H
+                  << " (base=" << FUSED_BASE
+                  << " + dim_ctx=" << (H - FUSED_BASE) << ")\n";
 
         // Extract active columns of W into dense W_a[H_EXT][VA]
         std::vector<std::vector<double>> W_a(H_EXT, std::vector<double>(VA));
@@ -462,7 +492,7 @@ LanguageTrainingResult LanguageTraining::train_stage1(const LanguageConfig& conf
                 const auto& target_tokens = sample.tokens;
                 const auto& embedding = all_decoder_data[sample.pair_idx].embedding;
 
-                // Reset h to fused vector
+                // Reset h to extended fused vector (64D base + dim context)
                 std::fill(h.begin(), h.end(), 0.0);
                 for (size_t i = 0; i < std::min(H, embedding.size()); ++i) {
                     h[i] = embedding[i];
@@ -474,13 +504,13 @@ LanguageTrainingResult LanguageTraining::train_stage1(const LanguageConfig& conf
 
                     size_t ca = compress[target_tok];
 
-                    // Build quadratic features: h_ext = [h, h²]
+                    // Build quadratic features: h_ext = [h, h^2]
                     for (size_t i = 0; i < H; ++i) {
                         h_ext[i] = h[i];
                         h_ext[H + i] = h[i] * h[i];
                     }
 
-                    // logits = h_ext · W_a^T ∈ R^VA
+                    // logits = h_ext . W_a^T in R^VA
                     for (size_t a = 0; a < VA; ++a) {
                         double sum = 0.0;
                         for (size_t i = 0; i < H_EXT; ++i) sum += h_ext[i] * W_a[i][a];
@@ -513,12 +543,17 @@ LanguageTrainingResult LanguageTraining::train_stage1(const LanguageConfig& conf
                         W_a[i][ca] += lr * hi;
                     }
 
-                    // Evolve hidden state
+                    // Evolve hidden state: split evolution
+                    // First FUSED_BASE dims: mix with token embeddings
                     if (target_tok < emb_table.size()) {
                         const auto& tok_emb = emb_table[target_tok];
-                        for (size_t i = 0; i < H && i < tok_emb.size(); ++i) {
+                        for (size_t i = 0; i < FUSED_BASE && i < tok_emb.size(); ++i) {
                             h[i] = h[i] * 0.8 + tok_emb[i] * 0.2;
                         }
+                    }
+                    // Dimensional context dims: slow decay
+                    for (size_t i = FUSED_BASE; i < H; ++i) {
+                        h[i] *= 0.95;
                     }
                 }
             }
@@ -567,7 +602,7 @@ double LanguageTraining::train_encoder_epoch(const std::vector<EncoderPair>& dat
         auto bag = engine_.encoder().encode_tokens(tokens);
         // This gives us the full encoded output — but for training we need
         // the intermediate bag representation.
-        // For now, use simplified approach: train KAN on (bag → target)
+        // For now, use simplified approach: train KAN on (bag -> target)
         // We'll use the raw token embeddings averaged as input
 
         std::vector<double> input(LanguageConfig::TOKEN_EMBED_DIM, 0.0);
@@ -602,8 +637,8 @@ double LanguageTraining::train_encoder_epoch(const std::vector<EncoderPair>& dat
 // =============================================================================
 //
 // Instead of iterative SGD (slow convergence on linear model), solve:
-//   W = (H^T H + λI)^{-1} H^T Y
-// where H is [N × H_EXT] (all training h_ext vectors) and Y is one-hot targets.
+//   W = (H^T H + lambda I)^{-1} H^T Y
+// where H is [N x H_EXT] (all training h_ext vectors) and Y is one-hot targets.
 // This gives the MSE-optimal W in one shot.
 //
 
@@ -615,8 +650,10 @@ void LanguageTraining::train_decoder_closedform(
     auto& W = decoder.output_projection();
     auto& emb_table = engine_.encoder().embedding_table();
 
-    const size_t H = LanguageConfig::FUSED_DIM;      // 64
-    const size_t H_EXT = 2 * H;                       // 128
+    // H = extended fused dim (runtime, includes dim context)
+    const size_t H = decoder.extended_fused_dim();
+    const size_t H_EXT = 2 * H;
+    const size_t FUSED_BASE = LanguageConfig::FUSED_DIM;
     const size_t V = LanguageConfig::VOCAB_SIZE;
 
     // ── Pre-tokenize and build active vocab ──
@@ -649,7 +686,7 @@ void LanguageTraining::train_decoder_closedform(
     if (VA == 0) return;
 
     // ── Collect all (h_ext, target) pairs with hidden state evolution ──
-    std::vector<std::vector<double>> all_h;   // N × H_EXT
+    std::vector<std::vector<double>> all_h;   // N x H_EXT
     std::vector<size_t> all_targets;           // N
     all_h.reserve(data.size() * 15);
     all_targets.reserve(data.size() * 15);
@@ -667,7 +704,7 @@ void LanguageTraining::train_decoder_closedform(
             uint16_t target_tok = target_tokens[t];
             if (target_tok >= V || !token_active[target_tok]) continue;
 
-            // Build h_ext = [h, h²]
+            // Build h_ext = [h, h^2]
             std::vector<double> h_ext(H_EXT);
             for (size_t i = 0; i < H; ++i) {
                 h_ext[i] = h[i];
@@ -676,12 +713,15 @@ void LanguageTraining::train_decoder_closedform(
             all_h.push_back(std::move(h_ext));
             all_targets.push_back(compress[target_tok]);
 
-            // Evolve hidden state (matches inference dynamics)
+            // Evolve hidden state: split evolution
             if (target_tok < emb_table.size()) {
                 const auto& tok_emb = emb_table[target_tok];
-                for (size_t i = 0; i < H && i < tok_emb.size(); ++i) {
+                for (size_t i = 0; i < FUSED_BASE && i < tok_emb.size(); ++i) {
                     h[i] = h[i] * 0.8 + tok_emb[i] * 0.2;
                 }
+            }
+            for (size_t i = FUSED_BASE; i < H; ++i) {
+                h[i] *= 0.95;
             }
         }
     }
@@ -692,7 +732,7 @@ void LanguageTraining::train_decoder_closedform(
     std::cerr << "[LanguageTraining]   Ridge regression: " << N
               << " samples, " << H_EXT << "D features, " << VA << " active tokens\n";
 
-    // ── Build C = H^T H + λI  [H_EXT × H_EXT] ──
+    // ── Build C = H^T H + lambda I  [H_EXT x H_EXT] ──
     std::vector<std::vector<double>> C(H_EXT, std::vector<double>(H_EXT, 0.0));
     for (size_t n = 0; n < N; ++n) {
         const auto& hn = all_h[n];
@@ -708,11 +748,7 @@ void LanguageTraining::train_decoder_closedform(
         C[i][i] += lambda;  // regularization
     }
 
-    // ── Build B = H^T Y  [H_EXT × VA] ──
-    // B[i][v] = Σ_{n: target[n]=v} h[n][i]
-    // Scale targets so correct logit ≈ logit_scale instead of 1.0
-    // MSE one-hot targets logit=1.0, but CE with VA tokens needs logit≈3-5
-    // for reasonable probability: p = e^s / (VA-1+e^s) ≈ 30% for s=3, VA=63
+    // ── Build B = H^T Y  [H_EXT x VA] ──
     const double logit_scale = 4.0;
     std::vector<std::vector<double>> B(H_EXT, std::vector<double>(VA, 0.0));
     for (size_t n = 0; n < N; ++n) {
@@ -724,7 +760,6 @@ void LanguageTraining::train_decoder_closedform(
     }
 
     // ── Invert C via Gauss-Jordan elimination ──
-    // Augmented matrix [C | I] → [I | C^{-1}]
     std::vector<std::vector<double>> aug(H_EXT, std::vector<double>(2 * H_EXT, 0.0));
     for (size_t i = 0; i < H_EXT; ++i) {
         for (size_t j = 0; j < H_EXT; ++j) aug[i][j] = C[i][j];
@@ -756,7 +791,7 @@ void LanguageTraining::train_decoder_closedform(
         }
     }
 
-    // ── W = C^{-1} · B  and write to output_projection ──
+    // ── W = C^{-1} . B  and write to output_projection ──
     for (size_t i = 0; i < H_EXT; ++i) {
         for (size_t v = 0; v < V; ++v) W[i][v] = 0.0;  // zero non-active
 
@@ -792,20 +827,6 @@ std::vector<double> LanguageTraining::softmax(const std::vector<double>& logits)
 // =============================================================================
 // Decoder Training: Teacher-Forcing + Cross-Entropy + Target Propagation
 // =============================================================================
-//
-// Architecture:
-//   init_kan:  R^64 → R^16         (fused → h₀)
-//   update_kan: R^80 → R^32 → R^16  (concat(h_t, embed(tok_t)) → h_{t+1})
-//   output_projection: R^16 → R^8192  (h_t · W^T → logits)
-//
-// Training per sample:
-//   1. Forward pass with teacher forcing, collecting all h_t
-//   2. At each step: CE loss = -log(softmax(logits)[target_token])
-//   3. Gradient w.r.t. h_t: dL/dh_t[i] = Σ_v W[i][v]·(prob_v - 1{v=target})
-//   4. Target propagation: target_h_t = h_t - α·dL/dh_t
-//   5. Output projection: direct gradient descent on W
-//   6. Init-KAN: MSE(init_kan(fused), target_h₀)
-//   7. Update-KAN: MSE(update_kan(concat(h_t,emb)), target_h_{t+1})
 
 double LanguageTraining::train_decoder_epoch(
     const std::vector<DecoderPair>& data, double lr) {
@@ -813,16 +834,16 @@ double LanguageTraining::train_decoder_epoch(
     auto& decoder = engine_.decoder();
     auto& tokenizer = engine_.tokenizer();
 
-    auto& W = decoder.output_projection();    // [2*FUSED_DIM][VOCAB_SIZE] = [128][8192]
-    auto& emb_table = engine_.encoder().embedding_table();  // token embeddings [V][64]
+    auto& W = decoder.output_projection();
+    auto& emb_table = engine_.encoder().embedding_table();
 
-    const size_t H = LanguageConfig::FUSED_DIM;             // 64 (fused vector)
-    const size_t H_EXT = 2 * H;                            // 128 (quadratic features [h, h²])
-    const size_t V = LanguageConfig::VOCAB_SIZE;           // 8192
+    // H = extended fused dim (runtime, includes dim context)
+    const size_t H = decoder.extended_fused_dim();
+    const size_t H_EXT = 2 * H;
+    const size_t FUSED_BASE = LanguageConfig::FUSED_DIM;
+    const size_t V = LanguageConfig::VOCAB_SIZE;
 
     // ── Pre-tokenize all samples and build active vocab ──
-    // Active-vocab optimization: only compute logits/gradients for tokens
-    // that appear in training data (~500 tokens vs 8192 → ~16x speedup)
     struct TokenizedSample {
         std::vector<uint16_t> tokens;
         size_t data_idx;
@@ -841,10 +862,10 @@ double LanguageTraining::train_decoder_epoch(
 
     if (samples.empty()) return 1e9;
 
-    // Build compressed vocab: full token ID → compressed index
+    // Build compressed vocab
     std::vector<uint16_t> active_tokens;
     active_tokens.reserve(1024);
-    std::vector<size_t> compress(V, 0);  // compress[full_id] = compressed_idx
+    std::vector<size_t> compress(V, 0);
     for (size_t v = 0; v < V; ++v) {
         if (token_active[v]) {
             compress[v] = active_tokens.size();
@@ -869,17 +890,11 @@ double LanguageTraining::train_decoder_epoch(
     std::vector<double> logits(VA);
     std::vector<double> probs(VA);
 
-    // ── Per-token SGD: update W after EACH token position ──
-    // Per-sample accumulation causes gradient cancellation (similar h at adjacent
-    // positions push toward different targets). Per-token updates eliminate this.
-    //
-    // Hidden state evolves: h₀ = fused[0:H], h_{t+1} = h_t * 0.8 + embed(tok)[0:H] * 0.2
-    // Stronger mixing (0.8/0.2) gives more position diversity than 0.9/0.1.
     for (const auto& sample : samples) {
         const auto& target_tokens = sample.tokens;
         const auto& embedding = data[sample.data_idx].embedding;
 
-        // h = full fused vector (64D, unique per concept)
+        // h = extended fused vector
         std::vector<double> h(H, 0.0);
         for (size_t i = 0; i < std::min(H, embedding.size()); ++i) {
             h[i] = embedding[i];
@@ -891,14 +906,14 @@ double LanguageTraining::train_decoder_epoch(
 
             size_t ca = compress[target_tok];
 
-            // Build quadratic features: h_ext = [h, h²]
+            // Build quadratic features: h_ext = [h, h^2]
             std::vector<double> h_ext(H_EXT);
             for (size_t i = 0; i < H; ++i) {
                 h_ext[i] = h[i];
                 h_ext[H + i] = h[i] * h[i];
             }
 
-            // logits = h_ext · W_a^T ∈ R^VA
+            // logits = h_ext . W_a^T
             for (size_t a = 0; a < VA; ++a) {
                 double sum = 0.0;
                 for (size_t i = 0; i < H_EXT; ++i) sum += h_ext[i] * W_a[i][a];
@@ -922,7 +937,7 @@ double LanguageTraining::train_decoder_epoch(
             total_ce_loss += -std::log(p);
             total_tokens++;
 
-            // Per-token W update: W_a -= lr * h_ext * (probs - one_hot_target)
+            // Per-token W update
             for (size_t i = 0; i < H_EXT; ++i) {
                 double hi = h_ext[i];
                 for (size_t a = 0; a < VA; ++a) {
@@ -931,13 +946,15 @@ double LanguageTraining::train_decoder_epoch(
                 W_a[i][ca] += lr * hi;
             }
 
-            // Evolve hidden state for next position (matches inference dynamics)
-            // h_{t+1} = h_t * 0.8 + embed(token_t)[0:H] * 0.2
+            // Evolve hidden state: split evolution
             if (target_tok < emb_table.size()) {
                 const auto& tok_emb = emb_table[target_tok];
-                for (size_t i = 0; i < H && i < tok_emb.size(); ++i) {
+                for (size_t i = 0; i < FUSED_BASE && i < tok_emb.size(); ++i) {
                     h[i] = h[i] * 0.8 + tok_emb[i] * 0.2;
                 }
+            }
+            for (size_t i = FUSED_BASE; i < H; ++i) {
+                h[i] *= 0.95;
             }
         }
     }

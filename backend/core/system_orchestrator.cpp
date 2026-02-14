@@ -196,6 +196,11 @@ bool SystemOrchestrator::initialize() {
         // Ensure ConceptModels for all concepts
         registry_->ensure_models_for(*ltm_);
 
+        // Rebuild dimensional context now that LTM is populated
+        if (language_engine_ && language_engine_->is_ready()) {
+            language_engine_->rebuild_dimensional_context();
+        }
+
         // Initial ConceptModel training from KG structure
         // Without this, all predictions are ~0.50 (untrained) and KAN validation
         // always refutes. Train once at startup so existing KG data produces

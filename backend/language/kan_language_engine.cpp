@@ -30,8 +30,40 @@ KANLanguageEngine::KANLanguageEngine(
 {}
 
 void KANLanguageEngine::initialize() {
+    std::cerr << "[KANLanguageEngine] Building tokenizer...\n";
     tokenizer_.build_from_ltm(ltm_);
+    std::cerr << "[KANLanguageEngine] Tokenizer built: " << tokenizer_.vocab_size() << " tokens\n";
+
+    // Build dimensional context from graph structure.
+    // Discovers dimensions from actual relation categories — variable per concept.
+    std::cerr << "[KANLanguageEngine] Building dimensional context...\n";
+    dim_context_.build(ltm_);
+    std::cerr << "[KANLanguageEngine] Dimensional context built: "
+              << dim_context_.observed_dimensions() << " observed dims, "
+              << "max concept dimensionality=" << dim_context_.max_dimensionality()
+              << ", decoder_dim=" << dim_context_.decoder_dim() << "\n";
+
+    // Re-initialize decoder projection for the extended dimension:
+    // FUSED_DIM (64) + dim_context_.decoder_dim() (variable, data-driven)
+    size_t ext_dim = LanguageConfig::FUSED_DIM + dim_context_.decoder_dim();
+    std::cerr << "[KANLanguageEngine] Reinitializing decoder for extended_fused_dim=" << ext_dim << "\n";
+    decoder_.reinitialize_for_extended_dim(ext_dim);
+    std::cerr << "[KANLanguageEngine] Decoder reinitialized OK\n";
+
     initialized_ = true;
+}
+
+void KANLanguageEngine::rebuild_dimensional_context() {
+    dim_context_.build(ltm_);
+
+    size_t ext_dim = LanguageConfig::FUSED_DIM + dim_context_.decoder_dim();
+    decoder_.reinitialize_for_extended_dim(ext_dim);
+
+    std::cerr << "[KANLanguageEngine] Rebuilt dim context: "
+              << dim_context_.observed_dimensions() << " observed dims, "
+              << "max_dim=" << dim_context_.max_dimensionality()
+              << ", decoder_dim=" << dim_context_.decoder_dim()
+              << ", extended_fused=" << ext_dim << "\n";
 }
 
 // =============================================================================
@@ -92,6 +124,11 @@ LanguageResult KANLanguageEngine::generate(const std::string& query, size_t max_
 
     // ── Step 7: Fusion ──
     auto fused = fusion_.fuse(activations, scores, causal_chain);
+
+    // ── Step 7b: Attach dimensional context (variable-length, emergent) ──
+    if (dim_context_.is_built()) {
+        fused.dimensional_context = dim_context_.average_decoder_vec(seeds);
+    }
 
     // ── Step 8: Decode ──
     auto decoder_output = decoder_.decode(

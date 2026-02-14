@@ -19,8 +19,8 @@ KANDecoder::KANDecoder(const LanguageConfig& config)
                    32, LanguageConfig::DECODER_HIDDEN_DIM},
                   config.kan_num_knots)
 {
-    // Initialize output projection: (2*FUSED_DIM) × VOCAB_SIZE (128 × 8192)
-    // Uses [h, h²] quadratic features for non-linear capacity.
+    // Initialize output projection: (2*FUSED_DIM) x VOCAB_SIZE (128 x 8192)
+    // Uses [h, h^2] quadratic features for non-linear capacity.
     std::mt19937 rng(777);
     double limit = std::sqrt(6.0 / (2 * LanguageConfig::FUSED_DIM + LanguageConfig::VOCAB_SIZE));
     std::uniform_real_distribution<double> dist(-limit, limit);
@@ -28,6 +28,24 @@ KANDecoder::KANDecoder(const LanguageConfig& config)
     output_projection_.resize(2 * LanguageConfig::FUSED_DIM);
     for (auto& row : output_projection_) {
         row.resize(LanguageConfig::VOCAB_SIZE);
+        for (auto& v : row) v = dist(rng);
+    }
+}
+
+// =============================================================================
+// Re-initialize for extended dimension (after DimensionalContext is built)
+// =============================================================================
+
+void KANDecoder::reinitialize_for_extended_dim(size_t extended_fused_dim) {
+    extended_fused_dim_ = extended_fused_dim;
+
+    std::mt19937 rng(777);
+    double limit = std::sqrt(6.0 / (2 * extended_fused_dim_ + LanguageConfig::VOCAB_SIZE));
+    std::uniform_real_distribution<double> dist(-limit, limit);
+
+    output_projection_.resize(2 * extended_fused_dim_);
+    for (auto& row : output_projection_) {
+        row.assign(LanguageConfig::VOCAB_SIZE, 0.0);
         for (auto& v : row) v = dist(rng);
     }
 }
@@ -56,19 +74,20 @@ DecoderOutput KANDecoder::decode(
     std::unordered_set<ConceptId> active_concepts(
         fused.ordered_concepts.begin(), fused.ordered_concepts.end());
 
-    // Step 0: Initialize hidden state from full fused vector (64D)
-    // Bypass init_kan — training uses fused directly, inference must match.
-    const size_t H = LanguageConfig::FUSED_DIM;  // 64
+    // Step 0: Initialize hidden state from extended fused vector
+    // H = FUSED_DIM + dimensional context size (variable, data-driven)
+    const size_t H = extended_fused_dim_;
+    auto ext_fused = fused.extended_fused_vector();
     std::vector<double> hidden(H, 0.0);
-    for (size_t i = 0; i < std::min(H, fused.fused_vector.size()); ++i) {
-        hidden[i] = fused.fused_vector[i];
+    for (size_t i = 0; i < std::min(H, ext_fused.size()); ++i) {
+        hidden[i] = ext_fused[i];
     }
 
     double total_conf = 0.0;
     size_t generated = 0;
 
     for (size_t t = 0; t < max_tokens; ++t) {
-        // Build quadratic features: [h, h²] for non-linear capacity
+        // Build quadratic features: [h, h^2] for non-linear capacity
         std::vector<double> h_ext(2 * H);
         for (size_t i = 0; i < H; ++i) {
             h_ext[i] = hidden[i];
@@ -133,13 +152,17 @@ DecoderOutput KANDecoder::decode(
             }
         }
 
-        // Update hidden state: simple linear mixing (matches training dynamics)
-        // Bypass update_kan — cheap O(H) update gives position-dependent outputs
+        // Update hidden state: split evolution
+        // First FUSED_DIM dims: mix with token embeddings (0.8/0.2)
         if (token < token_embeddings.size()) {
             const auto& emb = token_embeddings[token];
-            for (size_t i = 0; i < H && i < emb.size(); ++i) {
+            for (size_t i = 0; i < LanguageConfig::FUSED_DIM && i < emb.size(); ++i) {
                 hidden[i] = hidden[i] * 0.8 + emb[i] * 0.2;
             }
+        }
+        // Dimensional context dims: slow decay (preserve dimensional signal)
+        for (size_t i = LanguageConfig::FUSED_DIM; i < H; ++i) {
+            hidden[i] *= 0.95;
         }
     }
 
@@ -155,7 +178,7 @@ DecoderOutput KANDecoder::decode(
 // =============================================================================
 
 std::vector<double> KANDecoder::compute_logits(const std::vector<double>& hidden) const {
-    // h · W^T = logits ∈ R^VOCAB_SIZE
+    // h . W^T = logits in R^VOCAB_SIZE
     std::vector<double> logits(LanguageConfig::VOCAB_SIZE, 0.0);
     size_t h_dim = std::min(hidden.size(), output_projection_.size());
 

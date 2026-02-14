@@ -44,7 +44,7 @@ CURSOR_SOURCES = cursor/focus_cursor.cpp cursor/focus_cursor_manager.cpp \
 LANGUAGE_SOURCES = language/bpe_tokenizer.cpp language/kan_encoder.cpp \
                    language/semantic_scorer.cpp language/fusion_layer.cpp \
                    language/kan_decoder.cpp language/kan_language_engine.cpp \
-                   language/language_training.cpp
+                   language/language_training.cpp language/dimensional_context.cpp
 CORE_APP_SOURCES = core/system_orchestrator.cpp core/brain19_app.cpp \
                    core/thinking_pipeline.cpp
 

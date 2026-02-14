@@ -89,7 +89,7 @@ void Brain19App::cmd_ask(const std::string& question) {
         std::cout << "  [" << resp.epistemic_note << "]\n";
     }
     if (resp.contains_speculation) {
-        std::cout << "  [Enthaelt Spekulation]\n";
+        std::cout << "  [Contains speculation]\n";
     }
     std::cout << "\n";
 }

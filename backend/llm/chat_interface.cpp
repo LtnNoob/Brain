@@ -337,17 +337,17 @@ std::string ChatInterface::build_epistemic_context(
 
 std::string ChatInterface::format_greeting(const std::vector<ConceptInfo>& top_concepts) {
     std::ostringstream ans;
-    ans << "Hallo! Ich bin Brain19.\n\n";
-    ans << "Ich kenne " << total_concepts_ << " Konzepte und " << total_relations_
-        << " Relationen in meinem Wissensnetzwerk. ";
+    ans << "Hello! I am Brain19.\n\n";
+    ans << "I know " << total_concepts_ << " concepts and " << total_relations_
+        << " relations in my knowledge network. ";
     if (!top_concepts.empty()) {
-        ans << "Frag mich z.B. nach **" << top_concepts[0].label << "**";
+        ans << "Try asking about **" << top_concepts[0].label << "**";
         if (top_concepts.size() > 1) {
-            ans << " oder **" << top_concepts[1].label << "**";
+            ans << " or **" << top_concepts[1].label << "**";
         }
         ans << ".\n";
     } else {
-        ans << "Stell mir eine Frage!\n";
+        ans << "Ask me a question!\n";
     }
     return ans.str();
 }
@@ -359,7 +359,7 @@ std::string ChatInterface::format_question(
     std::ostringstream ans;
 
     if (top_concepts.empty()) {
-        ans << "Dazu habe ich kein Wissen in meinem Netzwerk.\n";
+        ans << "I don't have knowledge about that in my network.\n";
         return ans.str();
     }
 
@@ -367,7 +367,7 @@ std::string ChatInterface::format_question(
     ans << "**" << primary.label << "**: " << primary.definition << "\n";
 
     if (top_concepts.size() > 1) {
-        ans << "\nVerwandte Konzepte: ";
+        ans << "\nRelated: ";
         size_t shown = 0;
         for (size_t i = 1; i < top_concepts.size() && shown < 3; ++i) {
             const auto& c = top_concepts[i];
@@ -389,7 +389,7 @@ std::string ChatInterface::format_statement(const std::vector<ConceptInfo>& top_
     std::ostringstream ans;
 
     if (top_concepts.empty()) {
-        ans << "Ich kann diese Aussage nicht meinem Wissensnetzwerk zuordnen.\n";
+        ans << "I cannot match this statement to my knowledge network.\n";
         return ans.str();
     }
 
@@ -598,7 +598,7 @@ ChatResponse ChatInterface::ask_with_thinking(
             response.answer = format_statement(relevant);
             break;
         default:
-            response.answer = format_thinking_response(relevant, thinking, ltm);
+            response.answer = format_thinking_response(question, relevant, thinking, ltm);
             break;
     }
 
@@ -607,41 +607,40 @@ ChatResponse ChatInterface::ask_with_thinking(
 
 // ─── NLG Helpers ────────────────────────────────────────────────────────────
 
-// Fallback German verbs for common custom relation slugs from foundation data
-static const std::unordered_map<std::string, std::string> CUSTOM_VERB_DE = {
-    {"relates to", "steht in Beziehung zu"}, {"related to", "steht in Beziehung zu"},
-    {"occurs in", "findet statt in"}, {"occurs-in", "findet statt in"},
-    {"enabled by", "wird ermoeglicht durch"}, {"enabled-by", "wird ermoeglicht durch"},
-    {"used in", "wird verwendet in"}, {"used-in", "wird verwendet in"},
-    {"used by", "wird verwendet von"}, {"used-by", "wird verwendet von"},
-    {"used for", "wird verwendet fuer"}, {"used-for", "wird verwendet fuer"},
-    {"created by", "wurde erschaffen von"}, {"created-by", "wurde erschaffen von"},
-    {"type of", "ist ein Typ von"}, {"type-of", "ist ein Typ von"},
-    {"made of", "besteht aus"}, {"made-of", "besteht aus"},
-    {"found in", "kommt vor in"}, {"found-in", "kommt vor in"},
-    {"located in", "befindet sich in"}, {"located-in", "befindet sich in"},
-    {"based on", "basiert auf"}, {"based-on", "basiert auf"},
-    {"caused by", "wird verursacht durch"}, {"caused-by", "wird verursacht durch"},
-    {"active in", "ist aktiv in"}, {"active-in", "ist aktiv in"},
-    {"applies to", "gilt fuer"}, {"applies-to", "gilt fuer"},
-    {"leads to", "fuehrt zu"}, {"leads-to", "fuehrt zu"},
-    {"depends on", "haengt ab von"}, {"depends-on", "haengt ab von"},
-    {"connected to", "ist verbunden mit"}, {"connected-to", "ist verbunden mit"},
-    {"example of", "ist ein Beispiel fuer"}, {"example-of", "ist ein Beispiel fuer"},
-    {"component of", "ist Bestandteil von"}, {"component-of", "ist Bestandteil von"},
-    {"influences", "beeinflusst"}, {"controls", "steuert"},
-    {"prevents", "verhindert"}, {"triggers", "loest aus"},
-    {"produces", "erzeugt"}, {"contains", "enthaelt"},
-    {"protects", "schuetzt"}, {"generates", "erzeugt"},
-    {"measures", "misst"}, {"affects", "beeinflusst"},
+// Clean English verb phrases for custom relation slugs from foundation data
+static const std::unordered_map<std::string, std::string> CUSTOM_VERB_EN = {
+    {"occurs in", "occurs in"}, {"occurs-in", "occurs in"},
+    {"enabled by", "is enabled by"}, {"enabled-by", "is enabled by"},
+    {"used in", "is used in"}, {"used-in", "is used in"},
+    {"used by", "is used by"}, {"used-by", "is used by"},
+    {"used for", "is used for"}, {"used-for", "is used for"},
+    {"created by", "was created by"}, {"created-by", "was created by"},
+    {"type of", "is a type of"}, {"type-of", "is a type of"},
+    {"made of", "is made of"}, {"made-of", "is made of"},
+    {"found in", "is found in"}, {"found-in", "is found in"},
+    {"located in", "is located in"}, {"located-in", "is located in"},
+    {"based on", "is based on"}, {"based-on", "is based on"},
+    {"caused by", "is caused by"}, {"caused-by", "is caused by"},
+    {"active in", "is active in"}, {"active-in", "is active in"},
+    {"applies to", "applies to"}, {"applies-to", "applies to"},
+    {"leads to", "leads to"}, {"leads-to", "leads to"},
+    {"depends on", "depends on"}, {"depends-on", "depends on"},
+    {"connected to", "is connected to"}, {"connected-to", "is connected to"},
+    {"example of", "is an example of"}, {"example-of", "is an example of"},
+    {"component of", "is a component of"}, {"component-of", "is a component of"},
+    {"influences", "influences"}, {"controls", "controls"},
+    {"prevents", "prevents"}, {"triggers", "triggers"},
+    {"produces", "produces"}, {"contains", "contains"},
+    {"protects", "protects"}, {"generates", "generates"},
+    {"measures", "measures"}, {"affects", "affects"},
 };
 
-static std::string relation_verb_de(const std::string& relation_name) {
+static std::string relation_verb_en(const std::string& relation_name) {
     auto& reg = RelationTypeRegistry::instance();
     auto type_opt = reg.find_by_name(relation_name);
     if (type_opt) {
-        const auto& de = reg.get_name_de(*type_opt);
-        if (!de.empty() && de != relation_name) return de;
+        const auto& en = reg.get_name_en(*type_opt);
+        if (!en.empty() && en != relation_name) return en;
     }
     // Humanize slug first, then check custom map
     std::string humanized = relation_name;
@@ -649,26 +648,48 @@ static std::string relation_verb_de(const std::string& relation_name) {
         if (ch == '_' || ch == '-') ch = ' ';
         else ch = static_cast<char>(std::tolower(static_cast<unsigned char>(ch)));
     }
-    auto it = CUSTOM_VERB_DE.find(humanized);
-    if (it != CUSTOM_VERB_DE.end()) return it->second;
+    auto it = CUSTOM_VERB_EN.find(humanized);
+    if (it != CUSTOM_VERB_EN.end()) return it->second;
     return humanized;
+}
+
+static bool is_causal_query(const std::string& question) {
+    std::string lower = to_lower(question);
+    return lower.find("what happens") != std::string::npos ||
+           lower.find("what would happen") != std::string::npos ||
+           lower.find("when ") != std::string::npos ||
+           lower.find("if ") != std::string::npos ||
+           lower.find("cause") != std::string::npos ||
+           lower.find("effect") != std::string::npos ||
+           lower.find("result") != std::string::npos ||
+           lower.find("consequence") != std::string::npos ||
+           lower.find("lead to") != std::string::npos;
+}
+
+static RelationCategory get_relation_category(const std::string& relation_name) {
+    auto& reg = RelationTypeRegistry::instance();
+    auto type_opt = reg.find_by_name(relation_name);
+    if (type_opt) return reg.get_category(*type_opt);
+    return RelationCategory::CUSTOM_CATEGORY;
 }
 
 // ─── Full-Pipeline Response Formatter ────────────────────────────────────────
 
 std::string ChatInterface::format_thinking_response(
+    const std::string& question,
     const std::vector<ConceptInfo>& top_concepts,
     const ThinkingContext& thinking,
-    const LongTermMemory& /*ltm*/
+    const LongTermMemory& ltm
 ) {
     std::ostringstream ans;
 
     if (top_concepts.empty()) {
-        ans << "Dazu habe ich kein Wissen in meinem Netzwerk.\n";
+        ans << "I don't have knowledge about that in my network.\n";
         return ans.str();
     }
 
     const auto& primary = top_concepts[0];
+    bool causal = is_causal_query(question);
 
     // ── Build connected set: concepts linked to primary via relations ──
     std::unordered_set<ConceptId> connected;
@@ -678,22 +699,25 @@ std::string ChatInterface::format_thinking_response(
         if (rl.target == primary.id) connected.insert(rl.source);
     }
 
-    // ── Section 1: Primary concept + definition ──
+    // ── Section 1: Definition ──
     ans << "**" << primary.label << "**: " << primary.definition << "\n";
 
-    // ── Section 2: Relations as natural German sentences (weight > 0.5) ──
-    // Group by (source_label, relation_verb) → list of target_labels
+    // ── Section 2: Relations as coherent English prose ──
+    // Collect relevant relations, grouped by category
     {
-        struct GroupKey {
-            std::string source;
+        struct RelGroup {
+            RelationCategory category;
             std::string verb;
             std::string raw_relation;
+            std::string source_label;
+            std::vector<std::string> targets;
         };
-        std::vector<std::pair<GroupKey, std::vector<std::string>>> groups;
+        std::vector<RelGroup> groups;
 
         for (const auto& rl : thinking.relation_links) {
             if (rl.weight <= 0.5) continue;
             if (rl.source != primary.id && rl.target != primary.id) continue;
+
             // Skip generic "relates to" noise
             std::string rn_lower = rl.relation_name;
             for (auto& ch : rn_lower) {
@@ -702,35 +726,141 @@ std::string ChatInterface::format_thinking_response(
             }
             if (rn_lower == "relates to" || rn_lower == "related to") continue;
 
-            std::string verb = relation_verb_de(rl.relation_name);
+            std::string verb = relation_verb_en(rl.relation_name);
+            RelationCategory cat = get_relation_category(rl.relation_name);
+
             bool found = false;
-            for (auto& [k, targets] : groups) {
-                if (k.source == rl.source_label && k.raw_relation == rl.relation_name) {
-                    // Dedup targets
+            for (auto& g : groups) {
+                if (g.source_label == rl.source_label && g.raw_relation == rl.relation_name) {
                     bool dup = false;
-                    for (const auto& t : targets) {
+                    for (const auto& t : g.targets) {
                         if (t == rl.target_label) { dup = true; break; }
                     }
-                    if (!dup) targets.push_back(rl.target_label);
+                    if (!dup) g.targets.push_back(rl.target_label);
                     found = true;
                     break;
                 }
             }
             if (!found) {
-                groups.push_back({{rl.source_label, verb, rl.relation_name}, {rl.target_label}});
+                groups.push_back({cat, verb, rl.relation_name, rl.source_label, {rl.target_label}});
             }
         }
 
+        // Sort by category priority based on query type
         if (!groups.empty()) {
-            for (const auto& [key, targets] : groups) {
-                ans << key.source << " " << key.verb << " ";
-                for (size_t i = 0; i < targets.size(); ++i) {
-                    if (i > 0 && i == targets.size() - 1) ans << " und ";
-                    else if (i > 0) ans << ", ";
-                    ans << targets[i];
+            auto cat_priority = [causal](RelationCategory c) -> int {
+                if (causal) {
+                    switch (c) {
+                        case RelationCategory::CAUSAL:        return 0;
+                        case RelationCategory::FUNCTIONAL:    return 1;
+                        case RelationCategory::COMPOSITIONAL: return 2;
+                        case RelationCategory::HIERARCHICAL:  return 3;
+                        default: return 4;
+                    }
+                } else {
+                    switch (c) {
+                        case RelationCategory::HIERARCHICAL:  return 0;
+                        case RelationCategory::COMPOSITIONAL: return 1;
+                        case RelationCategory::FUNCTIONAL:    return 2;
+                        case RelationCategory::CAUSAL:        return 3;
+                        default: return 4;
+                    }
+                }
+            };
+            std::stable_sort(groups.begin(), groups.end(),
+                [&](const RelGroup& a, const RelGroup& b) {
+                    return cat_priority(a.category) < cat_priority(b.category);
+                });
+
+            ans << "\n";
+            bool first_sentence = true;
+            for (const auto& g : groups) {
+                // Pronoun substitution: use concept name in first sentence, "It" thereafter
+                std::string subject;
+                if (first_sentence || g.source_label != primary.label) {
+                    subject = g.source_label;
+                } else {
+                    subject = "It";
+                }
+                first_sentence = false;
+
+                ans << subject << " " << g.verb << " ";
+                // Oxford comma list
+                for (size_t i = 0; i < g.targets.size(); ++i) {
+                    if (g.targets.size() > 2 && i > 0 && i == g.targets.size() - 1) {
+                        ans << ", and ";
+                    } else if (g.targets.size() == 2 && i == 1) {
+                        ans << " and ";
+                    } else if (i > 0) {
+                        ans << ", ";
+                    }
+                    ans << g.targets[i];
                 }
                 ans << ". ";
             }
+        }
+
+        // ── Section 2b: Causal chain walk (causal queries only) ──
+        if (causal) {
+            std::unordered_set<ConceptId> visited;
+            visited.insert(primary.id);
+            ConceptId current = primary.id;
+            std::string current_label = primary.label;
+
+            for (size_t hop = 0; hop < 3; ++hop) {
+                auto rels = ltm.get_outgoing_relations(current);
+                bool found_hop = false;
+                for (const auto& r : rels) {
+                    if ((r.type == RelationType::CAUSES ||
+                         r.type == RelationType::ENABLES ||
+                         r.type == RelationType::PRODUCES) &&
+                        !visited.count(r.target))
+                    {
+                        auto target_info = ltm.retrieve_concept(r.target);
+                        if (!target_info) continue;
+                        auto& reg = RelationTypeRegistry::instance();
+                        std::string verb = reg.get_name_en(r.type);
+                        if (hop == 0 && groups.empty()) {
+                            ans << "\n";
+                        }
+                        if (hop > 0) {
+                            ans << target_info->label << " in turn " << verb << " ";
+                        } else {
+                            ans << current_label << " " << verb << " ";
+                        }
+                        // Look ahead for the next hop target label
+                        visited.insert(r.target);
+                        current = r.target;
+                        current_label = target_info->label;
+
+                        // Find what this causes next (peek)
+                        auto next_rels = ltm.get_outgoing_relations(current);
+                        bool has_next = false;
+                        for (const auto& nr : next_rels) {
+                            if ((nr.type == RelationType::CAUSES ||
+                                 nr.type == RelationType::ENABLES ||
+                                 nr.type == RelationType::PRODUCES) &&
+                                !visited.count(nr.target)) {
+                                auto next_info = ltm.retrieve_concept(nr.target);
+                                if (next_info) {
+                                    ans << next_info->label << ". ";
+                                    has_next = true;
+                                }
+                                break;
+                            }
+                        }
+                        if (!has_next) {
+                            ans << current_label << ". ";
+                        }
+                        found_hop = true;
+                        break;
+                    }
+                }
+                if (!found_hop) break;
+            }
+        }
+
+        if (!groups.empty() || causal) {
             ans << "\n";
         }
     }
@@ -744,7 +874,7 @@ std::string ChatInterface::format_thinking_response(
             }
         }
         if (!filtered.empty()) {
-            ans << "\nVerwandte Konzepte: ";
+            ans << "\nRelated: ";
             for (size_t i = 0; i < filtered.size(); ++i) {
                 if (i > 0) ans << " | ";
                 ans << "**" << filtered[i]->label << "**";
@@ -764,7 +894,7 @@ std::string ChatInterface::format_thinking_response(
             if (hyp.confidence <= 0.5) continue;
             if (first) { ans << "\n"; first = false; }
             ans << "- " << hyp.statement
-                << " (Hypothese, " << static_cast<int>(hyp.confidence * 100) << "%";
+                << " (Hypothesis, " << static_cast<int>(hyp.confidence * 100) << "%";
             if (hyp.kan_validated) {
                 ans << ", " << hyp.validation_status;
             }
@@ -779,7 +909,7 @@ std::string ChatInterface::format_thinking_response(
             if (c.severity <= 0.7) continue;
             if (first) { ans << "\n"; first = false; }
             ans << "- " << c.description
-                << " (Schwere: " << static_cast<int>(c.severity * 100) << "%)\n";
+                << " (Severity: " << static_cast<int>(c.severity * 100) << "%)\n";
         }
     }
 

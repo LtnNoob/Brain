@@ -364,31 +364,94 @@ std::string KANLanguageEngine::template_generate(
         output += "**" + primary->label + "**: " + primary->definition;
     }
 
-    // Add relation sentences for subsequent concepts in chain
+    // Group relations by (source, verb) → targets with category ordering
     if (chain.size() > 1 && primary) {
-        output += "\n\n";
+        struct RelGroup {
+            RelationCategory category;
+            std::string source_label;
+            std::string verb;
+            std::vector<std::string> targets;
+        };
+        std::vector<RelGroup> groups;
+        std::unordered_set<ConceptId> chain_set(chain.begin(), chain.end());
+
         for (size_t i = 0; i < chain.size(); ++i) {
             auto rels = ltm_.get_outgoing_relations(chain[i]);
             for (const auto& r : rels) {
-                // Only relations to other chain members
-                bool in_chain = false;
-                for (auto cid : chain) {
-                    if (cid == r.target) { in_chain = true; break; }
-                }
-                if (!in_chain) continue;
+                if (!chain_set.count(r.target)) continue;
 
                 auto src_info = ltm_.retrieve_concept(r.source);
                 auto tgt_info = ltm_.retrieve_concept(r.target);
                 if (!src_info || !tgt_info) continue;
 
                 auto& type_info = reg.get(r.type);
-                output += src_info->label + " " + type_info.name_en + " " +
-                          tgt_info->label + ". ";
+                RelationCategory cat = type_info.category;
+
+                // Try to merge into existing group
+                bool merged = false;
+                for (auto& g : groups) {
+                    if (g.source_label == src_info->label && g.verb == type_info.name_en) {
+                        bool dup = false;
+                        for (const auto& t : g.targets) {
+                            if (t == tgt_info->label) { dup = true; break; }
+                        }
+                        if (!dup) g.targets.push_back(tgt_info->label);
+                        merged = true;
+                        break;
+                    }
+                }
+                if (!merged) {
+                    groups.push_back({cat, src_info->label, type_info.name_en, {tgt_info->label}});
+                }
+            }
+        }
+
+        // Sort by category: HIERARCHICAL, COMPOSITIONAL, FUNCTIONAL, CAUSAL, rest
+        std::stable_sort(groups.begin(), groups.end(),
+            [](const RelGroup& a, const RelGroup& b) {
+                auto prio = [](RelationCategory c) -> int {
+                    switch (c) {
+                        case RelationCategory::HIERARCHICAL:  return 0;
+                        case RelationCategory::COMPOSITIONAL: return 1;
+                        case RelationCategory::FUNCTIONAL:    return 2;
+                        case RelationCategory::CAUSAL:        return 3;
+                        default: return 4;
+                    }
+                };
+                return prio(a.category) < prio(b.category);
+            });
+
+        if (!groups.empty()) {
+            output += "\n\n";
+            bool first_sentence = true;
+            for (const auto& g : groups) {
+                // Pronoun substitution
+                std::string subject;
+                if (first_sentence || g.source_label != primary->label) {
+                    subject = g.source_label;
+                } else {
+                    subject = "It";
+                }
+                first_sentence = false;
+
+                output += subject + " " + g.verb + " ";
+                // Oxford comma list
+                for (size_t j = 0; j < g.targets.size(); ++j) {
+                    if (g.targets.size() > 2 && j > 0 && j == g.targets.size() - 1) {
+                        output += ", and ";
+                    } else if (g.targets.size() == 2 && j == 1) {
+                        output += " and ";
+                    } else if (j > 0) {
+                        output += ", ";
+                    }
+                    output += g.targets[j];
+                }
+                output += ". ";
             }
         }
     }
 
-    // Add related concept definitions (max 2)
+    // Related concept definitions (max 2)
     size_t extra = 0;
     for (size_t i = 1; i < chain.size() && extra < 2; ++i) {
         auto info = ltm_.retrieve_concept(chain[i]);

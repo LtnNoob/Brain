@@ -201,6 +201,7 @@ private:
 
     // Full-pipeline response formatting (multi-domain, fusion)
     std::string format_thinking_response(
+        const std::string& question,
         const std::vector<ConceptInfo>& top_concepts,
         const ThinkingContext& thinking,
         const LongTermMemory& ltm

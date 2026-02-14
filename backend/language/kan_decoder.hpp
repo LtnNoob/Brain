@@ -59,6 +59,18 @@ public:
     // Get decoder confidence threshold
     double confidence_threshold() const { return config_.decoder_confidence_threshold; }
 
+    // Non-linear transform: 2-layer MLP with residual (h' = h + tanh(h·W1+b1)·W2+b2)
+    static constexpr size_t TRANSFORM_K = 32;  // bottleneck dim
+
+    // Public accessors for training
+    auto& transform_W1() { return transform_W1_; }
+    auto& transform_b1() { return transform_b1_; }
+    auto& transform_W2() { return transform_W2_; }
+    auto& transform_b2() { return transform_b2_; }
+
+    // Forward transform: returns h' = h + tanh(h·W1+b1)·W2+b2
+    std::vector<double> transform(const std::vector<double>& h) const;
+
     // Re-initialize output projection for extended fused dimension.
     // Called after DimensionalContext is built to size the projection
     // for (FUSED_DIM + dim_context_decoder_dim) input.
@@ -89,6 +101,12 @@ private:
 
     // Active token set (populated by training, used to suppress untrained tokens)
     std::unordered_set<uint16_t> trained_tokens_;
+
+    // Non-linear transform weights (initialized to zero = identity via residual)
+    std::vector<std::vector<double>> transform_W1_;  // [H × K]
+    std::vector<double> transform_b1_;                // [K]
+    std::vector<std::vector<double>> transform_W2_;  // [K × H]
+    std::vector<double> transform_b2_;                // [H]
 
     // Compute logits from hidden state
     std::vector<double> compute_logits(const std::vector<double>& hidden) const;

@@ -483,8 +483,25 @@ LanguageTrainingResult LanguageTraining::train_stage1(const LanguageConfig& conf
         std::vector<double> h(H);
         std::vector<double> h_ext(H_EXT);
 
+        // Transform buffers + references
+        const size_t K = KANDecoder::TRANSFORM_K;
+        auto& W1 = decoder.transform_W1();
+        auto& b1 = decoder.transform_b1();
+        auto& W2 = decoder.transform_W2();
+        auto& b2 = decoder.transform_b2();
+        std::vector<double> h_out(H);
+        std::vector<double> z1(K);
+        std::vector<double> a1(K);
+        std::vector<double> d_h_ext(H_EXT);
+        std::vector<double> d_h_out(H);
+        std::vector<double> d_a1(K);
+        std::vector<double> d_z1(K);
+        const double lr_transform = 0.001;
+        const size_t transform_warmup = 10;  // freeze transform for first N epochs
+
         double best_decoder_loss = 1e9;
         for (size_t epoch = 0; epoch < config.decoder_epochs; ++epoch) {
+            bool train_transform = (epoch >= transform_warmup);
             double total_ce_loss = 0.0;
             size_t total_tokens = 0;
 
@@ -504,10 +521,23 @@ LanguageTrainingResult LanguageTraining::train_stage1(const LanguageConfig& conf
 
                     size_t ca = compress[target_tok];
 
-                    // Build quadratic features: h_ext = [h, h^2]
+                    // Forward through transform: h' = h + tanh(h·W1+b1)·W2+b2
+                    for (size_t k = 0; k < K; ++k) {
+                        double sum = b1[k];
+                        for (size_t i = 0; i < H; ++i) sum += h[i] * W1[i][k];
+                        z1[k] = sum;
+                        a1[k] = std::tanh(sum);
+                    }
+                    for (size_t j = 0; j < H; ++j) {
+                        double sum = h[j] + b2[j];
+                        for (size_t k = 0; k < K; ++k) sum += a1[k] * W2[k][j];
+                        h_out[j] = sum;
+                    }
+
+                    // Build quadratic features: h_ext = [h_out, h_out^2]
                     for (size_t i = 0; i < H; ++i) {
-                        h_ext[i] = h[i];
-                        h_ext[H + i] = h[i] * h[i];
+                        h_ext[i] = h_out[i];
+                        h_ext[H + i] = h_out[i] * h_out[i];
                     }
 
                     // logits = h_ext . W_a^T in R^VA
@@ -534,6 +564,16 @@ LanguageTrainingResult LanguageTraining::train_stage1(const LanguageConfig& conf
                     total_ce_loss += -std::log(p);
                     total_tokens++;
 
+                    // Compute d_h_ext BEFORE W update (pre-update W_a for correct gradient)
+                    if (train_transform) {
+                        for (size_t i = 0; i < H_EXT; ++i) {
+                            double d = 0.0;
+                            for (size_t a = 0; a < VA; ++a) d += probs[a] * W_a[i][a];
+                            d -= W_a[i][ca];
+                            d_h_ext[i] = d;
+                        }
+                    }
+
                     // Per-token W update
                     for (size_t i = 0; i < H_EXT; ++i) {
                         double hi = h_ext[i];
@@ -541,6 +581,45 @@ LanguageTrainingResult LanguageTraining::train_stage1(const LanguageConfig& conf
                             W_a[i][a] -= lr * hi * probs[a];
                         }
                         W_a[i][ca] += lr * hi;
+                    }
+
+                    // Backprop through transform (only after warmup epochs)
+                    if (train_transform) {
+                        // Through quadratic: d_h_out[i] = d_h_ext[i] + 2*h_out[i]*d_h_ext[H+i]
+                        for (size_t i = 0; i < H; ++i) {
+                            d_h_out[i] = d_h_ext[i] + 2.0 * h_out[i] * d_h_ext[H + i];
+                        }
+
+                        // Through W2: d_a1[k] = Σ_j d_h_out[j] * W2[k][j]
+                        for (size_t k = 0; k < K; ++k) {
+                            double d = 0.0;
+                            for (size_t j = 0; j < H; ++j) d += d_h_out[j] * W2[k][j];
+                            d_a1[k] = d;
+                        }
+
+                        // W2 update
+                        for (size_t k = 0; k < K; ++k) {
+                            for (size_t j = 0; j < H; ++j) {
+                                W2[k][j] -= lr_transform * a1[k] * d_h_out[j];
+                            }
+                        }
+
+                        // Through tanh: d_z1[k] = d_a1[k] * (1 - a1[k]²)
+                        for (size_t k = 0; k < K; ++k) {
+                            d_z1[k] = d_a1[k] * (1.0 - a1[k] * a1[k]);
+                        }
+
+                        // W1 update
+                        for (size_t i = 0; i < H; ++i) {
+                            for (size_t k = 0; k < K; ++k) {
+                                W1[i][k] -= lr_transform * h[i] * d_z1[k];
+                            }
+                        }
+
+                        // b1 update
+                        for (size_t k = 0; k < K; ++k) {
+                            b1[k] -= lr_transform * d_z1[k];
+                        }
                     }
 
                     // Evolve hidden state: split evolution

@@ -30,6 +30,22 @@ KANDecoder::KANDecoder(const LanguageConfig& config)
         row.resize(LanguageConfig::VOCAB_SIZE);
         for (auto& v : row) v = dist(rng);
     }
+
+    // Initialize transform for identity-at-init with gradient flow:
+    // W1 = small random (breaks symmetry so a1 ≠ 0, enabling W2 gradient)
+    // W2 = 0 (identity: h' = h + tanh(h·W1+b1)·0 = h)
+    // b1 = 0, b2 = 0
+    const size_t H0 = LanguageConfig::FUSED_DIM;
+    const size_t K = TRANSFORM_K;
+    double w1_scale = 0.01 * std::sqrt(6.0 / (H0 + K));
+    std::mt19937 rng_t(42);
+    std::uniform_real_distribution<double> dist_t(-w1_scale, w1_scale);
+    transform_W1_.resize(H0, std::vector<double>(K));
+    for (auto& row : transform_W1_)
+        for (auto& v : row) v = dist_t(rng_t);
+    transform_b1_.assign(K, 0.0);
+    transform_W2_.assign(K, std::vector<double>(H0, 0.0));
+    transform_b2_.assign(H0, 0.0);
 }
 
 // =============================================================================
@@ -48,6 +64,50 @@ void KANDecoder::reinitialize_for_extended_dim(size_t extended_fused_dim) {
         row.assign(LanguageConfig::VOCAB_SIZE, 0.0);
         for (auto& v : row) v = dist(rng);
     }
+
+    // Re-initialize transform: W1 small random (gradient flow), W2=0 (identity)
+    const size_t K = TRANSFORM_K;
+    double w1_scale = 0.01 * std::sqrt(6.0 / (extended_fused_dim_ + K));
+    std::mt19937 rng_t(42);
+    std::uniform_real_distribution<double> dist_t(-w1_scale, w1_scale);
+    transform_W1_.resize(extended_fused_dim_, std::vector<double>(K));
+    for (auto& row : transform_W1_)
+        for (auto& v : row) v = dist_t(rng_t);
+    transform_b1_.assign(K, 0.0);
+    transform_W2_.assign(K, std::vector<double>(extended_fused_dim_, 0.0));
+    transform_b2_.assign(extended_fused_dim_, 0.0);
+}
+
+// =============================================================================
+// Non-linear transform: h' = h + tanh(h·W1+b1)·W2+b2
+// =============================================================================
+
+std::vector<double> KANDecoder::transform(const std::vector<double>& h) const {
+    const size_t H = h.size();
+    const size_t K = TRANSFORM_K;
+
+    // z1 = h · W1 + b1  [K]
+    // a1 = tanh(z1)      [K]
+    std::vector<double> a1(K);
+    for (size_t k = 0; k < K; ++k) {
+        double sum = transform_b1_[k];
+        for (size_t i = 0; i < H && i < transform_W1_.size(); ++i) {
+            sum += h[i] * transform_W1_[i][k];
+        }
+        a1[k] = std::tanh(sum);
+    }
+
+    // h' = h + a1 · W2 + b2  [H]
+    std::vector<double> h_out(H);
+    for (size_t j = 0; j < H; ++j) {
+        double sum = h[j] + transform_b2_[j];
+        for (size_t k = 0; k < K && k < transform_W2_.size(); ++k) {
+            sum += a1[k] * transform_W2_[k][j];
+        }
+        h_out[j] = sum;
+    }
+
+    return h_out;
 }
 
 // =============================================================================
@@ -87,11 +147,14 @@ DecoderOutput KANDecoder::decode(
     size_t generated = 0;
 
     for (size_t t = 0; t < max_tokens; ++t) {
-        // Build quadratic features: [h, h^2] for non-linear capacity
+        // Apply non-linear transform (residual MLP, starts as identity)
+        auto h_transformed = transform(hidden);
+
+        // Build quadratic features: [h', h'^2] for non-linear capacity
         std::vector<double> h_ext(2 * H);
         for (size_t i = 0; i < H; ++i) {
-            h_ext[i] = hidden[i];
-            h_ext[H + i] = hidden[i] * hidden[i];
+            h_ext[i] = h_transformed[i];
+            h_ext[H + i] = h_transformed[i] * h_transformed[i];
         }
 
         // Compute logits from extended features

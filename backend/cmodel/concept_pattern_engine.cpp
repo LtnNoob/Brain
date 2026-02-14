@@ -32,21 +32,26 @@ double ConceptPatternEngine::predict_edge(
     const ConceptModel* model = registry_.get_model(from);
     if (!model) return 0.0;
 
-    // Quality gate: only use scores from converged models with enough samples
-    if (!model->is_converged() || model->sample_count() < 10) return 0.0;
+    // Models with no training data or failed convergence are unusable
+    if (!model->is_converged() || model->sample_count() == 0) return 0.0;
 
     const auto& rel_emb = embeddings_.get_relation_embedding(type);
-    static const size_t QUERY_HASH = std::hash<std::string>{}("query");
-    auto ctx_emb = embeddings_.make_target_embedding(QUERY_HASH, from, to);
-
-    auto concept_from = embeddings_.concept_embeddings().get_or_default(from);
-    auto concept_to = embeddings_.concept_embeddings().get_or_default(to);
-
-    double score = model->predict_refined(rel_emb, ctx_emb, concept_from, concept_to);
+    // MUST match training context (concept_trainer uses RECALL_HASH)
+    static const size_t RECALL_HASH = std::hash<std::string>{}("recall");
+    auto ctx_emb = embeddings_.make_target_embedding(RECALL_HASH, from, to);
 
     // Discount by training quality: lower loss = higher quality
     double quality = 1.0 - std::min(model->final_loss(), 1.0);
-    return score * quality;
+
+    // Well-trained models: full predict_refined
+    if (model->sample_count() >= 4) {
+        auto concept_from = embeddings_.concept_embeddings().get_or_default(from);
+        auto concept_to = embeddings_.concept_embeddings().get_or_default(to);
+        return model->predict_refined(rel_emb, ctx_emb, concept_from, concept_to) * quality;
+    }
+
+    // Sparse models: bilinear fallback with uncertainty discount
+    return model->predict(rel_emb, ctx_emb) * quality * 0.5;
 }
 
 // =============================================================================

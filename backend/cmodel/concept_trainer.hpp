@@ -22,9 +22,10 @@ struct ConceptTrainerConfig {
     double incoming_discount = 0.8;
     size_t neg_ratio = 3;
     double neg_target = 0.05;
-    // KAN training
+    // Refined training (MultiHead + KAN)
     double kan_learning_rate = 0.005;
     size_t kan_epochs = 50;
+    size_t refined_epochs = 10;  // Epochs over refined data per model
 
     ConceptTrainerConfig() {
         model_config.max_epochs = 500;

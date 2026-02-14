@@ -190,14 +190,16 @@ ConceptTrainerStats ConceptTrainer::train_all(
             ts.total_loss += result.final_loss;
             if (result.converged) ts.models_converged++;
 
-            // Refined training with Adam
+            // Refined training with Adam (multiple epochs)
             adam_state.reset();
-            for (const auto& ri : data.refined_inputs) {
-                model->train_refined(ri.rel_emb, ri.ctx_emb, ri.concept_from,
-                                     ri.concept_to, ri.target,
-                                     config_.kan_learning_rate, adam_state);
-                ts.refined_updates++;
+            for (size_t epoch = 0; epoch < config_.refined_epochs; ++epoch) {
+                for (const auto& ri : data.refined_inputs) {
+                    model->train_refined(ri.rel_emb, ri.ctx_emb, ri.concept_from,
+                                         ri.concept_to, ri.target,
+                                         config_.kan_learning_rate, adam_state);
+                }
             }
+            ts.refined_updates += data.refined_inputs.size() * config_.refined_epochs;
         }
     };
 

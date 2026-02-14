@@ -36,7 +36,7 @@ struct MultiHeadBilinear {
 
     void compute(const FlexEmbedding& e_q, const FlexEmbedding& e_k,
                  std::array<double, K>& scores) const;
-    void initialize();  // zeros
+    void initialize();  // Xavier init (breaks symmetry between heads)
 };
 
 // FlexKAN: lightweight [6,4,1] B-spline network per concept
@@ -58,6 +58,24 @@ struct FlexKAN {
     void initialize_identity();
 };
 
+// Adam optimizer state for refined training (MultiHead + KAN)
+// NOT serialized — rebuilt each training cycle, passed externally for memory efficiency
+struct RefinedAdamState {
+    static constexpr size_t MH_PARAMS = MultiHeadBilinear::TOTAL_PARAMS;  // 640
+    static constexpr size_t KAN_PARAMS = FlexKAN::TOTAL_PARAMS;           // 280
+    static constexpr size_t TOTAL = MH_PARAMS + KAN_PARAMS;              // 920
+
+    std::array<double, TOTAL> momentum{};
+    std::array<double, TOTAL> variance{};
+    double timestep = 0.0;
+
+    void reset() {
+        momentum.fill(0.0);
+        variance.fill(0.0);
+        timestep = 0.0;
+    }
+};
+
 class ConceptModel {
 public:
     ConceptModel();
@@ -77,10 +95,14 @@ public:
                       double target, const MicroTrainingConfig& config);
     MicroTrainingResult train(const std::vector<TrainingSample>& samples,
                               const MicroTrainingConfig& config);
-    // Train refined (multi-head + KAN) end-to-end via numerical gradient
+    // Train refined (multi-head + KAN) end-to-end with analytical gradient
     void train_refined(const FlexEmbedding& rel_emb, const FlexEmbedding& ctx_emb,
                        const FlexEmbedding& concept_from, const FlexEmbedding& concept_to,
                        double target, double learning_rate);
+    // Train refined with Adam optimizer (external state for memory efficiency)
+    void train_refined(const FlexEmbedding& rel_emb, const FlexEmbedding& ctx_emb,
+                       const FlexEmbedding& concept_from, const FlexEmbedding& concept_to,
+                       double target, double learning_rate, RefinedAdamState& adam_state);
     // Legacy KAN training (backward compat)
     void train_kan(double bilinear_score, double ctx_feature,
                    double validated_target, double learning_rate);

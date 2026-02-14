@@ -311,7 +311,7 @@ static void action_train_all_stats(ConceptModelRegistry& registry,
             auto cpt = ltm.retrieve_concept(cid);
             auto& e = embeddings.get_relation_embedding(RelationType::IS_A);
             auto& c = embeddings.query_context();
-            double pred = model->predict(e, c);
+            double pred = model->predict_refined(e, c);
             std::cout << "    [" << cid << "] "
                       << (cpt ? cpt->label : "?")
                       << " -> " << std::fixed << std::setprecision(4)

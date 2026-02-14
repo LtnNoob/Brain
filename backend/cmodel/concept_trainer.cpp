@@ -99,13 +99,69 @@ ConceptTrainerStats ConceptTrainer::train_all(
     const auto& concept_store = embeddings.concept_embeddings();
     static const size_t RECALL_HASH = std::hash<std::string>{}("recall");
 
-    // Thread count: use hardware concurrency, cap at 8
-    // TODO: Fix thread-safety in EmbeddingManager before re-enabling parallelism
-    // Race condition causes segfault (NULL deref in libc) when multiple threads
-    // call make_target_embedding() or other potentially-mutating embedding methods.
-    size_t num_threads = 1;  // DISABLED: was std::thread::hardware_concurrency()
+    // =========================================================================
+    // Phase 1 (sequential): Pre-compute all data from shared state
+    // =========================================================================
+    // All LTM/EmbeddingManager access happens here — no thread-safety issues.
 
-    // Per-thread local stats (avoids atomics)
+    struct RefinedInput {
+        FlexEmbedding rel_emb;
+        FlexEmbedding ctx_emb;
+        FlexEmbedding concept_from;
+        FlexEmbedding concept_to;
+        double target;
+    };
+
+    struct PrecomputedData {
+        ConceptId cid = 0;
+        std::vector<TrainingSample> samples;
+        size_t num_positives = 0;
+        std::vector<RefinedInput> refined_inputs;
+    };
+
+    std::vector<PrecomputedData> all_data;
+    all_data.reserve(model_ids.size());
+
+    for (ConceptId cid : model_ids) {
+        ConceptModel* model = registry.get_model(cid);
+        if (!model) continue;
+
+        PrecomputedData data;
+        data.cid = cid;
+        data.samples = generate_samples(cid, embeddings, ltm);
+
+        for (const auto& s : data.samples) {
+            if (s.target > config_.neg_target) data.num_positives++;
+        }
+
+        if (data.num_positives > 0) {
+            FlexEmbedding concept_from = concept_store.get_or_default(cid);
+            auto outgoing = ltm.get_outgoing_relations(cid);
+            data.refined_inputs.reserve(outgoing.size());
+
+            for (const auto& rel : outgoing) {
+                RefinedInput ri;
+                ri.concept_from = concept_from;
+                ri.concept_to = concept_store.get_or_default(rel.target);
+                ri.rel_emb = embeddings.get_relation_embedding(rel.type);
+                ri.ctx_emb = embeddings.make_target_embedding(RECALL_HASH, cid, rel.target);
+                ri.target = rel.weight;
+                data.refined_inputs.push_back(std::move(ri));
+            }
+        }
+
+        all_data.push_back(std::move(data));
+    }
+
+    // =========================================================================
+    // Phase 2 (parallel): Train models using only pre-computed data
+    // =========================================================================
+    // Each thread only touches its own ConceptModel — no shared mutable state.
+
+    size_t num_threads = std::min(
+        static_cast<size_t>(std::thread::hardware_concurrency()), size_t{8});
+    if (num_threads == 0) num_threads = 1;
+
     struct ThreadStats {
         size_t models_trained = 0;
         size_t total_samples = 0;
@@ -118,50 +174,38 @@ ConceptTrainerStats ConceptTrainer::train_all(
 
     auto worker = [&](size_t tid, size_t start, size_t end) {
         auto& ts = thread_stats[tid];
+        RefinedAdamState adam_state;  // One per thread, reused across models
+
         for (size_t i = start; i < end; ++i) {
-            ConceptId cid = model_ids[i];
-            ConceptModel* model = registry.get_model(cid);
+            auto& data = all_data[i];
+            ConceptModel* model = registry.get_model(data.cid);
             if (!model) continue;
 
-            auto samples = generate_samples(cid, embeddings, ltm);
-            ts.total_samples += samples.size();
+            ts.total_samples += data.samples.size();
+            if (data.num_positives == 0) continue;
 
-            // Count positive samples (non-negative targets)
-            size_t num_positives = 0;
-            for (const auto& s : samples) {
-                if (s.target > config_.neg_target) num_positives++;
-            }
-            if (num_positives == 0) continue;
-
-            auto result = model->train(samples, config_.model_config);
+            auto result = model->train(data.samples, config_.model_config);
             ts.models_trained++;
             ts.total_epochs += result.epochs_run;
             ts.total_loss += result.final_loss;
-            if (result.converged) {
-                ts.models_converged++;
-            }
+            if (result.converged) ts.models_converged++;
 
-            // Refined training: train multi-head + FlexKAN immediately after bilinear
-            FlexEmbedding concept_from = concept_store.get_or_default(cid);
-            auto outgoing = ltm.get_outgoing_relations(cid);
-            for (const auto& rel : outgoing) {
-                FlexEmbedding concept_to = concept_store.get_or_default(rel.target);
-                const auto& rel_emb = embeddings.get_relation_embedding(rel.type);
-                auto ctx_emb = embeddings.make_target_embedding(RECALL_HASH, cid, rel.target);
-
-                model->train_refined(rel_emb, ctx_emb, concept_from, concept_to,
-                                     rel.weight, config_.kan_learning_rate);
+            // Refined training with Adam
+            adam_state.reset();
+            for (const auto& ri : data.refined_inputs) {
+                model->train_refined(ri.rel_emb, ri.ctx_emb, ri.concept_from,
+                                     ri.concept_to, ri.target,
+                                     config_.kan_learning_rate, adam_state);
                 ts.refined_updates++;
             }
         }
     };
 
-    // Launch worker threads with chunked work distribution
     std::vector<std::thread> threads;
-    size_t chunk = (model_ids.size() + num_threads - 1) / num_threads;
+    size_t chunk = (all_data.size() + num_threads - 1) / num_threads;
     for (size_t t = 0; t < num_threads; ++t) {
         size_t start = t * chunk;
-        size_t end = std::min(start + chunk, model_ids.size());
+        size_t end = std::min(start + chunk, all_data.size());
         if (start >= end) break;
         threads.emplace_back(worker, t, start, end);
     }

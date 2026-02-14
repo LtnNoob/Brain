@@ -59,7 +59,16 @@ void MultiHeadBilinear::compute(const FlexEmbedding& e_q, const FlexEmbedding& e
 }
 
 void MultiHeadBilinear::initialize() {
-    params.fill(0.0);
+    // Xavier initialization: scale = sqrt(2 / (fan_in + fan_out))
+    // Breaks symmetry so heads learn different features
+    double scale = std::sqrt(2.0 / static_cast<double>(INPUT_DIM + D_PROJ));
+
+    for (size_t i = 0; i < TOTAL_PARAMS; ++i) {
+        // Deterministic pseudo-random using sin-hash (no RNG dependency)
+        double x = std::sin(static_cast<double>(i * 17 + 31)) * 43758.5453;
+        x = x - std::floor(x);  // fractional part in [0,1)
+        params[i] = (x * 2.0 - 1.0) * scale;
+    }
 }
 
 // =============================================================================
@@ -611,6 +620,171 @@ void ConceptModel::train_refined(const FlexEmbedding& rel_emb, const FlexEmbeddi
 
     for (size_t i = 0; i < FlexKAN::TOTAL_PARAMS; ++i) {
         kan_.params[i] -= learning_rate * kan_grad[i];
+    }
+}
+
+// =============================================================================
+// Refined training with Adam optimizer
+// =============================================================================
+
+void ConceptModel::train_refined(const FlexEmbedding& rel_emb, const FlexEmbedding& ctx_emb,
+                                  const FlexEmbedding& concept_from,
+                                  const FlexEmbedding& concept_to,
+                                  double target, double learning_rate,
+                                  RefinedAdamState& adam) {
+    // Forward pass with cached intermediates (identical to SGD version)
+    double bilinear = predict(rel_emb, ctx_emb);
+
+    auto input_q = make_input_vec(concept_from);
+    auto input_k = make_input_vec(concept_to);
+
+    constexpr size_t MH_K  = MultiHeadBilinear::K;
+    constexpr size_t MH_D  = MultiHeadBilinear::D_PROJ;
+    constexpr size_t MH_IN = MultiHeadBilinear::INPUT_DIM;
+
+    std::array<double, MH_K> mh_scores{};
+    double p_proj[MH_K][MH_D];
+    double q_proj[MH_K][MH_D];
+
+    for (size_t h = 0; h < MH_K; ++h) {
+        size_t p_off = h * MultiHeadBilinear::PARAMS_PER_HEAD;
+        size_t q_off = p_off + MH_D * MH_IN;
+
+        double dot = 0.0;
+        for (size_t d = 0; d < MH_D; ++d) {
+            p_proj[h][d] = 0.0;
+            q_proj[h][d] = 0.0;
+            for (size_t j = 0; j < MH_IN; ++j) {
+                p_proj[h][d] += multihead_.params[p_off + d * MH_IN + j] * input_q[j];
+                q_proj[h][d] += multihead_.params[q_off + d * MH_IN + j] * input_k[j];
+            }
+            dot += p_proj[h][d] * q_proj[h][d];
+        }
+        mh_scores[h] = dot;
+    }
+
+    constexpr size_t KAN_IN = FlexKAN::INPUT_DIM;
+    constexpr size_t KAN_H  = FlexKAN::HIDDEN_DIM;
+    constexpr size_t KAN_NK = FlexKAN::NUM_KNOTS;
+
+    std::array<double, KAN_IN> kan_input;
+    for (size_t i = 0; i < MH_K; ++i) {
+        kan_input[i] = sigmoid(mh_scores[i]);
+    }
+    kan_input[4] = bilinear;
+    kan_input[5] = static_cast<double>(
+        std::min(concept_from.detail.size(), concept_to.detail.size())) / 496.0;
+
+    double in[KAN_IN];
+    for (size_t i = 0; i < KAN_IN; ++i) {
+        in[i] = std::max(0.0, std::min(1.0, kan_input[i]));
+    }
+
+    double hidden_raw[KAN_H] = {};
+    for (size_t j = 0; j < KAN_H; ++j) {
+        for (size_t i = 0; i < KAN_IN; ++i) {
+            size_t edge_idx = (i * KAN_H + j) * KAN_NK;
+            hidden_raw[j] += kan_edge_forward(&kan_.params[edge_idx], in[i], KAN_NK);
+        }
+    }
+
+    double hidden_act[KAN_H];
+    for (size_t j = 0; j < KAN_H; ++j) {
+        hidden_act[j] = sigmoid(hidden_raw[j]);
+    }
+
+    double output_raw = 0.0;
+    for (size_t j = 0; j < KAN_H; ++j) {
+        size_t edge_idx = (FlexKAN::LAYER0_EDGES + j) * KAN_NK;
+        output_raw += kan_edge_forward(&kan_.params[edge_idx], hidden_act[j], KAN_NK);
+    }
+
+    double output = sigmoid(output_raw);
+
+    // Backward pass (identical gradient computation)
+    double dL_dout = output - target;
+    double dL_dout_raw = dL_dout * output * (1.0 - output);
+
+    double kan_grad[FlexKAN::TOTAL_PARAMS] = {};
+    double dL_dhidden_act[KAN_H] = {};
+
+    for (size_t j = 0; j < KAN_H; ++j) {
+        size_t edge_base = (FlexKAN::LAYER0_EDGES + j) * KAN_NK;
+
+        for (size_t k = 0; k < KAN_NK; ++k) {
+            kan_grad[edge_base + k] = dL_dout_raw * tent_basis(hidden_act[j], k, KAN_NK);
+        }
+
+        double d_edge_dx = 0.0;
+        for (size_t k = 0; k < KAN_NK; ++k) {
+            d_edge_dx += kan_.params[edge_base + k] * tent_derivative(hidden_act[j], k, KAN_NK);
+        }
+        dL_dhidden_act[j] = dL_dout_raw * d_edge_dx;
+    }
+
+    double dL_dhidden_raw[KAN_H];
+    for (size_t j = 0; j < KAN_H; ++j) {
+        dL_dhidden_raw[j] = dL_dhidden_act[j] * hidden_act[j] * (1.0 - hidden_act[j]);
+    }
+
+    double dL_din[KAN_IN] = {};
+    for (size_t i = 0; i < KAN_IN; ++i) {
+        for (size_t j = 0; j < KAN_H; ++j) {
+            size_t edge_base = (i * KAN_H + j) * KAN_NK;
+
+            for (size_t k = 0; k < KAN_NK; ++k) {
+                kan_grad[edge_base + k] = dL_dhidden_raw[j] * tent_basis(in[i], k, KAN_NK);
+            }
+
+            double d_edge_dx = 0.0;
+            for (size_t k = 0; k < KAN_NK; ++k) {
+                d_edge_dx += kan_.params[edge_base + k] * tent_derivative(in[i], k, KAN_NK);
+            }
+            dL_din[i] += dL_dhidden_raw[j] * d_edge_dx;
+        }
+    }
+
+    double mh_grad[MultiHeadBilinear::TOTAL_PARAMS] = {};
+    for (size_t h = 0; h < MH_K; ++h) {
+        double dL_dmh = dL_din[h] * kan_input[h] * (1.0 - kan_input[h]);
+
+        size_t p_off = h * MultiHeadBilinear::PARAMS_PER_HEAD;
+        size_t q_off = p_off + MH_D * MH_IN;
+
+        for (size_t d = 0; d < MH_D; ++d) {
+            for (size_t j = 0; j < MH_IN; ++j) {
+                mh_grad[p_off + d * MH_IN + j] = dL_dmh * q_proj[h][d] * input_q[j];
+                mh_grad[q_off + d * MH_IN + j] = dL_dmh * p_proj[h][d] * input_k[j];
+            }
+        }
+    }
+
+    // Apply updates with Adam optimizer
+    constexpr double beta1 = 0.9;
+    constexpr double beta2 = 0.999;
+    constexpr double eps = 1e-8;
+
+    adam.timestep += 1.0;
+    double bc1 = 1.0 - std::pow(beta1, adam.timestep);
+    double bc2 = 1.0 - std::pow(beta2, adam.timestep);
+
+    // MultiHead params (indices 0..639 in Adam state)
+    for (size_t i = 0; i < MultiHeadBilinear::TOTAL_PARAMS; ++i) {
+        adam.momentum[i] = beta1 * adam.momentum[i] + (1.0 - beta1) * mh_grad[i];
+        adam.variance[i] = beta2 * adam.variance[i] + (1.0 - beta2) * mh_grad[i] * mh_grad[i];
+        double m_hat = adam.momentum[i] / bc1;
+        double v_hat = adam.variance[i] / bc2;
+        multihead_.params[i] -= learning_rate * m_hat / (std::sqrt(v_hat) + eps);
+    }
+
+    // KAN params (indices 640..919 in Adam state)
+    constexpr size_t KAN_OFF = MultiHeadBilinear::TOTAL_PARAMS;
+    for (size_t i = 0; i < FlexKAN::TOTAL_PARAMS; ++i) {
+        adam.momentum[KAN_OFF + i] = beta1 * adam.momentum[KAN_OFF + i] + (1.0 - beta1) * kan_grad[i];
+        adam.variance[KAN_OFF + i] = beta2 * adam.variance[KAN_OFF + i] + (1.0 - beta2) * kan_grad[i] * kan_grad[i];
+        double m_hat = adam.momentum[KAN_OFF + i] / bc1;
+        double v_hat = adam.variance[KAN_OFF + i] / bc2;
+        kan_.params[i] -= learning_rate * m_hat / (std::sqrt(v_hat) + eps);
     }
 }
 

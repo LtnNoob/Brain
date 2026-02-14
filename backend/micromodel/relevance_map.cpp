@@ -23,7 +23,9 @@ RelevanceMap RelevanceMap::compute(
     ConceptModel* model = registry.get_model(source);
     if (!model) return map;
 
-    const Vec10& e = embeddings.get_relation_embedding(rel_type);
+    const auto& e = embeddings.get_relation_embedding(rel_type);
+    const auto& concept_store = embeddings.concept_embeddings();
+    FlexEmbedding concept_from = concept_store.get_or_default(source);
 
     // Pre-compute context hash once (avoids per-target string allocation)
     size_t context_hash = std::hash<std::string>{}(context);
@@ -31,9 +33,9 @@ RelevanceMap RelevanceMap::compute(
     auto all_ids = ltm.get_all_concept_ids();
     for (ConceptId cid : all_ids) {
         if (cid == source) continue;  // Skip self
-        // Performance fix: numeric target embedding without string allocation
-        Vec10 c = embeddings.make_target_embedding(context_hash, source, cid);
-        double score = model->predict(e, c);
+        FlexEmbedding c = embeddings.make_target_embedding(context_hash, source, cid);
+        FlexEmbedding concept_to = concept_store.get_or_default(cid);
+        double score = model->predict_refined(e, c, concept_from, concept_to);
         map.scores_[cid] = score;
     }
 

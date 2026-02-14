@@ -47,7 +47,7 @@ struct ThinkingContext {
     };
     std::vector<DomainInsight> detected_domains;
 
-    // Meaning insights from MiniLLMs (Understanding Layer Step 8)
+    // Meaning insights from ConceptModels (Understanding Layer Step 8)
     struct MeaningInsight {
         std::string interpretation;
         double confidence;
@@ -56,7 +56,7 @@ struct ThinkingContext {
     };
     std::vector<MeaningInsight> meaning_insights;
 
-    // Hypothesis insights from MiniLLMs + KAN validation (Steps 8-9)
+    // Hypothesis insights from ConceptModels + KAN validation (Steps 8-9)
     struct HypothesisInsight {
         std::string statement;
         double confidence;
@@ -77,7 +77,7 @@ struct ThinkingContext {
     };
     std::vector<RelationLink> relation_links;
 
-    // Contradiction alerts from MiniLLMs
+    // Contradiction alerts from ConceptModels
     struct ContradictionNote {
         ConceptId concept_a;
         ConceptId concept_b;
@@ -139,7 +139,7 @@ public:
 
     // Ask with full cognitive pipeline output (ThinkingContext)
     // Routes: Input → KAN-Relations + Pattern Matching → Topic Detection →
-    //         Generative Thinking → Multi-MiniLLM Orchestration → Output Fusion
+    //         Generative Thinking → Multi-ConceptModel Orchestration → Output Fusion
     ChatResponse ask_with_thinking(
         const std::string& question,
         const LongTermMemory& ltm,

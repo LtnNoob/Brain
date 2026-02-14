@@ -1,4 +1,5 @@
 #include "relation_type_registry.hpp"
+#include <algorithm>
 
 namespace brain19 {
 
@@ -20,6 +21,7 @@ RelationTypeRegistry::RelationTypeRegistry() {
     unknown_fallback_.type = RelationType::CUSTOM;
     unknown_fallback_.name = "UNKNOWN";
     unknown_fallback_.name_de = "steht in Beziehung zu";
+    unknown_fallback_.name_en = "is related to";
     unknown_fallback_.slug = "unknown";
     unknown_fallback_.category = RelationCategory::CUSTOM_CATEGORY;
     unknown_fallback_.embedding = {0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
@@ -41,110 +43,111 @@ RelationTypeRegistry::RelationTypeRegistry() {
 void RelationTypeRegistry::register_builtins() {
     // --- Original 10 (0-9) — padded from 10D to 16D core ---
     register_one(RelationType::IS_A, "IS_A",
-        "ist ein(e)", "is-a",
+        "ist ein(e)", "is a", "is-a",
         RelationCategory::HIERARCHICAL,
         {0.9, 0.0, 0.1, 0.3, 0.0, 0.1, 0.7, 0.8, 0.5, 0.7, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, true);
 
     register_one(RelationType::HAS_PROPERTY, "HAS_PROPERTY",
-        "hat die Eigenschaft", "has-property",
+        "hat die Eigenschaft", "has the property", "has-property",
         RelationCategory::COMPOSITIONAL,
         {0.2, 0.0, 0.8, 0.2, 0.0, 0.1, 0.5, 0.6, 0.3, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, true);
 
     register_one(RelationType::CAUSES, "CAUSES",
-        "verursacht", "causes",
+        "verursacht", "causes", "causes",
         RelationCategory::CAUSAL,
         {0.0, 0.9, 0.0, 0.1, 0.7, 0.1, 0.6, 0.9, 0.4, 0.8, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, true);
 
     register_one(RelationType::ENABLES, "ENABLES",
-        "ermoeglicht", "enables",
+        "ermoeglicht", "enables", "enables",
         RelationCategory::CAUSAL,
         {0.0, 0.6, 0.1, 0.2, 0.4, 0.3, 0.4, 0.7, 0.3, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, true);
 
     register_one(RelationType::PART_OF, "PART_OF",
-        "ist Teil von", "part-of",
+        "ist Teil von", "is part of", "part-of",
         RelationCategory::COMPOSITIONAL,
         {0.6, 0.0, 0.9, 0.2, 0.0, 0.1, 0.6, 0.7, 0.2, 0.6, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, true);
 
     register_one(RelationType::SIMILAR_TO, "SIMILAR_TO",
-        "ist aehnlich wie", "similar-to",
+        "ist aehnlich wie", "is similar to", "similar-to",
         RelationCategory::SIMILARITY,
         {0.1, 0.0, 0.1, 0.9, 0.0, 0.2, 0.3, 0.1, 0.5, 0.4, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, true);
 
     register_one(RelationType::CONTRADICTS, "CONTRADICTS",
-        "widerspricht", "contradicts",
+        "widerspricht", "contradicts", "contradicts",
         RelationCategory::OPPOSITION,
         {0.0, 0.1, 0.0, -0.5, 0.0, -0.9, 0.7, 0.5, 0.6, 0.8, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, true);
 
     register_one(RelationType::SUPPORTS, "SUPPORTS",
-        "unterstuetzt", "supports",
+        "unterstuetzt", "supports", "supports",
         RelationCategory::EPISTEMIC,
         {0.1, 0.2, 0.1, 0.4, 0.0, 0.9, 0.4, 0.5, 0.5, 0.6, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, true);
 
     register_one(RelationType::TEMPORAL_BEFORE, "TEMPORAL_BEFORE",
-        "geschieht vor", "temporal-before",
+        "geschieht vor", "occurs before", "temporal-before",
         RelationCategory::TEMPORAL,
         {0.0, 0.3, 0.0, 0.1, 0.9, 0.0, 0.3, 0.8, 0.2, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, true);
 
     register_one(RelationType::CUSTOM, "CUSTOM",
-        "steht in Beziehung zu", "custom",
+        "steht in Beziehung zu", "is related to", "custom",
         RelationCategory::CUSTOM_CATEGORY,
         {0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, true);
 
     // --- New built-in types (10-19) — padded to 16D core ---
     register_one(RelationType::PRODUCES, "PRODUCES",
-        "erzeugt", "produces",
+        "erzeugt", "produces", "produces",
         RelationCategory::CAUSAL,
         {0.1, 0.8, 0.4, 0.1, 0.3, 0.1, 0.5, 0.8, 0.3, 0.7, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, true);
 
     register_one(RelationType::REQUIRES, "REQUIRES",
-        "benoetigt", "requires",
+        "benoetigt", "requires", "requires",
         RelationCategory::FUNCTIONAL,
         {0.1, 0.5, 0.3, 0.1, 0.2, 0.2, 0.5, 0.7, 0.4, 0.6, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, true);
 
     register_one(RelationType::USES, "USES",
-        "verwendet", "uses",
+        "verwendet", "uses", "uses",
         RelationCategory::FUNCTIONAL,
         {0.0, 0.3, 0.4, 0.2, 0.1, 0.2, 0.4, 0.6, 0.3, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, true);
 
     register_one(RelationType::SOURCE, "SOURCE",
-        "stammt von", "source",
+        "stammt von", "originates from", "source",
         RelationCategory::FUNCTIONAL,
         {0.3, 0.2, 0.3, 0.1, 0.4, 0.2, 0.5, 0.7, 0.4, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, true);
 
     register_one(RelationType::HAS_PART, "HAS_PART",
-        "hat als Teil", "has-part",
+        "hat als Teil", "has part", "has-part",
         RelationCategory::COMPOSITIONAL,
         {0.6, 0.0, 0.9, 0.2, 0.0, 0.1, 0.6, 0.5, 0.2, 0.6, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, true);
 
     register_one(RelationType::TEMPORAL_AFTER, "TEMPORAL_AFTER",
-        "geschieht nach", "temporal-after",
+        "geschieht nach", "occurs after", "temporal-after",
         RelationCategory::TEMPORAL,
         {0.0, 0.3, 0.0, 0.1, 0.9, 0.0, 0.3, 0.5, 0.2, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, true);
 
     register_one(RelationType::INSTANCE_OF, "INSTANCE_OF",
-        "ist eine Instanz von", "instance-of",
+        "ist eine Instanz von", "is an instance of", "instance-of",
         RelationCategory::HIERARCHICAL,
         {0.8, 0.0, 0.1, 0.2, 0.0, 0.1, 0.9, 0.8, 0.3, 0.7, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, true);
 
     register_one(RelationType::DERIVED_FROM, "DERIVED_FROM",
-        "leitet sich ab von", "derived-from",
+        "leitet sich ab von", "is derived from", "derived-from",
         RelationCategory::HIERARCHICAL,
         {0.7, 0.1, 0.2, 0.3, 0.3, 0.1, 0.6, 0.7, 0.4, 0.6, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, true);
 
     register_one(RelationType::IMPLIES, "IMPLIES",
-        "impliziert", "implies",
+        "impliziert", "implies", "implies",
         RelationCategory::CAUSAL,
         {0.3, 0.7, 0.0, 0.2, 0.2, 0.5, 0.6, 0.8, 0.7, 0.7, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, true);
 
     register_one(RelationType::ASSOCIATED_WITH, "ASSOCIATED_WITH",
-        "ist assoziiert mit", "associated-with",
+        "ist assoziiert mit", "is associated with", "associated-with",
         RelationCategory::SIMILARITY,
         {0.1, 0.1, 0.1, 0.6, 0.1, 0.2, 0.2, 0.2, 0.4, 0.3, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, true);
 }
 
 void RelationTypeRegistry::register_one(
     RelationType type, const std::string& name,
-    const std::string& name_de, const std::string& slug,
+    const std::string& name_de, const std::string& name_en,
+    const std::string& slug,
     RelationCategory category, const FlexEmbedding& embedding,
     bool builtin
 ) {
@@ -152,6 +155,7 @@ void RelationTypeRegistry::register_one(
     info.type = type;
     info.name = name;
     info.name_de = name_de;
+    info.name_en = name_en;
     info.slug = slug;
     info.category = category;
     info.embedding = embedding;
@@ -159,7 +163,8 @@ void RelationTypeRegistry::register_one(
 
     uint16_t key = static_cast<uint16_t>(type);
     types_[key] = std::move(info);
-    name_index_[name] = type;
+    name_index_[name] = type;   // "IS_A"
+    name_index_[slug] = type;   // "is-a"
 }
 
 // =============================================================================
@@ -180,7 +185,7 @@ RelationType RelationTypeRegistry::register_type(
     }
 
     auto type = static_cast<RelationType>(next_runtime_id_++);
-    register_one(type, name, name_de, name, category, embedding, false);
+    register_one(type, name, name_de, name_de, name, category, embedding, false);
     return type;
 }
 
@@ -199,8 +204,19 @@ bool RelationTypeRegistry::has(RelationType type) const {
 }
 
 std::optional<RelationType> RelationTypeRegistry::find_by_name(const std::string& name) const {
+    // Try exact match (covers both name "IS_A" and slug "is-a")
     auto it = name_index_.find(name);
     if (it != name_index_.end()) return it->second;
+
+    // Normalize: uppercase + replace hyphens with underscores
+    std::string normalized = name;
+    for (auto& ch : normalized) {
+        if (ch == '-') ch = '_';
+        else ch = static_cast<char>(std::toupper(static_cast<unsigned char>(ch)));
+    }
+    it = name_index_.find(normalized);
+    if (it != name_index_.end()) return it->second;
+
     return std::nullopt;
 }
 
@@ -231,6 +247,10 @@ const FlexEmbedding& RelationTypeRegistry::get_embedding(RelationType type) cons
 
 const std::string& RelationTypeRegistry::get_name_de(RelationType type) const {
     return get(type).name_de;
+}
+
+const std::string& RelationTypeRegistry::get_name_en(RelationType type) const {
+    return get(type).name_en;
 }
 
 const std::string& RelationTypeRegistry::get_slug(RelationType type) const {

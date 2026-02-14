@@ -325,64 +325,46 @@ std::string ChatInterface::build_epistemic_context(
 
 std::string ChatInterface::format_greeting(const std::vector<ConceptInfo>& top_concepts) {
     std::ostringstream ans;
-    ans << "Hallo! Ich bin Brain19.\n\n";
-    ans << "Ich kenne " << total_concepts_ << " Konzepte und " << total_relations_ << " Relationen in meinem Wissensnetz. ";
+    ans << "Hello! I am Brain19.\n\n";
+    ans << "I know " << total_concepts_ << " concepts and " << total_relations_ << " relations in my knowledge network. ";
     if (!top_concepts.empty()) {
-        ans << "Frag mich z.B. ueber **" << top_concepts[0].label << "**";
+        ans << "Ask me about **" << top_concepts[0].label << "**";
         if (top_concepts.size() > 1) {
-            ans << " oder **" << top_concepts[1].label << "**";
+            ans << " or **" << top_concepts[1].label << "**";
         }
         ans << ".\n";
     } else {
-        ans << "Frag mich etwas!\n";
+        ans << "Ask me something!\n";
     }
     return ans.str();
 }
 
 std::string ChatInterface::format_question(
     const std::vector<ConceptInfo>& top_concepts,
-    const std::vector<std::string>& thought_paths
+    const std::vector<std::string>& /*thought_paths*/
 ) {
     std::ostringstream ans;
 
     if (top_concepts.empty()) {
-        ans << "Ich habe dazu kein direktes Wissen in meinem Netz.\n";
+        ans << "I have no direct knowledge about this in my network.\n";
         return ans.str();
     }
 
-    // Primary concept — detailed answer
     const auto& primary = top_concepts[0];
-    ans << "**" << primary.label << "** ("
-        << epistemic_type_to_string(primary.epistemic.type)
-        << ", Trust: " << static_cast<int>(primary.epistemic.trust * 100) << "%)\n";
-    ans << primary.definition << "\n\n";
+    ans << "**" << primary.label << "**: " << primary.definition << "\n";
 
-    // Secondary concepts — brief context
     if (top_concepts.size() > 1) {
-        ans << "Verwandte Konzepte:\n";
+        ans << "\nRelated: ";
         size_t shown = 0;
         for (size_t i = 1; i < top_concepts.size() && shown < 3; ++i) {
             const auto& c = top_concepts[i];
-            ans << "  - **" << c.label << "** ("
-                << epistemic_type_to_string(c.epistemic.type)
-                << ", " << static_cast<int>(c.epistemic.trust * 100) << "%): "
-                << c.definition.substr(0, 120);
-            if (c.definition.size() > 120) ans << "...";
-            ans << "\n";
+            if (shown > 0) ans << " | ";
+            ans << "**" << c.label << "** — "
+                << c.definition.substr(0, 100);
+            if (c.definition.size() > 100) ans << "...";
             ++shown;
         }
         ans << "\n";
-    }
-
-    // Thought paths — top 3
-    if (!thought_paths.empty()) {
-        ans << "Gedankenpfade:\n";
-        size_t shown = 0;
-        for (const auto& p : thought_paths) {
-            if (shown >= 3) break;
-            ans << "  " << p << "\n";
-            ++shown;
-        }
     }
 
     return ans.str();
@@ -392,11 +374,11 @@ std::string ChatInterface::format_statement(const std::vector<ConceptInfo>& top_
     std::ostringstream ans;
 
     if (top_concepts.empty()) {
-        ans << "Ich kann diese Aussage nicht in mein Wissensnetz einordnen.\n";
+        ans << "I cannot map this statement to my knowledge network.\n";
         return ans.str();
     }
 
-    ans << "Das beruehrt folgende Konzepte in meinem Wissensnetz:\n\n";
+    ans << "This touches the following concepts in my knowledge network:\n\n";
     size_t shown = 0;
     for (const auto& c : top_concepts) {
         if (shown >= 3) break;
@@ -520,25 +502,15 @@ ChatResponse ChatInterface::ask_with_context(
             response.answer = format_greeting(relevant);
             break;
         case QueryIntent::QUESTION:
-        case QueryIntent::COMMAND: {
-            std::ostringstream ans;
-            ans << "Basierend auf meinem Denken (" << salient_concepts.size()
-                << " aktivierte Konzepte):\n";
-            ans << format_question(relevant, thought_paths_summary);
-            response.answer = ans.str();
+        case QueryIntent::COMMAND:
+            response.answer = format_question(relevant, thought_paths_summary);
             break;
-        }
         case QueryIntent::STATEMENT:
             response.answer = format_statement(relevant);
             break;
-        default: {
-            std::ostringstream ans;
-            ans << "Basierend auf meinem Denken (" << salient_concepts.size()
-                << " aktivierte Konzepte):\n";
-            ans << format_question(relevant, thought_paths_summary);
-            response.answer = ans.str();
+        default:
+            response.answer = format_question(relevant, thought_paths_summary);
             break;
-        }
     }
 
     return response;
@@ -618,13 +590,19 @@ ChatResponse ChatInterface::ask_with_thinking(
     return response;
 }
 
-// ─── NLG Helper ─────────────────────────────────────────────────────────────
+// ─── NLG Helpers ────────────────────────────────────────────────────────────
 
-static std::string relation_as_sentence(const ThinkingContext::RelationLink& rl) {
+static std::string relation_verb_en(const std::string& relation_name) {
     auto& reg = RelationTypeRegistry::instance();
-    auto type_opt = reg.find_by_name(rl.relation_name);
-    std::string verb = type_opt ? reg.get_name_de(*type_opt) : rl.relation_name;
-    return rl.source_label + " " + verb + " " + rl.target_label + ".";
+    auto type_opt = reg.find_by_name(relation_name);
+    if (type_opt) return reg.get_name_en(*type_opt);
+    // Fallback: lowercase the raw name, replace underscores with spaces
+    std::string fallback = relation_name;
+    for (auto& ch : fallback) {
+        if (ch == '_') ch = ' ';
+        else ch = static_cast<char>(std::tolower(static_cast<unsigned char>(ch)));
+    }
+    return fallback;
 }
 
 // ─── Full-Pipeline Response Formatter ────────────────────────────────────────
@@ -632,88 +610,99 @@ static std::string relation_as_sentence(const ThinkingContext::RelationLink& rl)
 std::string ChatInterface::format_thinking_response(
     const std::vector<ConceptInfo>& top_concepts,
     const ThinkingContext& thinking,
-    const LongTermMemory& ltm
+    const LongTermMemory& /*ltm*/
 ) {
     std::ostringstream ans;
 
     if (top_concepts.empty()) {
-        ans << "Ich habe dazu kein direktes Wissen in meinem Netz.\n";
+        ans << "I have no direct knowledge about this in my network.\n";
         return ans.str();
     }
 
-    // ── Section 1+2: Core concept / Multi-domain ──
-    bool multi_domain = false;
-    if (thinking.detected_domains.size() > 1) {
-        double top = thinking.detected_domains[0].relevance;
-        double second = thinking.detected_domains[1].relevance;
-        multi_domain = (second > 0.1 && (top / std::max(second, 0.01)) < 3.0);
+    const auto& primary = top_concepts[0];
+
+    // ── Build connected set: concepts linked to primary via relations ──
+    std::unordered_set<ConceptId> connected;
+    connected.insert(primary.id);
+    for (const auto& rl : thinking.relation_links) {
+        if (rl.source == primary.id) connected.insert(rl.target);
+        if (rl.target == primary.id) connected.insert(rl.source);
     }
 
-    if (multi_domain) {
-        for (const auto& domain : thinking.detected_domains) {
-            if (domain.concepts.empty()) continue;
-            auto info_opt = ltm.retrieve_concept(domain.concepts[0]);
-            if (!info_opt) continue;
-            ans << "**" << info_opt->label << "**: " << info_opt->definition << "\n\n";
-        }
-    } else {
-        const auto& primary = top_concepts[0];
-        ans << "**" << primary.label << "**: " << primary.definition << "\n";
-    }
+    // ── Section 1: Primary concept definition ──
+    ans << "**" << primary.label << "**: " << primary.definition << "\n";
 
-    // ── Section 3: Relations as natural sentences (weight > 0.5) ──
+    // ── Section 2: Relations as grouped English sentences (weight > 0.5) ──
+    // Group by (source_label, relation_name) → list of target_labels
     {
-        std::vector<std::string> sentences;
+        struct GroupKey {
+            std::string source;
+            std::string relation;
+        };
+        std::vector<std::pair<GroupKey, std::vector<std::string>>> groups;
+
         for (const auto& rl : thinking.relation_links) {
-            if (rl.weight > 0.5) {
-                sentences.push_back(relation_as_sentence(rl));
+            if (rl.weight <= 0.5) continue;
+            // Only show relations involving the primary concept
+            if (rl.source != primary.id && rl.target != primary.id) continue;
+            bool found = false;
+            for (auto& [k, targets] : groups) {
+                if (k.source == rl.source_label && k.relation == rl.relation_name) {
+                    targets.push_back(rl.target_label);
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                groups.push_back({{rl.source_label, rl.relation_name}, {rl.target_label}});
             }
         }
-        if (!sentences.empty()) {
+
+        if (!groups.empty()) {
             ans << "\n";
-            for (size_t i = 0; i < sentences.size(); ++i) {
-                if (i > 0) ans << " ";
-                ans << sentences[i];
+            for (const auto& [key, targets] : groups) {
+                std::string verb = relation_verb_en(key.relation);
+                ans << key.source << " " << verb << " ";
+                for (size_t i = 0; i < targets.size(); ++i) {
+                    if (i > 0 && i == targets.size() - 1) ans << " and ";
+                    else if (i > 0) ans << ", ";
+                    ans << targets[i];
+                }
+                ans << ". ";
             }
             ans << "\n";
         }
     }
 
-    // ── Section 4: Related concepts (max 3, compact) ──
-    if (!multi_domain && top_concepts.size() > 1) {
-        ans << "\nVerwandte Konzepte: ";
-        size_t shown = 0;
-        for (size_t i = 1; i < top_concepts.size() && shown < 3; ++i) {
-            const auto& c = top_concepts[i];
-            if (shown > 0) ans << " | ";
-            ans << "**" << c.label << "** — "
-                << c.definition.substr(0, 100);
-            if (c.definition.size() > 100) ans << "...";
-            ++shown;
+    // ── Section 3: Related concepts (max 3, filtered by connection) ──
+    if (top_concepts.size() > 1) {
+        std::vector<const ConceptInfo*> filtered;
+        for (size_t i = 1; i < top_concepts.size(); ++i) {
+            if (connected.count(top_concepts[i].id)) {
+                filtered.push_back(&top_concepts[i]);
+            }
+            if (filtered.size() >= 3) break;
         }
-        ans << "\n";
-    }
-
-    // ── Section 5: Meaning insights (max 3, compact) ──
-    if (!thinking.meaning_insights.empty()) {
-        ans << "\n";
-        size_t shown = 0;
-        for (const auto& insight : thinking.meaning_insights) {
-            if (shown >= 3) break;
-            ans << "- " << insight.interpretation
-                << " (" << static_cast<int>(insight.confidence * 100) << "%)\n";
-            ++shown;
+        if (!filtered.empty()) {
+            ans << "\nRelated: ";
+            for (size_t i = 0; i < filtered.size(); ++i) {
+                if (i > 0) ans << " | ";
+                ans << "**" << filtered[i]->label << "** — "
+                    << filtered[i]->definition.substr(0, 100);
+                if (filtered[i]->definition.size() > 100) ans << "...";
+            }
+            ans << "\n";
         }
     }
 
-    // ── Section 6: Hypotheses (confidence > 0.5 only) ──
+    // ── Section 4: Hypotheses (confidence > 0.5 only) ──
     {
-        bool header_shown = false;
+        bool first = true;
         for (const auto& hyp : thinking.hypothesis_insights) {
             if (hyp.confidence <= 0.5) continue;
-            if (!header_shown) { ans << "\n"; header_shown = true; }
+            if (first) { ans << "\n"; first = false; }
             ans << "- " << hyp.statement
-                << " (Hypothese, " << static_cast<int>(hyp.confidence * 100) << "%";
+                << " (hypothesis, " << static_cast<int>(hyp.confidence * 100) << "%";
             if (hyp.kan_validated) {
                 ans << ", " << hyp.validation_status;
             }
@@ -721,25 +710,14 @@ std::string ChatInterface::format_thinking_response(
         }
     }
 
-    // ── Section 7: Contradictions (severity > 0.7 only) ──
+    // ── Section 5: Contradictions (severity > 0.7 only) ──
     {
-        bool header_shown = false;
+        bool first = true;
         for (const auto& c : thinking.contradiction_notes) {
             if (c.severity <= 0.7) continue;
-            if (!header_shown) { ans << "\n"; header_shown = true; }
+            if (first) { ans << "\n"; first = false; }
             ans << "- " << c.description
-                << " (Schwere: " << static_cast<int>(c.severity * 100) << "%)\n";
-        }
-    }
-
-    // ── Section 8: Thought paths (max 3) ──
-    if (!thinking.thought_path_summaries.empty()) {
-        ans << "\nGedankenpfade:\n";
-        size_t shown = 0;
-        for (const auto& p : thinking.thought_path_summaries) {
-            if (shown >= 3) break;
-            ans << "  " << p << "\n";
-            ++shown;
+                << " (severity: " << static_cast<int>(c.severity * 100) << "%)\n";
         }
     }
 
@@ -754,7 +732,7 @@ std::string ChatInterface::explain_concept(
 ) {
     auto info_opt = ltm.retrieve_concept(id);
     if (!info_opt.has_value()) {
-        return "Konzept nicht gefunden.";
+        return "Concept not found.";
     }
 
     const ConceptInfo& info = info_opt.value();
@@ -779,14 +757,14 @@ std::string ChatInterface::compare(
     auto info2_opt = ltm.retrieve_concept(id2);
 
     if (!info1_opt.has_value() || !info2_opt.has_value()) {
-        return "Ein oder beide Konzepte nicht gefunden.";
+        return "One or both concepts not found.";
     }
 
     const ConceptInfo& info1 = info1_opt.value();
     const ConceptInfo& info2 = info2_opt.value();
 
     std::ostringstream out;
-    out << "=== Vergleich ===\n\n";
+    out << "=== Comparison ===\n\n";
     out << "1. " << info1.label << " (" << epistemic_type_to_string(info1.epistemic.type);
     out << ", " << (info1.epistemic.trust * 100.0) << "%)\n";
     out << "   " << info1.definition << "\n\n";
@@ -808,11 +786,11 @@ std::string ChatInterface::list_knowledge(
     out << "=== " << epistemic_type_to_string(type) << " ===\n\n";
 
     if (ids.empty()) {
-        out << "Keine " << epistemic_type_to_string(type) << " vorhanden.\n";
+        out << "No " << epistemic_type_to_string(type) << " found.\n";
         return out.str();
     }
 
-    out << "Gefunden: " << ids.size() << " Konzept(e)\n\n";
+    out << "Found: " << ids.size() << " concept(s)\n\n";
 
     for (auto id : ids) {
         auto info_opt = ltm.retrieve_concept(id);
@@ -822,7 +800,7 @@ std::string ChatInterface::list_knowledge(
             out << " (Trust: " << (info.epistemic.trust * 100.0) << "%)";
 
             if (info.epistemic.status == EpistemicStatus::INVALIDATED) {
-                out << " INVALIDIERT";
+                out << " INVALIDATED";
             }
 
             out << "\n  ID: " << id << "\n";
@@ -843,16 +821,16 @@ std::string ChatInterface::get_summary(const LongTermMemory& ltm) {
 
     std::ostringstream out;
 
-    out << "=== Brain19 - Wissensuebersicht ===\n\n";
-    out << "Gesamt: " << all.size() << " aktive Konzepte\n\n";
+    out << "=== Brain19 - Knowledge Overview ===\n\n";
+    out << "Total: " << all.size() << " active concepts\n\n";
 
-    out << "Nach Typ:\n";
-    out << "  Fakten:        " << facts.size() << "\n";
-    out << "  Theorien:      " << theories.size() << "\n";
-    out << "  Hypothesen:    " << hypotheses.size() << "\n";
-    out << "  Spekulationen: " << specs.size() << "\n\n";
+    out << "By type:\n";
+    out << "  Facts:        " << facts.size() << "\n";
+    out << "  Theories:     " << theories.size() << "\n";
+    out << "  Hypotheses:   " << hypotheses.size() << "\n";
+    out << "  Speculations: " << specs.size() << "\n\n";
 
-    out << "Sprachausgabe: Template-Engine (kein LLM)\n";
+    out << "Output: Template-Engine (no LLM)\n";
 
     int invalidated_count = 0;
     for (auto id : all) {
@@ -865,7 +843,7 @@ std::string ChatInterface::get_summary(const LongTermMemory& ltm) {
     }
 
     if (invalidated_count > 0) {
-        out << "\n" << invalidated_count << " invalidierte(s) Konzept(e)\n";
+        out << "\n" << invalidated_count << " invalidated concept(s)\n";
     }
 
     return out.str();

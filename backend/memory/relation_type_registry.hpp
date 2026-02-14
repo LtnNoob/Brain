@@ -28,6 +28,7 @@ struct RelationTypeInfo {
     RelationType type;
     std::string name;       // English identifier: "IS_A", "PRODUCES"
     std::string name_de;    // German natural language: "ist ein(e)", "erzeugt"
+    std::string name_en;    // English natural language: "is a", "produces"
     std::string slug;       // Hyphenated: "is-a", "produces"
     RelationCategory category;
     FlexEmbedding embedding;  // 16D core + variable detail
@@ -62,6 +63,7 @@ public:
     // Convenience accessors (delegate to get())
     const FlexEmbedding& get_embedding(RelationType type) const;
     const std::string& get_name_de(RelationType type) const;
+    const std::string& get_name_en(RelationType type) const;
     const std::string& get_slug(RelationType type) const;
     const std::string& get_name(RelationType type) const;
     RelationCategory get_category(RelationType type) const;
@@ -70,7 +72,8 @@ private:
     RelationTypeRegistry();
     void register_builtins();
     void register_one(RelationType type, const std::string& name,
-                      const std::string& name_de, const std::string& slug,
+                      const std::string& name_de, const std::string& name_en,
+                      const std::string& slug,
                       RelationCategory category, const FlexEmbedding& embedding,
                       bool builtin);
 

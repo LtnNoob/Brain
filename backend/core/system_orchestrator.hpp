@@ -39,6 +39,7 @@
 #include "../evolution/epistemic_promotion.hpp"
 #include "../evolution/concept_proposal.hpp"
 
+#include "../language/kan_language_engine.hpp"
 #include "thinking_pipeline.hpp"
 
 #include <atomic>
@@ -188,6 +189,9 @@ private:
 
     // 11. Chat + LLM
     std::unique_ptr<ChatInterface> chat_;
+
+    // 11b. Language Engine (KAN-MiniLLM Hybrid)
+    std::unique_ptr<KANLanguageEngine> language_engine_;
 
     // 12. Shared Wrappers
     std::unique_ptr<SharedLTM> shared_ltm_;

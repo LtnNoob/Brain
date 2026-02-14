@@ -127,6 +127,17 @@ bool SystemOrchestrator::initialize() {
         log("  [11/15] ChatInterface...");
         chat_ = std::make_unique<ChatInterface>();
         log("    Knowledge-only mode (Template-Engine)");
+
+        // ── Stage 11b: KAN Language Engine ───────────────────────────────
+        log("  [11b] KAN Language Engine...");
+        {
+            LanguageConfig lang_config;
+            language_engine_ = std::make_unique<KANLanguageEngine>(
+                lang_config, *ltm_, *registry_, *embeddings_);
+            language_engine_->initialize();
+            log("    Language engine initialized (" +
+                std::to_string(language_engine_->tokenizer().vocab_size()) + " tokens)");
+        }
         init_stage_ = 11;
 
         // ── Stage 12: Shared Wrappers ───────────────────────────────────
@@ -395,7 +406,7 @@ void SystemOrchestrator::cleanup_from_stage(int stage) {
     if (stage >= 14) { concept_proposer_.reset(); epistemic_promotion_.reset(); pattern_discovery_.reset(); }
     if (stage >= 13) { stream_monitor_.reset(); stream_sched_.reset(); stream_orch_.reset(); }
     if (stage >= 12) { shared_embeddings_.reset(); shared_registry_.reset(); shared_stm_.reset(); shared_ltm_.reset(); }
-    if (stage >= 11) { chat_.reset(); }
+    if (stage >= 11) { language_engine_.reset(); chat_.reset(); }
     if (stage >= 10) { ingestion_.reset(); wiki_importer_.reset(); }
     if (stage >= 9)  { refinement_loop_.reset(); domain_manager_.reset(); kan_validator_.reset(); }
     if (stage >= 8)  { understanding_.reset(); }
@@ -918,6 +929,21 @@ ChatResponse SystemOrchestrator::ask(const std::string& question) {
                 ctx.autonomous_insights.push_back(std::move(ai));
             }
             gdo_thinking_results_.clear();
+        }
+
+        // ── Try KAN Language Engine first ──
+        if (language_engine_ && language_engine_->is_ready()) {
+            auto lang_result = language_engine_->generate(question);
+            if (!lang_result.used_template && !lang_result.text.empty()) {
+                ChatResponse resp;
+                resp.answer = lang_result.text;
+                resp.referenced_concepts = lang_result.activated_concepts;
+                resp.contains_speculation = false;
+                resp.used_llm = false;
+                resp.intent = intent;
+                return resp;
+            }
+            // Fall through to ChatInterface template-based response
         }
 
         return chat_->ask_with_thinking(question, *ltm_, ctx, intent);

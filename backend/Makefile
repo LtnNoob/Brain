@@ -41,6 +41,10 @@ STREAMS_SOURCES = streams/think_stream.cpp streams/stream_orchestrator.cpp \
                   streams/stream_scheduler.cpp streams/stream_monitor.cpp
 CURSOR_SOURCES = cursor/focus_cursor.cpp cursor/focus_cursor_manager.cpp \
                  cursor/template_engine.cpp
+LANGUAGE_SOURCES = language/bpe_tokenizer.cpp language/kan_encoder.cpp \
+                   language/semantic_scorer.cpp language/fusion_layer.cpp \
+                   language/kan_decoder.cpp language/kan_language_engine.cpp \
+                   language/language_training.cpp
 CORE_APP_SOURCES = core/system_orchestrator.cpp core/brain19_app.cpp \
                    core/thinking_pipeline.cpp
 
@@ -52,7 +56,7 @@ CORE_SOURCES = $(MEMORY_SOURCES) $(KAN_SOURCES) $(ADAPTER_SOURCES) \
                $(LLM_SOURCES) $(IMPORTER_SOURCES) $(INGESTOR_SOURCES) \
                $(PERSISTENT_SOURCES) $(HYBRID_SOURCES) $(EVOLUTION_SOURCES) \
                $(BOOTSTRAP_SOURCES) $(STREAMS_SOURCES) $(CORE_APP_SOURCES) \
-               $(CURSOR_SOURCES)
+               $(CURSOR_SOURCES) $(LANGUAGE_SOURCES)
 
 CORE_OBJECTS = $(CORE_SOURCES:.cpp=.o)
 

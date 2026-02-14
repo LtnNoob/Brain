@@ -100,9 +100,10 @@ ConceptTrainerStats ConceptTrainer::train_all(
     static const size_t RECALL_HASH = std::hash<std::string>{}("recall");
 
     // Thread count: use hardware concurrency, cap at 8
-    size_t num_threads = std::max(1u, std::thread::hardware_concurrency());
-    num_threads = std::min(num_threads, size_t(8));
-    if (model_ids.size() < 100) num_threads = 1;  // no overhead for tiny sets
+    // TODO: Fix thread-safety in EmbeddingManager before re-enabling parallelism
+    // Race condition causes segfault (NULL deref in libc) when multiple threads
+    // call make_target_embedding() or other potentially-mutating embedding methods.
+    size_t num_threads = 1;  // DISABLED: was std::thread::hardware_concurrency()
 
     // Per-thread local stats (avoids atomics)
     struct ThreadStats {

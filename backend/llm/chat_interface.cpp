@@ -34,10 +34,20 @@ static const std::unordered_set<std::string> STOP_WORDS = {
     "every", "both", "few", "more", "most", "other", "some", "such",
     "only", "own", "same", "than", "just", "also", "now",
     // German common
-    "ein", "eine", "der", "die", "das", "ist", "sind", "war", "und",
-    "oder", "nicht", "ich", "du", "er", "sie", "es", "wir", "ihr",
-    "von", "zu", "mit", "auf", "aus", "fuer", "ueber", "nach",
-    "wie", "was", "wer", "wo", "warum",
+    "ein", "eine", "einen", "einem", "einer", "eines",
+    "der", "die", "das", "den", "dem", "des",
+    "ist", "sind", "war", "waren", "wird", "werden", "wurde", "wurden",
+    "hat", "haben", "hatte", "hatten",
+    "und", "oder", "nicht", "kein", "keine", "keinem", "keinen",
+    "ich", "du", "er", "sie", "es", "wir", "ihr", "man",
+    "von", "zu", "zum", "zur", "mit", "auf", "aus", "fuer", "ueber", "nach",
+    "bei", "vor", "hinter", "neben", "zwischen", "unter", "an", "in", "im",
+    "wie", "was", "wer", "wo", "warum", "wann", "wenn", "ob", "dass", "weil",
+    "denn", "aber", "doch", "auch", "noch", "schon", "sehr", "nur", "mal",
+    "dann", "dort", "hier", "da", "so", "als", "bis",
+    "kann", "muss", "soll", "will", "darf", "mag",
+    "alle", "alles", "jeder", "jede", "jedes", "jedem",
+    "welch", "welche", "welcher", "welches", "welchem",
     // German pronouns
     "mir", "mich", "dir", "dich", "ihm", "ihn", "uns", "euch", "ihnen",
     "mein", "meine", "meinem", "meinen", "meiner", "meines",
@@ -51,8 +61,10 @@ static const std::unordered_set<std::string> INTENT_VERBS = {
     "erklaer", "erklaere", "beschreib", "beschreibe",
     "zeig", "zeige", "definier", "definiere",
     "vergleich", "vergleiche", "finde", "such", "suche",
+    "nenn", "nenne", "sag", "sage",
+    "passiert", "geschieht", "bedeutet", "heisst",
     "explain", "describe", "show", "tell", "define",
-    "compare", "find", "search", "list",
+    "compare", "find", "search", "list", "happens",
 };
 
 static std::string to_lower(const std::string& s) {
@@ -325,16 +337,17 @@ std::string ChatInterface::build_epistemic_context(
 
 std::string ChatInterface::format_greeting(const std::vector<ConceptInfo>& top_concepts) {
     std::ostringstream ans;
-    ans << "Hello! I am Brain19.\n\n";
-    ans << "I know " << total_concepts_ << " concepts and " << total_relations_ << " relations in my knowledge network. ";
+    ans << "Hallo! Ich bin Brain19.\n\n";
+    ans << "Ich kenne " << total_concepts_ << " Konzepte und " << total_relations_
+        << " Relationen in meinem Wissensnetzwerk. ";
     if (!top_concepts.empty()) {
-        ans << "Ask me about **" << top_concepts[0].label << "**";
+        ans << "Frag mich z.B. nach **" << top_concepts[0].label << "**";
         if (top_concepts.size() > 1) {
-            ans << " or **" << top_concepts[1].label << "**";
+            ans << " oder **" << top_concepts[1].label << "**";
         }
         ans << ".\n";
     } else {
-        ans << "Ask me something!\n";
+        ans << "Stell mir eine Frage!\n";
     }
     return ans.str();
 }
@@ -346,7 +359,7 @@ std::string ChatInterface::format_question(
     std::ostringstream ans;
 
     if (top_concepts.empty()) {
-        ans << "I have no direct knowledge about this in my network.\n";
+        ans << "Dazu habe ich kein Wissen in meinem Netzwerk.\n";
         return ans.str();
     }
 
@@ -354,14 +367,16 @@ std::string ChatInterface::format_question(
     ans << "**" << primary.label << "**: " << primary.definition << "\n";
 
     if (top_concepts.size() > 1) {
-        ans << "\nRelated: ";
+        ans << "\nVerwandte Konzepte: ";
         size_t shown = 0;
         for (size_t i = 1; i < top_concepts.size() && shown < 3; ++i) {
             const auto& c = top_concepts[i];
             if (shown > 0) ans << " | ";
-            ans << "**" << c.label << "** — "
-                << c.definition.substr(0, 100);
-            if (c.definition.size() > 100) ans << "...";
+            ans << "**" << c.label << "**";
+            if (!c.definition.empty()) {
+                ans << " — " << c.definition.substr(0, 100);
+                if (c.definition.size() > 100) ans << "...";
+            }
             ++shown;
         }
         ans << "\n";
@@ -374,7 +389,7 @@ std::string ChatInterface::format_statement(const std::vector<ConceptInfo>& top_
     std::ostringstream ans;
 
     if (top_concepts.empty()) {
-        ans << "I cannot map this statement to my knowledge network.\n";
+        ans << "Ich kann diese Aussage nicht meinem Wissensnetzwerk zuordnen.\n";
         return ans.str();
     }
 
@@ -592,17 +607,51 @@ ChatResponse ChatInterface::ask_with_thinking(
 
 // ─── NLG Helpers ────────────────────────────────────────────────────────────
 
-static std::string relation_verb_en(const std::string& relation_name) {
+// Fallback German verbs for common custom relation slugs from foundation data
+static const std::unordered_map<std::string, std::string> CUSTOM_VERB_DE = {
+    {"relates to", "steht in Beziehung zu"}, {"related to", "steht in Beziehung zu"},
+    {"occurs in", "findet statt in"}, {"occurs-in", "findet statt in"},
+    {"enabled by", "wird ermoeglicht durch"}, {"enabled-by", "wird ermoeglicht durch"},
+    {"used in", "wird verwendet in"}, {"used-in", "wird verwendet in"},
+    {"used by", "wird verwendet von"}, {"used-by", "wird verwendet von"},
+    {"used for", "wird verwendet fuer"}, {"used-for", "wird verwendet fuer"},
+    {"created by", "wurde erschaffen von"}, {"created-by", "wurde erschaffen von"},
+    {"type of", "ist ein Typ von"}, {"type-of", "ist ein Typ von"},
+    {"made of", "besteht aus"}, {"made-of", "besteht aus"},
+    {"found in", "kommt vor in"}, {"found-in", "kommt vor in"},
+    {"located in", "befindet sich in"}, {"located-in", "befindet sich in"},
+    {"based on", "basiert auf"}, {"based-on", "basiert auf"},
+    {"caused by", "wird verursacht durch"}, {"caused-by", "wird verursacht durch"},
+    {"active in", "ist aktiv in"}, {"active-in", "ist aktiv in"},
+    {"applies to", "gilt fuer"}, {"applies-to", "gilt fuer"},
+    {"leads to", "fuehrt zu"}, {"leads-to", "fuehrt zu"},
+    {"depends on", "haengt ab von"}, {"depends-on", "haengt ab von"},
+    {"connected to", "ist verbunden mit"}, {"connected-to", "ist verbunden mit"},
+    {"example of", "ist ein Beispiel fuer"}, {"example-of", "ist ein Beispiel fuer"},
+    {"component of", "ist Bestandteil von"}, {"component-of", "ist Bestandteil von"},
+    {"influences", "beeinflusst"}, {"controls", "steuert"},
+    {"prevents", "verhindert"}, {"triggers", "loest aus"},
+    {"produces", "erzeugt"}, {"contains", "enthaelt"},
+    {"protects", "schuetzt"}, {"generates", "erzeugt"},
+    {"measures", "misst"}, {"affects", "beeinflusst"},
+};
+
+static std::string relation_verb_de(const std::string& relation_name) {
     auto& reg = RelationTypeRegistry::instance();
     auto type_opt = reg.find_by_name(relation_name);
-    if (type_opt) return reg.get_name_en(*type_opt);
-    // Fallback: lowercase the raw name, replace underscores with spaces
-    std::string fallback = relation_name;
-    for (auto& ch : fallback) {
-        if (ch == '_') ch = ' ';
+    if (type_opt) {
+        const auto& de = reg.get_name_de(*type_opt);
+        if (!de.empty() && de != relation_name) return de;
+    }
+    // Humanize slug first, then check custom map
+    std::string humanized = relation_name;
+    for (auto& ch : humanized) {
+        if (ch == '_' || ch == '-') ch = ' ';
         else ch = static_cast<char>(std::tolower(static_cast<unsigned char>(ch)));
     }
-    return fallback;
+    auto it = CUSTOM_VERB_DE.find(humanized);
+    if (it != CUSTOM_VERB_DE.end()) return it->second;
+    return humanized;
 }
 
 // ─── Full-Pipeline Response Formatter ────────────────────────────────────────
@@ -615,7 +664,7 @@ std::string ChatInterface::format_thinking_response(
     std::ostringstream ans;
 
     if (top_concepts.empty()) {
-        ans << "I have no direct knowledge about this in my network.\n";
+        ans << "Dazu habe ich kein Wissen in meinem Netzwerk.\n";
         return ans.str();
     }
 
@@ -629,42 +678,54 @@ std::string ChatInterface::format_thinking_response(
         if (rl.target == primary.id) connected.insert(rl.source);
     }
 
-    // ── Section 1: Primary concept definition ──
+    // ── Section 1: Primary concept + definition ──
     ans << "**" << primary.label << "**: " << primary.definition << "\n";
 
-    // ── Section 2: Relations as grouped English sentences (weight > 0.5) ──
-    // Group by (source_label, relation_name) → list of target_labels
+    // ── Section 2: Relations as natural German sentences (weight > 0.5) ──
+    // Group by (source_label, relation_verb) → list of target_labels
     {
         struct GroupKey {
             std::string source;
-            std::string relation;
+            std::string verb;
+            std::string raw_relation;
         };
         std::vector<std::pair<GroupKey, std::vector<std::string>>> groups;
 
         for (const auto& rl : thinking.relation_links) {
             if (rl.weight <= 0.5) continue;
-            // Only show relations involving the primary concept
             if (rl.source != primary.id && rl.target != primary.id) continue;
+            // Skip generic "relates to" noise
+            std::string rn_lower = rl.relation_name;
+            for (auto& ch : rn_lower) {
+                if (ch == '_' || ch == '-') ch = ' ';
+                else ch = static_cast<char>(std::tolower(static_cast<unsigned char>(ch)));
+            }
+            if (rn_lower == "relates to" || rn_lower == "related to") continue;
+
+            std::string verb = relation_verb_de(rl.relation_name);
             bool found = false;
             for (auto& [k, targets] : groups) {
-                if (k.source == rl.source_label && k.relation == rl.relation_name) {
-                    targets.push_back(rl.target_label);
+                if (k.source == rl.source_label && k.raw_relation == rl.relation_name) {
+                    // Dedup targets
+                    bool dup = false;
+                    for (const auto& t : targets) {
+                        if (t == rl.target_label) { dup = true; break; }
+                    }
+                    if (!dup) targets.push_back(rl.target_label);
                     found = true;
                     break;
                 }
             }
             if (!found) {
-                groups.push_back({{rl.source_label, rl.relation_name}, {rl.target_label}});
+                groups.push_back({{rl.source_label, verb, rl.relation_name}, {rl.target_label}});
             }
         }
 
         if (!groups.empty()) {
-            ans << "\n";
             for (const auto& [key, targets] : groups) {
-                std::string verb = relation_verb_en(key.relation);
-                ans << key.source << " " << verb << " ";
+                ans << key.source << " " << key.verb << " ";
                 for (size_t i = 0; i < targets.size(); ++i) {
-                    if (i > 0 && i == targets.size() - 1) ans << " and ";
+                    if (i > 0 && i == targets.size() - 1) ans << " und ";
                     else if (i > 0) ans << ", ";
                     ans << targets[i];
                 }
@@ -674,22 +735,23 @@ std::string ChatInterface::format_thinking_response(
         }
     }
 
-    // ── Section 3: Related concepts (max 3, filtered by connection) ──
+    // ── Section 3: Related concepts (max 3, connected only) ──
     if (top_concepts.size() > 1) {
         std::vector<const ConceptInfo*> filtered;
-        for (size_t i = 1; i < top_concepts.size(); ++i) {
+        for (size_t i = 1; i < top_concepts.size() && filtered.size() < 3; ++i) {
             if (connected.count(top_concepts[i].id)) {
                 filtered.push_back(&top_concepts[i]);
             }
-            if (filtered.size() >= 3) break;
         }
         if (!filtered.empty()) {
-            ans << "\nRelated: ";
+            ans << "\nVerwandte Konzepte: ";
             for (size_t i = 0; i < filtered.size(); ++i) {
                 if (i > 0) ans << " | ";
-                ans << "**" << filtered[i]->label << "** — "
-                    << filtered[i]->definition.substr(0, 100);
-                if (filtered[i]->definition.size() > 100) ans << "...";
+                ans << "**" << filtered[i]->label << "**";
+                if (!filtered[i]->definition.empty()) {
+                    ans << " — " << filtered[i]->definition.substr(0, 100);
+                    if (filtered[i]->definition.size() > 100) ans << "...";
+                }
             }
             ans << "\n";
         }
@@ -702,7 +764,7 @@ std::string ChatInterface::format_thinking_response(
             if (hyp.confidence <= 0.5) continue;
             if (first) { ans << "\n"; first = false; }
             ans << "- " << hyp.statement
-                << " (hypothesis, " << static_cast<int>(hyp.confidence * 100) << "%";
+                << " (Hypothese, " << static_cast<int>(hyp.confidence * 100) << "%";
             if (hyp.kan_validated) {
                 ans << ", " << hyp.validation_status;
             }
@@ -717,7 +779,7 @@ std::string ChatInterface::format_thinking_response(
             if (c.severity <= 0.7) continue;
             if (first) { ans << "\n"; first = false; }
             ans << "- " << c.description
-                << " (severity: " << static_cast<int>(c.severity * 100) << "%)\n";
+                << " (Schwere: " << static_cast<int>(c.severity * 100) << "%)\n";
         }
     }
 

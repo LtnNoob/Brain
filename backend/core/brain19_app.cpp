@@ -86,13 +86,10 @@ void Brain19App::cmd_ask(const std::string& question) {
     auto resp = orchestrator_.ask(question);
     std::cout << "\n" << resp.answer << "\n";
     if (!resp.epistemic_note.empty()) {
-        std::cout << "  [Epistemic: " << resp.epistemic_note << "]\n";
+        std::cout << "  [" << resp.epistemic_note << "]\n";
     }
     if (resp.contains_speculation) {
-        std::cout << "  ⚠ Contains speculation\n";
-    }
-    if (!resp.referenced_concepts.empty()) {
-        std::cout << "  Referenced " << resp.referenced_concepts.size() << " concepts\n";
+        std::cout << "  [Enthaelt Spekulation]\n";
     }
     std::cout << "\n";
 }

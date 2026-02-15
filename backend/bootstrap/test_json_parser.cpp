@@ -136,12 +136,13 @@ void test_foundation_json_parseable() {
     auto concepts = v->get("concepts");
     assert(concepts && concepts->is_array());
     std::cout << "(" << concepts->as_array().size() << " concepts) ";
-    assert(concepts->as_array().size() == FoundationConcepts::concept_count());
+    // JSON file may contain more concepts than hardcoded seeds (expanded via importers)
+    assert(concepts->as_array().size() >= FoundationConcepts::concept_count());
 
     auto relations = v->get("relations");
     assert(relations && relations->is_array());
     std::cout << "(" << relations->as_array().size() << " relations) ";
-    assert(relations->as_array().size() == FoundationConcepts::relation_count());
+    assert(relations->as_array().size() >= FoundationConcepts::relation_count());
 
     // Check first concept has all fields
     auto& first = concepts->as_array()[0];
@@ -168,7 +169,7 @@ void test_seed_from_file() {
 
     auto ids = ltm.get_all_concept_ids();
     std::cout << "(" << ids.size() << " concepts) ";
-    assert(ids.size() == FoundationConcepts::concept_count());
+    assert(ids.size() >= FoundationConcepts::concept_count());
 
     // Verify a known concept
     bool found_entity = false;
@@ -183,18 +184,37 @@ void test_seed_from_file() {
     assert(found_entity);
 
     // Check relations exist
-    assert(ltm.total_relation_count() == FoundationConcepts::relation_count());
+    assert(ltm.total_relation_count() >= FoundationConcepts::relation_count());
     PASS();
 }
 
-void test_seed_from_file_matches_hardcoded() {
-    TEST("seed_from_file matches hardcoded counts");
-    // Cross-check: file and hardcoded should produce same counts
+void test_seed_from_file_contains_hardcoded() {
+    TEST("seed_from_file contains all hardcoded seeds");
+    // Cross-check: JSON file should contain at least all hardcoded seeds
     LongTermMemory ltm_file, ltm_hard;
     FoundationConcepts::seed_from_file(ltm_file, "../data/foundation.json");
     FoundationConcepts::seed_all(ltm_hard);
-    assert(ltm_file.get_all_concept_ids().size() == ltm_hard.get_all_concept_ids().size());
-    assert(ltm_file.total_relation_count() == ltm_hard.total_relation_count());
+
+    size_t file_concepts = ltm_file.get_all_concept_ids().size();
+    size_t hard_concepts = ltm_hard.get_all_concept_ids().size();
+    std::cout << "(file=" << file_concepts << " hard=" << hard_concepts << ") ";
+    assert(file_concepts >= hard_concepts);
+    assert(ltm_file.total_relation_count() >= ltm_hard.total_relation_count());
+
+    // Verify all hardcoded concept labels exist in the file-loaded LTM
+    for (auto cid : ltm_hard.get_all_concept_ids()) {
+        auto hard_info = ltm_hard.retrieve_concept(cid);
+        if (!hard_info) continue;
+        bool found = false;
+        for (auto fid : ltm_file.get_all_concept_ids()) {
+            auto file_info = ltm_file.retrieve_concept(fid);
+            if (file_info && file_info->label == hard_info->label) {
+                found = true;
+                break;
+            }
+        }
+        assert(found);
+    }
     PASS();
 }
 
@@ -227,7 +247,7 @@ int main() {
     // Foundation file tests
     test_foundation_json_parseable();
     test_seed_from_file();
-    test_seed_from_file_matches_hardcoded();
+    test_seed_from_file_contains_hardcoded();
     test_seed_from_file_nonexistent();
 
     std::cout << "\n=== " << tests_passed << "/" << tests_total << " PASSED ===" << std::endl;

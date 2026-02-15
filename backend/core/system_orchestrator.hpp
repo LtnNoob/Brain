@@ -38,6 +38,7 @@
 #include "../evolution/pattern_discovery.hpp"
 #include "../evolution/epistemic_promotion.hpp"
 #include "../evolution/concept_proposal.hpp"
+#include "../evolution/graph_densifier.hpp"
 
 #include "../language/kan_language_engine.hpp"
 #include "thinking_pipeline.hpp"
@@ -68,7 +69,7 @@ public:
 
         // Bootstrap
         bool seed_foundation = true;
-        std::string foundation_file = "data/foundation_full.json";
+        std::string foundation_file = "../data/foundation_full.json";
 
         // GlobalDynamicsOperator
         bool enable_gdo = false;

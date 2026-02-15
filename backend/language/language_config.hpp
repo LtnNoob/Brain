@@ -57,12 +57,12 @@ struct LanguageConfig {
     double decoder_lr               = 2.0;
     double fusion_lr                = 0.001;
     size_t encoder_epochs           = 200;
-    size_t decoder_epochs           = 100;
+    size_t decoder_epochs           = 150;
     size_t fusion_epochs            = 300;
 
     // ── Relation Decoder Training ──
-    static constexpr size_t MAX_RELATION_DECODER_PAIRS = 8000;
-    static constexpr size_t MAX_DEFINITION_DECODER_PAIRS = 1000;
+    static constexpr size_t MAX_RELATION_DECODER_PAIRS = 10000;
+    static constexpr size_t MAX_DEFINITION_DECODER_PAIRS = 8000;  // unified concept descriptions
 
     // ── KAN Knots ──
     size_t kan_num_knots            = 10;

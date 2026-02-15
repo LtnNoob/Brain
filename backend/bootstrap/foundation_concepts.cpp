@@ -4,6 +4,9 @@
 #include <vector>
 #include <string>
 #include <unordered_map>
+#include <iostream>
+#include <algorithm>
+#include <cctype>
 
 namespace brain19 {
 
@@ -479,34 +482,117 @@ bool FoundationConcepts::seed_from_file(LongTermMemory& ltm, const std::string& 
         label_map[lbl->as_string()] = cid;
     }
 
-    // Load relations
+    // Alias map: common lowercase variants → builtin type + whether to swap src/tgt
+    struct AliasEntry { RelationType type; bool swap; };
+    static const std::unordered_map<std::string, AliasEntry> alias_map = {
+        {"contains",       {RelationType::HAS_PART,      false}},
+        {"includes",       {RelationType::HAS_PART,      false}},
+        {"is_type_of",     {RelationType::IS_A,          false}},
+        {"is_part_of",     {RelationType::PART_OF,       false}},
+        {"component_of",   {RelationType::PART_OF,       false}},
+        {"is_component_of",{RelationType::PART_OF,       false}},
+        {"composed_of",    {RelationType::PART_OF,       true}},  // X composed_of Y → Y PART_OF X
+        {"caused_by",      {RelationType::CAUSES,        true}},  // X caused_by Y → Y CAUSES X
+        {"created_by",     {RelationType::DERIVED_FROM,  false}},
+        {"enabled_by",     {RelationType::ENABLES,       true}},  // X enabled_by Y → Y ENABLES X
+        {"result_of",      {RelationType::CAUSES,        true}},  // X result_of Y → Y CAUSES X
+        {"opposite_of",    {RelationType::CONTRADICTS,   false}},
+        {"contrasts_with", {RelationType::CONTRADICTS,   false}},
+    };
+
+    size_t total_rels = 0, loaded_rels = 0;
+    size_t dropped_relates_to = 0, dropped_low_weight = 0, dropped_missing = 0;
+
+    // Load relations (supports both {source,target,type,weight} and {from,to,relation,strength})
     for (const auto& r : relations_val->as_array()) {
         if (!r.is_object()) continue;
-        auto* src = r.get("source");
-        auto* tgt = r.get("target");
-        auto* tp = r.get("type");
-        if (!src || !src->is_string() || !tgt || !tgt->is_string() || !tp || !tp->is_string()) continue;
+        ++total_rels;
 
-        auto si = label_map.find(src->as_string());
-        auto ti = label_map.find(tgt->as_string());
-        if (si == label_map.end() || ti == label_map.end()) continue;
+        // Support alternate JSON format: {from,to,relation,strength}
+        auto* src_field = r.get("source");
+        auto* tgt_field = r.get("target");
+        auto* tp_field  = r.get("type");
+        auto* wt_field  = r.get("weight");
+        if (!src_field) src_field = r.get("from");
+        if (!tgt_field) tgt_field = r.get("to");
+        if (!tp_field)  tp_field  = r.get("relation");
+        if (!wt_field)  wt_field  = r.get("strength");
 
-        auto rel_type = reg.find_by_name(tp->as_string());
-        if (!rel_type) {
-            // Auto-register unknown relation types from training data
-            FlexEmbedding default_emb = {0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-            auto new_type = reg.register_type(
-                tp->as_string(), tp->as_string(),
-                RelationCategory::CUSTOM_CATEGORY, default_emb);
-            rel_type = new_type;
+        if (!src_field || !src_field->is_string() ||
+            !tgt_field || !tgt_field->is_string() ||
+            !tp_field  || !tp_field->is_string()) continue;
+
+        std::string type_str = tp_field->as_string();
+
+        // Normalize for comparison: uppercase + hyphens/spaces → underscores
+        std::string norm_type = type_str;
+        for (auto& ch : norm_type) {
+            if (ch == '-' || ch == ' ') ch = '_';
+            else ch = static_cast<char>(std::toupper(static_cast<unsigned char>(ch)));
         }
 
-        double weight = 0.8;
-        auto* wt = r.get("weight");
-        if (wt && wt->is_number()) weight = wt->as_number();
+        // 1. Drop RELATES_TO / RELATED_TO entirely (zero semantic value)
+        if (norm_type == "RELATES_TO" || norm_type == "RELATED_TO") {
+            ++dropped_relates_to;
+            continue;
+        }
 
-        ltm.add_relation(si->second, ti->second, *rel_type, weight);
+        // 2. Weight threshold >= 0.7
+        double weight = 0.8;
+        if (wt_field && wt_field->is_number()) weight = wt_field->as_number();
+        if (weight < 0.7) {
+            ++dropped_low_weight;
+            continue;
+        }
+
+        // 3. Resolve source/target concepts
+        auto si = label_map.find(src_field->as_string());
+        auto ti = label_map.find(tgt_field->as_string());
+        if (si == label_map.end() || ti == label_map.end()) {
+            ++dropped_missing;
+            continue;
+        }
+
+        ConceptId src_id = si->second;
+        ConceptId tgt_id = ti->second;
+
+        // 4. Resolve relation type via registry (handles normalization)
+        auto rel_type = reg.find_by_name(type_str);
+
+        // 5. Try alias map for common variants
+        if (!rel_type) {
+            auto ait = alias_map.find(norm_type);
+            if (ait == alias_map.end()) {
+                // Try lowercase version of norm_type for alias lookup
+                std::string lower_norm = norm_type;
+                std::transform(lower_norm.begin(), lower_norm.end(), lower_norm.begin(),
+                    [](unsigned char c){ return std::tolower(c); });
+                ait = alias_map.find(lower_norm);
+            }
+            if (ait != alias_map.end()) {
+                rel_type = ait->second.type;
+                if (ait->second.swap) std::swap(src_id, tgt_id);
+            }
+        }
+
+        // 6. Auto-register unknown types as custom (only non-noise with weight >= 0.7)
+        if (!rel_type) {
+            FlexEmbedding default_emb = {0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+            rel_type = reg.register_type(
+                norm_type, norm_type,
+                RelationCategory::CUSTOM_CATEGORY, default_emb);
+        }
+
+        ltm.add_relation(src_id, tgt_id, *rel_type, weight);
+        ++loaded_rels;
     }
+
+    std::cout << "[Foundation] Loaded " << label_map.size() << " concepts, "
+              << loaded_rels << "/" << total_rels << " relations ("
+              << (total_rels - loaded_rels) << " filtered: "
+              << dropped_relates_to << " bad type, "
+              << dropped_low_weight << " low weight, "
+              << dropped_missing << " missing concepts)" << std::endl;
 
     return true;
 }

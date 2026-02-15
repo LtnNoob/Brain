@@ -57,79 +57,6 @@ std::vector<LanguageTraining::EncoderPair> LanguageTraining::generate_encoder_da
     return pairs;
 }
 
-std::vector<LanguageTraining::DecoderPair> LanguageTraining::generate_decoder_data() const {
-    std::vector<DecoderPair> pairs;
-
-    auto& concept_emb_store = engine_.embeddings().concept_embeddings();
-    auto& projection = engine_.fusion().projection();
-    auto& dim_ctx = engine_.dim_context();
-    auto all_ids = ltm_.get_all_concept_ids();
-
-    const size_t ACT_DIM = LanguageConfig::ENCODER_QUERY_DIM;  // 16
-    const size_t FUSED = LanguageConfig::FUSED_DIM;             // 64
-
-    for (auto cid : all_ids) {
-        auto info = ltm_.retrieve_concept(cid);
-        if (!info) continue;
-
-        // Get concept embedding (same hash-init R^16 used at inference)
-        auto cemb = concept_emb_store.get_or_default(cid);
-
-        // Build 57D raw vector matching FusionLayer format:
-        // [slot1(16D) | slot2(16D) | slot3(16D) | gates(5D) | template_probs(4D)]
-        // Single concept in slot 1, zeros in slots 2-3, DEFINITIONAL template
-        std::vector<double> raw(3 * ACT_DIM + 5 + LanguageConfig::NUM_TEMPLATE_TYPES, 0.0);
-
-        // Slot 1: concept embedding x gate weight
-        for (size_t d = 0; d < ACT_DIM; ++d) {
-            raw[d] = cemb.core[d] * 0.8;
-        }
-        // Slots 2-3: zeros (single concept)
-
-        // Gates: [0.8, 0.0, 0.0, 0.0, 0.0]
-        raw[3 * ACT_DIM] = 0.8;
-
-        // Template probs: DEFINITIONAL dominant (index 1)
-        size_t tpl_offset = 3 * ACT_DIM + 5;
-        raw[tpl_offset + 1] = 0.8;  // DEFINITIONAL
-        raw[tpl_offset + 0] = 0.2;  // small GENERAL
-
-        // Project: raw x projection -> R^64 (same as FusionLayer does)
-        std::vector<double> fused(FUSED, 0.0);
-        size_t raw_dim = std::min(raw.size(), projection.size());
-        for (size_t i = 0; i < raw_dim; ++i) {
-            if (std::abs(raw[i]) < 1e-12) continue;  // skip zeros
-            for (size_t j = 0; j < FUSED; ++j) {
-                fused[j] += raw[i] * projection[i][j];
-            }
-        }
-
-        // Append dimensional context (variable-length, emergent from graph)
-        if (dim_ctx.is_built()) {
-            auto dim_vec = dim_ctx.to_decoder_vec(cid);
-            fused.insert(fused.end(), dim_vec.begin(), dim_vec.end());
-        }
-
-        // Target: "Label is defined as definition."
-        if (!info->definition.empty()) {
-            std::string short_def = info->definition;
-            if (short_def.size() > 80) short_def = short_def.substr(0, 80);
-            pairs.push_back({fused, info->label + " is defined as " + short_def + "."});
-        } else {
-            pairs.push_back({fused, info->label + "."});
-        }
-    }
-
-    // Subsample if over budget
-    if (pairs.size() > LanguageConfig::MAX_DEFINITION_DECODER_PAIRS) {
-        std::mt19937 rng(99);
-        std::shuffle(pairs.begin(), pairs.end(), rng);
-        pairs.resize(LanguageConfig::MAX_DEFINITION_DECODER_PAIRS);
-    }
-
-    return pairs;
-}
-
 // =============================================================================
 // Helper: join a list of strings with Oxford comma
 // =============================================================================
@@ -176,8 +103,161 @@ static const std::vector<RelationType> PARAGRAPH_ORDER = {
 
 } // anonymous namespace
 
+std::vector<LanguageTraining::DecoderPair> LanguageTraining::generate_decoder_data() const {
+    // Unified concept descriptions: definition + ALL relations as one paragraph.
+    // Each concept becomes a rich object description:
+    // "Dog is a mammal and omnivore. It is a loyal pet. It eats meat and bones."
+    std::vector<DecoderPair> pairs;
+
+    auto& concept_emb_store = engine_.embeddings().concept_embeddings();
+    auto& rel_registry = RelationTypeRegistry::instance();
+    auto& projection = engine_.fusion().projection();
+    auto& dim_ctx = engine_.dim_context();
+    auto all_ids = ltm_.get_all_concept_ids();
+
+    const size_t ACT_DIM = LanguageConfig::ENCODER_QUERY_DIM;  // 16
+    const size_t FUSED = LanguageConfig::FUSED_DIM;             // 64
+
+    // Quality filter: count relations per concept
+    std::unordered_map<uint32_t, size_t> rel_count;
+    for (auto cid : all_ids)
+        rel_count[cid] = ltm_.get_outgoing_relations(cid).size()
+                       + ltm_.get_incoming_relations(cid).size();
+
+    size_t filtered = 0;
+    for (auto cid : all_ids) {
+        auto info = ltm_.retrieve_concept(cid);
+        if (!info) continue;
+
+        // Quality gate: require non-empty definition AND 3+ relations
+        if (info->definition.empty() || rel_count[cid] < 3) {
+            filtered++;
+            continue;
+        }
+
+        auto rels = ltm_.get_outgoing_relations(cid);
+
+        // ── Group relations by type ──
+        std::unordered_map<uint16_t, std::vector<std::string>> grouped;
+        std::vector<FlexEmbedding> target_embeddings;
+        std::vector<FlexEmbedding> rel_type_embeddings;
+
+        for (const auto& rel : rels) {
+            auto tgt_info = ltm_.retrieve_concept(rel.target);
+            if (!tgt_info) continue;
+            grouped[static_cast<uint16_t>(rel.type)].push_back(tgt_info->label);
+            if (target_embeddings.size() < 5)
+                target_embeddings.push_back(concept_emb_store.get_or_default(rel.target));
+            if (rel_type_embeddings.size() < 5)
+                rel_type_embeddings.push_back(
+                    engine_.embeddings().get_relation_embedding(rel.type));
+        }
+
+        // ── Build unified paragraph: definition + all relations ──
+        std::string paragraph = info->label;
+        bool first_sentence = true;
+        size_t causal_count = 0, hierarchical_count = 0;
+
+        // Start with hierarchy relations (IS_A, INSTANCE_OF first)
+        for (auto type : PARAGRAPH_ORDER) {
+            uint16_t type_key = static_cast<uint16_t>(type);
+            auto it = grouped.find(type_key);
+            if (it == grouped.end() || it->second.empty()) continue;
+
+            const auto& targets = it->second;
+            const std::string& verb = rel_registry.get_name_en(type);
+            auto category = rel_registry.get_category(type);
+            if (category == RelationCategory::CAUSAL) causal_count += targets.size();
+            if (category == RelationCategory::HIERARCHICAL) hierarchical_count += targets.size();
+
+            std::string joined = oxford_join(targets);
+            if (first_sentence) {
+                paragraph += " " + verb + " " + joined + ".";
+                first_sentence = false;
+
+                // Insert definition after first relation sentence
+                std::string short_def = info->definition;
+                if (short_def.size() > 80) short_def = short_def.substr(0, 80);
+                paragraph += " It is " + short_def + ".";
+            } else {
+                paragraph += " It " + verb + " " + joined + ".";
+            }
+        }
+
+        // If no relations were added, just use definition
+        if (first_sentence) {
+            std::string short_def = info->definition;
+            if (short_def.size() > 80) short_def = short_def.substr(0, 80);
+            paragraph += " is " + short_def + ".";
+        }
+
+        // ── Build fused vector (multi-slot: source + targets + relation types) ──
+        std::vector<double> raw(3 * ACT_DIM + 5 + LanguageConfig::NUM_TEMPLATE_TYPES, 0.0);
+
+        auto src_emb = concept_emb_store.get_or_default(cid);
+        for (size_t d = 0; d < ACT_DIM; ++d)
+            raw[d] = src_emb.core[d] * 0.7;
+
+        if (!target_embeddings.empty()) {
+            double inv_n = 0.5 / static_cast<double>(target_embeddings.size());
+            for (const auto& temb : target_embeddings)
+                for (size_t d = 0; d < ACT_DIM; ++d)
+                    raw[ACT_DIM + d] += temb.core[d] * inv_n;
+        }
+
+        if (!rel_type_embeddings.empty()) {
+            double inv_n = 0.3 / static_cast<double>(rel_type_embeddings.size());
+            for (const auto& remb : rel_type_embeddings)
+                for (size_t d = 0; d < ACT_DIM; ++d)
+                    raw[2 * ACT_DIM + d] += remb.core[d] * inv_n;
+        }
+
+        size_t gate_offset = 3 * ACT_DIM;
+        raw[gate_offset + 0] = 0.8;
+        raw[gate_offset + 1] = 0.5;
+        raw[gate_offset + 2] = 0.3;
+
+        size_t tpl_offset = gate_offset + 5;
+        if (causal_count > hierarchical_count && causal_count > 0) {
+            raw[tpl_offset + 2] = 0.5; raw[tpl_offset + 1] = 0.3; raw[tpl_offset + 0] = 0.2;
+        } else if (hierarchical_count > 0) {
+            raw[tpl_offset + 1] = 0.6; raw[tpl_offset + 0] = 0.2; raw[tpl_offset + 3] = 0.2;
+        } else {
+            raw[tpl_offset + 3] = 0.4; raw[tpl_offset + 0] = 0.3; raw[tpl_offset + 1] = 0.3;
+        }
+
+        // Project: raw x projection -> R^64
+        std::vector<double> fused(FUSED, 0.0);
+        size_t raw_dim = std::min(raw.size(), projection.size());
+        for (size_t i = 0; i < raw_dim; ++i) {
+            if (std::abs(raw[i]) < 1e-12) continue;
+            for (size_t j = 0; j < FUSED; ++j)
+                fused[j] += raw[i] * projection[i][j];
+        }
+
+        if (dim_ctx.is_built()) {
+            auto dim_vec = dim_ctx.to_decoder_vec(cid);
+            fused.insert(fused.end(), dim_vec.begin(), dim_vec.end());
+        }
+
+        pairs.push_back({std::move(fused), std::move(paragraph)});
+    }
+
+    std::cerr << "[LanguageTraining] Decoder: " << pairs.size()
+              << " quality concepts (" << filtered << " filtered)\n";
+
+    // Subsample if over budget
+    if (pairs.size() > LanguageConfig::MAX_DEFINITION_DECODER_PAIRS) {
+        std::mt19937 rng(99);
+        std::shuffle(pairs.begin(), pairs.end(), rng);
+        pairs.resize(LanguageConfig::MAX_DEFINITION_DECODER_PAIRS);
+    }
+
+    return pairs;
+}
+
 // =============================================================================
-// Generate Relation-Based Decoder Data (compound paragraphs per concept)
+// Generate Supplemental Relation-Based Data (concepts not covered by unified)
 // =============================================================================
 
 std::vector<LanguageTraining::DecoderPair> LanguageTraining::generate_relation_decoder_data() const {
@@ -192,9 +272,22 @@ std::vector<LanguageTraining::DecoderPair> LanguageTraining::generate_relation_d
     const size_t ACT_DIM = LanguageConfig::ENCODER_QUERY_DIM;  // 16
     const size_t FUSED = LanguageConfig::FUSED_DIM;             // 64
 
+    // Quality filter: count total relations per concept
+    std::unordered_map<uint32_t, size_t> total_rel_count;
+    for (auto cid : all_ids)
+        total_rel_count[cid] = ltm_.get_outgoing_relations(cid).size()
+                             + ltm_.get_incoming_relations(cid).size();
+
+    size_t filtered_rel = 0;
     for (auto cid : all_ids) {
         auto info = ltm_.retrieve_concept(cid);
         if (!info) continue;
+
+        // Quality gate: require non-empty definition AND 3+ relations
+        if (info->definition.empty() || total_rel_count[cid] < 3) {
+            filtered_rel++;
+            continue;
+        }
 
         auto rels = ltm_.get_outgoing_relations(cid);
         if (rels.empty()) continue;
@@ -354,12 +447,12 @@ LanguageTrainingResult LanguageTraining::train_stage1(const LanguageConfig& conf
     // Generate training data
     std::cerr << "[LanguageTraining] Generating encoder data...\n";
     auto encoder_data = generate_encoder_data();
-    std::cerr << "[LanguageTraining] Generating decoder data...\n";
+    std::cerr << "[LanguageTraining] Generating unified concept descriptions...\n";
     auto decoder_data = generate_decoder_data();
-    std::cerr << "[LanguageTraining] Generating relation data...\n";
+    std::cerr << "[LanguageTraining] Generating supplemental relation data...\n";
     auto relation_data = generate_relation_decoder_data();
     std::cerr << "[LanguageTraining] Data generated: enc=" << encoder_data.size()
-              << " dec=" << decoder_data.size() << " rel=" << relation_data.size() << "\n";
+              << " unified=" << decoder_data.size() << " rel=" << relation_data.size() << "\n";
 
     double best_loss = 1e9;
 
@@ -399,7 +492,7 @@ LanguageTrainingResult LanguageTraining::train_stage1(const LanguageConfig& conf
     if (!all_decoder_data.empty()) {
         std::cerr << "[LanguageTraining] Stage 1: Training decoder on "
                   << all_decoder_data.size() << " pairs ("
-                  << decoder_data.size() << " def + "
+                  << decoder_data.size() << " unified + "
                   << relation_data.size() << " rel)...\n";
 
         auto t_start = std::chrono::steady_clock::now();
@@ -496,12 +589,19 @@ LanguageTrainingResult LanguageTraining::train_stage1(const LanguageConfig& conf
         std::vector<double> d_h_out(H);
         std::vector<double> d_a1(K);
         std::vector<double> d_z1(K);
-        const double lr_transform = 0.001;
+        const double lr_transform_base = 0.001;
         const size_t transform_warmup = 10;  // freeze transform for first N epochs
 
         double best_decoder_loss = 1e9;
         for (size_t epoch = 0; epoch < config.decoder_epochs; ++epoch) {
             bool train_transform = (epoch >= transform_warmup);
+
+            // Cosine LR decay: lr starts at base, decays to base/10
+            double progress = static_cast<double>(epoch) / std::max(config.decoder_epochs - 1, size_t(1));
+            double cos_mult = 0.5 * (1.0 + std::cos(progress * 3.14159265358979));
+            double lr_epoch = lr * (0.1 + 0.9 * cos_mult);  // decays from lr to 0.1*lr
+            double lr_transform_epoch = lr_transform_base * (0.1 + 0.9 * cos_mult);
+
             double total_ce_loss = 0.0;
             size_t total_tokens = 0;
 
@@ -574,13 +674,13 @@ LanguageTrainingResult LanguageTraining::train_stage1(const LanguageConfig& conf
                         }
                     }
 
-                    // Per-token W update
+                    // Per-token W update (with cosine LR decay)
                     for (size_t i = 0; i < H_EXT; ++i) {
                         double hi = h_ext[i];
                         for (size_t a = 0; a < VA; ++a) {
-                            W_a[i][a] -= lr * hi * probs[a];
+                            W_a[i][a] -= lr_epoch * hi * probs[a];
                         }
-                        W_a[i][ca] += lr * hi;
+                        W_a[i][ca] += lr_epoch * hi;
                     }
 
                     // Backprop through transform (only after warmup epochs)
@@ -600,9 +700,11 @@ LanguageTrainingResult LanguageTraining::train_stage1(const LanguageConfig& conf
                         // W2 update
                         for (size_t k = 0; k < K; ++k) {
                             for (size_t j = 0; j < H; ++j) {
-                                W2[k][j] -= lr_transform * a1[k] * d_h_out[j];
+                                W2[k][j] -= lr_transform_epoch * a1[k] * d_h_out[j];
                             }
                         }
+
+                        // b2: skip update (bias accumulates too much across tokens)
 
                         // Through tanh: d_z1[k] = d_a1[k] * (1 - a1[k]²)
                         for (size_t k = 0; k < K; ++k) {
@@ -612,13 +714,13 @@ LanguageTrainingResult LanguageTraining::train_stage1(const LanguageConfig& conf
                         // W1 update
                         for (size_t i = 0; i < H; ++i) {
                             for (size_t k = 0; k < K; ++k) {
-                                W1[i][k] -= lr_transform * h[i] * d_z1[k];
+                                W1[i][k] -= lr_transform_epoch * h[i] * d_z1[k];
                             }
                         }
 
                         // b1 update
                         for (size_t k = 0; k < K; ++k) {
-                            b1[k] -= lr_transform * d_z1[k];
+                            b1[k] -= lr_transform_epoch * d_z1[k];
                         }
                     }
 
@@ -646,6 +748,7 @@ LanguageTrainingResult LanguageTraining::train_stage1(const LanguageConfig& conf
                 std::cerr << "[LanguageTraining]   Epoch " << (epoch + 1)
                           << "/" << config.decoder_epochs
                           << " loss=" << loss
+                          << " lr=" << lr_epoch
                           << " (" << elapsed / 1000 << "s)\n";
             }
             if (loss < 0.5) break;

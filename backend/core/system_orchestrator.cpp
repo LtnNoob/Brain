@@ -213,6 +213,46 @@ bool SystemOrchestrator::initialize() {
                 + std::to_string(stats.avg_final_loss) + ")");
         }
 
+        // Graph densification — only for small graphs where topology-based inference
+        // is reliable. Large graphs with noisy wave data amplify errors through
+        // transitive closure, so densification is skipped.
+        {
+            size_t concept_count = ltm_->get_all_concept_ids().size();
+            if (concept_count < 1000) {
+                log("    Graph densification (" + std::to_string(concept_count) + " concepts)...");
+                GraphDensifier densifier(*ltm_);
+                auto dens_result = densifier.densify();
+                log("    Densified: +" + std::to_string(dens_result.relations_added)
+                    + " relations (density " + std::to_string(dens_result.density_before)
+                    + " -> " + std::to_string(dens_result.density_after) + ")");
+                for (const auto& [phase, count] : dens_result.phase_counts) {
+                    log("      " + phase + ": +" + std::to_string(count));
+                }
+                for (const auto& [type, count] : dens_result.type_distribution) {
+                    log("      type " + type + ": " + std::to_string(count));
+                }
+                auto samples = densifier.sample_generated(100);
+                log("    Quality sample (" + std::to_string(samples.size()) + " relations):");
+                for (size_t i = 0; i < samples.size(); ++i) {
+                    log("      [" + std::to_string(i+1) + "] "
+                        + samples[i].source_label + " --["
+                        + samples[i].type_name + "]--> "
+                        + samples[i].target_label
+                        + " (w=" + std::to_string(samples[i].weight) + ")");
+                }
+            } else {
+                log("    Skipping densification (large graph: "
+                    + std::to_string(concept_count) + " concepts, density "
+                    + std::to_string(double(ltm_->total_relation_count()) / concept_count)
+                    + " — existing data sufficient)");
+            }
+        }
+
+        // Rebuild dimensional context with denser graph
+        if (language_engine_ && language_engine_->is_ready()) {
+            language_engine_->rebuild_dimensional_context();
+        }
+
         // KAN decoder training from KG relations
         if (language_engine_ && language_engine_->is_ready()) {
             log("    Training KAN decoder from KG relations...");
@@ -439,15 +479,24 @@ void SystemOrchestrator::cleanup_from_stage(int stage) {
 // ─── Foundation Seeding ──────────────────────────────────────────────────────
 
 void SystemOrchestrator::seed_foundation() {
-    if (!config_.foundation_file.empty()) {
-        if (FoundationConcepts::seed_from_file(*ltm_, config_.foundation_file)) {
-            log("    Seeded from file: " + config_.foundation_file);
+    // Try configured path, then common alternatives
+    std::vector<std::string> paths;
+    if (!config_.foundation_file.empty())
+        paths.push_back(config_.foundation_file);
+    paths.push_back("data/foundation_full.json");       // from project root
+    paths.push_back("../data/foundation_full.json");     // from backend/
+    paths.push_back("data/foundation.json");
+    paths.push_back("../data/foundation.json");
+
+    for (const auto& path : paths) {
+        if (FoundationConcepts::seed_from_file(*ltm_, path)) {
+            log("    Seeded from file: " + path);
             log("    Concepts: " + std::to_string(ltm_->get_all_concept_ids().size()) +
                 ", Relations: " + std::to_string(ltm_->total_relation_count()));
             return;
         }
-        log("    File not found or invalid, falling back to hardcoded");
     }
+    log("    No foundation file found, falling back to hardcoded");
     FoundationConcepts::seed_all(*ltm_);
     log("    Seeded " + std::to_string(FoundationConcepts::concept_count()) +
         " concepts, " + std::to_string(FoundationConcepts::relation_count()) + " relations");

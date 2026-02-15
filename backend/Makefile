@@ -34,7 +34,7 @@ HYBRID_SOURCES = hybrid/kan_validator.cpp hybrid/domain_manager.cpp \
                  hybrid/refinement_loop.cpp hybrid/epistemic_bridge.cpp \
                  hybrid/hypothesis_translator.cpp hybrid/kan_graph_monitor.cpp
 EVOLUTION_SOURCES = evolution/pattern_discovery.cpp evolution/epistemic_promotion.cpp \
-                    evolution/concept_proposal.cpp
+                    evolution/concept_proposal.cpp evolution/graph_densifier.cpp
 BOOTSTRAP_SOURCES = bootstrap/foundation_concepts.cpp bootstrap/bootstrap_interface.cpp \
                     bootstrap/context_accumulator.cpp bootstrap/json_parser.cpp
 STREAMS_SOURCES = streams/think_stream.cpp streams/stream_orchestrator.cpp \

@@ -1,4 +1,5 @@
 #include "concept_embedding_store.hpp"
+#include "../ltm/long_term_memory.hpp"
 
 #include <algorithm>
 #include <cmath>
@@ -27,7 +28,23 @@ FlexEmbedding ConceptEmbeddingStore::hash_init(ConceptId cid) {
     if (norm > 1e-10) {
         for (double& v : emb.core) v /= norm;
     }
-    // detail starts empty (0 additional dimensions)
+
+    // Initialize detail dimensions (INITIAL_DETAIL = 16)
+    // Uses continued hash sequence for concept-specific detail features.
+    // These provide the cyclic_compress input and dim_fraction signal
+    // that ConceptModel's MultiHeadBilinear and FlexKAN depend on.
+    emb.detail.resize(FlexConfig::INITIAL_DETAIL);
+    for (size_t i = 0; i < FlexConfig::INITIAL_DETAIL; ++i) {
+        x += 0x9e3779b97f4a7c15ULL;
+        uint64_t z = x;
+        z = (z ^ (z >> 30)) * 0xbf58476d1ce4e5b9ULL;
+        z = (z ^ (z >> 27)) * 0x94d049bb133111ebULL;
+        z = z ^ (z >> 31);
+        // Smaller scale for detail dims: [-0.25, 0.25]
+        emb.detail[i] = (static_cast<double>(z) / static_cast<double>(UINT64_MAX)) - 0.5;
+        emb.detail[i] *= 0.5;
+    }
+
     return emb;
 }
 
@@ -53,10 +70,19 @@ void ConceptEmbeddingStore::nudge(ConceptId cid, const FlexEmbedding& target, do
     for (size_t i = 0; i < CORE_DIM; ++i) {
         emb.core[i] = (1.0 - alpha) * emb.core[i] + alpha * target.core[i];
     }
-    // Nudge shared detail dimensions
-    size_t shared_detail = std::min(emb.detail.size(), target.detail.size());
+    // Nudge existing shared detail dimensions first
+    size_t old_size = emb.detail.size();
+    size_t shared_detail = std::min(old_size, target.detail.size());
     for (size_t i = 0; i < shared_detail; ++i) {
         emb.detail[i] = (1.0 - alpha) * emb.detail[i] + alpha * target.detail[i];
+    }
+    // Expand detail dims if target has more (grow toward richer representations)
+    if (target.detail.size() > old_size) {
+        emb.detail.resize(target.detail.size(), 0.0);
+        // New dims blend from zero toward target
+        for (size_t i = old_size; i < emb.detail.size(); ++i) {
+            emb.detail[i] = alpha * target.detail[i];
+        }
     }
 }
 
@@ -118,6 +144,92 @@ FlexEmbedding ConceptEmbeddingStore::get_or_default(ConceptId cid) const {
 
 bool ConceptEmbeddingStore::has(ConceptId cid) const {
     return store_.count(cid) > 0;
+}
+
+// =============================================================================
+// Learn from graph: nudge embeddings toward neighbor averages
+// =============================================================================
+//
+// For each concept C with relations in LTM:
+//   1. Collect all neighbor embeddings (outgoing targets + incoming sources)
+//   2. Weight each neighbor by its relation weight
+//   3. Compute weighted average embedding
+//   4. Nudge C toward this average with alpha
+//
+// After multiple iterations, connected concepts converge in embedding space.
+// IS_A neighbors, HAS_PROPERTY targets, CAUSES targets etc. all pull
+// the concept's embedding toward a semantically meaningful region.
+
+ConceptEmbeddingStore::LearnResult
+ConceptEmbeddingStore::learn_from_graph(const LongTermMemory& ltm,
+                                         double alpha, size_t iterations) {
+    LearnResult result;
+    auto all_ids = ltm.get_all_concept_ids();
+
+    // Ensure all concepts have embeddings
+    for (auto cid : all_ids) {
+        get(cid);
+    }
+
+    for (size_t iter = 0; iter < iterations; ++iter) {
+        result.iterations = iter + 1;
+
+        for (auto cid : all_ids) {
+            // Build weighted average of neighbor embeddings
+            FlexEmbedding avg;
+            avg.detail.resize(FlexConfig::INITIAL_DETAIL, 0.0);
+            double total_weight = 0.0;
+            size_t neighbor_count = 0;
+
+            auto outgoing = ltm.get_outgoing_relations(cid);
+            for (const auto& rel : outgoing) {
+                const auto& neighbor_emb = get(rel.target);
+                double w = rel.weight;
+                for (size_t i = 0; i < CORE_DIM; ++i) {
+                    avg.core[i] += w * neighbor_emb.core[i];
+                }
+                size_t shared = std::min(avg.detail.size(), neighbor_emb.detail.size());
+                for (size_t i = 0; i < shared; ++i) {
+                    avg.detail[i] += w * neighbor_emb.detail[i];
+                }
+                total_weight += w;
+                ++neighbor_count;
+            }
+
+            auto incoming = ltm.get_incoming_relations(cid);
+            for (const auto& rel : incoming) {
+                const auto& neighbor_emb = get(rel.source);
+                double w = rel.weight * 0.5;  // incoming weighted less
+                for (size_t i = 0; i < CORE_DIM; ++i) {
+                    avg.core[i] += w * neighbor_emb.core[i];
+                }
+                size_t shared = std::min(avg.detail.size(), neighbor_emb.detail.size());
+                for (size_t i = 0; i < shared; ++i) {
+                    avg.detail[i] += w * neighbor_emb.detail[i];
+                }
+                total_weight += w;
+                ++neighbor_count;
+            }
+
+            if (total_weight < 1e-10) continue;
+
+            // Normalize
+            double inv_w = 1.0 / total_weight;
+            for (size_t i = 0; i < CORE_DIM; ++i) {
+                avg.core[i] *= inv_w;
+            }
+            for (size_t i = 0; i < avg.detail.size(); ++i) {
+                avg.detail[i] *= inv_w;
+            }
+
+            // Nudge toward average
+            nudge(cid, avg, alpha);
+            result.concepts_updated++;
+            result.total_neighbors += neighbor_count;
+        }
+    }
+
+    return result;
 }
 
 } // namespace brain19

@@ -10,6 +10,8 @@
 
 namespace brain19 {
 
+class LongTermMemory;  // forward declaration
+
 // =============================================================================
 // EMBEDDING MANAGER
 // =============================================================================
@@ -53,6 +55,11 @@ public:
     // Concept embeddings
     ConceptEmbeddingStore& concept_embeddings() { return concept_embeddings_; }
     const ConceptEmbeddingStore& concept_embeddings() const { return concept_embeddings_; }
+
+    // Train concept embeddings from KG structure (delegates to ConceptEmbeddingStore)
+    ConceptEmbeddingStore::LearnResult train_embeddings(const LongTermMemory& ltm,
+                                                         double alpha = 0.05,
+                                                         size_t iterations = 3);
 
 private:
     std::unordered_map<std::string, FlexEmbedding> context_embeddings_;

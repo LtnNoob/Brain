@@ -34,7 +34,8 @@ HYBRID_SOURCES = hybrid/kan_validator.cpp hybrid/domain_manager.cpp \
                  hybrid/refinement_loop.cpp hybrid/epistemic_bridge.cpp \
                  hybrid/hypothesis_translator.cpp hybrid/kan_graph_monitor.cpp
 EVOLUTION_SOURCES = evolution/pattern_discovery.cpp evolution/epistemic_promotion.cpp \
-                    evolution/concept_proposal.cpp evolution/graph_densifier.cpp
+                    evolution/concept_proposal.cpp evolution/graph_densifier.cpp \
+                    evolution/property_inheritance.cpp
 BOOTSTRAP_SOURCES = bootstrap/foundation_concepts.cpp bootstrap/bootstrap_interface.cpp \
                     bootstrap/context_accumulator.cpp bootstrap/json_parser.cpp
 STREAMS_SOURCES = streams/think_stream.cpp streams/stream_orchestrator.cpp \
@@ -71,7 +72,9 @@ TARGETS = brain19 \
           test_focus_cursor test_termination_conflict \
           test_template_engine test_pipeline_cursor \
           test_relation_registry test_json_parser \
-          test_concept_embeddings test_gdo test_goal_generator
+          test_concept_embeddings test_gdo test_goal_generator \
+          test_property_inheritance \
+          test_flex_activation
 
 .PHONY: all clean run
 
@@ -153,6 +156,12 @@ test_gdo: cognitive/test_gdo.o $(CORE_OBJECTS)
 	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
 test_goal_generator: curiosity/test_goal_generator.o $(CORE_OBJECTS)
+	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
+
+test_property_inheritance: evolution/test_property_inheritance.o $(CORE_OBJECTS)
+	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
+
+test_flex_activation: micromodel/test_flex_activation.o $(CORE_OBJECTS)
 	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
 # --- Pattern Rule ---

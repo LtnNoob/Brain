@@ -10,6 +10,8 @@
 
 namespace brain19 {
 
+class LongTermMemory;  // forward declaration
+
 // =============================================================================
 // ConceptEmbeddingStore
 // =============================================================================
@@ -49,6 +51,17 @@ public:
 
     // Clear all embeddings
     void clear() { store_.clear(); }
+
+    // Learn embeddings from KG structure: nudge each concept toward
+    // the weighted average of its neighbors' embeddings.
+    // Returns number of concepts updated.
+    struct LearnResult {
+        size_t concepts_updated = 0;
+        size_t total_neighbors = 0;
+        size_t iterations = 0;
+    };
+    LearnResult learn_from_graph(const LongTermMemory& ltm,
+                                 double alpha = 0.05, size_t iterations = 3);
 
     // Direct access for persistence
     const std::unordered_map<ConceptId, FlexEmbedding>& data() const { return store_; }

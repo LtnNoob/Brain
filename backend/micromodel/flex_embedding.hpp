@@ -24,7 +24,7 @@ namespace FlexConfig {
     static constexpr size_t CORE_DIM         = 16;
     static constexpr size_t MIN_DIM          = 16;    // = Core only
     static constexpr size_t MAX_DIM          = 512;
-    static constexpr size_t INITIAL_DETAIL   = 0;     // start minimal
+    static constexpr size_t INITIAL_DETAIL   = 16;    // 16 detail dims from creation
     static constexpr size_t GROWTH_MIN       = 4;     // mindestens 4 Dims auf einmal
     static constexpr size_t GROWTH_MAX       = 64;    // maximal 64 Dims auf einmal
     static constexpr double SHRINK_THRESHOLD = 0.01;  // Dim gilt als "tot" unter diesem Wert

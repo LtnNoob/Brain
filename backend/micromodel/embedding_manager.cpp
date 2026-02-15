@@ -1,5 +1,6 @@
 #include "embedding_manager.hpp"
 #include "../memory/relation_type_registry.hpp"
+#include "../ltm/long_term_memory.hpp"
 
 #include <cmath>
 #include <numeric>
@@ -76,6 +77,12 @@ FlexEmbedding EmbeddingManager::make_target_embedding(size_t context_hash, uint6
         emb.core[i] = val;
     }
     return emb;
+}
+
+ConceptEmbeddingStore::LearnResult
+EmbeddingManager::train_embeddings(const LongTermMemory& ltm,
+                                    double alpha, size_t iterations) {
+    return concept_embeddings_.learn_from_graph(ltm, alpha, iterations);
 }
 
 } // namespace brain19

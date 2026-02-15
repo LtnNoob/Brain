@@ -41,107 +41,116 @@ RelationTypeRegistry::RelationTypeRegistry() {
 //   10-15: reserved for learned features (initialized to 0)
 
 void RelationTypeRegistry::register_builtins() {
-    // --- Original 10 (0-9) — padded from 10D to 16D core ---
+    // --- Original 10 (0-9) ---
+    // Core dims 0-9: hand-crafted semantic axes
+    // Dims 10-15: learned feature axes, initialized to meaningful non-zero values:
+    //   10: transitivity   (can this relation be chained? IS_A, CAUSES high; CONTRADICTS low)
+    //   11: inheritability  (do children inherit this? HAS_PROPERTY, REQUIRES high)
+    //   12: symmetry        (is A R B ≈ B R A? SIMILAR_TO high; IS_A low)
+    //   13: exclusivity     (does this block alternatives? CONTRADICTS high)
+    //   14: concreteness    (concrete vs abstract? HAS_PROPERTY high; IMPLIES low)
+    //   15: reversibility   (inverse meaningful? PART_OF/HAS_PART high; CAUSES low)
+
     register_one(RelationType::IS_A, "IS_A",
         "ist ein(e)", "is a", "is-a",
         RelationCategory::HIERARCHICAL,
-        {0.9, 0.0, 0.1, 0.3, 0.0, 0.1, 0.7, 0.8, 0.5, 0.7, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, true);
+        {0.9, 0.0, 0.1, 0.3, 0.0, 0.1, 0.7, 0.8, 0.5, 0.7,  0.8, 0.9, 0.0, 0.1, 0.3, 0.2}, true);
 
     register_one(RelationType::HAS_PROPERTY, "HAS_PROPERTY",
         "hat die Eigenschaft", "has the property", "has-property",
         RelationCategory::COMPOSITIONAL,
-        {0.2, 0.0, 0.8, 0.2, 0.0, 0.1, 0.5, 0.6, 0.3, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, true);
+        {0.2, 0.0, 0.8, 0.2, 0.0, 0.1, 0.5, 0.6, 0.3, 0.5,  0.3, 0.9, 0.1, 0.2, 0.8, 0.3}, true);
 
     register_one(RelationType::CAUSES, "CAUSES",
         "verursacht", "causes", "causes",
         RelationCategory::CAUSAL,
-        {0.0, 0.9, 0.0, 0.1, 0.7, 0.1, 0.6, 0.9, 0.4, 0.8, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, true);
+        {0.0, 0.9, 0.0, 0.1, 0.7, 0.1, 0.6, 0.9, 0.4, 0.8,  0.7, 0.2, 0.0, 0.3, 0.6, 0.1}, true);
 
     register_one(RelationType::ENABLES, "ENABLES",
         "ermoeglicht", "enables", "enables",
         RelationCategory::CAUSAL,
-        {0.0, 0.6, 0.1, 0.2, 0.4, 0.3, 0.4, 0.7, 0.3, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, true);
+        {0.0, 0.6, 0.1, 0.2, 0.4, 0.3, 0.4, 0.7, 0.3, 0.5,  0.5, 0.3, 0.1, 0.2, 0.4, 0.2}, true);
 
     register_one(RelationType::PART_OF, "PART_OF",
         "ist Teil von", "is part of", "part-of",
         RelationCategory::COMPOSITIONAL,
-        {0.6, 0.0, 0.9, 0.2, 0.0, 0.1, 0.6, 0.7, 0.2, 0.6, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, true);
+        {0.6, 0.0, 0.9, 0.2, 0.0, 0.1, 0.6, 0.7, 0.2, 0.6,  0.6, 0.7, 0.0, 0.1, 0.8, 0.9}, true);
 
     register_one(RelationType::SIMILAR_TO, "SIMILAR_TO",
         "ist aehnlich wie", "is similar to", "similar-to",
         RelationCategory::SIMILARITY,
-        {0.1, 0.0, 0.1, 0.9, 0.0, 0.2, 0.3, 0.1, 0.5, 0.4, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, true);
+        {0.1, 0.0, 0.1, 0.9, 0.0, 0.2, 0.3, 0.1, 0.5, 0.4,  0.1, 0.1, 0.9, 0.0, 0.5, 0.5}, true);
 
     register_one(RelationType::CONTRADICTS, "CONTRADICTS",
         "widerspricht", "contradicts", "contradicts",
         RelationCategory::OPPOSITION,
-        {0.0, 0.1, 0.0, -0.5, 0.0, -0.9, 0.7, 0.5, 0.6, 0.8, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, true);
+        {0.0, 0.1, 0.0, -0.5, 0.0, -0.9, 0.7, 0.5, 0.6, 0.8,  0.0, 0.0, 0.8, 0.9, 0.3, 0.1}, true);
 
     register_one(RelationType::SUPPORTS, "SUPPORTS",
         "unterstuetzt", "supports", "supports",
         RelationCategory::EPISTEMIC,
-        {0.1, 0.2, 0.1, 0.4, 0.0, 0.9, 0.4, 0.5, 0.5, 0.6, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, true);
+        {0.1, 0.2, 0.1, 0.4, 0.0, 0.9, 0.4, 0.5, 0.5, 0.6,  0.2, 0.1, 0.4, 0.1, 0.3, 0.3}, true);
 
     register_one(RelationType::TEMPORAL_BEFORE, "TEMPORAL_BEFORE",
         "geschieht vor", "occurs before", "temporal-before",
         RelationCategory::TEMPORAL,
-        {0.0, 0.3, 0.0, 0.1, 0.9, 0.0, 0.3, 0.8, 0.2, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, true);
+        {0.0, 0.3, 0.0, 0.1, 0.9, 0.0, 0.3, 0.8, 0.2, 0.5,  0.6, 0.0, 0.0, 0.2, 0.2, 0.8}, true);
 
     register_one(RelationType::CUSTOM, "CUSTOM",
         "steht in Beziehung zu", "is related to", "custom",
         RelationCategory::CUSTOM_CATEGORY,
-        {0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, true);
+        {0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2,  0.2, 0.2, 0.2, 0.2, 0.2, 0.2}, true);
 
-    // --- New built-in types (10-19) — padded to 16D core ---
+    // --- New built-in types (10-19) ---
     register_one(RelationType::PRODUCES, "PRODUCES",
         "erzeugt", "produces", "produces",
         RelationCategory::CAUSAL,
-        {0.1, 0.8, 0.4, 0.1, 0.3, 0.1, 0.5, 0.8, 0.3, 0.7, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, true);
+        {0.1, 0.8, 0.4, 0.1, 0.3, 0.1, 0.5, 0.8, 0.3, 0.7,  0.4, 0.5, 0.0, 0.2, 0.7, 0.2}, true);
 
     register_one(RelationType::REQUIRES, "REQUIRES",
         "benoetigt", "requires", "requires",
         RelationCategory::FUNCTIONAL,
-        {0.1, 0.5, 0.3, 0.1, 0.2, 0.2, 0.5, 0.7, 0.4, 0.6, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, true);
+        {0.1, 0.5, 0.3, 0.1, 0.2, 0.2, 0.5, 0.7, 0.4, 0.6,  0.3, 0.7, 0.0, 0.3, 0.6, 0.4}, true);
 
     register_one(RelationType::USES, "USES",
         "verwendet", "uses", "uses",
         RelationCategory::FUNCTIONAL,
-        {0.0, 0.3, 0.4, 0.2, 0.1, 0.2, 0.4, 0.6, 0.3, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, true);
+        {0.0, 0.3, 0.4, 0.2, 0.1, 0.2, 0.4, 0.6, 0.3, 0.5,  0.2, 0.5, 0.1, 0.1, 0.7, 0.3}, true);
 
     register_one(RelationType::SOURCE, "SOURCE",
         "stammt von", "originates from", "source",
         RelationCategory::FUNCTIONAL,
-        {0.3, 0.2, 0.3, 0.1, 0.4, 0.2, 0.5, 0.7, 0.4, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, true);
+        {0.3, 0.2, 0.3, 0.1, 0.4, 0.2, 0.5, 0.7, 0.4, 0.5,  0.3, 0.2, 0.1, 0.1, 0.5, 0.6}, true);
 
     register_one(RelationType::HAS_PART, "HAS_PART",
         "hat als Teil", "has part", "has-part",
         RelationCategory::COMPOSITIONAL,
-        {0.6, 0.0, 0.9, 0.2, 0.0, 0.1, 0.6, 0.5, 0.2, 0.6, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, true);
+        {0.6, 0.0, 0.9, 0.2, 0.0, 0.1, 0.6, 0.5, 0.2, 0.6,  0.6, 0.7, 0.0, 0.1, 0.8, 0.9}, true);
 
     register_one(RelationType::TEMPORAL_AFTER, "TEMPORAL_AFTER",
         "geschieht nach", "occurs after", "temporal-after",
         RelationCategory::TEMPORAL,
-        {0.0, 0.3, 0.0, 0.1, 0.9, 0.0, 0.3, 0.5, 0.2, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, true);
+        {0.0, 0.3, 0.0, 0.1, 0.9, 0.0, 0.3, 0.5, 0.2, 0.5,  0.6, 0.0, 0.0, 0.2, 0.2, 0.8}, true);
 
     register_one(RelationType::INSTANCE_OF, "INSTANCE_OF",
         "ist eine Instanz von", "is an instance of", "instance-of",
         RelationCategory::HIERARCHICAL,
-        {0.8, 0.0, 0.1, 0.2, 0.0, 0.1, 0.9, 0.8, 0.3, 0.7, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, true);
+        {0.8, 0.0, 0.1, 0.2, 0.0, 0.1, 0.9, 0.8, 0.3, 0.7,  0.4, 0.8, 0.0, 0.1, 0.6, 0.2}, true);
 
     register_one(RelationType::DERIVED_FROM, "DERIVED_FROM",
         "leitet sich ab von", "is derived from", "derived-from",
         RelationCategory::HIERARCHICAL,
-        {0.7, 0.1, 0.2, 0.3, 0.3, 0.1, 0.6, 0.7, 0.4, 0.6, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, true);
+        {0.7, 0.1, 0.2, 0.3, 0.3, 0.1, 0.6, 0.7, 0.4, 0.6,  0.5, 0.6, 0.1, 0.1, 0.4, 0.5}, true);
 
     register_one(RelationType::IMPLIES, "IMPLIES",
         "impliziert", "implies", "implies",
         RelationCategory::CAUSAL,
-        {0.3, 0.7, 0.0, 0.2, 0.2, 0.5, 0.6, 0.8, 0.7, 0.7, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, true);
+        {0.3, 0.7, 0.0, 0.2, 0.2, 0.5, 0.6, 0.8, 0.7, 0.7,  0.7, 0.1, 0.2, 0.2, 0.2, 0.1}, true);
 
     register_one(RelationType::ASSOCIATED_WITH, "ASSOCIATED_WITH",
         "ist assoziiert mit", "is associated with", "associated-with",
         RelationCategory::SIMILARITY,
-        {0.1, 0.1, 0.1, 0.6, 0.1, 0.2, 0.2, 0.2, 0.4, 0.3, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, true);
+        {0.1, 0.1, 0.1, 0.6, 0.1, 0.2, 0.2, 0.2, 0.4, 0.3,  0.1, 0.1, 0.7, 0.0, 0.3, 0.4}, true);
 }
 
 void RelationTypeRegistry::register_one(

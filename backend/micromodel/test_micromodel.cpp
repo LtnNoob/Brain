@@ -4,6 +4,7 @@
 #include "micro_trainer.hpp"
 #include "relevance_map.hpp"
 #include "persistence.hpp"
+#include "../cmodel/concept_model_registry.hpp"
 #include "../ltm/long_term_memory.hpp"
 #include "../epistemic/epistemic_metadata.hpp"
 
@@ -547,13 +548,13 @@ void test_relevance_map() {
     {
         auto ltm = build_test_kg();
         EmbeddingManager emb;
-        MicroModelRegistry reg;
-        reg.ensure_models_for(ltm);
+        ConceptModelRegistry creg;
+        creg.ensure_models_for(ltm);
 
         auto all_ids = ltm.get_all_concept_ids();
         ConceptId dog_id = all_ids[0];
 
-        auto rmap = RelevanceMap::compute(dog_id, reg, emb, ltm,
+        auto rmap = RelevanceMap::compute(dog_id, creg, emb, ltm,
                                           RelationType::IS_A, "recall");
         ASSERT(!rmap.empty());
         ASSERT_EQ(rmap.size(), all_ids.size() - 1);  // Excludes self
@@ -565,11 +566,11 @@ void test_relevance_map() {
     {
         auto ltm = build_test_kg();
         EmbeddingManager emb;
-        MicroModelRegistry reg;
-        reg.ensure_models_for(ltm);
+        ConceptModelRegistry creg;
+        creg.ensure_models_for(ltm);
 
         auto all_ids = ltm.get_all_concept_ids();
-        auto rmap = RelevanceMap::compute(all_ids[0], reg, emb, ltm,
+        auto rmap = RelevanceMap::compute(all_ids[0], creg, emb, ltm,
                                           RelationType::IS_A, "recall");
 
         for (const auto& [cid, score] : rmap.scores()) {
@@ -583,11 +584,11 @@ void test_relevance_map() {
     {
         auto ltm = build_test_kg();
         EmbeddingManager emb;
-        MicroModelRegistry reg;
-        reg.ensure_models_for(ltm);
+        ConceptModelRegistry creg;
+        creg.ensure_models_for(ltm);
 
         auto all_ids = ltm.get_all_concept_ids();
-        auto rmap = RelevanceMap::compute(all_ids[0], reg, emb, ltm,
+        auto rmap = RelevanceMap::compute(all_ids[0], creg, emb, ltm,
                                           RelationType::IS_A, "recall");
 
         auto top2 = rmap.top_k(2);
@@ -601,11 +602,11 @@ void test_relevance_map() {
     {
         auto ltm = build_test_kg();
         EmbeddingManager emb;
-        MicroModelRegistry reg;
-        reg.ensure_models_for(ltm);
+        ConceptModelRegistry creg;
+        creg.ensure_models_for(ltm);
 
         auto all_ids = ltm.get_all_concept_ids();
-        auto rmap = RelevanceMap::compute(all_ids[0], reg, emb, ltm,
+        auto rmap = RelevanceMap::compute(all_ids[0], creg, emb, ltm,
                                           RelationType::IS_A, "recall");
 
         auto above = rmap.above_threshold(0.5);
@@ -844,7 +845,7 @@ void test_integration() {
         // Build KG
         auto ltm = build_test_kg();
 
-        // Create models
+        // Create micro-models for training
         MicroModelRegistry reg;
         size_t created = reg.ensure_models_for(ltm);
         ASSERT_EQ(created, 5u);
@@ -859,11 +860,13 @@ void test_integration() {
         auto stats = trainer.train_all(reg, emb, ltm);
         ASSERT_GT(stats.models_trained, 0u);
 
-        // Compute relevance maps
+        // Compute relevance maps (uses ConceptModelRegistry)
+        ConceptModelRegistry creg;
+        creg.ensure_models_for(ltm);
         auto all_ids = ltm.get_all_concept_ids();
         ConceptId dog_id = all_ids[0];
 
-        auto rmap = RelevanceMap::compute(dog_id, reg, emb, ltm,
+        auto rmap = RelevanceMap::compute(dog_id, creg, emb, ltm,
                                           RelationType::IS_A, "recall");
         ASSERT(!rmap.empty());
 
@@ -903,13 +906,16 @@ void test_integration() {
         EmbeddingManager emb2;
         ASSERT(persistence::load(test_file, reg2, emb2));
 
-        // Verify same relevance scores
+        // Verify same relevance scores (uses ConceptModelRegistry)
+        ConceptModelRegistry creg1, creg2;
+        creg1.ensure_models_for(ltm);
+        creg2.ensure_models_for(ltm);
         auto all_ids = ltm.get_all_concept_ids();
         ConceptId dog_id = all_ids[0];
 
-        auto rmap1 = RelevanceMap::compute(dog_id, reg, emb, ltm,
+        auto rmap1 = RelevanceMap::compute(dog_id, creg1, emb, ltm,
                                            RelationType::IS_A, "recall");
-        auto rmap2 = RelevanceMap::compute(dog_id, reg2, emb2, ltm,
+        auto rmap2 = RelevanceMap::compute(dog_id, creg2, emb2, ltm,
                                            RelationType::IS_A, "recall");
 
         for (const auto& [cid, score] : rmap1.scores()) {
@@ -923,15 +929,15 @@ void test_integration() {
     TEST("Overlay two concept perspectives")
     {
         auto ltm = build_test_kg();
-        MicroModelRegistry reg;
-        reg.ensure_models_for(ltm);
+        ConceptModelRegistry creg;
+        creg.ensure_models_for(ltm);
         EmbeddingManager emb;
 
         auto all_ids = ltm.get_all_concept_ids();
         // Compute two relevance maps from different concepts
-        auto rmap1 = RelevanceMap::compute(all_ids[0], reg, emb, ltm,
+        auto rmap1 = RelevanceMap::compute(all_ids[0], creg, emb, ltm,
                                            RelationType::IS_A, "recall");
-        auto rmap2 = RelevanceMap::compute(all_ids[1], reg, emb, ltm,
+        auto rmap2 = RelevanceMap::compute(all_ids[1], creg, emb, ltm,
                                            RelationType::IS_A, "recall");
 
         // Overlay them

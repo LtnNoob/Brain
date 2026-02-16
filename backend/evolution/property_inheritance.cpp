@@ -1,5 +1,6 @@
 #include "property_inheritance.hpp"
 #include "../memory/relation_type_registry.hpp"
+#include "../core/relation_config.hpp"
 
 #include <algorithm>
 #include <iostream>
@@ -137,8 +138,11 @@ size_t PropertyInheritance::iterate_once(
                     continue;
                 }
 
-                // Decay trust one hop from parent
-                double decayed = parent_trust * cfg.decay_per_hop;
+                // Decay trust one hop from parent — per-relation-type decay (Convergence v2, Audit #4)
+                const RelationBehavior& behavior = get_behavior(isa_rel.type);
+                double decay = (behavior.trust_decay_per_hop > 0.0)
+                    ? behavior.trust_decay_per_hop : cfg.decay_per_hop;
+                double decayed = parent_trust * decay;
 
                 if (decayed < cfg.trust_floor) {
                     result.trust_floor_cutoffs++;

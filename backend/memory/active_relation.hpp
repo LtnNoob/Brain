@@ -35,6 +35,17 @@ enum class RelationType : uint16_t {
     IMPLIES         = 18,
     ASSOCIATED_WITH = 19,
 
+    // === Linguistic relation types (20-28) ===
+    SUBJECT_OF      = 20,   // Word → Sentence: word is subject of sentence
+    OBJECT_OF       = 21,   // Word → Sentence: word is object of sentence
+    VERB_OF         = 22,   // Word → Sentence: word is verb of sentence
+    MODIFIER_OF     = 23,   // Word → Word/Sentence: modifier relationship
+    DENOTES         = 24,   // Word-Concept → Semantic Concept
+    PART_OF_SENTENCE= 25,   // Generic: word belongs to sentence (fallback)
+    TEMPORAL_OF     = 26,   // Time expression → Sentence
+    LOCATIVE_OF     = 27,   // Location expression → Sentence
+    PRECEDES        = 28,   // Sentence → Sentence (discourse order)
+
     // === Runtime-registered types start here ===
     RUNTIME_BASE    = 1000,
 };

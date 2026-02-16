@@ -16,9 +16,7 @@ ShortTermMemory::ShortTermMemory()
 {
 }
 
-ShortTermMemory::~ShortTermMemory() {
-    contexts_.clear();
-}
+ShortTermMemory::~ShortTermMemory() = default;
 
 ContextId ShortTermMemory::create_context() {
     ContextId id = next_context_id_++;
@@ -88,6 +86,47 @@ void ShortTermMemory::boost_concept(
             concept_it->second.activation + delta
         );
         concept_it->second.last_used = std::chrono::steady_clock::now();
+    }
+}
+
+void ShortTermMemory::inhibit_concept(
+    ContextId context_id,
+    ConceptId concept_id,
+    double amount
+) {
+    auto ctx_it = contexts_.find(context_id);
+    if (ctx_it == contexts_.end()) {
+        return;
+    }
+
+    auto concept_it = ctx_it->second.concepts.find(concept_id);
+    if (concept_it != ctx_it->second.concepts.end()) {
+        concept_it->second.activation = clamp_activation(
+            concept_it->second.activation - amount
+        );
+        concept_it->second.last_used = std::chrono::steady_clock::now();
+    }
+    // If concept not in STM, inhibition is a no-op (can't go below 0)
+}
+
+void ShortTermMemory::inhibit_relation(
+    ContextId context_id,
+    ConceptId source,
+    ConceptId target,
+    double amount
+) {
+    auto ctx_it = contexts_.find(context_id);
+    if (ctx_it == contexts_.end()) {
+        return;
+    }
+
+    uint64_t hash = hash_relation(source, target);
+    auto rel_it = ctx_it->second.relations.find(hash);
+    if (rel_it != ctx_it->second.relations.end()) {
+        rel_it->second.activation = clamp_activation(
+            rel_it->second.activation - amount
+        );
+        rel_it->second.last_used = std::chrono::steady_clock::now();
     }
 }
 

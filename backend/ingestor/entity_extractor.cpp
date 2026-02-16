@@ -3,7 +3,6 @@
 #include <cctype>
 #include <regex>
 #include <map>
-#include <sstream>
 
 namespace brain19 {
 

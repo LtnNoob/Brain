@@ -3,6 +3,7 @@
 #include "traversal_types.hpp"
 #include "../ltm/long_term_memory.hpp"
 #include "../memory/active_relation.hpp"
+#include "../epistemic/epistemic_metadata.hpp"
 #include <string>
 #include <vector>
 
@@ -60,6 +61,25 @@ public:
 
     // Get relation type name in German
     static std::string relation_name_de(RelationType type);
+
+    // --- English output (Convergence v2, Section 13) ---
+
+    // Generate English text from a traversal chain
+    TemplateResult generate_en(const TraversalResult& chain) const;
+    TemplateResult generate_en(const std::vector<ConceptId>& concepts,
+                               const std::vector<RelationType>& relations) const;
+
+    // English sentence pattern for a single relation step
+    std::string relation_sentence_en(const std::string& subject,
+                                      const std::string& object,
+                                      RelationType type) const;
+
+    // Get English template for a relation type
+    static std::string relation_template_en(RelationType type);
+
+    // Epistemic modality framing (trust + EpistemicType → hedged sentence)
+    static std::string epistemic_frame(float trust, EpistemicType type,
+                                        const std::string& sentence);
 
 private:
     const LongTermMemory& ltm_;

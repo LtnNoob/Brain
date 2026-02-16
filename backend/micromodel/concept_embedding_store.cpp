@@ -1,5 +1,6 @@
 #include "concept_embedding_store.hpp"
 #include "../ltm/long_term_memory.hpp"
+#include "../core/relation_config.hpp"
 
 #include <algorithm>
 #include <cmath>
@@ -184,7 +185,12 @@ ConceptEmbeddingStore::learn_from_graph(const LongTermMemory& ltm,
             auto outgoing = ltm.get_outgoing_relations(cid);
             for (const auto& rel : outgoing) {
                 const auto& neighbor_emb = get(rel.target);
-                double w = rel.weight;
+
+                // Relation-type-aware alpha (Convergence v2, Audit #2)
+                const RelationBehavior& behavior = get_behavior(rel.type);
+                double w = rel.weight * behavior.embedding_alpha;
+                // w is NEGATIVE for OPPOSITION → repulsive nudge
+
                 for (size_t i = 0; i < CORE_DIM; ++i) {
                     avg.core[i] += w * neighbor_emb.core[i];
                 }
@@ -192,14 +198,18 @@ ConceptEmbeddingStore::learn_from_graph(const LongTermMemory& ltm,
                 for (size_t i = 0; i < shared; ++i) {
                     avg.detail[i] += w * neighbor_emb.detail[i];
                 }
-                total_weight += w;
+                total_weight += std::abs(w);
                 ++neighbor_count;
             }
 
             auto incoming = ltm.get_incoming_relations(cid);
             for (const auto& rel : incoming) {
                 const auto& neighbor_emb = get(rel.source);
-                double w = rel.weight * 0.5;  // incoming weighted less
+
+                // Relation-type-aware alpha for incoming (weaker influence)
+                const RelationBehavior& behavior = get_behavior(rel.type);
+                double w = rel.weight * behavior.embedding_alpha * 0.5;
+
                 for (size_t i = 0; i < CORE_DIM; ++i) {
                     avg.core[i] += w * neighbor_emb.core[i];
                 }
@@ -207,7 +217,7 @@ ConceptEmbeddingStore::learn_from_graph(const LongTermMemory& ltm,
                 for (size_t i = 0; i < shared; ++i) {
                     avg.detail[i] += w * neighbor_emb.detail[i];
                 }
-                total_weight += w;
+                total_weight += std::abs(w);
                 ++neighbor_count;
             }
 

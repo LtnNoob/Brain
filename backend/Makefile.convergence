@@ -1,0 +1,37 @@
+# Brain19 Convergence Module Build
+# Build: make -f Makefile.convergence
+# Run:   ./convergence/test_convergence
+
+CXX = g++
+CXXFLAGS = -std=c++20 -Wall -Wextra -Wpedantic -O2 -I.
+
+CONVERGENCE_SOURCES = convergence/convergence_kan.cpp \
+                      convergence/concept_router.cpp \
+                      convergence/concept_bank.cpp \
+                      convergence/gated_residual.cpp \
+                      convergence/convergence_pipeline.cpp
+
+# Deep KAN dependency (EfficientKANLayer)
+DEEPKAN_SOURCES = language/deep_kan.cpp
+
+SOURCES = $(CONVERGENCE_SOURCES) $(DEEPKAN_SOURCES)
+OBJECTS = $(SOURCES:.cpp=.o)
+
+TEST_SRC = convergence/test_convergence.cpp
+TEST_BIN = convergence/test_convergence
+
+.PHONY: all clean test
+
+all: $(TEST_BIN)
+
+$(TEST_BIN): $(TEST_SRC) $(OBJECTS)
+	$(CXX) $(CXXFLAGS) $^ -o $@
+
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+test: $(TEST_BIN)
+	./$(TEST_BIN)
+
+clean:
+	rm -f $(OBJECTS) $(TEST_BIN)

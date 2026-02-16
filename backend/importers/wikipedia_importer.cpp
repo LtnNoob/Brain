@@ -1,6 +1,5 @@
 #include "wikipedia_importer.hpp"
 #include "http_client.hpp"
-#include <sstream>
 #include <algorithm>
 #include <regex>
 #include <nlohmann/json.hpp>
@@ -14,8 +13,7 @@ WikipediaImporter::WikipediaImporter()
 {
 }
 
-WikipediaImporter::~WikipediaImporter() {
-}
+WikipediaImporter::~WikipediaImporter() = default;
 
 std::unique_ptr<KnowledgeProposal> WikipediaImporter::import_article(
     const std::string& article_title

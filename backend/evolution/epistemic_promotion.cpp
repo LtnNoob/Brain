@@ -1,5 +1,6 @@
 #include "epistemic_promotion.hpp"
 #include <algorithm>
+#include <queue>
 #include <unordered_set>
 
 namespace brain19 {
@@ -118,6 +119,82 @@ EpistemicPromotion::MaintenanceResult EpistemicPromotion::run_maintenance() {
     return result;
 }
 
+// ─── Trust Propagation Support ───────────────────────────────────────────────
+
+std::unordered_map<ConceptId, double> EpistemicPromotion::compute_trust_propagation(
+    ConceptId invalidated, float propagation_radius) const
+{
+    std::unordered_map<ConceptId, double> adjustments;
+
+    // BFS to find neighbors within radius
+    std::queue<std::pair<ConceptId, size_t>> bfs;
+    std::unordered_set<ConceptId> visited;
+    bfs.push({invalidated, 0});
+    visited.insert(invalidated);
+
+    while (!bfs.empty()) {
+        auto [cur, depth] = bfs.front();
+        bfs.pop();
+        if (depth >= 3) continue;  // max 3 hops
+
+        for (const auto& rel : ltm_.get_outgoing_relations(cur)) {
+            if (visited.count(rel.target)) continue;
+            visited.insert(rel.target);
+
+            auto cinfo = ltm_.retrieve_concept(rel.target);
+            if (!cinfo || cinfo->epistemic.is_invalidated()) {
+                bfs.push({rel.target, depth + 1});
+                continue;
+            }
+
+            // Simple similarity: weight * (1 / (depth+1))
+            float similarity = static_cast<float>(rel.weight) / static_cast<float>(depth + 1);
+            if (similarity >= propagation_radius) {
+                float support = 0.0f;
+                size_t sup = count_supporting_relations(rel.target);
+                size_t total = ltm_.get_relation_count(rel.target);
+                if (total > 0) support = static_cast<float>(sup) / static_cast<float>(total);
+
+                float cr = contradiction_ratio(rel.target);
+                float reduction = static_cast<float>(cinfo->epistemic.trust)
+                                * similarity * (1.0f - support) * (1.0f + cr);
+                reduction = std::min(reduction, 0.3f);
+
+                double new_trust = std::max(0.0, cinfo->epistemic.trust - reduction);
+                adjustments[rel.target] = new_trust;
+            }
+
+            bfs.push({rel.target, depth + 1});
+        }
+
+        for (const auto& rel : ltm_.get_incoming_relations(cur)) {
+            if (visited.count(rel.source)) continue;
+            visited.insert(rel.source);
+            bfs.push({rel.source, depth + 1});
+        }
+    }
+
+    return adjustments;
+}
+
+void EpistemicPromotion::apply_trust_propagation(
+    const std::unordered_map<ConceptId, double>& adjustments)
+{
+    for (const auto& [cid, new_trust] : adjustments) {
+        auto cinfo = ltm_.retrieve_concept(cid);
+        if (!cinfo) continue;
+
+        EpistemicMetadata adjusted(cinfo->epistemic.type, cinfo->epistemic.status, new_trust);
+        ltm_.update_epistemic_metadata(cid, adjusted);
+    }
+}
+
+bool EpistemicPromotion::should_force_invalidate(ConceptId id, double threshold) const {
+    auto cinfo = ltm_.retrieve_concept(id);
+    if (!cinfo) return false;
+    return cinfo->epistemic.trust < threshold && !cinfo->epistemic.is_invalidated();
+}
+
 // ─── Private helpers ─────────────────────────────────────────────────────────
 
 size_t EpistemicPromotion::count_supporting_relations(ConceptId id) const {
@@ -167,23 +244,37 @@ size_t EpistemicPromotion::count_supporting_from_type(
     return count;
 }
 
-bool EpistemicPromotion::has_contradictions(ConceptId id) const {
+float EpistemicPromotion::contradiction_ratio(ConceptId id) const {
     auto incoming = ltm_.get_incoming_relations(id);
     auto outgoing = ltm_.get_outgoing_relations(id);
 
+    size_t supports = 0;
+    size_t contradicts = 0;
+
     for (const auto& rel : incoming) {
+        if (rel.type == RelationType::SUPPORTS) {
+            auto src = ltm_.retrieve_concept(rel.source);
+            if (src && src->epistemic.is_active()) ++supports;
+        }
         if (rel.type == RelationType::CONTRADICTS) {
             auto src = ltm_.retrieve_concept(rel.source);
-            if (src && src->epistemic.is_active()) return true;
+            if (src && src->epistemic.is_active()) ++contradicts;
         }
     }
     for (const auto& rel : outgoing) {
         if (rel.type == RelationType::CONTRADICTS) {
             auto tgt = ltm_.retrieve_concept(rel.target);
-            if (tgt && tgt->epistemic.is_active()) return true;
+            if (tgt && tgt->epistemic.is_active()) ++contradicts;
         }
     }
-    return false;
+
+    if (supports + contradicts == 0) return 0.0f;
+    return static_cast<float>(contradicts) / static_cast<float>(supports + contradicts);
+}
+
+bool EpistemicPromotion::has_contradictions(ConceptId id) const {
+    // Ratio-based: only significant contradictions count (Audit #8)
+    return contradiction_ratio(id) > 0.3f;
 }
 
 size_t EpistemicPromotion::count_independent_sources(ConceptId id) const {
@@ -368,7 +459,9 @@ EpistemicPromotion::check_demotion(ConceptId id, const ConceptInfo& info) {
         candidate.proposed_type = demoted_type;
         candidate.current_trust = info.epistemic.trust;
         candidate.proposed_trust = demoted_trust;
-        candidate.reasoning = "Demotion due to active contradiction";
+        float ratio = contradiction_ratio(id);
+        candidate.reasoning = "Demotion due to contradiction ratio " +
+                              std::to_string(ratio) + " > 0.3";
         candidate.requires_human_review = false;
         return candidate;
     }

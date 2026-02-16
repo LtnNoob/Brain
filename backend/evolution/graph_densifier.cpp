@@ -385,8 +385,9 @@ size_t GraphDensifier::phase_causal_transitive(const Config& cfg, Result& r) {
 // Phase 6: PART_OF Property Inheritance
 // =============================================================================
 //
-// If A PART_OF B and B HAS_PROPERTY P → A HAS_PROPERTY P
-// (parts inherit physical properties of the whole)
+// FIXED (Convergence v2, Audit #5): Properties flow from PART to WHOLE (REVERSE direction).
+// If A PART_OF B and A HAS_PROPERTY P → B HAS_PROPERTY P
+// (wholes inherit aggregate physical properties of their parts)
 
 size_t GraphDensifier::phase_partof_property(const Config& cfg, Result& r) {
     auto& reg = RelationTypeRegistry::instance();
@@ -394,17 +395,19 @@ size_t GraphDensifier::phase_partof_property(const Config& cfg, Result& r) {
     size_t added = 0;
     size_t chains_found = 0;
 
-    for (auto cid : all_ids) {
-        for (const auto& partof_rel : ltm_.get_outgoing_relations(cid)) {
+    for (auto part_id : all_ids) {
+        for (const auto& partof_rel : ltm_.get_outgoing_relations(part_id)) {
             if (partof_rel.type != RelationType::PART_OF) continue;
             ConceptId whole = partof_rel.target;
 
-            for (const auto& prop_rel : ltm_.get_outgoing_relations(whole)) {
+            // Properties of the PART propagate to the WHOLE
+            for (const auto& prop_rel : ltm_.get_outgoing_relations(part_id)) {
                 if (prop_rel.type != RelationType::HAS_PROPERTY) continue;
 
                 chains_found++;
-                if (try_add(cid, prop_rel.target, RelationType::HAS_PROPERTY,
-                            prop_rel.weight * 0.7,
+                // COMPOSITIONAL trust_decay = 1.0 (structural facts don't decay)
+                if (try_add(whole, prop_rel.target, RelationType::HAS_PROPERTY,
+                            prop_rel.weight * 0.8,
                             cfg.max_new_rels_per_concept, r,
                             reg.get_name_en(RelationType::HAS_PROPERTY)))
                     added++;
@@ -448,6 +451,85 @@ GraphDensifier::sample_generated(size_t n) const {
     }
 
     return samples;
+}
+
+// =============================================================================
+// Linguistic Graph Support (Phase 4)
+// =============================================================================
+
+bool GraphDensifier::word_concept_exists(const std::string& surface_form, const std::string& pos) const {
+    std::string label = "word:" + surface_form + ":" + pos;
+    return !ltm_.find_by_label(label).empty();
+}
+
+std::optional<ConceptId> GraphDensifier::find_duplicate_sentence(
+    ConceptId subject, ConceptId verb, ConceptId object) const
+{
+    if (subject == 0 || verb == 0) return std::nullopt;
+
+    // Get candidate sentences from subject's SUBJECT_OF relations
+    for (const auto& rel : ltm_.get_outgoing_relations(subject)) {
+        if (rel.type != RelationType::SUBJECT_OF) continue;
+        ConceptId candidate_sent = rel.target;
+
+        // Check verb has VERB_OF → same sentence
+        bool verb_match = false;
+        for (const auto& vrel : ltm_.get_outgoing_relations(verb)) {
+            if (vrel.type == RelationType::VERB_OF && vrel.target == candidate_sent) {
+                verb_match = true;
+                break;
+            }
+        }
+        if (!verb_match) continue;
+
+        // Check object if present
+        if (object != 0) {
+            bool obj_match = false;
+            for (const auto& orel : ltm_.get_outgoing_relations(object)) {
+                if (orel.type == RelationType::OBJECT_OF && orel.target == candidate_sent) {
+                    obj_match = true;
+                    break;
+                }
+            }
+            if (!obj_match) continue;
+        }
+
+        return candidate_sent;
+    }
+
+    return std::nullopt;
+}
+
+std::vector<std::pair<ConceptId, double>> GraphDensifier::infer_denotes_relations(
+    ConceptId word_cid) const
+{
+    std::vector<std::pair<ConceptId, double>> results;
+
+    auto word_info = ltm_.retrieve_concept(word_cid);
+    if (!word_info) return results;
+
+    // Extract surface form from label "word:surface:POS"
+    const auto& label = word_info->label;
+    if (label.size() < 6 || label.substr(0, 5) != "word:") return results;
+
+    auto second_colon = label.find(':', 5);
+    if (second_colon == std::string::npos) return results;
+    std::string surface = label.substr(5, second_colon - 5);
+
+    // Label match via index: find semantic concepts with matching label
+    auto candidates = ltm_.find_by_label(surface);
+    for (auto cid : candidates) {
+        if (cid == word_cid) continue;
+        auto info = ltm_.retrieve_concept(cid);
+        if (!info) continue;
+        // Skip other linguistic concepts
+        if (info->label.size() >= 5 &&
+            (info->label.substr(0, 5) == "word:" || info->label.substr(0, 4) == "sent:"))
+            continue;
+        results.push_back({cid, 0.9});
+    }
+
+    return results;
 }
 
 } // namespace brain19

@@ -14,8 +14,7 @@ ScholarImporter::ScholarImporter()
 {
 }
 
-ScholarImporter::~ScholarImporter() {
-}
+ScholarImporter::~ScholarImporter() = default;
 
 std::unique_ptr<KnowledgeProposal> ScholarImporter::import_paper_by_doi(
     const std::string& doi

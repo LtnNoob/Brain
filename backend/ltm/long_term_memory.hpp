@@ -4,10 +4,10 @@
 #include "relation.hpp"
 #include <string>
 #include <cstdint>
+#include <functional>
 #include <optional>
 #include <unordered_map>
 #include <vector>
-#include <memory>
 #include "../common/types.hpp"
 
 namespace brain19 {
@@ -31,6 +31,10 @@ struct ConceptInfo {
     double salience_score = 0.0;          // Computed salience [0,1]
     double structural_confidence = 0.0;   // Graph-structure confidence [0,1]
     double semantic_confidence = 0.0;     // Semantic confidence [0,1]
+
+    // === Graph Features: Anti-Knowledge & Complexity ===
+    bool is_anti_knowledge = false;       // Invalidated but retained as known error path
+    float complexity_score = 0.0f;        // Cached complexity score [0.0, 1.0]
 
     // DELETED: No default constructor
     // This enforces epistemic explicitness at compile time
@@ -159,6 +163,37 @@ public:
     // Get total relation count (cached, O(1))
     size_t total_relation_count() const { return total_relations_; }
 
+    // Label index: fast label→ConceptId lookup (case-insensitive)
+    std::vector<ConceptId> find_by_label(const std::string& label) const;
+
+    // =========================================================================
+    // INVALIDATION HOOKS (Graph Features)
+    // =========================================================================
+
+    // Callback: (concept_id, old_trust) — called AFTER invalidation
+    using InvalidationCallback = std::function<void(ConceptId, double)>;
+    void register_invalidation_hook(InvalidationCallback cb);
+
+    // =========================================================================
+    // ANTI-KNOWLEDGE & GARBAGE COLLECTION (Graph Features)
+    // =========================================================================
+
+    // Get all concepts marked as anti-knowledge
+    std::vector<ConceptId> get_anti_knowledge() const;
+
+    // Get GC candidates: INVALIDATED && !is_anti_knowledge
+    std::vector<ConceptId> get_gc_candidates() const;
+
+    // Mark concept as anti-knowledge (retains invalidated knowledge as known error)
+    void mark_as_anti_knowledge(ConceptId id, const std::string& reason);
+
+    // Remove anti-knowledge marker
+    void unmark_anti_knowledge(ConceptId id);
+
+    // Garbage collect simple invalidated concepts (not anti-knowledge)
+    // Returns number of concepts removed
+    size_t garbage_collect(size_t max_removals = 1000);
+
 private:
     std::unordered_map<ConceptId, ConceptInfo> concepts_;
     ConceptId next_concept_id_;
@@ -169,6 +204,12 @@ private:
     std::unordered_map<ConceptId, std::vector<RelationId>> incoming_relations_;
     RelationId next_relation_id_ = 1;
     size_t total_relations_ = 0;  // cached count
+
+    // Invalidation hooks (Graph Features)
+    std::vector<InvalidationCallback> invalidation_hooks_;
+
+    // Label index: lowercase(label) → list of ConceptIds
+    std::unordered_map<std::string, std::vector<ConceptId>> label_index_;
 };
 
 } // namespace brain19

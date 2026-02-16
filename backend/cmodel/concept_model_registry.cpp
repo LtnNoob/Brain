@@ -3,7 +3,7 @@
 namespace brain19 {
 
 bool ConceptModelRegistry::create_model(ConceptId cid) {
-    auto [it, inserted] = models_.emplace(cid, ConceptModel{});
+    auto [it, inserted] = models_.try_emplace(cid);
     return inserted;
 }
 

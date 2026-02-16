@@ -5,7 +5,6 @@
 #include <algorithm>
 #include <cstring>
 #include <ctime>
-#include <iomanip>
 #include <stdexcept>
 #include <filesystem>
 
@@ -580,7 +579,7 @@ ComponentHash CheckpointManager::write_micromodels(const std::string& dir, const
     if (!f) throw std::runtime_error("Cannot write micromodels.bin");
 
     constexpr uint32_t MAGIC = 0x4D4D4442; // "MMDB"
-    constexpr uint16_t VERSION = 3;  // v3: ConceptModel (CM_FLAT_SIZE=1900)
+    constexpr uint16_t VERSION = 4;  // v4: ConceptModel (CM_FLAT_SIZE=5836, +ConvergencePort)
     write_pod(f, MAGIC);
     write_pod(f, VERSION);
 

@@ -3,6 +3,7 @@
 #include "cognitive_config.hpp"
 #include "../ltm/long_term_memory.hpp"
 #include "../memory/stm.hpp"
+#include "../core/relation_config.hpp"
 #include <vector>
 #include <unordered_set>
 #include <unordered_map>

@@ -215,4 +215,58 @@ double ConceptProposer::compute_quality_score(const ConceptProposal& proposal) c
     return score;
 }
 
+// =============================================================================
+// Linguistic Similarity (Phase 4)
+// =============================================================================
+
+float ConceptProposer::sentence_similarity(ConceptId sentence_a, ConceptId sentence_b) const {
+    if (sentence_a == sentence_b) return 1.0f;
+
+    // Helper: extract SVO word concept IDs from a sentence
+    auto extract_svo = [this](ConceptId sent) -> std::tuple<ConceptId, ConceptId, ConceptId> {
+        ConceptId subj = 0, verb = 0, obj = 0;
+        auto incoming = ltm_.get_incoming_relations(sent);
+        for (const auto& r : incoming) {
+            if (r.type == RelationType::SUBJECT_OF) subj = r.source;
+            else if (r.type == RelationType::VERB_OF) verb = r.source;
+            else if (r.type == RelationType::OBJECT_OF) obj = r.source;
+        }
+        return {subj, verb, obj};
+    };
+
+    // Helper: get DENOTES target of a word concept (0 if none)
+    auto get_denotes = [this](ConceptId word) -> ConceptId {
+        if (word == 0) return 0;
+        for (const auto& r : ltm_.get_outgoing_relations(word)) {
+            if (r.type == RelationType::DENOTES) return r.target;
+        }
+        return 0;
+    };
+
+    // Helper: match score between two role slots
+    auto role_match = [&](ConceptId word_a, ConceptId word_b) -> float {
+        if (word_a == 0 || word_b == 0) return 0.0f;
+        // Same semantic concept via DENOTES
+        ConceptId sem_a = get_denotes(word_a);
+        ConceptId sem_b = get_denotes(word_b);
+        if (sem_a != 0 && sem_a == sem_b) return 1.0f;
+        // Same word concept
+        if (word_a == word_b) return 0.5f;
+        return 0.0f;
+    };
+
+    auto [subj_a, verb_a, obj_a] = extract_svo(sentence_a);
+    auto [subj_b, verb_b, obj_b] = extract_svo(sentence_b);
+
+    float score = 0.4f * role_match(subj_a, subj_b)
+                + 0.4f * role_match(verb_a, verb_b)
+                + 0.2f * role_match(obj_a, obj_b);
+
+    return score;
+}
+
+bool ConceptProposer::is_paraphrase(ConceptId sentence_a, ConceptId sentence_b, float threshold) const {
+    return sentence_similarity(sentence_a, sentence_b) >= threshold;
+}
+
 } // namespace brain19

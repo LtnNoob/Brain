@@ -2,9 +2,7 @@
 #include "../memory/relation_type_registry.hpp"
 #include <sstream>
 #include <algorithm>
-#include <iostream>
 #include <cctype>
-#include <cmath>
 #include <set>
 #include <unordered_set>
 

@@ -80,6 +80,14 @@ public:
     std::vector<ConceptProposal> rank_proposals(
         std::vector<ConceptProposal>& proposals, size_t max_k = 10);
 
+    // === Linguistic Similarity (Phase 4) ===
+
+    // Compute SVO-based similarity between two sentence concepts [0.0, 1.0]
+    float sentence_similarity(ConceptId sentence_a, ConceptId sentence_b) const;
+
+    // Check if two sentences are paraphrases (similarity >= threshold)
+    bool is_paraphrase(ConceptId sentence_a, ConceptId sentence_b, float threshold = 0.75f) const;
+
 private:
     const LongTermMemory& ltm_;
 

@@ -21,6 +21,7 @@ enum class RelationCategory : uint8_t {
     EPISTEMIC,        // SUPPORTS
     TEMPORAL,         // TEMPORAL_BEFORE, TEMPORAL_AFTER
     FUNCTIONAL,       // USES, REQUIRES, SOURCE
+    LINGUISTIC,       // SUBJECT_OF, OBJECT_OF, VERB_OF, MODIFIER_OF, DENOTES, etc.
     CUSTOM_CATEGORY   // CUSTOM and user-defined
 };
 

@@ -35,6 +35,10 @@ public:
     // Boost existing activation
     void boost_concept(ContextId context_id, ConceptId concept_id, double delta);
     void boost_relation(ContextId context_id, ConceptId source, ConceptId target, double delta);
+
+    // Inhibition: reduce activation by amount, clamped at 0.0
+    void inhibit_concept(ContextId context_id, ConceptId concept_id, double amount);
+    void inhibit_relation(ContextId context_id, ConceptId source, ConceptId target, double amount);
     
     // Query activation state
     double get_concept_activation(ContextId context_id, ConceptId concept_id) const;

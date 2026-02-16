@@ -3,7 +3,6 @@
 // Logs lock acquisitions per thread and optionally detects cycles in the
 // wait-for graph.  Active only when BRAIN19_DEBUG is defined.
 
-#include <atomic>
 #include <cstdint>
 #include <mutex>
 #include <string>

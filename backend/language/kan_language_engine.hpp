@@ -55,6 +55,9 @@ public:
     // Main function: query → answer
     LanguageResult generate(const std::string& query, size_t max_tokens = 30) const;
 
+    // Concept-based generation (uses concept prediction instead of token prediction)
+    LanguageResult generate_concept_response(const std::string& query) const;
+
     // Initialize tokenizer from LTM
     void initialize();
 

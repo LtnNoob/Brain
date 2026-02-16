@@ -1,7 +1,6 @@
 #include "concept_model.hpp"
 
 #include <algorithm>
-#include <numeric>
 
 namespace brain19 {
 
@@ -238,6 +237,31 @@ void FlexKAN::initialize_identity() {
 }
 
 // =============================================================================
+// ConvergencePort — 122→32 linear+tanh per concept
+// =============================================================================
+
+void ConvergencePort::compute(const double* input, double* output) const {
+    for (size_t i = 0; i < OUTPUT_DIM; ++i) {
+        double sum = b[i];
+        for (size_t j = 0; j < INPUT_DIM; ++j) {
+            sum += W[i * INPUT_DIM + j] * input[j];
+        }
+        output[i] = std::tanh(sum);
+    }
+}
+
+void ConvergencePort::initialize() {
+    // Xavier initialization: scale = sqrt(2 / (fan_in + fan_out))
+    double scale = std::sqrt(2.0 / static_cast<double>(INPUT_DIM + OUTPUT_DIM));
+    for (size_t i = 0; i < W_SIZE; ++i) {
+        double x = std::sin(static_cast<double>(i * 23 + 47)) * 43758.5453;
+        x = x - std::floor(x);
+        W[i] = (x * 2.0 - 1.0) * scale;
+    }
+    b.fill(0.0);
+}
+
+// =============================================================================
 // ConceptModel Construction
 // =============================================================================
 
@@ -262,6 +286,7 @@ ConceptModel::ConceptModel() {
 
     multihead_.initialize();
     kan_.initialize_identity();
+    conv_port_.initialize();
     reserved_.fill(0.0);
 }
 
@@ -789,6 +814,36 @@ void ConceptModel::train_refined(const FlexEmbedding& rel_emb, const FlexEmbeddi
 }
 
 // =============================================================================
+// Convergence Port (122→32) — forward and backward
+// =============================================================================
+
+void ConceptModel::forward_convergence(const double* input_122, double* output_32) const {
+    conv_port_.compute(input_122, output_32);
+}
+
+void ConceptModel::backward_convergence(const double* input_122, const double* cached_output_32,
+                                         const double* grad_output_32, double learning_rate) {
+    // tanh derivative: dy/dz = 1 - y²
+    // dL/dW[i][j] = dL/dy[i] * (1 - y[i]²) * input[j]
+    // dL/db[i]    = dL/dy[i] * (1 - y[i]²)
+
+    constexpr size_t IN = ConvergencePort::INPUT_DIM;
+    constexpr size_t OUT = ConvergencePort::OUTPUT_DIM;
+
+    for (size_t i = 0; i < OUT; ++i) {
+        double y = cached_output_32[i];
+        double dL_dz = grad_output_32[i] * (1.0 - y * y);
+
+        conv_port_.b[i] -= learning_rate * dL_dz;
+
+        for (size_t j = 0; j < IN; ++j) {
+            double grad_w = dL_dz * input_122[j];
+            conv_port_.W[i * IN + j] -= learning_rate * grad_w;
+        }
+    }
+}
+
+// =============================================================================
 // Legacy KAN training
 // =============================================================================
 
@@ -802,10 +857,15 @@ void ConceptModel::train_kan(double bilinear_score, double ctx_feature,
 }
 
 // =============================================================================
-// Serialization (1900 doubles)
+// Serialization (5836 doubles)
 // =============================================================================
-// Layout: [0..939] bilinear, [940..1579] multihead, [1580..1859] KAN,
-//         [1860..1874] patterns, [1875..1899] reserved
+// Layout: [0..939]     bilinear core (W, b, e_init, c_init, TrainingState)
+//         [940..1579]  MultiHeadBilinear (640)
+//         [1580..1859] FlexKAN (280)
+//         [1860..1874] ConceptPatternWeights (15)
+//         [1875..1899] reserved (25)
+//         [1900..5803] ConvergencePort W (3904)
+//         [5804..5835] ConvergencePort b (32)
 
 void ConceptModel::to_flat(std::array<double, CM_FLAT_SIZE>& out) const {
     size_t idx = 0;
@@ -833,7 +893,7 @@ void ConceptModel::to_flat(std::array<double, CM_FLAT_SIZE>& out) const {
     out[idx++] = state_.reserved_scalar;
     for (size_t i = 0; i < 55; ++i) out[idx++] = state_.reserved[i];
 
-    // idx should be 940 here
+    // idx = 940
 
     // MultiHeadBilinear (640)
     for (size_t i = 0; i < MultiHeadBilinear::TOTAL_PARAMS; ++i) out[idx++] = multihead_.params[i];
@@ -853,7 +913,15 @@ void ConceptModel::to_flat(std::array<double, CM_FLAT_SIZE>& out) const {
     // Reserved (25)
     for (size_t i = 0; i < 25; ++i) out[idx++] = reserved_[i];
 
-    // idx should be 1900 here
+    // idx = 1900
+
+    // ConvergencePort W (3904)
+    for (size_t i = 0; i < ConvergencePort::W_SIZE; ++i) out[idx++] = conv_port_.W[i];
+
+    // ConvergencePort b (32)
+    for (size_t i = 0; i < ConvergencePort::OUTPUT_DIM; ++i) out[idx++] = conv_port_.b[i];
+
+    // idx = 5836
 }
 
 void ConceptModel::from_flat(const std::array<double, CM_FLAT_SIZE>& in) {
@@ -890,6 +958,14 @@ void ConceptModel::from_flat(const std::array<double, CM_FLAT_SIZE>& in) {
     for (size_t i = 0; i < 9; ++i) patterns_.reserved[i] = in[idx++];
 
     for (size_t i = 0; i < 25; ++i) reserved_[i] = in[idx++];
+
+    // idx = 1900
+
+    // ConvergencePort W (3904)
+    for (size_t i = 0; i < ConvergencePort::W_SIZE; ++i) conv_port_.W[i] = in[idx++];
+
+    // ConvergencePort b (32)
+    for (size_t i = 0; i < ConvergencePort::OUTPUT_DIM; ++i) conv_port_.b[i] = in[idx++];
 }
 
 } // namespace brain19

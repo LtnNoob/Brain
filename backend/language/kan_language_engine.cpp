@@ -31,8 +31,29 @@ KANLanguageEngine::KANLanguageEngine(
 
 void KANLanguageEngine::initialize() {
     std::cerr << "[KANLanguageEngine] Building tokenizer...\n";
-    tokenizer_.build_from_ltm(ltm_);
-    std::cerr << "[KANLanguageEngine] Tokenizer built: " << tokenizer_.vocab_size() << " tokens\n";
+
+    // Build BPE corpus from concept definitions + relations for richer vocabulary
+    std::vector<std::string> bpe_corpus;
+    {
+        auto all_ids = ltm_.get_all_concept_ids();
+        bpe_corpus.reserve(all_ids.size() * 2);
+        for (auto cid : all_ids) {
+            auto info = ltm_.retrieve_concept(cid);
+            if (!info) continue;
+            if (!info->definition.empty())
+                bpe_corpus.push_back(info->label + " is " + info->definition);
+            for (const auto& rel : ltm_.get_outgoing_relations(cid)) {
+                auto tgt = ltm_.retrieve_concept(rel.target);
+                if (tgt)
+                    bpe_corpus.push_back(info->label + " " + tgt->label);
+            }
+        }
+    }
+    // Train BPE with enough merges for 2000+ active tokens
+    // Target: 4000 total vocab (1261 base + ~2739 BPE merges)
+    tokenizer_.train(bpe_corpus, ltm_, 4000);
+    std::cerr << "[KANLanguageEngine] Tokenizer built: " << tokenizer_.vocab_size()
+              << " tokens (" << (tokenizer_.vocab_size() - 1261) << " BPE merges)\n";
 
     // Build dimensional context from graph structure.
     // Discovers dimensions from actual relation categories — variable per concept.
@@ -43,10 +64,16 @@ void KANLanguageEngine::initialize() {
               << "max concept dimensionality=" << dim_context_.max_dimensionality()
               << ", decoder_dim=" << dim_context_.decoder_dim() << "\n";
 
+    // v11: Set flex_dim=16 for FlexDetail injection between fused and dim_context
+    decoder_.set_flex_dim(16);
+
     // Re-initialize decoder projection for the extended dimension:
-    // FUSED_DIM (64) + dim_context_.decoder_dim() (variable, data-driven)
-    size_t ext_dim = LanguageConfig::FUSED_DIM + dim_context_.decoder_dim();
-    std::cerr << "[KANLanguageEngine] Reinitializing decoder for extended_fused_dim=" << ext_dim << "\n";
+    // FUSED_DIM (64) + flex_dim (v11: 16) + dim_context_.decoder_dim() (variable) + CONVERGENCE_DIM (32)
+    size_t ext_dim = LanguageConfig::FUSED_DIM + decoder_.flex_dim()
+                   + dim_context_.decoder_dim() + LanguageConfig::CONVERGENCE_DIM;
+    std::cerr << "[KANLanguageEngine] Reinitializing decoder for extended_fused_dim=" << ext_dim
+              << " (flex_dim=" << decoder_.flex_dim()
+              << ", conv_dim=" << LanguageConfig::CONVERGENCE_DIM << ")\n";
     decoder_.reinitialize_for_extended_dim(ext_dim);
     std::cerr << "[KANLanguageEngine] Decoder reinitialized OK\n";
 
@@ -56,7 +83,8 @@ void KANLanguageEngine::initialize() {
 void KANLanguageEngine::rebuild_dimensional_context() {
     dim_context_.build(ltm_);
 
-    size_t ext_dim = LanguageConfig::FUSED_DIM + dim_context_.decoder_dim();
+    size_t ext_dim = LanguageConfig::FUSED_DIM + decoder_.flex_dim()
+                   + dim_context_.decoder_dim() + LanguageConfig::CONVERGENCE_DIM;
     decoder_.reinitialize_for_extended_dim(ext_dim);
 
     std::cerr << "[KANLanguageEngine] Rebuilt dim context: "
@@ -130,9 +158,51 @@ LanguageResult KANLanguageEngine::generate(const std::string& query, size_t max_
         fused.dimensional_context = dim_context_.average_decoder_vec(seeds);
     }
 
-    // ── Step 8: Decode ──
+    // ── Step 7c: Compute average FlexDetail for seed concepts (16D, zero-padded) ──
+    {
+        const auto& emb_store = embeddings_.concept_embeddings();
+        const size_t FLEX_DIM = 16;
+        fused.flex_detail.assign(FLEX_DIM, 0.0);
+        size_t count = 0;
+        for (auto sid : seeds) {
+            auto flex_emb = emb_store.get_or_default(sid);
+            if (!flex_emb.detail.empty()) {
+                for (size_t d = 0; d < FLEX_DIM; ++d) {
+                    if (d < flex_emb.detail.size()) {
+                        fused.flex_detail[d] += flex_emb.detail[d];
+                    }
+                }
+                ++count;
+            }
+        }
+        if (count > 0) {
+            double inv = 1.0 / static_cast<double>(count);
+            for (auto& v : fused.flex_detail) v *= inv;
+        }
+    }
+
+    // ── Step 8: Try concept prediction first ──
+    auto ext_fused = fused.extended_fused_vector();
+    auto concept_output = decoder_.decode_concepts(
+        ext_fused, embeddings_.concept_embeddings());
+
+    if (!concept_output.concept_ids.empty() &&
+        concept_output.confidence >= config_.decoder_confidence_threshold) {
+        // Concept prediction succeeded — build response from concept graph
+        result.tokens_generated = concept_output.concept_ids.size();
+        result.confidence = concept_output.confidence;
+        result.activated_concepts = concept_output.concept_ids;
+
+        // Build rich text from predicted concepts using template_generate
+        result.text = template_generate(concept_output.concept_ids, result.template_type);
+        result.used_template = false;
+        return result;
+    }
+
+    // ── Step 8b: Fallback to token-based decode ──
     auto decoder_output = decoder_.decode(
-        fused, tokenizer_, encoder_.embedding_table(), max_tokens);
+        fused, tokenizer_, encoder_.embedding_table(),
+        embeddings_.concept_embeddings(), max_tokens);
 
     result.tokens_generated = decoder_output.token_ids.size();
     result.confidence = decoder_output.confidence;
@@ -148,6 +218,15 @@ LanguageResult KANLanguageEngine::generate(const std::string& query, size_t max_
     }
 
     return result;
+}
+
+// =============================================================================
+// Concept-Based Generation
+// =============================================================================
+
+LanguageResult KANLanguageEngine::generate_concept_response(const std::string& query) const {
+    // Delegates to generate() which now tries concept prediction first
+    return generate(query);
 }
 
 // =============================================================================

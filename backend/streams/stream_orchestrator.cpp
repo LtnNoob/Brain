@@ -1,6 +1,5 @@
 #include "stream_orchestrator.hpp"
 #include <algorithm>
-#include <iostream>
 
 namespace brain19 {
 

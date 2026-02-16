@@ -3,8 +3,6 @@
 #include "common/types.hpp"
 
 #include <string>
-#include <sstream>
-#include <memory>
 
 namespace brain19 {
 

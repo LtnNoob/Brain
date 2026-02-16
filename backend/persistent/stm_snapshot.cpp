@@ -1,7 +1,6 @@
 #include "stm_snapshot.hpp"
 
 #include <fstream>
-#include <chrono>
 #include <algorithm>
 #include <filesystem>
 #include <cstring>

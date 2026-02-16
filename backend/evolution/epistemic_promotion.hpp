@@ -53,6 +53,18 @@ public:
     // Human confirms FACT promotion
     bool confirm_as_fact(ConceptId id, double trust, const std::string& human_note);
 
+    // Trust-propagation support: compute trust adjustments for neighbors
+    // Returns: map of affected concepts → new trust value
+    std::unordered_map<ConceptId, double> compute_trust_propagation(
+        ConceptId invalidated, float propagation_radius) const;
+
+    // Apply computed trust adjustments
+    void apply_trust_propagation(
+        const std::unordered_map<ConceptId, double>& adjustments);
+
+    // Check if cumulative propagation should force-invalidate a concept
+    bool should_force_invalidate(ConceptId id, double threshold = 0.1) const;
+
     // Automatic maintenance (run periodically)
     struct MaintenanceResult {
         size_t promotions;
@@ -71,7 +83,10 @@ private:
     // Count supporting relations from concepts of given type or higher
     size_t count_supporting_from_type(ConceptId id, EpistemicType min_type) const;
 
-    // Check if concept has contradictions
+    // Ratio of contradictions to total epistemic relations [0.0..1.0]
+    float contradiction_ratio(ConceptId id) const;
+
+    // Check if concept has significant contradictions (ratio > 0.3)
     bool has_contradictions(ConceptId id) const;
 
     // Count independent evidence sources

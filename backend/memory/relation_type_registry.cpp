@@ -151,6 +151,52 @@ void RelationTypeRegistry::register_builtins() {
         "ist assoziiert mit", "is associated with", "associated-with",
         RelationCategory::SIMILARITY,
         {0.1, 0.1, 0.1, 0.6, 0.1, 0.2, 0.2, 0.2, 0.4, 0.3,  0.1, 0.1, 0.7, 0.0, 0.3, 0.4}, true);
+
+    // --- Linguistic relation types (20-28) ---
+    register_one(RelationType::SUBJECT_OF, "SUBJECT_OF",
+        "ist Subjekt von", "is subject of", "subject-of",
+        RelationCategory::LINGUISTIC,
+        {0.3, 0.0, 0.2, 0.1, 0.0, 0.1, 0.7, 0.8, 0.2, 0.7,  0.1, 0.0, 0.0, 0.3, 0.8, 0.3}, true);
+
+    register_one(RelationType::OBJECT_OF, "OBJECT_OF",
+        "ist Objekt von", "is object of", "object-of",
+        RelationCategory::LINGUISTIC,
+        {0.3, 0.0, 0.2, 0.1, 0.0, 0.1, 0.7, 0.8, 0.2, 0.6,  0.1, 0.0, 0.0, 0.3, 0.8, 0.3}, true);
+
+    register_one(RelationType::VERB_OF, "VERB_OF",
+        "ist Verb von", "is verb of", "verb-of",
+        RelationCategory::LINGUISTIC,
+        {0.2, 0.1, 0.2, 0.1, 0.0, 0.1, 0.7, 0.8, 0.2, 0.7,  0.1, 0.0, 0.0, 0.3, 0.8, 0.3}, true);
+
+    register_one(RelationType::MODIFIER_OF, "MODIFIER_OF",
+        "modifiziert", "modifies", "modifier-of",
+        RelationCategory::LINGUISTIC,
+        {0.1, 0.0, 0.3, 0.2, 0.0, 0.1, 0.4, 0.6, 0.3, 0.4,  0.1, 0.1, 0.1, 0.1, 0.7, 0.2}, true);
+
+    register_one(RelationType::DENOTES, "DENOTES",
+        "bezeichnet", "denotes", "denotes",
+        RelationCategory::LINGUISTIC,
+        {0.5, 0.0, 0.1, 0.6, 0.0, 0.2, 0.8, 0.9, 0.3, 0.8,  0.1, 0.0, 0.0, 0.1, 0.5, 0.3}, true);
+
+    register_one(RelationType::PART_OF_SENTENCE, "PART_OF_SENTENCE",
+        "gehoert zu Satz", "is part of sentence", "part-of-sentence",
+        RelationCategory::LINGUISTIC,
+        {0.2, 0.0, 0.5, 0.1, 0.0, 0.1, 0.3, 0.5, 0.2, 0.4,  0.1, 0.0, 0.0, 0.1, 0.7, 0.4}, true);
+
+    register_one(RelationType::TEMPORAL_OF, "TEMPORAL_OF",
+        "ist Zeitangabe von", "is temporal of", "temporal-of",
+        RelationCategory::LINGUISTIC,
+        {0.1, 0.1, 0.2, 0.1, 0.8, 0.1, 0.5, 0.7, 0.2, 0.5,  0.1, 0.0, 0.0, 0.2, 0.6, 0.3}, true);
+
+    register_one(RelationType::LOCATIVE_OF, "LOCATIVE_OF",
+        "ist Ortsangabe von", "is locative of", "locative-of",
+        RelationCategory::LINGUISTIC,
+        {0.1, 0.0, 0.2, 0.1, 0.1, 0.1, 0.5, 0.7, 0.2, 0.5,  0.1, 0.0, 0.0, 0.2, 0.7, 0.3}, true);
+
+    register_one(RelationType::PRECEDES, "PRECEDES",
+        "geht voraus", "precedes", "precedes",
+        RelationCategory::LINGUISTIC,
+        {0.0, 0.1, 0.0, 0.1, 0.8, 0.0, 0.3, 0.8, 0.2, 0.5,  0.5, 0.0, 0.0, 0.2, 0.3, 0.7}, true);
 }
 
 void RelationTypeRegistry::register_one(

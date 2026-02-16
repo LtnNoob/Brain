@@ -3,7 +3,6 @@
 #include "memory/stm.hpp"
 #include "ltm/long_term_memory.hpp"
 #include "epistemic/epistemic_metadata.hpp"
-#include "curiosity/curiosity_engine.hpp"
 #include "cognitive/cognitive_dynamics.hpp"
 #include "cmodel/concept_model_registry.hpp"
 #include "cmodel/concept_model.hpp"
@@ -12,16 +11,14 @@
 
 namespace brain19 {
 
-SnapshotGenerator::SnapshotGenerator() {
-}
+SnapshotGenerator::SnapshotGenerator() = default;
 
-SnapshotGenerator::~SnapshotGenerator() {
-}
+SnapshotGenerator::~SnapshotGenerator() = default;
 
 std::string SnapshotGenerator::generate_json_snapshot(
     const BrainController* brain,
     const LongTermMemory* ltm,
-    const CuriosityEngine* curiosity,
+    const CuriosityEngine* /*curiosity*/,
     ContextId context_id,
     const CognitiveDynamics* cognitive,
     const ConceptModelRegistry* micro_models
@@ -114,14 +111,7 @@ std::string SnapshotGenerator::generate_json_snapshot(
     json << "  ],\n";
     
     // Curiosity triggers
-    json << "  \"curiosity_triggers\": [\n";
-    if (curiosity) {
-        // Would get actual observations from STM
-        std::vector<SystemObservation> observations;
-        // auto triggers = curiosity->observe_and_generate_triggers(observations);
-        // Simplified for now
-    }
-    json << "  ],\n";
+    json << "  \"curiosity_triggers\": [],\n";
     
     // Cognitive Dynamics: Focus-Sets and Tick
     json << "  \"cognitive_dynamics\": {\n";

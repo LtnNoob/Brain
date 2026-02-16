@@ -1,7 +1,6 @@
 #include "micro_model.hpp"
 
 #include <algorithm>
-#include <numeric>
 
 namespace brain19 {
 

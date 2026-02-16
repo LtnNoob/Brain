@@ -3,7 +3,6 @@
 #include <algorithm>
 #include <cmath>
 #include <random>
-#include <unordered_set>
 
 namespace brain19 {
 
@@ -184,8 +183,9 @@ std::vector<double> FusionLayer::build_raw_fused(
 
 std::vector<double> FusedRepresentation::extended_fused_vector() const {
     std::vector<double> result;
-    result.reserve(fused_vector.size() + dimensional_context.size());
+    result.reserve(fused_vector.size() + flex_detail.size() + dimensional_context.size());
     result = fused_vector;
+    result.insert(result.end(), flex_detail.begin(), flex_detail.end());
     result.insert(result.end(), dimensional_context.begin(), dimensional_context.end());
     return result;
 }

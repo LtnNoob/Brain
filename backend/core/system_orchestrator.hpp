@@ -39,8 +39,11 @@
 #include "../evolution/epistemic_promotion.hpp"
 #include "../evolution/concept_proposal.hpp"
 #include "../evolution/graph_densifier.hpp"
+#include "../language/sentence_parser.hpp"
 
 #include "../language/kan_language_engine.hpp"
+#include "../language/language_training.hpp"
+#include "../language/sentence_parser.hpp"
 #include "thinking_pipeline.hpp"
 
 #include <atomic>
@@ -193,6 +196,7 @@ private:
 
     // 11b. Language Engine (KAN-MiniLLM Hybrid)
     std::unique_ptr<KANLanguageEngine> language_engine_;
+    std::unique_ptr<LanguageTraining> lang_trainer_;  // persists trained V2 state
 
     // 12. Shared Wrappers
     std::unique_ptr<SharedLTM> shared_ltm_;
@@ -209,6 +213,10 @@ private:
     std::unique_ptr<PatternDiscovery> pattern_discovery_;
     std::unique_ptr<EpistemicPromotion> epistemic_promotion_;
     std::unique_ptr<ConceptProposer> concept_proposer_;
+
+    // 14b. Linguistic Graph (SentenceParser + persistent GraphDensifier)
+    std::unique_ptr<GraphDensifier> graph_densifier_;
+    std::unique_ptr<SentenceParser> sentence_parser_;
 
     // Thinking pipeline
     std::unique_ptr<ThinkingPipeline> thinking_;

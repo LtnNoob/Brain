@@ -1,0 +1,38 @@
+# Minimal build for graph features testing
+# Usage: make -f Makefile.graph_features
+
+CXX = g++
+CXXFLAGS = -std=c++20 -Wall -Wextra -Wpedantic -O2 -DNDEBUG -I.
+
+SOURCES = evolution/test_graph_features.cpp \
+          ltm/long_term_memory.cpp \
+          memory/relation_type_registry.cpp \
+          memory/stm.cpp \
+          evolution/epistemic_promotion.cpp \
+          evolution/graph_densifier.cpp \
+          evolution/complexity_analyzer.cpp \
+          evolution/retention_manager.cpp \
+          evolution/trust_propagator.cpp \
+          micromodel/micro_model.cpp \
+          micromodel/embedding_manager.cpp \
+          micromodel/micro_model_registry.cpp \
+          micromodel/relevance_map.cpp \
+          micromodel/concept_embedding_store.cpp \
+          cmodel/concept_model.cpp \
+          cmodel/concept_model_registry.cpp \
+          cmodel/concept_trainer.cpp \
+          cmodel/concept_pattern_engine.cpp \
+          cmodel/concept_persistence.cpp
+
+OBJECTS = $(SOURCES:.cpp=.o)
+
+test_graph_features: $(OBJECTS)
+	$(CXX) $(CXXFLAGS) $^ -o $@ -pthread
+
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+clean:
+	rm -f $(OBJECTS) test_graph_features
+
+.PHONY: clean

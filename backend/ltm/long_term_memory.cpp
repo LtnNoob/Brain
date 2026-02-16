@@ -1,16 +1,25 @@
 #include "long_term_memory.hpp"
 #include <algorithm>
+#include <cctype>
 #include <vector>
 
 namespace brain19 {
+
+namespace {
+std::string to_lowercase(const std::string& s) {
+    std::string result = s;
+    std::transform(result.begin(), result.end(), result.begin(),
+                   [](unsigned char c) { return std::tolower(c); });
+    return result;
+}
+} // anonymous namespace
 
 LongTermMemory::LongTermMemory()
     : next_concept_id_(1)
 {
 }
 
-LongTermMemory::~LongTermMemory() {
-}
+LongTermMemory::~LongTermMemory() = default;
 
 ConceptId LongTermMemory::store_concept(
     const std::string& label,
@@ -26,7 +35,10 @@ ConceptId LongTermMemory::store_concept(
     
     // Store using emplace (avoids default construction)
     concepts_.emplace(id, std::move(info));
-    
+
+    // Maintain label index
+    label_index_[to_lowercase(label)].push_back(id);
+
     return id;
 }
 
@@ -64,25 +76,37 @@ bool LongTermMemory::invalidate_concept(ConceptId id, double invalidation_trust)
     if (it == concepts_.end()) {
         return false;
     }
-    
+
+    // Capture old trust before invalidation (for hooks)
+    double old_trust = it->second.epistemic.trust;
+
     // CRITICAL: Knowledge is NOT deleted, only invalidated
     // Original type is preserved
     // Status set to INVALIDATED
     // Trust set very low
-    
+
     // Validate invalidation trust
     if (invalidation_trust < 0.0 || invalidation_trust > 1.0) {
         invalidation_trust = 0.05;  // Default
     }
-    
+
     // Create invalidated metadata
     EpistemicMetadata invalidated_meta(
         it->second.epistemic.type,           // Preserve original type
         EpistemicStatus::INVALIDATED,        // Mark as invalidated
         invalidation_trust                   // Very low trust
     );
-    
-    return update_epistemic_metadata(id, invalidated_meta);
+
+    bool result = update_epistemic_metadata(id, invalidated_meta);
+
+    // Fire invalidation hooks AFTER successful invalidation
+    if (result) {
+        for (auto& hook : invalidation_hooks_) {
+            hook(id, old_trust);
+        }
+    }
+
+    return result;
 }
 
 std::vector<ConceptId> LongTermMemory::get_concepts_by_type(EpistemicType type) const {
@@ -111,6 +135,18 @@ std::vector<ConceptId> LongTermMemory::get_concepts_by_status(EpistemicStatus st
 
 std::vector<ConceptId> LongTermMemory::get_active_concepts() const {
     return get_concepts_by_status(EpistemicStatus::ACTIVE);
+}
+
+// =============================================================================
+// LABEL INDEX
+// =============================================================================
+
+std::vector<ConceptId> LongTermMemory::find_by_label(const std::string& label) const {
+    auto it = label_index_.find(to_lowercase(label));
+    if (it != label_index_.end()) {
+        return it->second;
+    }
+    return {};
 }
 
 // =============================================================================
@@ -246,6 +282,77 @@ std::vector<ConceptId> LongTermMemory::get_all_concept_ids() const {
     }
 
     return result;
+}
+
+// =============================================================================
+// INVALIDATION HOOKS (Graph Features)
+// =============================================================================
+
+void LongTermMemory::register_invalidation_hook(InvalidationCallback cb) {
+    invalidation_hooks_.push_back(std::move(cb));
+}
+
+// =============================================================================
+// ANTI-KNOWLEDGE & GARBAGE COLLECTION (Graph Features)
+// =============================================================================
+
+std::vector<ConceptId> LongTermMemory::get_anti_knowledge() const {
+    std::vector<ConceptId> result;
+    for (const auto& [id, info] : concepts_) {
+        if (info.is_anti_knowledge) {
+            result.push_back(id);
+        }
+    }
+    return result;
+}
+
+std::vector<ConceptId> LongTermMemory::get_gc_candidates() const {
+    std::vector<ConceptId> result;
+    for (const auto& [id, info] : concepts_) {
+        if (info.epistemic.is_invalidated() && !info.is_anti_knowledge) {
+            result.push_back(id);
+        }
+    }
+    return result;
+}
+
+void LongTermMemory::mark_as_anti_knowledge(ConceptId id, const std::string& /*reason*/) {
+    auto it = concepts_.find(id);
+    if (it == concepts_.end()) return;
+    it->second.is_anti_knowledge = true;
+}
+
+void LongTermMemory::unmark_anti_knowledge(ConceptId id) {
+    auto it = concepts_.find(id);
+    if (it == concepts_.end()) return;
+    it->second.is_anti_knowledge = false;
+}
+
+size_t LongTermMemory::garbage_collect(size_t max_removals) {
+    auto candidates = get_gc_candidates();
+    size_t removed = 0;
+
+    for (auto cid : candidates) {
+        if (removed >= max_removals) break;
+
+        // Remove all relations involving this concept
+        auto outgoing = get_outgoing_relations(cid);
+        for (const auto& rel : outgoing) {
+            remove_relation(rel.id);
+        }
+        auto incoming = get_incoming_relations(cid);
+        for (const auto& rel : incoming) {
+            remove_relation(rel.id);
+        }
+
+        // Remove concept
+        concepts_.erase(cid);
+        outgoing_relations_.erase(cid);
+        incoming_relations_.erase(cid);
+        ++removed;
+    }
+
+    return removed;
 }
 
 } // namespace brain19

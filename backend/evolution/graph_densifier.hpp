@@ -3,6 +3,7 @@
 #include "../ltm/long_term_memory.hpp"
 #include "../memory/active_relation.hpp"
 #include <map>
+#include <optional>
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
@@ -67,6 +68,17 @@ public:
 
     // Sample N random generated relations for quality inspection
     std::vector<SampledRelation> sample_generated(size_t n = 100) const;
+
+    // === Linguistic Graph Support (Phase 4) ===
+
+    // Check if a word concept with given surface_form and pos_tag exists
+    bool word_concept_exists(const std::string& surface_form, const std::string& pos_tag) const;
+
+    // Find an existing sentence concept with the same SVO triple
+    std::optional<ConceptId> find_duplicate_sentence(ConceptId subject, ConceptId verb, ConceptId object) const;
+
+    // Infer DENOTES relation candidates for a word concept
+    std::vector<std::pair<ConceptId, double>> infer_denotes_relations(ConceptId word_cid) const;
 
 private:
     LongTermMemory& ltm_;

@@ -6,7 +6,6 @@
 #include <algorithm>
 #include <cctype>
 #include <chrono>
-#include <cmath>
 #include <cstring>
 #include <filesystem>
 #include <iostream>
@@ -216,12 +215,12 @@ bool SystemOrchestrator::initialize() {
         // Graph densification — only for small graphs where topology-based inference
         // is reliable. Large graphs with noisy wave data amplify errors through
         // transitive closure, so densification is skipped.
+        graph_densifier_ = std::make_unique<GraphDensifier>(*ltm_);
         {
             size_t concept_count = ltm_->get_all_concept_ids().size();
             if (concept_count < 1000) {
                 log("    Graph densification (" + std::to_string(concept_count) + " concepts)...");
-                GraphDensifier densifier(*ltm_);
-                auto dens_result = densifier.densify();
+                auto dens_result = graph_densifier_->densify();
                 log("    Densified: +" + std::to_string(dens_result.relations_added)
                     + " relations (density " + std::to_string(dens_result.density_before)
                     + " -> " + std::to_string(dens_result.density_after) + ")");
@@ -231,7 +230,7 @@ bool SystemOrchestrator::initialize() {
                 for (const auto& [type, count] : dens_result.type_distribution) {
                     log("      type " + type + ": " + std::to_string(count));
                 }
-                auto samples = densifier.sample_generated(100);
+                auto samples = graph_densifier_->sample_generated(100);
                 log("    Quality sample (" + std::to_string(samples.size()) + " relations):");
                 for (size_t i = 0; i < samples.size(); ++i) {
                     log("      [" + std::to_string(i+1) + "] "
@@ -248,17 +247,27 @@ bool SystemOrchestrator::initialize() {
             }
         }
 
+        // SentenceParser: linguistic graph layer (iterative two-level POS)
+        sentence_parser_ = std::make_unique<SentenceParser>(*ltm_, *graph_densifier_);
+        log("    SentenceParser initialized");
+
         // Rebuild dimensional context with denser graph
         if (language_engine_ && language_engine_->is_ready()) {
             language_engine_->rebuild_dimensional_context();
         }
 
-        // KAN decoder training from KG relations
+        // KAN decoder training from KG relations (token + concept prediction)
         if (language_engine_ && language_engine_->is_ready()) {
-            log("    Training KAN decoder from KG relations...");
-            LanguageTraining lang_trainer(*language_engine_, *ltm_);
+            log("    Training KAN decoder (token + concept) from KG relations...");
+            lang_trainer_ = std::make_unique<LanguageTraining>(
+                *language_engine_, *ltm_, *registry_);
             LanguageConfig lang_config;
-            auto lang_result = lang_trainer.train_stage1(lang_config);
+#ifdef USE_LIBTORCH
+            // LibTorch path: DeepKAN v2 with concept prediction
+            auto lang_result = lang_trainer_->train_stage1_deep_kan_v2(lang_config);
+#else
+            auto lang_result = lang_trainer_->train_stage1(lang_config);
+#endif
             log("    KAN decoder: " + std::to_string(lang_result.epochs_run) + " epochs, loss="
                 + std::to_string(lang_result.final_loss));
         }
@@ -423,6 +432,8 @@ void SystemOrchestrator::shutdown() {
 
     // Reset all in reverse order
     thinking_.reset();
+    sentence_parser_.reset();
+    graph_densifier_.reset();
     concept_proposer_.reset();
     epistemic_promotion_.reset();
     pattern_discovery_.reset();
@@ -459,7 +470,7 @@ void SystemOrchestrator::shutdown() {
 void SystemOrchestrator::cleanup_from_stage(int stage) {
     // Clean up in reverse from the stage that succeeded
     thinking_.reset();  // Created after stage 15, always safe to reset
-    if (stage >= 14) { concept_proposer_.reset(); epistemic_promotion_.reset(); pattern_discovery_.reset(); }
+    if (stage >= 14) { sentence_parser_.reset(); graph_densifier_.reset(); concept_proposer_.reset(); epistemic_promotion_.reset(); pattern_discovery_.reset(); }
     if (stage >= 13) { stream_monitor_.reset(); stream_sched_.reset(); stream_orch_.reset(); }
     if (stage >= 12) { shared_embeddings_.reset(); shared_registry_.reset(); shared_stm_.reset(); shared_ltm_.reset(); }
     if (stage >= 11) { language_engine_.reset(); chat_.reset(); }
@@ -596,6 +607,16 @@ ChatResponse SystemOrchestrator::ask(const std::string& question) {
     // Classify intent first
     auto intent = ChatInterface::classify_intent(question);
 
+    // Parse question linguistically — provides word→semantic anchors
+    std::vector<ConceptId> linguistic_seeds;
+    if (sentence_parser_) {
+        auto parsed = sentence_parser_->parse_and_store(question);
+        // Collect semantic concept anchors from DENOTES
+        if (parsed.subject_semantic) linguistic_seeds.push_back(*parsed.subject_semantic);
+        if (parsed.verb_semantic) linguistic_seeds.push_back(*parsed.verb_semantic);
+        if (parsed.object_semantic) linguistic_seeds.push_back(*parsed.object_semantic);
+    }
+
     // Multi-strategy seed finding
     std::string lower_q = seed_to_lower(question);
     auto keywords = seed_extract_keywords(question);
@@ -682,6 +703,17 @@ ChatResponse SystemOrchestrator::ask(const std::string& question) {
 
         if (score > 0.0) {
             scored_seeds.push_back({cid, score});
+        }
+    }
+
+    // Boost linguistic seeds (from SentenceParser DENOTES links)
+    for (auto lcid : linguistic_seeds) {
+        bool found = false;
+        for (auto& ss : scored_seeds) {
+            if (ss.id == lcid) { ss.score += 4.0; found = true; break; }
+        }
+        if (!found) {
+            scored_seeds.push_back({lcid, 4.0});
         }
     }
 
@@ -996,7 +1028,20 @@ ChatResponse SystemOrchestrator::ask(const std::string& question) {
             gdo_thinking_results_.clear();
         }
 
-        // ── Try KAN Language Engine first ──
+        // ── Try LibTorch concept prediction first ──
+        if (lang_trainer_ && lang_trainer_->has_v2_model()) {
+            auto v2_text = lang_trainer_->generate_v2(question);
+            if (!v2_text.empty() && v2_text[0] != '[') {
+                ChatResponse resp;
+                resp.answer = v2_text;
+                resp.contains_speculation = false;
+                resp.used_llm = false;
+                resp.intent = intent;
+                return resp;
+            }
+        }
+
+        // ── Try KAN Language Engine (CPU decoder fallback) ──
         if (language_engine_ && language_engine_->is_ready()) {
             auto lang_result = language_engine_->generate(question);
             if (!lang_result.used_template && !lang_result.text.empty()) {
@@ -1008,7 +1053,6 @@ ChatResponse SystemOrchestrator::ask(const std::string& question) {
                 resp.intent = intent;
                 return resp;
             }
-            // Fall through to ChatInterface template-based response
         }
 
         return chat_->ask_with_thinking(question, *ltm_, ctx, intent);
@@ -1033,6 +1077,39 @@ IngestionResult SystemOrchestrator::ingest_text(const std::string& text, bool au
     if (result.success && !result.stored_concept_ids.empty()) {
         registry_->ensure_models_for(result.stored_concept_ids);
     }
+
+    // Parse text linguistically into sentence graph
+    if (sentence_parser_ && result.success) {
+        // Split text into sentences (simple: split on . ! ?)
+        std::vector<std::string> sentences;
+        std::string current;
+        for (char c : text) {
+            current += c;
+            if (c == '.' || c == '!' || c == '?') {
+                // Trim whitespace
+                size_t start = current.find_first_not_of(" \t\n\r");
+                if (start != std::string::npos) {
+                    size_t end = current.find_last_not_of(" \t\n\r.!?");
+                    if (end != std::string::npos && end >= start) {
+                        sentences.push_back(current.substr(start, end - start + 1));
+                    }
+                }
+                current.clear();
+            }
+        }
+        // Handle text without sentence-ending punctuation
+        if (!current.empty()) {
+            size_t start = current.find_first_not_of(" \t\n\r");
+            if (start != std::string::npos) {
+                sentences.push_back(current.substr(start));
+            }
+        }
+
+        if (!sentences.empty()) {
+            sentence_parser_->parse_discourse(sentences);
+        }
+    }
+
     return result;
 }
 

@@ -3,6 +3,9 @@
 #include "kan_language_engine.hpp"
 #include "language_config.hpp"
 #include "../ltm/long_term_memory.hpp"
+#include "../cmodel/concept_model_registry.hpp"
+#include "../cuda/cuda_training.h"
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -48,7 +51,8 @@ struct LanguageTrainingResult {
 
 class LanguageTraining {
 public:
-    explicit LanguageTraining(KANLanguageEngine& engine, LongTermMemory& ltm);
+    explicit LanguageTraining(KANLanguageEngine& engine, LongTermMemory& ltm,
+                              ConceptModelRegistry& registry);
 
     // Run Stage 1: Train encoder and decoder from LTM data
     LanguageTrainingResult train_stage1(const LanguageConfig& config);
@@ -78,14 +82,65 @@ public:
     };
     std::vector<DecoderPair> generate_decoder_data() const;
 
+    // Concept decoder training data: {fused_vector, target_concept_ids, trust_weight}
+    struct ConceptDecoderPair {
+        std::vector<double> embedding;               // extended fused vector
+        std::vector<ConceptId> target_concepts;       // ordered target concept sequence
+        double trust_weight;                          // epistemic trust as sample weight
+        ConceptId source_concept;                     // for debugging
+    };
+    std::vector<ConceptDecoderPair> generate_concept_decoder_data() const;
+
     // Generate relation-based decoder data: one compound paragraph per concept
     // combining ALL outgoing relations into 15-30 token training targets.
     // Input vectors use FusionLayer-projected concept embeddings (R^64).
     std::vector<DecoderPair> generate_relation_decoder_data() const;
 
+    // Deep KAN training path (V12: 2-layer EfficientKAN feature extractor + linear output)
+    LanguageTrainingResult train_stage1_deep_kan(const LanguageConfig& config);
+
+    // Deep KAN v2: LibTorch with CM-Feedback-Port (KAN↔CM bidirectional coupling)
+    LanguageTrainingResult train_stage1_deep_kan_v2(const LanguageConfig& config);
+
+    // Generate text using trained DeepKAN v2 model (call after train_stage1_deep_kan_v2)
+    std::string generate_v2(const std::string& query, size_t max_tokens = 30) const;
+    bool has_v2_model() const { return v2_valid_; }
+
 private:
+    // Stored state from last DeepKAN v2 training (for inference)
+    bool v2_valid_ = false;
+    cuda::DeepKANWeights v2_dkw_;
+    std::vector<double> v2_emb_table_;
+    std::vector<double> v2_flex_table_;
+    std::vector<uint16_t> v2_active_tokens_;
+    size_t v2_VA_ = 0, v2_V_ = 0;
+    size_t v2_FUSED_BASE_ = 64, v2_flex_dim_ = 16;
+#ifdef USE_LIBTORCH
+    // Forward-declared to avoid libtorch include in header
+    struct V2ConvergenceState;
+    std::shared_ptr<V2ConvergenceState> v2_cpd_;
+
+    // Concept prediction state (LibTorch)
+    struct V2ConceptState;
+    std::shared_ptr<V2ConceptState> v2_concept_state_;
+#endif
+    bool v2_concept_valid_ = false;
+    std::vector<double> v2_concept_matrix_;      // [NC * 16]
+    std::vector<double> v2_concept_emb_64d_;     // [NC * 64]
+    std::vector<double> v2_concept_flex_16d_;    // [NC * 16]
+    size_t v2_num_concepts_ = 0;
+    std::vector<ConceptId> v2_idx_to_concept_;
+
     KANLanguageEngine& engine_;
     LongTermMemory& ltm_;
+    ConceptModelRegistry& registry_;
+
+    // Concept decoder: closed-form ridge regression for concept projection W
+    // Solves: W = (H^T H + λI)^{-1} H^T E where E is [N × 16] target embeddings
+    void train_concept_decoder_closedform(const std::vector<ConceptDecoderPair>& data, double lambda);
+
+    // Concept decoder: SGD epoch with trust-weighted cross-entropy
+    double train_concept_decoder_epoch(const std::vector<ConceptDecoderPair>& data, double lr);
 
     // Train encoder on (text → embedding) pairs
     double train_encoder_epoch(const std::vector<EncoderPair>& data, double lr);

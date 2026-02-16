@@ -51,6 +51,10 @@ public:
     // Get token embedding index for lookup
     uint16_t get_token_id(const std::string& token) const;
 
+    // Word-level tokenization (whitespace + punctuation split)
+    // Exposes word boundaries for sentence parsing without BPE subword merging
+    std::vector<std::string> word_tokenize(const std::string& text) const;
+
     // Persistence
     void save(const std::string& path) const;
     bool load(const std::string& path);

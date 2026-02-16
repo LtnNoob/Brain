@@ -23,12 +23,15 @@ struct FusedRepresentation {
     // Fused vector ∈ R^64 (input to decoder)
     std::vector<double> fused_vector;
 
+    // 16D FlexDetail vector (injected between fused and dim_context for v11)
+    std::vector<double> flex_detail;
+
     // Dimensional context: variable-length, set by DimensionalContext.
     // Empty if no dimensional context is available (backward compatible).
     std::vector<double> dimensional_context;
 
-    // Extended fused: [fused_vector | dimensional_context]
-    // Size = FUSED_DIM + dim_context_size (variable, data-driven)
+    // Extended fused: [fused_vector | flex_detail | dimensional_context]
+    // Size = FUSED_DIM + flex_detail.size() + dim_context_size (variable, data-driven)
     std::vector<double> extended_fused_vector() const;
 
     // Best template type index

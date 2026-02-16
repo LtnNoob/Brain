@@ -1,7 +1,6 @@
 #include "cognitive_dynamics.hpp"
 #include <cmath>
 #include <algorithm>
-#include <queue>
 
 namespace brain19 {
 
@@ -167,36 +166,51 @@ void CognitiveDynamics::spread_recursive(
         stats.max_depth_reached = depth;
     }
     
-    // Propagate to each target
+    // Propagate to each target — RELATION-TYPE-AWARE (Convergence v2)
     for (const RelationInfo& rel : relations) {
-        // Calculate propagated activation
-        // FORMULA: activation(B) = activation(A) × weight × trust × damping^depth
+        // Check target not invalidated (Audit #10)
+        auto target_opt = ltm.retrieve_concept(rel.target);
+        if (!target_opt.has_value() || target_opt->epistemic.is_invalidated()) {
+            continue;
+        }
+
+        // Relation-type-aware behavior
+        const RelationBehavior& behavior = get_behavior(rel.type);
+
+        // FORMULA: propagated = activation × rel_weight × trust × spread_weight × direction × damping
         double weight = config_.spreader.relation_weighted ? rel.weight : 1.0;
-        double damping = std::pow(config_.spreader.damping_factor, 
+        double damping = std::pow(config_.spreader.damping_factor,
                                   static_cast<double>(depth + 1));
-        
-        double propagated = activation * weight * source_trust * damping;
+
+        double propagated = activation * weight * source_trust
+                          * behavior.spreading_weight * damping;
         propagated = clamp_activation(propagated);
-        
+
         // Update statistics
         stats.total_propagations++;
         stats.total_activation_added += propagated;
-        
+
         // Apply activation to target in STM
-        // First check if it exists, if not create it, if yes boost it
-        double existing = stm.get_concept_activation(context, rel.target);
-        if (existing > 0.0) {
-            // Already exists - boost
-            stm.boost_concept(context, rel.target, propagated);
+        if (behavior.spreading_direction > 0) {
+            // Excitatory: activate or boost
+            double existing = stm.get_concept_activation(context, rel.target);
+            if (existing > 0.0) {
+                stm.boost_concept(context, rel.target, propagated);
+            } else {
+                stm.activate_concept(context, rel.target, propagated, ActivationClass::CONTEXTUAL);
+            }
         } else {
-            // Create new entry
-            stm.activate_concept(context, rel.target, propagated, ActivationClass::CONTEXTUAL);
+            // Inhibitory (OPPOSITION/CONTRADICTS): reduce target activation
+            stm.inhibit_concept(context, rel.target, propagated);
         }
-        
-        // Recursively spread from target
+
+        // Temporal: only propagate forward in time
+        if (rel.type == RelationType::TEMPORAL_AFTER) continue;
+
+        // Recursively spread from target (always with positive magnitude)
         spread_recursive(
             rel.target,
-            propagated,
+            propagated * 0.8,  // reduced recursive propagation
             depth + 1,
             context,
             ltm,
@@ -288,10 +302,12 @@ double CognitiveDynamics::compute_connectivity_factor(
 ) const {
     size_t count = ltm.get_relation_count(cid);
     if (max_connectivity == 0) {
-        // Self-normalize mode: yields 1.0 if relations exist, 0.0 if none
         max_connectivity = std::max(size_t(1), count);
     }
-    return static_cast<double>(count) / static_cast<double>(max_connectivity);
+    // Unified log normalization (Convergence v2, Audit #12)
+    // log(count+1)/log(max+1) — same formula for single and batch modes
+    return std::log(static_cast<double>(count + 1))
+         / std::log(static_cast<double>(max_connectivity + 1));
 }
 
 double CognitiveDynamics::compute_recency_factor(
@@ -833,9 +849,9 @@ std::vector<ThoughtPath> CognitiveDynamics::find_paths_to(
 
 void CognitiveDynamics::expand_paths(
     std::vector<ThoughtPath>& paths,
-    ContextId context,
+    ContextId /*context*/,
     const LongTermMemory& ltm,
-    const ShortTermMemory& stm,
+    const ShortTermMemory& /*stm*/,
     const ConceptId* target
 ) const {
     std::vector<ThoughtPath> expanded;

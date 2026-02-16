@@ -3,7 +3,6 @@
 #include <algorithm>
 #include <cctype>
 #include <fstream>
-#include <sstream>
 
 namespace brain19 {
 
@@ -174,7 +173,16 @@ std::vector<uint16_t> BPETokenizer::encode(const std::string& text) const {
     std::vector<uint16_t> result;
     auto words = split_words(text);
 
+    bool first_word = true;
     for (const auto& word : words) {
+        // Insert space separator between words (not before first, not before punctuation)
+        if (!first_word && word.size() == 1 && std::ispunct((unsigned char)word[0])) {
+            // punctuation: no space before
+        } else if (!first_word) {
+            result.push_back(LanguageConfig::SEP_TOKEN);
+        }
+        first_word = false;
+
         // First try: exact match as concept token
         auto it = token_to_id_.find(word);
         if (it != token_to_id_.end() && is_concept_token(it->second)) {
@@ -332,6 +340,10 @@ std::vector<std::string> BPETokenizer::split_words(const std::string& text) cons
         words.push_back(current);
     }
     return words;
+}
+
+std::vector<std::string> BPETokenizer::word_tokenize(const std::string& text) const {
+    return split_words(text);
 }
 
 // =============================================================================

@@ -10,9 +10,7 @@ KANAdapter::KANAdapter()
 {
 }
 
-KANAdapter::~KANAdapter() {
-    modules_.clear();
-}
+KANAdapter::~KANAdapter() = default;
 
 uint64_t KANAdapter::create_kan_module(size_t input_dim, size_t output_dim, size_t num_knots) {
     uint64_t id = next_module_id_++;

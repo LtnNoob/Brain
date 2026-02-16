@@ -1,4 +1,5 @@
 #include "concept_trainer.hpp"
+#include "../core/relation_config.hpp"
 
 #include <algorithm>
 #include <thread>
@@ -24,23 +25,51 @@ std::vector<TrainingSample> ConceptTrainer::generate_samples(
 
     static const size_t RECALL_HASH = std::hash<std::string>{}("recall");
 
+    // Epistemic trust factor per EpistemicType (Convergence v2, Section 7.1)
+    auto epistemic_trust = [](EpistemicType type) -> float {
+        switch (type) {
+            case EpistemicType::FACT:        return 1.0f;
+            case EpistemicType::DEFINITION:  return 1.0f;
+            case EpistemicType::THEORY:      return 0.7f;
+            case EpistemicType::INFERENCE:   return 0.6f;
+            case EpistemicType::HYPOTHESIS:  return 0.4f;
+            case EpistemicType::SPECULATION: return 0.2f;
+        }
+        return 0.5f;
+    };
+
+    // Get source concept's epistemic type
+    auto source_info = ltm.retrieve_concept(cid);
+    float source_trust = source_info ? epistemic_trust(source_info->epistemic.type) : 0.5f;
+
     auto outgoing = ltm.get_outgoing_relations(cid);
     for (const auto& rel : outgoing) {
         connected.insert(rel.target);
+
+        // Epistemic-weighted target (Convergence v2, Section 7.1)
+        auto target_info = ltm.retrieve_concept(rel.target);
+        float target_trust = target_info ? epistemic_trust(target_info->epistemic.type) : 0.5f;
+        float epistemic_factor = source_trust * target_trust;
+
         TrainingSample sample;
         sample.relation_embedding = embeddings.get_relation_embedding(rel.type);
         sample.context_embedding = embeddings.make_target_embedding(RECALL_HASH, cid, rel.target);
-        sample.target = rel.weight;
+        sample.target = rel.weight * epistemic_factor;
         samples.push_back(sample);
     }
 
     auto incoming = ltm.get_incoming_relations(cid);
     for (const auto& rel : incoming) {
         connected.insert(rel.source);
+
+        auto incoming_info = ltm.retrieve_concept(rel.source);
+        float incoming_trust = incoming_info ? epistemic_trust(incoming_info->epistemic.type) : 0.5f;
+        float epistemic_factor = source_trust * incoming_trust;
+
         TrainingSample sample;
         sample.relation_embedding = embeddings.get_relation_embedding(rel.type);
         sample.context_embedding = embeddings.make_target_embedding(RECALL_HASH, cid, rel.source);
-        sample.target = rel.weight * config_.incoming_discount;
+        sample.target = rel.weight * config_.incoming_discount * epistemic_factor;
         samples.push_back(sample);
     }
 

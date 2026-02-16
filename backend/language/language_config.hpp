@@ -47,6 +47,11 @@ struct LanguageConfig {
     // Update KAN: (16+64)=80 → 32 → 16
     // Output projection: 16 → VOCAB_SIZE
 
+    // ── Concept Prediction ──
+    static constexpr size_t CONCEPT_EMBED_DIM    = 16;   // FlexEmbedding core dimension
+    static constexpr size_t MAX_CONCEPT_SEQUENCE  = 10;   // max concepts per prediction
+    double concept_temperature       = 0.1;               // softmax temperature for cosine similarity
+
     // ── Generation ──
     size_t max_tokens               = 30;
     double decoder_confidence_threshold = 0.15;  // below this → template fallback
@@ -57,15 +62,22 @@ struct LanguageConfig {
     double decoder_lr               = 2.0;
     double fusion_lr                = 0.001;
     size_t encoder_epochs           = 200;
-    size_t decoder_epochs           = 150;
+    size_t decoder_epochs           = 10;  // was 150, reduced for quick test
     size_t fusion_epochs            = 300;
 
     // ── Relation Decoder Training ──
-    static constexpr size_t MAX_RELATION_DECODER_PAIRS = 10000;
-    static constexpr size_t MAX_DEFINITION_DECODER_PAIRS = 8000;  // unified concept descriptions
+    static constexpr size_t MAX_RELATION_DECODER_PAIRS = 20000;
+    static constexpr size_t MAX_DEFINITION_DECODER_PAIRS = 20000;  // unified concept descriptions
 
     // ── KAN Knots ──
     size_t kan_num_knots            = 10;
+
+    // ── Deep KAN Decoder (V12) ──
+    bool use_deep_kan               = false;
+    double deep_kan_lr              = 0.01;   // LR for KAN spline + residual weights
+
+    // ── Convergence Integration ──
+    static constexpr size_t CONVERGENCE_DIM = 32;  // = ConvergencePort::OUTPUT_DIM
 };
 
 } // namespace brain19

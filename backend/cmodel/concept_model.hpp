@@ -10,7 +10,8 @@
 
 namespace brain19 {
 
-static constexpr size_t CM_FLAT_SIZE = 1900;
+static constexpr size_t CM_FLAT_SIZE_V5 = 1900;   // Pre-convergence layout
+static constexpr size_t CM_FLAT_SIZE = 5836;       // V6: adds ConvergencePort (3936 params)
 
 // Pattern weights per concept (learned from validation feedback)
 struct ConceptPatternWeights {
@@ -37,6 +38,24 @@ struct MultiHeadBilinear {
     void compute(const FlexEmbedding& e_q, const FlexEmbedding& e_k,
                  std::array<double, K>& scores) const;
     void initialize();  // Xavier init (breaks symmetry between heads)
+};
+
+// Convergence Input Port: per-concept 122→32 linear+tanh expert
+// (Convergence v2, Section 3: Deep KAN ↔ ConceptModel Integration)
+// Input: h(90) ⊕ k1_proj(32) = 122 dims from convergence pipeline
+// Output: 32 dims for local expert contribution
+struct ConvergencePort {
+    static constexpr size_t INPUT_DIM = 122;
+    static constexpr size_t OUTPUT_DIM = 32;
+    static constexpr size_t W_SIZE = OUTPUT_DIM * INPUT_DIM;  // 3904
+    static constexpr size_t TOTAL_PARAMS = W_SIZE + OUTPUT_DIM; // 3936
+
+    std::array<double, W_SIZE> W{};
+    std::array<double, OUTPUT_DIM> b{};
+
+    // Forward: output[i] = tanh(W[i] · input + b[i])
+    void compute(const double* input, double* output) const;
+    void initialize();  // Xavier init
 };
 
 // FlexKAN: lightweight [6,4,1] B-spline network per concept
@@ -107,6 +126,14 @@ public:
     void train_kan(double bilinear_score, double ctx_feature,
                    double validated_target, double learning_rate);
 
+    // === Convergence Port (122→32) ===
+    void forward_convergence(const double* input_122, double* output_32) const;
+    // Backward: returns gradient w.r.t. input (122-dim) for backprop to KAN
+    void backward_convergence(const double* input_122, const double* cached_output_32,
+                               const double* grad_output_32, double learning_rate);
+    ConvergencePort& convergence_port() { return conv_port_; }
+    const ConvergencePort& convergence_port() const { return conv_port_; }
+
     // === Pattern Weights ===
     ConceptPatternWeights& pattern_weights() { return patterns_; }
     const ConceptPatternWeights& pattern_weights() const { return patterns_; }
@@ -139,6 +166,9 @@ private:
 
     // FlexKAN [6,4,1] (280 doubles)
     FlexKAN kan_;
+
+    // Convergence port (3936 doubles)
+    ConvergencePort conv_port_;
 
     // Per-concept pattern weights (15 doubles)
     ConceptPatternWeights patterns_;

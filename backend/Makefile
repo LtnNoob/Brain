@@ -4,6 +4,41 @@ CXX = g++
 CXXFLAGS = -std=c++20 -Wall -Wextra -Wpedantic -O2 -I.
 LDFLAGS = -lcurl -pthread
 
+# CUDA support: make GPU=1 to enable
+ifdef GPU
+NVCC = nvcc
+NVCCFLAGS = -std=c++20 -O2 -I. -DUSE_CUDA --expt-relaxed-constexpr -arch=sm_75
+CXXFLAGS += -DUSE_CUDA
+LDFLAGS += -lcudart -L/usr/local/cuda/lib64
+CUDA_OBJ = cuda/cuda_ops.o cuda/cuda_training.o
+cuda/cuda_ops.o: cuda/cuda_ops.cu cuda/cuda_ops.h
+	$(NVCC) $(NVCCFLAGS) -c $< -o $@
+cuda/cuda_training.o: cuda/cuda_training.cu cuda/cuda_training.h
+	$(NVCC) $(NVCCFLAGS) -c $< -o $@
+else
+CUDA_OBJ = cuda/cuda_ops_cpu.o cuda/cuda_training_cpu.o
+cuda/cuda_ops_cpu.o: cuda/cuda_ops_cpu.cpp cuda/cuda_ops.h
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+cuda/cuda_training_cpu.o: cuda/cuda_training_cpu.cpp cuda/cuda_training.h
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+endif
+
+# LibTorch support: make TORCH=1 to enable
+ifdef TORCH
+TORCH_DIR = /home/claude/.openclaw/workspace/venv-sd/lib/python3.12/site-packages/torch
+CXXFLAGS += -I$(TORCH_DIR)/include -I$(TORCH_DIR)/include/torch/csrc/api/include \
+            -DUSE_LIBTORCH -D_GLIBCXX_USE_CXX11_ABI=1
+LDFLAGS += -L$(TORCH_DIR)/lib -ltorch -ltorch_cpu -ltorch_cuda -lc10 -lc10_cuda \
+           -Wl,-rpath,$(TORCH_DIR)/lib
+TORCH_OBJ = libtorch/torch_kan.o libtorch/torch_training.o
+libtorch/torch_kan.o: libtorch/torch_kan.cpp libtorch/torch_kan.hpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+libtorch/torch_training.o: libtorch/torch_training.cpp libtorch/torch_training.hpp libtorch/torch_kan.hpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+else
+TORCH_OBJ =
+endif
+
 # === Source Groups ===
 MEMORY_SOURCES = memory/stm.cpp memory/brain_controller.cpp memory/relation_type_registry.cpp
 KAN_SOURCES = kan/kan_node.cpp kan/kan_layer.cpp kan/kan_module.cpp
@@ -35,7 +70,9 @@ HYBRID_SOURCES = hybrid/kan_validator.cpp hybrid/domain_manager.cpp \
                  hybrid/hypothesis_translator.cpp hybrid/kan_graph_monitor.cpp
 EVOLUTION_SOURCES = evolution/pattern_discovery.cpp evolution/epistemic_promotion.cpp \
                     evolution/concept_proposal.cpp evolution/graph_densifier.cpp \
-                    evolution/property_inheritance.cpp
+                    evolution/property_inheritance.cpp \
+                    evolution/complexity_analyzer.cpp evolution/retention_manager.cpp \
+                    evolution/trust_propagator.cpp
 BOOTSTRAP_SOURCES = bootstrap/foundation_concepts.cpp bootstrap/bootstrap_interface.cpp \
                     bootstrap/context_accumulator.cpp bootstrap/json_parser.cpp
 STREAMS_SOURCES = streams/think_stream.cpp streams/stream_orchestrator.cpp \
@@ -45,7 +82,8 @@ CURSOR_SOURCES = cursor/focus_cursor.cpp cursor/focus_cursor_manager.cpp \
 LANGUAGE_SOURCES = language/bpe_tokenizer.cpp language/kan_encoder.cpp \
                    language/semantic_scorer.cpp language/fusion_layer.cpp \
                    language/kan_decoder.cpp language/kan_language_engine.cpp \
-                   language/language_training.cpp language/dimensional_context.cpp
+                   language/language_training.cpp language/dimensional_context.cpp \
+                   language/deep_kan.cpp language/sentence_parser.cpp language/sentence_parser.cpp
 CORE_APP_SOURCES = core/system_orchestrator.cpp core/brain19_app.cpp \
                    core/thinking_pipeline.cpp
 
@@ -59,7 +97,7 @@ CORE_SOURCES = $(MEMORY_SOURCES) $(KAN_SOURCES) $(ADAPTER_SOURCES) \
                $(BOOTSTRAP_SOURCES) $(STREAMS_SOURCES) $(CORE_APP_SOURCES) \
                $(CURSOR_SOURCES) $(LANGUAGE_SOURCES)
 
-CORE_OBJECTS = $(CORE_SOURCES:.cpp=.o)
+CORE_OBJECTS = $(CORE_SOURCES:.cpp=.o) $(CUDA_OBJ) $(TORCH_OBJ)
 
 # === Targets ===
 TARGETS = brain19 \
@@ -74,7 +112,12 @@ TARGETS = brain19 \
           test_relation_registry test_json_parser \
           test_concept_embeddings test_gdo test_goal_generator \
           test_property_inheritance \
-          test_flex_activation
+          test_flex_activation \
+          test_graph_features \
+          train_v10 \
+          train_v11 \
+          train_v12 \
+          train_v12_cpu
 
 .PHONY: all clean run
 
@@ -162,6 +205,21 @@ test_property_inheritance: evolution/test_property_inheritance.o $(CORE_OBJECTS)
 	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
 test_flex_activation: micromodel/test_flex_activation.o $(CORE_OBJECTS)
+	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
+
+test_graph_features: evolution/test_graph_features.o $(CORE_OBJECTS)
+	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
+
+train_v10: train_v10.o $(CORE_OBJECTS)
+	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
+
+train_v11: train_v11.o $(CORE_OBJECTS)
+	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
+
+train_v12: train_v12.o $(CORE_OBJECTS)
+	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
+
+train_v12_cpu: train_v12_cpu.o $(CORE_OBJECTS)
 	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
 # --- Pattern Rule ---

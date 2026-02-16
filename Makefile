@@ -216,7 +216,39 @@ BRAIN19_SRCS = \
 	$(BACKEND)/streams/stream_monitor.cpp \
 	$(BACKEND)/evolution/concept_proposal.cpp \
 	$(BACKEND)/evolution/epistemic_promotion.cpp \
-	$(BACKEND)/evolution/pattern_discovery.cpp
+	$(BACKEND)/evolution/pattern_discovery.cpp \
+	$(BACKEND)/evolution/graph_densifier.cpp \
+	$(BACKEND)/evolution/property_inheritance.cpp \
+	$(BACKEND)/evolution/complexity_analyzer.cpp \
+	$(BACKEND)/evolution/retention_manager.cpp \
+	$(BACKEND)/evolution/trust_propagator.cpp \
+	$(BACKEND)/cmodel/concept_model.cpp \
+	$(BACKEND)/cmodel/concept_model_registry.cpp \
+	$(BACKEND)/cmodel/concept_trainer.cpp \
+	$(BACKEND)/cmodel/concept_persistence.cpp \
+	$(BACKEND)/cmodel/concept_pattern_engine.cpp \
+	$(BACKEND)/language/sentence_parser.cpp \
+	$(BACKEND)/language/bpe_tokenizer.cpp \
+	$(BACKEND)/language/kan_language_engine.cpp \
+	$(BACKEND)/language/kan_encoder.cpp \
+	$(BACKEND)/language/kan_decoder.cpp \
+	$(BACKEND)/language/fusion_layer.cpp \
+	$(BACKEND)/language/language_training.cpp \
+	$(BACKEND)/language/semantic_scorer.cpp \
+	$(BACKEND)/language/dimensional_context.cpp \
+	$(BACKEND)/memory/relation_type_registry.cpp \
+	$(BACKEND)/cursor/template_engine.cpp \
+	$(BACKEND)/cursor/focus_cursor.cpp \
+	$(BACKEND)/cursor/focus_cursor_manager.cpp \
+	$(BACKEND)/micromodel/concept_embedding_store.cpp \
+	$(BACKEND)/snapshot_generator.cpp \
+	$(BACKEND)/cognitive/global_dynamics_operator.cpp \
+	$(BACKEND)/hybrid/kan_graph_monitor.cpp \
+	$(BACKEND)/curiosity/goal_generator.cpp \
+	$(BACKEND)/bootstrap/json_parser.cpp \
+	$(BACKEND)/language/deep_kan.cpp \
+	$(BACKEND)/cuda/cuda_ops_cpu.cpp \
+	$(BACKEND)/cuda/cuda_training_cpu.cpp
 
 brain19: $(BACKEND)/main.cpp $(BRAIN19_SRCS)
 	$(CXX) $(CXXFLAGS) -I$(BACKEND) -o brain19 \

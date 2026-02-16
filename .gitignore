@@ -7,3 +7,10 @@ backend/brain19_data/
 node_modules/
 package-lock.json
 .venv/
+*.o
+*.a
+brain19
+test_*
+!test_*.cpp
+demo_*
+!demo_*.cpp

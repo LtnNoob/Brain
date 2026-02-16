@@ -49,7 +49,11 @@ struct PersistentConceptRecord {
     double   salience_score;        // 8B — Computed salience [0,1]
     double   structural_confidence; // 8B — Graph-structural confidence [0,1]
     double   semantic_confidence;   // 8B — Semantic confidence [0,1]
-    uint8_t  _reserved[32];        // 32B — remaining pad to 128
+    // === Anti-Knowledge persistence (P2-4) ===
+    uint8_t  is_anti_knowledge;     // 1B — retained as known error path
+    uint8_t  _pad2[3];             // 3B alignment
+    float    complexity_score;      // 4B — cached complexity [0.0, 1.0]
+    uint8_t  _reserved[24];        // 24B — remaining pad to 128
     // Total: 128 bytes (unchanged)
     
     bool is_deleted() const { return flags & 0x01; }

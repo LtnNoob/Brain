@@ -25,6 +25,7 @@ enum class WALOpType : uint8_t {
     REMOVE_RELATION    = 3,
     INVALIDATE_CONCEPT = 4,
     UPDATE_METADATA    = 5,
+    SET_ANTI_KNOWLEDGE = 6,
 };
 
 // =============================================================================
@@ -82,6 +83,13 @@ struct WALUpdateMetadataPayload {
     uint8_t  epistemic_status;
     uint8_t  _pad[6];
     double   trust;
+};
+
+struct WALSetAntiKnowledgePayload {
+    uint64_t concept_id;
+    uint8_t  is_anti_knowledge;  // 0 or 1
+    uint8_t  _pad[3];
+    float    complexity_score;
 };
 
 // =============================================================================

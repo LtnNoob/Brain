@@ -253,6 +253,14 @@ WALRecovery::Stats WALRecovery::recover(const std::string& wal_path, PersistentL
                 stats.entries_applied++;
                 break;
             }
+            case WALOpType::SET_ANTI_KNOWLEDGE: {
+                if (hdr.payload_size < sizeof(WALSetAntiKnowledgePayload)) break;
+                auto* p = reinterpret_cast<const WALSetAntiKnowledgePayload*>(payload.data());
+                ltm.set_anti_knowledge(p->concept_id, p->is_anti_knowledge != 0,
+                                       p->complexity_score);
+                stats.entries_applied++;
+                break;
+            }
             default:
                 stats.entries_corrupt++;
                 break;

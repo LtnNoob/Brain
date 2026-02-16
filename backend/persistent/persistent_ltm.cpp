@@ -144,6 +144,8 @@ std::optional<ConceptInfo> PersistentLTM::retrieve_concept(ConceptId id) const {
     info.salience_score = rec->salience_score;
     info.structural_confidence = rec->structural_confidence;
     info.semantic_confidence = rec->semantic_confidence;
+    info.is_anti_knowledge = (rec->is_anti_knowledge != 0);
+    info.complexity_score = rec->complexity_score;
     return info;
 }
 
@@ -201,6 +203,28 @@ bool PersistentLTM::invalidate_concept(ConceptId id, double invalidation_trust) 
     rec->epistemic_status = static_cast<uint8_t>(EpistemicStatus::INVALIDATED);
     rec->trust = invalidation_trust;
     
+    return true;
+}
+
+bool PersistentLTM::set_anti_knowledge(ConceptId id, bool is_ak, float complexity) {
+    auto it = concept_index_.find(id);
+    if (it == concept_index_.end()) return false;
+
+    auto* rec = concepts_->record(it->second);
+    if (rec->is_deleted()) return false;
+
+    if (wal_) {
+        WALSetAntiKnowledgePayload wp;
+        std::memset(&wp, 0, sizeof(wp));
+        wp.concept_id = id;
+        wp.is_anti_knowledge = is_ak ? 1 : 0;
+        wp.complexity_score = complexity;
+        wal_->append(WALOpType::SET_ANTI_KNOWLEDGE, &wp, sizeof(wp));
+    }
+
+    rec->is_anti_knowledge = is_ak ? 1 : 0;
+    rec->complexity_score = complexity;
+
     return true;
 }
 

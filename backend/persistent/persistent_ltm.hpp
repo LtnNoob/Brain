@@ -43,6 +43,7 @@ public:
     bool exists(ConceptId id) const;
     bool update_epistemic_metadata(ConceptId id, EpistemicMetadata new_metadata);
     bool invalidate_concept(ConceptId id, double invalidation_trust = 0.05);
+    bool set_anti_knowledge(ConceptId id, bool is_ak, float complexity_score);
     
     std::vector<ConceptId> get_concepts_by_type(EpistemicType type) const;
     std::vector<ConceptId> get_concepts_by_status(EpistemicStatus status) const;

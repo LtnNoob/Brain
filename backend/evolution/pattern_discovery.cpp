@@ -10,27 +10,62 @@ PatternDiscovery::PatternDiscovery(const LongTermMemory& ltm)
 {
 }
 
+// =============================================================================
+// Build adjacency — filters anti-knowledge, includes all relation types
+// =============================================================================
+
 PatternDiscovery::AdjacencyGraph PatternDiscovery::build_graph() const {
     AdjacencyGraph graph;
     auto all_ids = ltm_.get_active_concepts();
-    graph.nodes = all_ids;
 
+    // First pass: collect valid nodes (active AND not anti-knowledge)
     for (auto id : all_ids) {
+        auto cinfo = ltm_.retrieve_concept(id);
+        if (!cinfo) continue;
+        if (cinfo->is_anti_knowledge) continue;  // Filter anti-knowledge
+        if (!cinfo->epistemic.is_active()) continue;
+        graph.nodes.push_back(id);
+        graph.node_set.insert(id);
+    }
+
+    // Second pass: build adjacency from valid nodes only
+    for (auto id : graph.nodes) {
         auto outgoing = ltm_.get_outgoing_relations(id);
         for (const auto& rel : outgoing) {
-            // Only include relations to active concepts
-            auto target = ltm_.retrieve_concept(rel.target);
-            if (target && target->epistemic.is_active()) {
-                graph.adj[id].push_back(rel.target);
-                if (rel.type == RelationType::IS_A) {
-                    graph.adj_typed[id].push_back(rel.target);
-                }
+            // Only include edges to valid nodes
+            if (graph.node_set.count(rel.target) == 0) continue;
+
+            graph.adj[id].push_back(rel.target);
+            if (rel.type == RelationType::IS_A) {
+                graph.adj_typed[id].push_back(rel.target);
             }
         }
     }
 
     return graph;
 }
+
+// =============================================================================
+// Average trust of involved concepts
+// =============================================================================
+
+double PatternDiscovery::avg_trust(const std::vector<ConceptId>& concepts) const {
+    if (concepts.empty()) return 0.5;
+    double sum = 0.0;
+    size_t count = 0;
+    for (ConceptId cid : concepts) {
+        auto cinfo = ltm_.retrieve_concept(cid);
+        if (cinfo) {
+            sum += cinfo->epistemic.trust;
+            ++count;
+        }
+    }
+    return (count > 0) ? sum / static_cast<double>(count) : 0.5;
+}
+
+// =============================================================================
+// Connected components via BFS
+// =============================================================================
 
 std::vector<std::vector<ConceptId>> PatternDiscovery::find_components(
     const AdjacencyGraph& graph) const
@@ -76,6 +111,10 @@ std::vector<std::vector<ConceptId>> PatternDiscovery::find_components(
     return components;
 }
 
+// =============================================================================
+// Clusters — trust-weighted confidence
+// =============================================================================
+
 std::vector<DiscoveredPattern> PatternDiscovery::find_clusters(size_t min_size) {
     std::vector<DiscoveredPattern> patterns;
     auto graph = build_graph();
@@ -86,9 +125,9 @@ std::vector<DiscoveredPattern> PatternDiscovery::find_clusters(size_t min_size) 
 
         // Compute density: edges / (n*(n-1))
         size_t edge_count = 0;
+        std::unordered_set<ConceptId> comp_set(comp.begin(), comp.end());
         for (auto node : comp) {
             if (graph.adj.count(node)) {
-                std::unordered_set<ConceptId> comp_set(comp.begin(), comp.end());
                 for (auto neighbor : graph.adj.at(node)) {
                     if (comp_set.count(neighbor)) {
                         ++edge_count;
@@ -101,17 +140,24 @@ std::vector<DiscoveredPattern> PatternDiscovery::find_clusters(size_t min_size) 
         double max_edges = static_cast<double>(n * (n - 1));
         double density = (max_edges > 0) ? static_cast<double>(edge_count) / max_edges : 0.0;
 
+        // Confidence = density * average trust of cluster members
+        double trust = avg_trust(comp);
+
         patterns.emplace_back(
             "Cluster of " + std::to_string(n) + " concepts (density=" +
-            std::to_string(density) + ")",
+            std::to_string(density) + ", trust=" + std::to_string(trust) + ")",
             comp,
-            density,
+            density * trust,
             "cluster"
         );
     }
 
     return patterns;
 }
+
+// =============================================================================
+// Hierarchies — trust-weighted
+// =============================================================================
 
 std::vector<DiscoveredPattern> PatternDiscovery::find_hierarchies(size_t min_depth) {
     std::vector<DiscoveredPattern> patterns;
@@ -136,10 +182,12 @@ std::vector<DiscoveredPattern> PatternDiscovery::find_hierarchies(size_t min_dep
         }
 
         if (chain.size() >= min_depth) {
+            double trust = avg_trust(chain);
             patterns.emplace_back(
-                "IS_A hierarchy of depth " + std::to_string(chain.size()),
+                "IS_A hierarchy of depth " + std::to_string(chain.size()) +
+                " (trust=" + std::to_string(trust) + ")",
                 chain,
-                0.9,
+                trust,  // trust IS the confidence
                 "hierarchy"
             );
         }
@@ -147,6 +195,10 @@ std::vector<DiscoveredPattern> PatternDiscovery::find_hierarchies(size_t min_dep
 
     return patterns;
 }
+
+// =============================================================================
+// Bridges — trust-weighted
+// =============================================================================
 
 std::vector<DiscoveredPattern> PatternDiscovery::find_bridges() {
     std::vector<DiscoveredPattern> patterns;
@@ -164,7 +216,6 @@ std::vector<DiscoveredPattern> PatternDiscovery::find_bridges() {
     }
 
     // Find concepts that have relations to concepts in other components
-    // (This catches near-bridges — concepts with weak cross-component links)
     for (auto node : graph.nodes) {
         if (!graph.adj.count(node)) continue;
 
@@ -186,11 +237,15 @@ std::vector<DiscoveredPattern> PatternDiscovery::find_bridges() {
         }
 
         if (connected_components.size() >= 2) {
+            auto cinfo = ltm_.retrieve_concept(node);
+            double trust = cinfo ? cinfo->epistemic.trust : 0.5;
+
             patterns.emplace_back(
                 "Bridge concept connecting " +
-                std::to_string(connected_components.size()) + " clusters",
+                std::to_string(connected_components.size()) + " clusters" +
+                " (trust=" + std::to_string(trust) + ")",
                 std::vector<ConceptId>{node},
-                0.8,
+                trust,  // bridge confidence = concept's own trust
                 "bridge"
             );
         }
@@ -198,6 +253,10 @@ std::vector<DiscoveredPattern> PatternDiscovery::find_bridges() {
 
     return patterns;
 }
+
+// =============================================================================
+// Cycles — trust-weighted
+// =============================================================================
 
 bool PatternDiscovery::dfs_cycles(
     ConceptId node, ConceptId start,
@@ -246,10 +305,12 @@ std::vector<DiscoveredPattern> PatternDiscovery::find_cycles(size_t max_length) 
         dfs_cycles(start, start, path, visited, graph, max_length, found);
 
         for (auto& cycle : found) {
+            double trust = avg_trust(cycle);
             patterns.emplace_back(
-                "Cycle of length " + std::to_string(cycle.size()),
+                "Cycle of length " + std::to_string(cycle.size()) +
+                " (trust=" + std::to_string(trust) + ")",
                 cycle,
-                0.7,
+                trust * 0.7,  // cycles are less certain, scale by 0.7
                 "cycle"
             );
         }
@@ -260,11 +321,15 @@ std::vector<DiscoveredPattern> PatternDiscovery::find_cycles(size_t max_length) 
     return patterns;
 }
 
+// =============================================================================
+// Gaps — trust-weighted, all relation types
+// =============================================================================
+
 std::vector<DiscoveredPattern> PatternDiscovery::find_gaps() {
     std::vector<DiscoveredPattern> patterns;
-    auto all_ids = ltm_.get_active_concepts();
+    auto graph = build_graph();
 
-    for (auto id : all_ids) {
+    for (auto id : graph.nodes) {
         auto outgoing = ltm_.get_outgoing_relations(id);
 
         // For each IS_A parent, check if siblings share relations we don't have
@@ -272,13 +337,16 @@ std::vector<DiscoveredPattern> PatternDiscovery::find_gaps() {
             if (rel.type != RelationType::IS_A) continue;
 
             ConceptId parent = rel.target;
+            if (graph.node_set.count(parent) == 0) continue;  // parent filtered out
+
             auto parent_incoming = ltm_.get_incoming_relations(parent);
 
             // Find siblings (other concepts that IS_A the same parent)
             std::vector<ConceptId> siblings;
             for (const auto& sibling_rel : parent_incoming) {
                 if (sibling_rel.type == RelationType::IS_A &&
-                    sibling_rel.source != id) {
+                    sibling_rel.source != id &&
+                    graph.node_set.count(sibling_rel.source)) {  // sibling must be valid
                     siblings.push_back(sibling_rel.source);
                 }
             }
@@ -288,18 +356,27 @@ std::vector<DiscoveredPattern> PatternDiscovery::find_gaps() {
                 auto sibling_rels = ltm_.get_outgoing_relations(sibling);
                 for (const auto& srel : sibling_rels) {
                     if (srel.type == RelationType::IS_A) continue;
+                    if (graph.node_set.count(srel.target) == 0) continue;  // target filtered
 
                     // Does id have a similar relation?
                     auto our_rels = ltm_.get_relations_between(id, srel.target);
                     if (our_rels.empty()) {
+                        // Trust-weighted: use min trust of involved concepts
+                        auto id_info = ltm_.retrieve_concept(id);
+                        auto target_info = ltm_.retrieve_concept(srel.target);
+                        double id_trust = id_info ? id_info->epistemic.trust : 0.5;
+                        double target_trust = target_info ? target_info->epistemic.trust : 0.5;
+                        double conf = std::min(id_trust, target_trust) * 0.5;
+
                         patterns.emplace_back(
                             "Gap: concept " + std::to_string(id) +
                             " may need " + relation_type_to_string(srel.type) +
                             " to " + std::to_string(srel.target) +
                             " (sibling " + std::to_string(sibling) + " has it)",
                             std::vector<ConceptId>{id, srel.target, sibling},
-                            0.5,
-                            "gap"
+                            conf,
+                            "gap",
+                            srel.type  // Store the actual missing relation type
                         );
                     }
                 }
@@ -309,6 +386,10 @@ std::vector<DiscoveredPattern> PatternDiscovery::find_gaps() {
 
     return patterns;
 }
+
+// =============================================================================
+// Full discovery
+// =============================================================================
 
 std::vector<DiscoveredPattern> PatternDiscovery::discover_all() {
     std::vector<DiscoveredPattern> all;

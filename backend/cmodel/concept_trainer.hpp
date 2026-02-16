@@ -2,9 +2,12 @@
 
 #include "concept_model.hpp"
 #include "concept_model_registry.hpp"
+#include "multihop_sampler.hpp"
 #include "../micromodel/embedding_manager.hpp"
 #include "../ltm/long_term_memory.hpp"
+#include "../evolution/pattern_discovery.hpp"
 
+#include <unordered_map>
 #include <vector>
 #include <cstddef>
 
@@ -15,6 +18,7 @@ namespace brain19 {
 // =============================================================================
 //
 // Trains ConceptModels from KG structure. Extends MicroTrainer with KAN training.
+// Supports multi-hop path samples and pattern-driven samples.
 //
 
 struct ConceptTrainerConfig {
@@ -26,6 +30,9 @@ struct ConceptTrainerConfig {
     double kan_learning_rate = 0.005;
     size_t kan_epochs = 50;
     size_t refined_epochs = 10;  // Epochs over refined data per model
+
+    // Multi-hop training
+    MultiHopConfig multihop_config;
 
     ConceptTrainerConfig() {
         model_config.max_epochs = 500;
@@ -41,11 +48,18 @@ struct ConceptTrainerStats {
     size_t models_converged = 0;
     size_t kan_updates = 0;
     size_t refined_updates = 0;
+    // Multi-hop & pattern stats
+    size_t multihop_samples = 0;
+    size_t pattern_samples = 0;
+    double avg_path_depth = 0.0;
 };
 
 class ConceptTrainer {
 public:
     explicit ConceptTrainer(const ConceptTrainerConfig& config = ConceptTrainerConfig{});
+
+    // Set optional PatternDiscovery source for pattern-driven training
+    void set_pattern_discovery(PatternDiscovery* pd) { pattern_discovery_ = pd; }
 
     ConceptTrainerStats train_all(ConceptModelRegistry& registry,
                                   EmbeddingManager& embeddings,
@@ -65,6 +79,8 @@ public:
 
 private:
     ConceptTrainerConfig config_;
+    MultiHopSampler multihop_sampler_;
+    PatternDiscovery* pattern_discovery_ = nullptr;
 };
 
 } // namespace brain19

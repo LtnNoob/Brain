@@ -176,6 +176,10 @@ ConceptEmbeddingStore::learn_from_graph(const LongTermMemory& ltm,
         result.iterations = iter + 1;
 
         for (auto cid : all_ids) {
+            // Skip anti-knowledge concepts (they don't need embedding updates)
+            auto cid_info = ltm.retrieve_concept(cid);
+            if (cid_info && cid_info->is_anti_knowledge) continue;
+
             // Build weighted average of neighbor embeddings
             FlexEmbedding avg;
             avg.detail.resize(FlexConfig::INITIAL_DETAIL, 0.0);
@@ -184,12 +188,24 @@ ConceptEmbeddingStore::learn_from_graph(const LongTermMemory& ltm,
 
             auto outgoing = ltm.get_outgoing_relations(cid);
             for (const auto& rel : outgoing) {
+                auto neighbor_info = ltm.retrieve_concept(rel.target);
+
+                // Anti-Knowledge: simple AK = skip, complex AK = repulsive nudge
+                if (neighbor_info && neighbor_info->is_anti_knowledge
+                    && neighbor_info->complexity_score < 0.3f) continue;
+                bool is_ak = neighbor_info && neighbor_info->is_anti_knowledge;
+
                 const auto& neighbor_emb = get(rel.target);
 
                 // Relation-type-aware alpha (Convergence v2, Audit #2)
                 const RelationBehavior& behavior = get_behavior(rel.type);
                 double w = rel.weight * behavior.embedding_alpha;
                 // w is NEGATIVE for OPPOSITION → repulsive nudge
+                // Complex AK: also repulsive (negate)
+                if (is_ak) w = -std::abs(w);
+
+                // Weight by neighbor's epistemic trust
+                if (neighbor_info) w *= neighbor_info->epistemic.trust;
 
                 for (size_t i = 0; i < CORE_DIM; ++i) {
                     avg.core[i] += w * neighbor_emb.core[i];
@@ -204,11 +220,22 @@ ConceptEmbeddingStore::learn_from_graph(const LongTermMemory& ltm,
 
             auto incoming = ltm.get_incoming_relations(cid);
             for (const auto& rel : incoming) {
+                auto neighbor_info = ltm.retrieve_concept(rel.source);
+
+                // Anti-Knowledge: simple AK = skip, complex AK = repulsive nudge
+                if (neighbor_info && neighbor_info->is_anti_knowledge
+                    && neighbor_info->complexity_score < 0.3f) continue;
+                bool is_ak = neighbor_info && neighbor_info->is_anti_knowledge;
+
                 const auto& neighbor_emb = get(rel.source);
 
                 // Relation-type-aware alpha for incoming (weaker influence)
                 const RelationBehavior& behavior = get_behavior(rel.type);
                 double w = rel.weight * behavior.embedding_alpha * 0.5;
+                if (is_ak) w = -std::abs(w);
+
+                // Weight by neighbor's epistemic trust
+                if (neighbor_info) w *= neighbor_info->epistemic.trust;
 
                 for (size_t i = 0; i < CORE_DIM; ++i) {
                     avg.core[i] += w * neighbor_emb.core[i];

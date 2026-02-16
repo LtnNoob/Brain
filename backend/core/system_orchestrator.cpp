@@ -200,6 +200,11 @@ bool SystemOrchestrator::initialize() {
             language_engine_->rebuild_dimensional_context();
         }
 
+        // Wire PatternDiscovery into ConceptTrainer for pattern-driven training
+        if (trainer_ && pattern_discovery_) {
+            trainer_->set_pattern_discovery(pattern_discovery_.get());
+        }
+
         // Initial ConceptModel training from KG structure
         // Without this, all predictions are ~0.50 (untrained) and KAN validation
         // always refutes. Train once at startup so existing KG data produces
@@ -209,7 +214,10 @@ bool SystemOrchestrator::initialize() {
             auto stats = trainer_->train_all(*registry_, *embeddings_, *ltm_);
             log("    Trained " + std::to_string(stats.models_trained) + " models ("
                 + std::to_string(stats.models_converged) + " converged, avg loss "
-                + std::to_string(stats.avg_final_loss) + ")");
+                + std::to_string(stats.avg_final_loss)
+                + ", multihop_samples=" + std::to_string(stats.multihop_samples)
+                + ", pattern_samples=" + std::to_string(stats.pattern_samples)
+                + ", avg_path_depth=" + std::to_string(stats.avg_path_depth) + ")");
         }
 
         // Graph densification — only for small graphs where topology-based inference

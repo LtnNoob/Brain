@@ -54,7 +54,7 @@ COGNITIVE_SOURCES = cognitive/cognitive_dynamics.cpp cognitive/global_dynamics_o
 UNDERSTANDING_SOURCES = understanding/understanding_layer.cpp understanding/mini_llm.cpp
 CMODEL_SOURCES = cmodel/concept_model.cpp cmodel/concept_model_registry.cpp \
                  cmodel/concept_trainer.cpp cmodel/concept_pattern_engine.cpp \
-                 cmodel/concept_persistence.cpp
+                 cmodel/concept_persistence.cpp cmodel/multihop_sampler.cpp
 LLM_SOURCES = llm/chat_interface.cpp
 IMPORTER_SOURCES = importers/wikipedia_importer.cpp importers/scholar_importer.cpp \
                    importers/http_client.cpp

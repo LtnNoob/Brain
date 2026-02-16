@@ -31,6 +31,8 @@ void PropertyInheritance::build_contradicts_index() {
     contradicts_.clear();
     auto all_ids = ltm_.get_all_concept_ids();
     for (auto cid : all_ids) {
+        auto cinfo = ltm_.retrieve_concept(cid);
+        if (cinfo && cinfo->is_anti_knowledge) continue;
         for (const auto& rel : ltm_.get_outgoing_relations(cid)) {
             if (rel.type == RelationType::CONTRADICTS) {
                 contradicts_[cid].insert(rel.target);
@@ -51,6 +53,8 @@ void PropertyInheritance::build_existing_triples_index(
     existing_triples_.clear();
     auto all_ids = ltm_.get_all_concept_ids();
     for (auto cid : all_ids) {
+        auto cinfo = ltm_.retrieve_concept(cid);
+        if (cinfo && cinfo->is_anti_knowledge) continue;
         for (const auto& rel : ltm_.get_outgoing_relations(cid)) {
             for (auto t : types) {
                 if (rel.type == t) {
@@ -97,6 +101,13 @@ size_t PropertyInheritance::iterate_once(
     size_t added = 0;
 
     for (auto cid : all_ids) {
+        // Skip anti-knowledge and linguistic concepts
+        auto cinfo = ltm_.retrieve_concept(cid);
+        if (cinfo && cinfo->is_anti_knowledge) continue;
+        if (cinfo && (cinfo->label.size() >= 5 &&
+            (cinfo->label.substr(0, 5) == "word:" || cinfo->label.substr(0, 4) == "sent:")))
+            continue;
+
         // Find IS_A parents of this concept
         for (const auto& isa_rel : ltm_.get_outgoing_relations(cid)) {
             if (isa_rel.type != RelationType::IS_A) continue;

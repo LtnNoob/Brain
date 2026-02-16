@@ -227,6 +227,7 @@ BRAIN19_SRCS = \
 	$(BACKEND)/cmodel/concept_trainer.cpp \
 	$(BACKEND)/cmodel/concept_persistence.cpp \
 	$(BACKEND)/cmodel/concept_pattern_engine.cpp \
+	$(BACKEND)/cmodel/multihop_sampler.cpp \
 	$(BACKEND)/language/sentence_parser.cpp \
 	$(BACKEND)/language/bpe_tokenizer.cpp \
 	$(BACKEND)/language/kan_language_engine.cpp \

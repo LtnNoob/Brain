@@ -175,11 +175,11 @@ std::vector<ConceptProposal> ConceptProposer::rank_proposals(
 }
 
 bool ConceptProposer::concept_exists_similar(const std::string& label) const {
-    // Check all existing concepts for label match
+    // Check all existing concepts for label match (skip anti-knowledge)
     auto all_ids = ltm_.get_all_concept_ids();
     for (auto id : all_ids) {
         auto cinfo = ltm_.retrieve_concept(id);
-        if (cinfo && cinfo->label == label) {
+        if (cinfo && !cinfo->is_anti_knowledge && cinfo->label == label) {
             return true;
         }
     }
@@ -201,16 +201,17 @@ double ConceptProposer::compute_quality_score(const ConceptProposal& proposal) c
     }
 
     // Verified evidence (concepts that actually exist in LTM)
-    size_t verified = 0;
+    // Weight by epistemic trust, skip anti-knowledge
+    double verified_weight = 0.0;
     for (auto id : proposal.evidence) {
         if (ltm_.exists(id)) {
             auto c = ltm_.retrieve_concept(id);
-            if (c && c->epistemic.is_active()) {
-                ++verified;
+            if (c && c->epistemic.is_active() && !c->is_anti_knowledge) {
+                verified_weight += c->epistemic.trust;
             }
         }
     }
-    score += static_cast<double>(verified) * 0.1;
+    score += verified_weight * 0.1;
 
     return score;
 }

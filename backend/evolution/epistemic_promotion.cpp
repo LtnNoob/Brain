@@ -1,4 +1,5 @@
 #include "epistemic_promotion.hpp"
+#include "../memory/relation_type_registry.hpp"
 #include <algorithm>
 #include <queue>
 #include <unordered_set>
@@ -15,6 +16,8 @@ std::vector<EpistemicPromotion::PromotionCandidate> EpistemicPromotion::evaluate
 
     auto all_ids = ltm_.get_active_concepts();
     for (auto id : all_ids) {
+        auto cinfo = ltm_.retrieve_concept(id);
+        if (cinfo && cinfo->is_anti_knowledge) continue;
         auto candidate = evaluate(id);
         if (candidate) {
             candidates.push_back(std::move(*candidate));
@@ -139,10 +142,15 @@ std::unordered_map<ConceptId, double> EpistemicPromotion::compute_trust_propagat
 
         for (const auto& rel : ltm_.get_outgoing_relations(cur)) {
             if (visited.count(rel.target)) continue;
+
+            // Skip LINGUISTIC relations — trust doesn't propagate through syntax
+            auto cat = RelationTypeRegistry::instance().get_category(rel.type);
+            if (cat == RelationCategory::LINGUISTIC) continue;
+
             visited.insert(rel.target);
 
             auto cinfo = ltm_.retrieve_concept(rel.target);
-            if (!cinfo || cinfo->epistemic.is_invalidated()) {
+            if (!cinfo || cinfo->epistemic.is_invalidated() || cinfo->is_anti_knowledge) {
                 bfs.push({rel.target, depth + 1});
                 continue;
             }
@@ -169,7 +177,17 @@ std::unordered_map<ConceptId, double> EpistemicPromotion::compute_trust_propagat
 
         for (const auto& rel : ltm_.get_incoming_relations(cur)) {
             if (visited.count(rel.source)) continue;
+
+            // Skip LINGUISTIC relations — trust doesn't propagate through syntax
+            auto icat = RelationTypeRegistry::instance().get_category(rel.type);
+            if (icat == RelationCategory::LINGUISTIC) continue;
+
             visited.insert(rel.source);
+
+            // Skip anti-knowledge concepts in trust propagation BFS
+            auto src_info = ltm_.retrieve_concept(rel.source);
+            if (src_info && src_info->is_anti_knowledge) continue;
+
             bfs.push({rel.source, depth + 1});
         }
     }
@@ -203,7 +221,7 @@ size_t EpistemicPromotion::count_supporting_relations(ConceptId id) const {
     for (const auto& rel : incoming) {
         if (rel.type == RelationType::SUPPORTS) {
             auto src = ltm_.retrieve_concept(rel.source);
-            if (src && src->epistemic.is_active()) {
+            if (src && src->epistemic.is_active() && !src->is_anti_knowledge) {
                 ++count;
             }
         }

@@ -23,6 +23,8 @@ void GraphDensifier::build_existing_pairs_index() {
     existing_pairs_.clear();
     auto all_ids = ltm_.get_all_concept_ids();
     for (auto cid : all_ids) {
+        auto cinfo = ltm_.retrieve_concept(cid);
+        if (cinfo && cinfo->is_anti_knowledge) continue;
         for (const auto& rel : ltm_.get_outgoing_relations(cid)) {
             existing_pairs_.insert(pair_key(rel.source, rel.target));
         }
@@ -169,6 +171,8 @@ size_t GraphDensifier::phase_property_inheritance(const Config& cfg, Result& r) 
     size_t added = 0;
 
     for (auto cid : all_ids) {
+        auto cinfo = ltm_.retrieve_concept(cid);
+        if (cinfo && cinfo->is_anti_knowledge) continue;
         for (const auto& isa_rel : ltm_.get_outgoing_relations(cid)) {
             if (isa_rel.type != RelationType::IS_A) continue;
             ConceptId parent = isa_rel.target;
@@ -201,6 +205,8 @@ size_t GraphDensifier::phase_transitive_isa(const Config& cfg, Result& r) {
     size_t added = 0;
 
     for (auto cid : all_ids) {
+        auto cinfo = ltm_.retrieve_concept(cid);
+        if (cinfo && cinfo->is_anti_knowledge) continue;
         for (const auto& rel1 : ltm_.get_outgoing_relations(cid)) {
             if (rel1.type != RelationType::IS_A) continue;
             ConceptId parent = rel1.target;
@@ -234,6 +240,7 @@ size_t GraphDensifier::phase_transitive_isa(const Config& cfg, Result& r) {
 // =============================================================================
 
 size_t GraphDensifier::phase_coactivation(const Config& cfg, Result& r) {
+    auto& reg = RelationTypeRegistry::instance();
     auto all_ids = ltm_.get_all_concept_ids();
 
     // Identify broad category concepts (many incoming IS_A)
@@ -247,12 +254,16 @@ size_t GraphDensifier::phase_coactivation(const Config& cfg, Result& r) {
 
     // Build neighbor sets — only specific typed relations
     // Exclude: IS_A, INSTANCE_OF, SIMILAR_TO (hierarchical/broad)
+    // Exclude: LINGUISTIC relations (SUBJECT_OF, VERB_OF, etc.)
     std::unordered_map<ConceptId, std::unordered_set<ConceptId>> neighbors;
     for (auto cid : all_ids) {
+        auto cinfo = ltm_.retrieve_concept(cid);
+        if (cinfo && cinfo->is_anti_knowledge) continue;
         if (isa_in_degree[cid] > 8) continue;  // skip broad categories
 
         auto& ns = neighbors[cid];
         for (const auto& rel : ltm_.get_outgoing_relations(cid)) {
+            if (reg.get_category(rel.type) == RelationCategory::LINGUISTIC) continue;
             if (rel.type != RelationType::IS_A &&
                 rel.type != RelationType::INSTANCE_OF &&
                 rel.type != RelationType::SIMILAR_TO &&
@@ -261,6 +272,7 @@ size_t GraphDensifier::phase_coactivation(const Config& cfg, Result& r) {
                 ns.insert(rel.target);
         }
         for (const auto& rel : ltm_.get_incoming_relations(cid)) {
+            if (reg.get_category(rel.type) == RelationCategory::LINGUISTIC) continue;
             if (rel.type != RelationType::IS_A &&
                 rel.type != RelationType::INSTANCE_OF &&
                 rel.type != RelationType::SIMILAR_TO &&
@@ -328,6 +340,8 @@ size_t GraphDensifier::phase_partof_transitive(const Config& cfg, Result& r) {
     size_t added = 0;
 
     for (auto cid : all_ids) {
+        auto cinfo = ltm_.retrieve_concept(cid);
+        if (cinfo && cinfo->is_anti_knowledge) continue;
         for (const auto& rel1 : ltm_.get_outgoing_relations(cid)) {
             if (rel1.type != RelationType::PART_OF) continue;
             ConceptId whole = rel1.target;
@@ -359,6 +373,8 @@ size_t GraphDensifier::phase_causal_transitive(const Config& cfg, Result& r) {
     size_t chains_found = 0;
 
     for (auto cid : all_ids) {
+        auto cinfo = ltm_.retrieve_concept(cid);
+        if (cinfo && cinfo->is_anti_knowledge) continue;
         for (const auto& rel1 : ltm_.get_outgoing_relations(cid)) {
             if (rel1.type != RelationType::CAUSES &&
                 rel1.type != RelationType::ENABLES) continue;
@@ -396,6 +412,8 @@ size_t GraphDensifier::phase_partof_property(const Config& cfg, Result& r) {
     size_t chains_found = 0;
 
     for (auto part_id : all_ids) {
+        auto cinfo = ltm_.retrieve_concept(part_id);
+        if (cinfo && cinfo->is_anti_knowledge) continue;
         for (const auto& partof_rel : ltm_.get_outgoing_relations(part_id)) {
             if (partof_rel.type != RelationType::PART_OF) continue;
             ConceptId whole = partof_rel.target;

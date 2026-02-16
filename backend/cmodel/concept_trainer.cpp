@@ -64,6 +64,7 @@ std::vector<TrainingSample> ConceptTrainer::generate_samples(
         // Complex AK: negate target to teach "this path is wrong"
         if (target_info->is_anti_knowledge) target_val = -target_val;
         sample.target = target_val;
+        sample.weight = static_cast<double>(epistemic_factor);
         samples.push_back(sample);
     }
 
@@ -86,6 +87,7 @@ std::vector<TrainingSample> ConceptTrainer::generate_samples(
         double target_val = rel.weight * config_.incoming_discount * epistemic_factor;
         if (incoming_info->is_anti_knowledge) target_val = -target_val;
         sample.target = target_val;
+        sample.weight = static_cast<double>(epistemic_factor);
         samples.push_back(sample);
     }
 

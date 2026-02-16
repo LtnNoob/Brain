@@ -346,7 +346,8 @@ double ConceptModel::predict_refined(const FlexEmbedding& e, const FlexEmbedding
 // =============================================================================
 
 double ConceptModel::train_step(const FlexEmbedding& e, const FlexEmbedding& c,
-                                 double target, const MicroTrainingConfig& config) {
+                                 double target, const MicroTrainingConfig& config,
+                                 double sample_weight) {
     // Forward pass
     CoreVec v;
     for (size_t i = 0; i < CORE_DIM; ++i) {
@@ -364,8 +365,9 @@ double ConceptModel::train_step(const FlexEmbedding& e, const FlexEmbedding& c,
 
     double w = sigmoid(z);
     double error = w - target;
-    double loss = 0.5 * error * error;
-    double delta = error * w * (1.0 - w);
+    // Weight scales both loss and gradient — low-trust samples train weaker
+    double loss = sample_weight * 0.5 * error * error;
+    double delta = sample_weight * error * w * (1.0 - w);
 
     state_.timestep += 1.0;
     double t = state_.timestep;
@@ -437,7 +439,8 @@ MicroTrainingResult ConceptModel::train(const std::vector<TrainingSample>& sampl
         for (const auto& sample : samples) {
             total_loss += train_step(sample.relation_embedding,
                                      sample.context_embedding,
-                                     sample.target, config);
+                                     sample.target, config,
+                                     sample.weight);
         }
 
         double avg_loss = total_loss / static_cast<double>(samples.size());

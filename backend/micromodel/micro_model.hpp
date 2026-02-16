@@ -60,6 +60,7 @@ struct TrainingSample {
     FlexEmbedding relation_embedding;
     FlexEmbedding context_embedding;
     double target;  // desired output in [0, 1]
+    double weight = 1.0;  // epistemic trust weight for loss scaling
 };
 
 // Result of a training run

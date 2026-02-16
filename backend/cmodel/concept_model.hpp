@@ -111,7 +111,8 @@ public:
 
     // === Training ===
     double train_step(const FlexEmbedding& e, const FlexEmbedding& c,
-                      double target, const MicroTrainingConfig& config);
+                      double target, const MicroTrainingConfig& config,
+                      double sample_weight = 1.0);
     MicroTrainingResult train(const std::vector<TrainingSample>& samples,
                               const MicroTrainingConfig& config);
     // Train refined (multi-head + KAN) end-to-end with analytical gradient

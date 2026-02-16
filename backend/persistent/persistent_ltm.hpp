@@ -17,6 +17,7 @@
 #include <string>
 #include <optional>
 #include <vector>
+#include <functional>
 #include <unordered_map>
 #include <memory>
 #include <chrono>
@@ -57,6 +58,17 @@ public:
     bool remove_relation(RelationId id);
     size_t get_relation_count(ConceptId concept_id) const;
     std::vector<ConceptId> get_all_concept_ids() const;
+
+    // Label index: fast label→ConceptId lookup (case-insensitive)
+    std::vector<ConceptId> find_by_label(const std::string& label) const;
+
+    // Invalidation hooks
+    using InvalidationCallback = std::function<void(ConceptId, double)>;
+    void register_invalidation_hook(InvalidationCallback cb);
+
+    // Anti-Knowledge queries
+    std::vector<ConceptId> get_anti_knowledge() const;
+    std::vector<ConceptId> get_gc_candidates() const;
     
     // Persistence-specific
     void sync();
@@ -97,6 +109,14 @@ private:
     std::unordered_map<RelationId, size_t> relation_index_;  // id -> slot
     std::unordered_map<ConceptId, std::vector<RelationId>> outgoing_;
     std::unordered_map<ConceptId, std::vector<RelationId>> incoming_;
+
+    // Label index: lowercase(label) → list of ConceptIds
+    std::unordered_map<std::string, std::vector<ConceptId>> label_index_;
+
+    // Invalidation hooks
+    std::vector<InvalidationCallback> invalidation_hooks_;
+
+    static std::string to_lowercase(const std::string& s);
 };
 
 } // namespace persistent

@@ -1,5 +1,6 @@
 #include "persistent_ltm.hpp"
 #include <algorithm>
+#include <cctype>
 #include <filesystem>
 #include <cstring>
 
@@ -48,13 +49,16 @@ void PersistentLTM::rebuild_indices() {
     relation_index_.clear();
     outgoing_.clear();
     incoming_.clear();
-    
-    // Rebuild concept index
+    label_index_.clear();
+
+    // Rebuild concept index + label index
     uint64_t n_concepts = concepts_->count();
     for (uint64_t i = 0; i < n_concepts; ++i) {
         auto* rec = concepts_->record(i);
         if (!rec->is_deleted()) {
             concept_index_[rec->concept_id] = i;
+            std::string label = strings_->get(rec->label_offset, rec->label_length);
+            label_index_[to_lowercase(label)].push_back(rec->concept_id);
         }
     }
     
@@ -116,7 +120,8 @@ ConceptId PersistentLTM::store_concept(
     
     size_t slot = concepts_->append(rec);
     concept_index_[id] = slot;
-    
+    label_index_[to_lowercase(label)].push_back(id);
+
     return id;
 }
 
@@ -200,9 +205,15 @@ bool PersistentLTM::invalidate_concept(ConceptId id, double invalidation_trust) 
     
     // Directly mutate record instead of calling update_epistemic_metadata()
     // to avoid a second WAL entry (double-log bug)
+    double old_trust = rec->trust;
     rec->epistemic_status = static_cast<uint8_t>(EpistemicStatus::INVALIDATED);
     rec->trust = invalidation_trust;
-    
+
+    // Fire invalidation hooks
+    for (const auto& hook : invalidation_hooks_) {
+        hook(id, old_trust);
+    }
+
     return true;
 }
 
@@ -444,6 +455,9 @@ void PersistentLTM::replay_store_concept(
     
     size_t slot = concepts_->append(rec);
     concept_index_[concept_id] = slot;
+    // Update label index
+    std::string label = strings_->get(label_offset, label_length);
+    label_index_[to_lowercase(label)].push_back(concept_id);
 }
 
 void PersistentLTM::replay_add_relation(
@@ -470,6 +484,58 @@ void PersistentLTM::replay_add_relation(
     relation_index_[relation_id] = slot;
     outgoing_[source].push_back(relation_id);
     incoming_[target].push_back(relation_id);
+}
+
+// =============================================================================
+// Label index
+// =============================================================================
+
+std::vector<ConceptId> PersistentLTM::find_by_label(const std::string& label) const {
+    auto it = label_index_.find(to_lowercase(label));
+    if (it != label_index_.end()) return it->second;
+    return {};
+}
+
+std::string PersistentLTM::to_lowercase(const std::string& s) {
+    std::string result = s;
+    std::transform(result.begin(), result.end(), result.begin(),
+                   [](unsigned char c) { return std::tolower(c); });
+    return result;
+}
+
+// =============================================================================
+// Invalidation hooks
+// =============================================================================
+
+void PersistentLTM::register_invalidation_hook(InvalidationCallback cb) {
+    invalidation_hooks_.push_back(std::move(cb));
+}
+
+// =============================================================================
+// Anti-Knowledge queries
+// =============================================================================
+
+std::vector<ConceptId> PersistentLTM::get_anti_knowledge() const {
+    std::vector<ConceptId> result;
+    for (const auto& [id, slot] : concept_index_) {
+        auto* rec = concepts_->record(slot);
+        if (!rec->is_deleted() && rec->is_anti_knowledge) {
+            result.push_back(id);
+        }
+    }
+    return result;
+}
+
+std::vector<ConceptId> PersistentLTM::get_gc_candidates() const {
+    std::vector<ConceptId> result;
+    uint8_t inv = static_cast<uint8_t>(EpistemicStatus::INVALIDATED);
+    for (const auto& [id, slot] : concept_index_) {
+        auto* rec = concepts_->record(slot);
+        if (!rec->is_deleted() && rec->epistemic_status == inv && !rec->is_anti_knowledge) {
+            result.push_back(id);
+        }
+    }
+    return result;
 }
 
 } // namespace persistent

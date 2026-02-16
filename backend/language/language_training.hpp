@@ -145,23 +145,10 @@ private:
     // Train encoder on (text → embedding) pairs
     double train_encoder_epoch(const std::vector<EncoderPair>& data, double lr);
 
-    // Train decoder with Teacher-Forcing + Cross-Entropy + Target Propagation
-    //
-    // For each (fused_vector, target_token_sequence):
-    //   1. Forward pass with teacher forcing → collect hidden states + logits
-    //   2. Cross-Entropy loss at each step
-    //   3. Gradient dL/dh via output projection → "better" hidden states
-    //   4. Output projection: direct gradient descent
-    //   5. Init-KAN + Update-KAN: train on (input, target_h) pairs via MSE
-    double train_decoder_epoch(const std::vector<DecoderPair>& data, double lr);
-
     // Closed-form ridge regression for output projection W
     // Solves: W = argmin_W Σ ||W^T · h_ext - one_hot(target)||² + λ||W||²
     // One-shot optimal solution in ~50ms vs iterative SGD.
     void train_decoder_closedform(const std::vector<DecoderPair>& data, double lambda);
-
-    // Softmax helper
-    static std::vector<double> softmax(const std::vector<double>& logits);
 };
 
 } // namespace brain19

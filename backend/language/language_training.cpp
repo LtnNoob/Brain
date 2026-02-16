@@ -1089,8 +1089,6 @@ LanguageTrainingResult LanguageTraining::train_stage1(const LanguageConfig& conf
         }
         const size_t VA = active_tokens.size();
 
-        engine_.decoder().set_trained_tokens(active_tokens);
-
         auto t_pretok = std::chrono::duration_cast<std::chrono::milliseconds>(
             std::chrono::steady_clock::now() - t_start).count();
         std::cerr << "[LanguageTraining]   Pre-tokenized " << pretok_samples.size()
@@ -1830,210 +1828,6 @@ void LanguageTraining::train_decoder_closedform(
 }
 
 // =============================================================================
-// Softmax helper
-// =============================================================================
-
-std::vector<double> LanguageTraining::softmax(const std::vector<double>& logits) {
-    if (logits.empty()) return {};
-    double max_val = *std::max_element(logits.begin(), logits.end());
-    std::vector<double> result(logits.size());
-    double sum = 0.0;
-    for (size_t i = 0; i < logits.size(); ++i) {
-        result[i] = std::exp(std::min(logits[i] - max_val, 80.0));
-        sum += result[i];
-    }
-    if (sum > 1e-12) {
-        for (auto& v : result) v /= sum;
-    }
-    return result;
-}
-
-// =============================================================================
-// Decoder Training: Teacher-Forcing + Cross-Entropy + Target Propagation
-// =============================================================================
-
-double LanguageTraining::train_decoder_epoch(
-    const std::vector<DecoderPair>& data, double lr) {
-
-    auto& decoder = engine_.decoder();
-    auto& tokenizer = engine_.tokenizer();
-
-    auto& W = decoder.output_projection();
-    auto& emb_table = engine_.encoder().embedding_table();
-
-    // H = extended fused dim (runtime, includes dim context + convergence)
-    const size_t H = decoder.extended_fused_dim();
-    const size_t H_EXT = 2 * H;
-    const size_t FUSED_BASE = LanguageConfig::FUSED_DIM;
-    const size_t flex_start = FUSED_BASE;
-    const size_t dimctx_start = FUSED_BASE + decoder.flex_dim();
-    const size_t CONV_DIM = LanguageConfig::CONVERGENCE_DIM;
-    const size_t conv_start = H - CONV_DIM;
-    const size_t V = LanguageConfig::VOCAB_SIZE;
-
-    // Build conv_table for hidden state evolution
-    std::vector<double> conv_table(V * CONV_DIM, 0.0);
-    for (size_t v = 0; v < V; ++v) {
-        auto cpt = engine_.tokenizer().token_to_concept(static_cast<uint16_t>(v));
-        if (cpt && registry_.has_model(*cpt)) {
-            auto* cm = registry_.get_model(*cpt);
-            std::vector<double> conv_input(ConvergencePort::INPUT_DIM, 0.0);
-            auto flex_emb = engine_.embeddings().concept_embeddings().get_or_default(*cpt);
-            for (size_t d = 0; d < std::min(size_t(16), flex_emb.core.size()); ++d)
-                conv_input[d] = flex_emb.core[d];
-            double conv_out[ConvergencePort::OUTPUT_DIM];
-            cm->forward_convergence(conv_input.data(), conv_out);
-            for (size_t d = 0; d < CONV_DIM; ++d)
-                conv_table[v * CONV_DIM + d] = conv_out[d];
-        }
-    }
-
-    // ── Pre-tokenize all samples and build active vocab ──
-    struct TokenizedSample {
-        std::vector<uint16_t> tokens;
-        size_t data_idx;
-    };
-    std::vector<TokenizedSample> samples;
-    std::vector<bool> token_active(V, false);
-
-    for (size_t idx = 0; idx < data.size(); ++idx) {
-        auto tokens = tokenizer.encode(data[idx].target_text);
-        if (tokens.empty()) continue;
-        for (auto t : tokens) {
-            if (t < V) token_active[t] = true;
-        }
-        samples.push_back({std::move(tokens), idx});
-    }
-
-    if (samples.empty()) return 1e9;
-
-    // Build compressed vocab
-    std::vector<uint16_t> active_tokens;
-    active_tokens.reserve(1024);
-    std::vector<size_t> compress(V, 0);
-    for (size_t v = 0; v < V; ++v) {
-        if (token_active[v]) {
-            compress[v] = active_tokens.size();
-            active_tokens.push_back(static_cast<uint16_t>(v));
-        }
-    }
-    const size_t VA = active_tokens.size();
-    if (VA == 0) return 1e9;
-
-    // Extract active columns of W into dense W_a[H_EXT][VA]
-    std::vector<std::vector<double>> W_a(H_EXT, std::vector<double>(VA));
-    for (size_t i = 0; i < H_EXT; ++i) {
-        for (size_t a = 0; a < VA; ++a) {
-            W_a[i][a] = W[i][active_tokens[a]];
-        }
-    }
-
-    double total_ce_loss = 0.0;
-    size_t total_tokens = 0;
-
-    // Pre-allocate working buffers
-    std::vector<double> logits(VA);
-    std::vector<double> probs(VA);
-
-    for (const auto& sample : samples) {
-        const auto& target_tokens = sample.tokens;
-        const auto& embedding = data[sample.data_idx].embedding;
-
-        // h = extended fused vector
-        std::vector<double> h(H, 0.0);
-        for (size_t i = 0; i < std::min(H, embedding.size()); ++i) {
-            h[i] = embedding[i];
-        }
-
-        for (size_t t = 0; t < target_tokens.size(); ++t) {
-            uint16_t target_tok = target_tokens[t];
-            if (target_tok >= V || !token_active[target_tok]) continue;
-
-            size_t ca = compress[target_tok];
-
-            // Build quadratic features: h_ext = [h, h^2]
-            std::vector<double> h_ext(H_EXT);
-            for (size_t i = 0; i < H; ++i) {
-                h_ext[i] = h[i];
-                h_ext[H + i] = h[i] * h[i];
-            }
-
-            // logits = h_ext . W_a^T
-            for (size_t a = 0; a < VA; ++a) {
-                double sum = 0.0;
-                for (size_t i = 0; i < H_EXT; ++i) sum += h_ext[i] * W_a[i][a];
-                logits[a] = sum;
-            }
-
-            // Softmax
-            double max_val = *std::max_element(logits.begin(), logits.begin() + VA);
-            double exp_sum = 0.0;
-            for (size_t a = 0; a < VA; ++a) {
-                probs[a] = std::exp(std::min(logits[a] - max_val, 80.0));
-                exp_sum += probs[a];
-            }
-            if (exp_sum > 1e-12) {
-                double inv_sum = 1.0 / exp_sum;
-                for (size_t a = 0; a < VA; ++a) probs[a] *= inv_sum;
-            }
-
-            // CE loss
-            double p = std::max(probs[ca], 1e-12);
-            total_ce_loss += -std::log(p);
-            total_tokens++;
-
-            // Per-token W update
-            for (size_t i = 0; i < H_EXT; ++i) {
-                double hi = h_ext[i];
-                for (size_t a = 0; a < VA; ++a) {
-                    W_a[i][a] -= lr * hi * probs[a];
-                }
-                W_a[i][ca] += lr * hi;
-            }
-
-            // v11: 3-block hidden state evolution
-            if (target_tok < emb_table.size()) {
-                const auto& tok_emb = emb_table[target_tok];
-                for (size_t i = 0; i < FUSED_BASE && i < tok_emb.size(); ++i) {
-                    h[i] = h[i] * 0.8 + tok_emb[i] * 0.2;
-                }
-            }
-            {
-                auto tok_concept = engine_.tokenizer().token_to_concept(target_tok);
-                if (tok_concept) {
-                    auto flex_emb = engine_.embeddings().concept_embeddings().get_or_default(*tok_concept);
-                    size_t flex_end = std::min(dimctx_start, H);
-                    for (size_t i = flex_start; i < flex_end; ++i) {
-                        size_t detail_idx = i - flex_start;
-                        double flex_val = (detail_idx < flex_emb.detail.size()) ? flex_emb.detail[detail_idx] : 0.0;
-                        h[i] = h[i] * 0.9 + flex_val * 0.1;
-                    }
-                }
-            }
-            for (size_t i = dimctx_start; i < conv_start; ++i) {
-                h[i] *= 0.95;
-            }
-            // Block 4: Convergence dims
-            for (size_t d = 0; d < CONV_DIM; ++d) {
-                h[conv_start + d] = h[conv_start + d] * 0.9
-                    + conv_table[target_tok * CONV_DIM + d] * 0.1;
-            }
-        }
-    }
-
-    if (total_tokens == 0) return 1e9;
-
-    // Write compressed W_a back to full W
-    for (size_t i = 0; i < H_EXT; ++i) {
-        for (size_t a = 0; a < VA; ++a) {
-            W[i][active_tokens[a]] = W_a[i][a];
-        }
-    }
-
-    return total_ce_loss / static_cast<double>(total_tokens);
-}
-
-// =============================================================================
 // Stage 2: Fusion Training
 // =============================================================================
 
@@ -2195,7 +1989,6 @@ LanguageTrainingResult LanguageTraining::train_stage1_deep_kan(const LanguageCon
         }
     }
     const size_t VA = active_tokens.size();
-    engine_.decoder().set_trained_tokens(active_tokens);
 
     auto t_pretok = std::chrono::duration_cast<std::chrono::milliseconds>(
         std::chrono::steady_clock::now() - t_start).count();
@@ -2484,7 +2277,6 @@ LanguageTrainingResult LanguageTraining::train_stage1_deep_kan_v2(const Language
         }
     }
     const size_t VA = active_tokens.size();
-    engine_.decoder().set_trained_tokens(active_tokens);
     std::cerr << "[LanguageTraining]   " << pretok_samples.size()
               << " samples, " << VA << " active tokens\n";
 

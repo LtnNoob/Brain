@@ -98,7 +98,7 @@ void KANLanguageEngine::rebuild_dimensional_context() {
 // Main Generation Pipeline
 // =============================================================================
 
-LanguageResult KANLanguageEngine::generate(const std::string& query, size_t max_tokens) const {
+LanguageResult KANLanguageEngine::generate(const std::string& query, size_t /*max_tokens*/) const {
     LanguageResult result;
     result.confidence = 0.0;
     result.used_template = false;
@@ -199,23 +199,12 @@ LanguageResult KANLanguageEngine::generate(const std::string& query, size_t max_
         return result;
     }
 
-    // ── Step 8b: Fallback to token-based decode ──
-    auto decoder_output = decoder_.decode(
-        fused, tokenizer_, encoder_.embedding_table(),
-        embeddings_.concept_embeddings(), max_tokens);
-
-    result.tokens_generated = decoder_output.token_ids.size();
-    result.confidence = decoder_output.confidence;
-
-    // ── Step 9: Template fallback if decoder confidence is too low ──
-    if (decoder_output.used_template || decoder_output.confidence < config_.decoder_confidence_threshold) {
-        result.text = template_generate(
-            fused.ordered_concepts.empty() ? seeds : fused.ordered_concepts,
-            result.template_type);
-        result.used_template = true;
-    } else {
-        result.text = decoder_output.text;
-    }
+    // ── Step 9: Template fallback ──
+    result.text = template_generate(
+        fused.ordered_concepts.empty() ? seeds : fused.ordered_concepts,
+        result.template_type);
+    result.used_template = true;
+    result.confidence = concept_output.confidence;
 
     return result;
 }

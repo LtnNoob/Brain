@@ -1,7 +1,6 @@
 #pragma once
 
 #include "language_config.hpp"
-#include "bpe_tokenizer.hpp"
 #include "fusion_layer.hpp"
 #include "../kan/kan_module.hpp"
 #include "../micromodel/concept_embedding_store.hpp"
@@ -31,13 +30,6 @@ namespace brain19 {
 //   Total: 172,032
 //
 
-struct DecoderOutput {
-    std::vector<uint16_t> token_ids;
-    std::string text;
-    double confidence;    // average max-softmax across generated tokens
-    bool used_template;   // true if confidence dropped below threshold
-};
-
 struct ConceptDecoderOutput {
     std::vector<ConceptId> concept_ids;    // predicted concept sequence
     std::vector<std::string> labels;       // concept labels
@@ -49,13 +41,6 @@ struct ConceptDecoderOutput {
 class KANDecoder {
 public:
     explicit KANDecoder(const LanguageConfig& config = LanguageConfig{});
-
-    // Decode fused representation to text (token-based, backward compat)
-    DecoderOutput decode(const FusedRepresentation& fused,
-                          const BPETokenizer& tokenizer,
-                          const std::vector<std::vector<double>>& token_embeddings,
-                          const ConceptEmbeddingStore& concept_embeddings,
-                          size_t max_tokens = 30) const;
 
     // Decode fused representation to concept sequence
     ConceptDecoderOutput decode_concepts(
@@ -110,13 +95,6 @@ public:
     void set_flex_dim(size_t flex_dim) { flex_dim_ = flex_dim; }
     size_t flex_dim() const { return flex_dim_; }
 
-    // Set the active token vocabulary (tokens trained by decoder training)
-    // At inference, all other tokens are suppressed to -inf logits.
-    void set_trained_tokens(const std::vector<uint16_t>& tokens) {
-        trained_tokens_.clear();
-        trained_tokens_.insert(tokens.begin(), tokens.end());
-    }
-
 private:
     LanguageConfig config_;
 
@@ -135,9 +113,6 @@ private:
     // Flexible extra dimensions for v11 (default 0 for backward compat)
     size_t flex_dim_ = 0;
 
-    // Active token set (populated by training, used to suppress untrained tokens)
-    std::unordered_set<uint16_t> trained_tokens_;
-
     // Concept prediction: projection H→16D
     std::vector<std::vector<double>> concept_projection_;  // [H × 16]
 
@@ -151,14 +126,6 @@ private:
     std::vector<double> transform_b1_;                // [K]
     std::vector<std::vector<double>> transform_W2_;  // [K × H]
     std::vector<double> transform_b2_;                // [H]
-
-    // Compute logits from hidden state
-    std::vector<double> compute_logits(const std::vector<double>& hidden) const;
-
-    // Apply concept token boost
-    void boost_concept_tokens(std::vector<double>& logits,
-                               const std::unordered_set<ConceptId>& active_concepts,
-                               const BPETokenizer& tokenizer) const;
 
     // Softmax
     static std::vector<double> softmax(const std::vector<double>& logits);

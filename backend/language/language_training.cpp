@@ -2539,73 +2539,11 @@ LanguageTrainingResult LanguageTraining::train_stage1_deep_kan_v2(const Language
     // Empty init → LibTorch uses its own random init for conv_emb and conv_linear
     libtorch::ConvergencePortData cpd;
 
-    // ── Config ──
-    libtorch::DeepKANv2Config dkc;
-    dkc.num_epochs = config.decoder_epochs;
-    dkc.lr_output = config.decoder_lr;
-    dkc.lr_kan = config.deep_kan_lr;
-    dkc.lr_conv = 0.0005;
-    dkc.warmup_epochs = 10;
-    dkc.batch_size = 2048;
-    dkc.dropout_p = 0.05;
-    dkc.weight_decay = 0.0;
-    dkc.patience = 30;
-    // Per-input-dim LR scale: Block 1 = 1.0, Block 2 = 0.3, Block 3 = 0.1
-    dkc.lr_scale.resize(H_90, 1.0);
-    for (size_t i = FUSED_BASE; i < FUSED_BASE + fd && i < H_90; ++i)
-        dkc.lr_scale[i] = 0.3;
-    for (size_t i = FUSED_BASE + fd; i < H_90; ++i)
-        dkc.lr_scale[i] = 0.1;
-
-    cuda::TrainingResult tr;
-    tr.best_loss = 1e9;
-
-    std::cerr << "[LanguageTraining]   Launching LibTorch Deep KAN v2...\n";
-    bool ok = libtorch::train_deep_kan_v2(td, dkw, cpd, dkc, tr);
-
-    if (!ok) {
-        std::cerr << "[LanguageTraining]   LibTorch training failed\n";
-        return result;
-    }
-
-    result.epochs_run = config.decoder_epochs;
-
-    // ── Writeback: W_a → decoder output projection ──
-    auto& W = decoder.output_projection();
-    W.resize(FEAT_DIM);
-    for (size_t i = 0; i < FEAT_DIM; ++i) {
-        W[i].assign(V, 0.0);
-        for (size_t a = 0; a < VA; ++a)
-            W[i][active_tokens[a]] = dkw.W_a[i * VA + a];
-    }
-
-    // ── Writeback: conv_linear → CM ConvergencePort (shared weights) ──
-    // v2: shared W/b are the same for all tokens, store in cpd for later use
-    // Per-token CM writeback deferred (shared model doesn't map 1:1 to per-token CMs)
-
-    double best_decoder_loss = tr.best_loss;
-    if (best_decoder_loss < best_loss) best_loss = best_decoder_loss;
-    result.final_loss = best_loss;
-    result.converged = best_loss < 0.1;
-
-    std::cerr << "[LanguageTraining]   Deep KAN v2 complete, best loss=" << best_decoder_loss << "\n";
-
-    // ── Store trained state for inference ──
-    v2_dkw_ = dkw;
-    v2_cpd_ = std::make_shared<V2ConvergenceState>();
-    v2_cpd_->cpd = cpd;
-    v2_emb_table_ = td.emb_table;
-    v2_flex_table_ = td.flex_table;
-    v2_active_tokens_ = active_tokens;
-    v2_VA_ = VA;
-    v2_V_ = V;
-    v2_FUSED_BASE_ = FUSED_BASE;
-    v2_flex_dim_ = fd;
-    v2_valid_ = true;
-
     // ══════════════════════════════════════════════════════════════════════════
-    // Concept Prediction Training (LibTorch) — uses same KAN backbone
+    // Phase 1: Concept Prediction Training (runs FIRST)
+    // KAN backbone learns graph structure from 25K+ concept relations.
     // Gradient flows through: concept_proj → KAN L3 → L2 → conv_linear → L1
+    // This gives KAN weights graph knowledge before token training refines them.
     // ══════════════════════════════════════════════════════════════════════════
     {
         std::cerr << "[LanguageTraining] Generating concept decoder data...\n";
@@ -2693,11 +2631,11 @@ LanguageTrainingResult LanguageTraining::train_stage1_deep_kan_v2(const Language
                 ctd.trust_weights[s] = pair.trust_weight;
             }
 
-            // Concept-specific weights (warm-start with token-trained KAN backbone)
+            // Concept-specific weights (concept training runs first on fresh KAN weights)
             auto v2_cs = std::make_shared<V2ConceptState>();
 
             // Config: concept prediction needs lower LR than token prediction
-            // (21K classes vs 92 tokens → much larger gradients from softmax)
+            // (25K+ classes vs 92 tokens → much larger gradients from softmax)
             libtorch::DeepKANv2Config concept_dkc;
             concept_dkc.num_epochs = config.decoder_epochs;
             concept_dkc.lr_output = 0.005;
@@ -2717,7 +2655,7 @@ LanguageTrainingResult LanguageTraining::train_stage1_deep_kan_v2(const Language
             cuda::TrainingResult concept_tr;
             concept_tr.best_loss = 1e9;
 
-            std::cerr << "[LanguageTraining]   Launching LibTorch Concept Prediction...\n";
+            std::cerr << "[LanguageTraining]   Launching LibTorch Concept Prediction (Phase 1)...\n";
             bool concept_ok = libtorch::train_concept_deep_kan_v2(
                 ctd, dkw, cpd, v2_cs->cw, concept_dkc,
                 (float)config.concept_train_temperature, concept_tr);
@@ -2743,6 +2681,76 @@ LanguageTrainingResult LanguageTraining::train_stage1_deep_kan_v2(const Language
             std::cerr << "[LanguageTraining]   No concept decoder data generated\n";
         }
     }
+
+    // ══════════════════════════════════════════════════════════════════════════
+    // Phase 2: Token Prediction Training — builds on concept-pretrained KAN
+    // KAN backbone already has graph knowledge from concept training.
+    // Token training refines these weights for next-token prediction (92 classes).
+    // ══════════════════════════════════════════════════════════════════════════
+
+    // ── Config ──
+    libtorch::DeepKANv2Config dkc;
+    dkc.num_epochs = config.decoder_epochs;
+    dkc.lr_output = config.decoder_lr;
+    dkc.lr_kan = config.deep_kan_lr;
+    dkc.lr_conv = 0.0005;
+    dkc.warmup_epochs = 10;
+    dkc.batch_size = 2048;
+    dkc.dropout_p = 0.05;
+    dkc.weight_decay = 0.0;
+    dkc.patience = 30;
+    // Per-input-dim LR scale: Block 1 = 1.0, Block 2 = 0.3, Block 3 = 0.1
+    dkc.lr_scale.resize(H_90, 1.0);
+    for (size_t i = FUSED_BASE; i < FUSED_BASE + fd && i < H_90; ++i)
+        dkc.lr_scale[i] = 0.3;
+    for (size_t i = FUSED_BASE + fd; i < H_90; ++i)
+        dkc.lr_scale[i] = 0.1;
+
+    cuda::TrainingResult tr;
+    tr.best_loss = 1e9;
+
+    std::cerr << "[LanguageTraining]   Launching LibTorch Deep KAN v2 (Phase 2)...\n";
+    bool ok = libtorch::train_deep_kan_v2(td, dkw, cpd, dkc, tr);
+
+    if (!ok) {
+        std::cerr << "[LanguageTraining]   LibTorch training failed\n";
+        return result;
+    }
+
+    result.epochs_run = config.decoder_epochs;
+
+    // ── Writeback: W_a → decoder output projection ──
+    auto& W = decoder.output_projection();
+    W.resize(FEAT_DIM);
+    for (size_t i = 0; i < FEAT_DIM; ++i) {
+        W[i].assign(V, 0.0);
+        for (size_t a = 0; a < VA; ++a)
+            W[i][active_tokens[a]] = dkw.W_a[i * VA + a];
+    }
+
+    // ── Writeback: conv_linear → CM ConvergencePort (shared weights) ──
+    // v2: shared W/b are the same for all tokens, store in cpd for later use
+    // Per-token CM writeback deferred (shared model doesn't map 1:1 to per-token CMs)
+
+    double best_decoder_loss = tr.best_loss;
+    if (best_decoder_loss < best_loss) best_loss = best_decoder_loss;
+    result.final_loss = best_loss;
+    result.converged = best_loss < 0.1;
+
+    std::cerr << "[LanguageTraining]   Deep KAN v2 complete, best loss=" << best_decoder_loss << "\n";
+
+    // ── Store trained state for inference ──
+    v2_dkw_ = dkw;
+    v2_cpd_ = std::make_shared<V2ConvergenceState>();
+    v2_cpd_->cpd = cpd;
+    v2_emb_table_ = td.emb_table;
+    v2_flex_table_ = td.flex_table;
+    v2_active_tokens_ = active_tokens;
+    v2_VA_ = VA;
+    v2_V_ = V;
+    v2_FUSED_BASE_ = FUSED_BASE;
+    v2_flex_dim_ = fd;
+    v2_valid_ = true;
 
     return result;
 #endif

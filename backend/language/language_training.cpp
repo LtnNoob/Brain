@@ -801,8 +801,7 @@ double LanguageTraining::train_concept_decoder_epoch(
 
     const size_t H = decoder.extended_fused_dim();
     const size_t D = LanguageConfig::CONCEPT_EMBED_DIM;  // 16
-    const double temperature = engine_.decoder().confidence_threshold() > 0
-        ? 0.1 : 0.1;  // use concept_temperature
+    const double temperature = LanguageConfig().concept_temperature;  // 1.0
 
     // Build concept index: concept_id -> index in concept_matrix
     const auto& concept_ids = decoder.concept_projection().empty()
@@ -2546,16 +2545,17 @@ LanguageTrainingResult LanguageTraining::train_stage1_deep_kan_v2(const Language
             // Concept-specific weights (warm-start with token-trained KAN backbone)
             auto v2_cs = std::make_shared<V2ConceptState>();
 
-            // Config: same structure as token training
+            // Config: concept prediction needs lower LR than token prediction
+            // (21K classes vs 92 tokens → much larger gradients from softmax)
             libtorch::DeepKANv2Config concept_dkc;
             concept_dkc.num_epochs = config.decoder_epochs;
-            concept_dkc.lr_output = config.decoder_lr;
-            concept_dkc.lr_kan = config.deep_kan_lr;
-            concept_dkc.lr_conv = 0.0005;
-            concept_dkc.warmup_epochs = 10;
+            concept_dkc.lr_output = 0.005;
+            concept_dkc.lr_kan = 0.001;
+            concept_dkc.lr_conv = 0.0002;
+            concept_dkc.warmup_epochs = 5;
             concept_dkc.batch_size = 2048;
-            concept_dkc.dropout_p = 0.05;
-            concept_dkc.weight_decay = 0.0;
+            concept_dkc.dropout_p = 0.10;
+            concept_dkc.weight_decay = 1e-4;
             concept_dkc.patience = 30;
             concept_dkc.lr_scale.resize(H_90, 1.0);
             for (size_t i = FUSED_BASE; i < FUSED_BASE + fd && i < H_90; ++i)

@@ -50,7 +50,9 @@ struct LanguageConfig {
     // ── Concept Prediction ──
     static constexpr size_t CONCEPT_EMBED_DIM    = 16;   // FlexEmbedding core dimension
     static constexpr size_t MAX_CONCEPT_SEQUENCE  = 10;   // max concepts per prediction
-    double concept_temperature       = 0.1;               // softmax temperature for cosine similarity
+    double concept_temperature       = 1.0;               // softmax temperature for cosine similarity
+    // Was 0.1 — dividing cosine similarity (range [-1,1]) by 0.1 creates logits in [-10,10],
+    // causing extreme softmax distributions and gradient saturation over 21K classes.
 
     // ── Generation ──
     size_t max_tokens               = 30;
@@ -62,7 +64,7 @@ struct LanguageConfig {
     double decoder_lr               = 2.0;
     double fusion_lr                = 0.001;
     size_t encoder_epochs           = 200;
-    size_t decoder_epochs           = 10;  // was 150, reduced for quick test
+    size_t decoder_epochs           = 80;
     size_t fusion_epochs            = 300;
 
     // ── Relation Decoder Training ──

@@ -91,11 +91,13 @@ public:
     };
     std::vector<ConceptDecoderPair> generate_concept_decoder_data() const;
 
-    // Build fused embedding vector for a source concept with specific target/relation embeddings
+    // Build fused embedding vector for a source concept with specific target/relation embeddings.
+    // rel_types encodes relation type distribution in template slots for graph structure signal.
     std::vector<double> build_concept_fused_vector(
         ConceptId source,
         const std::vector<FlexEmbedding>& target_embeddings,
-        const std::vector<FlexEmbedding>& rel_type_embeddings) const;
+        const std::vector<FlexEmbedding>& rel_type_embeddings,
+        const std::vector<RelationType>& rel_types = {}) const;
 
     // Generate relation-based decoder data: one compound paragraph per concept
     // combining ALL outgoing relations into 15-30 token training targets.

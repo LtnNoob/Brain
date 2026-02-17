@@ -495,7 +495,8 @@ std::vector<LanguageTraining::DecoderPair> LanguageTraining::generate_relation_d
 std::vector<double> LanguageTraining::build_concept_fused_vector(
     ConceptId source,
     const std::vector<FlexEmbedding>& target_embeddings,
-    const std::vector<FlexEmbedding>& rel_type_embeddings) const
+    const std::vector<FlexEmbedding>& rel_type_embeddings,
+    const std::vector<RelationType>& rel_types) const
 {
     auto& concept_emb_store = engine_.embeddings().concept_embeddings();
     auto& projection = engine_.fusion().projection();
@@ -528,9 +529,44 @@ std::vector<double> LanguageTraining::build_concept_fused_vector(
     raw[gate_offset + 1] = 0.5;
     raw[gate_offset + 2] = 0.3;
 
+    // Template slots: encode relation type distribution as graph structure signal.
+    // [0] hierarchical (IS_A, INSTANCE_OF, DERIVED_FROM)
+    // [1] causal (CAUSES, ENABLES, PRODUCES, IMPLIES)
+    // [2] compositional (HAS_PROPERTY, PART_OF, HAS_PART, REQUIRES, USES)
+    // [3] other
     size_t tpl_offset = gate_offset + 5;
-    raw[tpl_offset + 0] = 0.3;
-    raw[tpl_offset + 1] = 0.5;
+    if (!rel_types.empty()) {
+        double inv_n = 1.0 / static_cast<double>(rel_types.size());
+        for (auto rt : rel_types) {
+            switch (rt) {
+                case RelationType::IS_A:
+                case RelationType::INSTANCE_OF:
+                case RelationType::DERIVED_FROM:
+                    raw[tpl_offset + 0] += inv_n;
+                    break;
+                case RelationType::CAUSES:
+                case RelationType::ENABLES:
+                case RelationType::PRODUCES:
+                case RelationType::IMPLIES:
+                    raw[tpl_offset + 1] += inv_n;
+                    break;
+                case RelationType::HAS_PROPERTY:
+                case RelationType::PART_OF:
+                case RelationType::HAS_PART:
+                case RelationType::REQUIRES:
+                case RelationType::USES:
+                    raw[tpl_offset + 2] += inv_n;
+                    break;
+                default:
+                    raw[tpl_offset + 3] += inv_n;
+                    break;
+            }
+        }
+    } else {
+        // Fallback for callers without relation types
+        raw[tpl_offset + 0] = 0.3;
+        raw[tpl_offset + 1] = 0.5;
+    }
 
     // Project: raw x projection -> R^64
     std::vector<double> fused(FUSED, 0.0);
@@ -585,7 +621,19 @@ LanguageTraining::generate_concept_decoder_data() const {
     auto all_ids = ltm_.get_all_concept_ids();
 
     size_t filtered = 0, anti_knowledge = 0, invalidated = 0;
-    size_t forward_pairs = 0, noise_pairs = 0;
+    size_t forward_pairs = 0, inherited_pairs = 0, noise_pairs = 0;
+
+    // Inheritable relation types for IS_A chain walking
+    static const std::vector<RelationType> INHERITABLE_TYPES = {
+        RelationType::HAS_PROPERTY,
+        RelationType::REQUIRES,
+        RelationType::USES,
+        RelationType::CAUSES,
+        RelationType::ENABLES,
+        RelationType::PRODUCES,
+    };
+    static constexpr size_t MAX_ISA_HOPS = 3;
+    static constexpr double ISA_TRUST_DECAY = 0.7;  // per hop
 
     // ── Forward full-sequence pairs (one per concept with outgoing relations) ──
     for (auto cid : all_ids) {
@@ -617,8 +665,9 @@ LanguageTraining::generate_concept_decoder_data() const {
 
         if (full_targets.empty()) { filtered++; continue; }
 
-        // Collect embeddings for the fused vector
+        // Collect embeddings and relation types for the fused vector
         std::vector<FlexEmbedding> tgt_embs, rel_embs;
+        std::vector<RelationType> rel_types;
         for (const auto& rel : rels) {
             auto ti = ltm_.retrieve_concept(rel.target);
             if (!ti) continue;
@@ -626,9 +675,10 @@ LanguageTraining::generate_concept_decoder_data() const {
                 tgt_embs.push_back(concept_emb_store.get_or_default(rel.target));
             if (rel_embs.size() < 5)
                 rel_embs.push_back(engine_.embeddings().get_relation_embedding(rel.type));
+            rel_types.push_back(rel.type);
         }
 
-        auto fused = build_concept_fused_vector(cid, tgt_embs, rel_embs);
+        auto fused = build_concept_fused_vector(cid, tgt_embs, rel_embs, rel_types);
 
         ConceptDecoderPair p;
         p.embedding = std::move(fused);
@@ -639,13 +689,98 @@ LanguageTraining::generate_concept_decoder_data() const {
         forward_pairs++;
     }
 
+    // ── IS_A inheritance pairs: walk up IS_A chain, inherit ancestor properties ──
+    // For each concept C with IS_A parent P, create a training pair:
+    //   source=C, targets=P's inheritable targets, trust decayed by hop distance.
+    // The fused vector uses P's targets as context, teaching C to predict
+    // inherited properties (e.g., Water inherits Liquid's HAS_PROPERTY targets).
+    for (auto cid : all_ids) {
+        auto info = ltm_.retrieve_concept(cid);
+        if (!info || !is_valid_concept(*info)) continue;
+
+        auto rels = ltm_.get_outgoing_relations(cid);
+
+        // Walk IS_A chain
+        ConceptId current = cid;
+        double trust_decay = 1.0;
+        for (size_t hop = 0; hop < MAX_ISA_HOPS; ++hop) {
+            // Find first IS_A parent
+            ConceptId parent = ConceptId{0};
+            for (const auto& rel : ltm_.get_outgoing_relations(current)) {
+                if (rel.type == RelationType::IS_A) {
+                    parent = rel.target;
+                    break;
+                }
+            }
+            if (parent == ConceptId{0}) break;
+
+            auto parent_info = ltm_.retrieve_concept(parent);
+            if (!parent_info || !is_valid_concept(*parent_info)) break;
+
+            trust_decay *= ISA_TRUST_DECAY;
+
+            // Collect parent's inheritable targets (skip if C already has them)
+            auto parent_rels = ltm_.get_outgoing_relations(parent);
+            std::vector<ConceptId> inherited_targets;
+            std::vector<FlexEmbedding> inh_tgt_embs, inh_rel_embs;
+            std::vector<RelationType> inh_rel_types;
+
+            for (const auto& prel : parent_rels) {
+                // Check if relation type is inheritable
+                bool inheritable = false;
+                for (auto itype : INHERITABLE_TYPES)
+                    if (prel.type == itype) { inheritable = true; break; }
+                if (!inheritable) continue;
+
+                auto tgt_info = ltm_.retrieve_concept(prel.target);
+                if (!tgt_info || !is_valid_concept(*tgt_info)) continue;
+
+                // Skip if C already has this target directly
+                bool already_direct = false;
+                for (const auto& crel : rels)
+                    if (crel.target == prel.target) { already_direct = true; break; }
+                if (already_direct) continue;
+
+                // Avoid duplicates
+                bool dup = false;
+                for (auto tc : inherited_targets)
+                    if (tc == prel.target) { dup = true; break; }
+                if (dup) continue;
+
+                inherited_targets.push_back(prel.target);
+                if (inh_tgt_embs.size() < 5)
+                    inh_tgt_embs.push_back(concept_emb_store.get_or_default(prel.target));
+                if (inh_rel_embs.size() < 5)
+                    inh_rel_embs.push_back(engine_.embeddings().get_relation_embedding(prel.type));
+                inh_rel_types.push_back(prel.type);
+
+                if (inherited_targets.size() >= LanguageConfig::MAX_CONCEPT_SEQUENCE) break;
+            }
+
+            if (!inherited_targets.empty()) {
+                // Fused vector: source=C, context=parent's targets
+                auto fused = build_concept_fused_vector(cid, inh_tgt_embs, inh_rel_embs, inh_rel_types);
+
+                ConceptDecoderPair p;
+                p.embedding = std::move(fused);
+                p.target_concepts = std::move(inherited_targets);
+                p.trust_weight = info->epistemic.trust * trust_decay;
+                p.source_concept = cid;
+                pairs.push_back(std::move(p));
+                inherited_pairs++;
+            }
+
+            current = parent;
+        }
+    }
+
     // ── Noise-augmented copies (safe: same targets, slightly perturbed input) ──
     {
         std::mt19937 noise_rng(42424);
         std::normal_distribution<double> noise_dist(0.0, 0.02);
         size_t base_size = pairs.size();
 
-        // Create 2 noisy copies per forward pair (3x data total)
+        // Create 2 noisy copies per pair (3x data total)
         for (int copy = 0; copy < 2; ++copy) {
             for (size_t i = 0; i < base_size; ++i) {
                 if (pairs[i].trust_weight < 0.3) continue;  // skip very low trust
@@ -665,6 +800,7 @@ LanguageTraining::generate_concept_decoder_data() const {
 
     std::cerr << "[LanguageTraining] Concept decoder data: " << pairs.size()
               << " total pairs (forward=" << forward_pairs
+              << ", inherited=" << inherited_pairs
               << ", noise=" << noise_pairs
               << ", filtered=" << filtered
               << ", anti_knowledge=" << anti_knowledge
@@ -2671,10 +2807,35 @@ std::string LanguageTraining::generate_v2(const std::string& query, size_t max_t
     raw[gate_offset + 0] = 0.8;
     raw[gate_offset + 1] = 0.5;
     raw[gate_offset + 2] = 0.3;
-    // Template — must match generate_concept_decoder_data() exactly
+    // Template slots: relation type distribution (must match build_concept_fused_vector)
     size_t tpl_offset = gate_offset + 5;
-    raw[tpl_offset + 0] = 0.3;
-    raw[tpl_offset + 1] = 0.5;
+    if (!rels.empty()) {
+        double inv_n = 1.0 / (double)rels.size();
+        for (const auto& rel : rels) {
+            switch (rel.type) {
+                case RelationType::IS_A:
+                case RelationType::INSTANCE_OF:
+                case RelationType::DERIVED_FROM:
+                    raw[tpl_offset + 0] += inv_n; break;
+                case RelationType::CAUSES:
+                case RelationType::ENABLES:
+                case RelationType::PRODUCES:
+                case RelationType::IMPLIES:
+                    raw[tpl_offset + 1] += inv_n; break;
+                case RelationType::HAS_PROPERTY:
+                case RelationType::PART_OF:
+                case RelationType::HAS_PART:
+                case RelationType::REQUIRES:
+                case RelationType::USES:
+                    raw[tpl_offset + 2] += inv_n; break;
+                default:
+                    raw[tpl_offset + 3] += inv_n; break;
+            }
+        }
+    } else {
+        raw[tpl_offset + 0] = 0.3;
+        raw[tpl_offset + 1] = 0.5;
+    }
 
     // Project: raw × projection → R^64
     std::vector<double> fused(FUSED, 0.0);

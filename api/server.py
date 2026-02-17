@@ -46,7 +46,7 @@ class Brain19Process:
         )
         self._stderr_task = asyncio.create_task(self._read_stderr())
         # Wait for the first prompt (startup can take a while loading data)
-        await asyncio.wait_for(self._wait_for_prompt(), timeout=120)
+        await asyncio.wait_for(self._wait_for_prompt(), timeout=3600)
         self._alive = True
         print("[API] Brain19 REPL started (persistent mode)")
 
@@ -158,6 +158,9 @@ class Brain19Process:
         filtered = []
         for l in lines:
             if (not l.startswith("[Brain19]") and
+                not l.startswith("[SentenceParser]") and
+                not l.startswith("[Inference/") and
+                not l.startswith("[LanguageTraining]") and
                 "Shutting down" not in l and
                 "Checkpoint" not in l and
                 "Stopping" not in l and

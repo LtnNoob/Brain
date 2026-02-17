@@ -2637,7 +2637,7 @@ LanguageTrainingResult LanguageTraining::train_stage1_deep_kan_v2(const Language
             // Config: concept prediction needs lower LR than token prediction
             // (25K+ classes vs 92 tokens → much larger gradients from softmax)
             libtorch::DeepKANv2Config concept_dkc;
-            concept_dkc.num_epochs = config.decoder_epochs;
+            concept_dkc.num_epochs = config.concept_epochs;
             concept_dkc.lr_output = 0.005;
             concept_dkc.lr_kan = 0.001;
             concept_dkc.lr_conv = 0.0002;

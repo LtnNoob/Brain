@@ -153,7 +153,7 @@ ConceptDecoderOutput KANDecoder::decode_concepts(
     const size_t H = extended_fused_dim_;
     const size_t D = LanguageConfig::CONCEPT_EMBED_DIM;  // 16
     const size_t N = concept_matrix_.size();  // number of active concepts
-    const double temperature = config_.concept_temperature;
+    const double temperature = config_.concept_inference_temperature;
 
     // Initialize hidden state from extended fused vector
     std::vector<double> hidden(H, 0.0);

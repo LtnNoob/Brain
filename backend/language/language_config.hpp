@@ -50,9 +50,12 @@ struct LanguageConfig {
     // ── Concept Prediction ──
     static constexpr size_t CONCEPT_EMBED_DIM    = 16;   // FlexEmbedding core dimension
     static constexpr size_t MAX_CONCEPT_SEQUENCE  = 10;   // max concepts per prediction
-    double concept_temperature       = 1.0;               // softmax temperature for cosine similarity
-    // Was 0.1 — dividing cosine similarity (range [-1,1]) by 0.1 creates logits in [-10,10],
-    // causing extreme softmax distributions and gradient saturation over 21K classes.
+    // Separate temperatures for training vs inference:
+    //   Training: T=0.1 produces sharp gradients (cosine sim /0.1 → logits in [-10,10])
+    //     which helps the model commit to correct targets during learning.
+    //   Inference: T=1.0 uses raw cosine similarity for smoother, more calibrated predictions.
+    double concept_train_temperature     = 0.1;
+    double concept_inference_temperature = 1.0;
 
     // ── Generation ──
     size_t max_tokens               = 30;

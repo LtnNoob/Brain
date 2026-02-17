@@ -816,7 +816,7 @@ double LanguageTraining::train_concept_decoder_epoch(
 
     const size_t H = decoder.extended_fused_dim();
     const size_t D = LanguageConfig::CONCEPT_EMBED_DIM;  // 16
-    const double temperature = LanguageConfig().concept_temperature;  // 1.0
+    const double temperature = LanguageConfig().concept_train_temperature;
 
     // Build concept index: concept_id -> index in concept_matrix
     const auto& concept_ids = decoder.concept_projection().empty()
@@ -2584,7 +2584,7 @@ LanguageTrainingResult LanguageTraining::train_stage1_deep_kan_v2(const Language
             std::cerr << "[LanguageTraining]   Launching LibTorch Concept Prediction...\n";
             bool concept_ok = libtorch::train_concept_deep_kan_v2(
                 ctd, dkw, cpd, v2_cs->cw, concept_dkc,
-                (float)config.concept_temperature, concept_tr);
+                (float)config.concept_train_temperature, concept_tr);
 
             if (concept_ok) {
                 v2_concept_state_ = v2_cs;
@@ -2717,7 +2717,7 @@ std::string LanguageTraining::generate_v2(const std::string& query, size_t max_t
                 v2_dkw_, v2_cpd_->cpd, v2_concept_state_->cw,
                 v2_concept_matrix_, v2_concept_emb_64d_, v2_concept_flex_16d_,
                 v2_num_concepts_, h, start_idx, max_tokens,
-                (float)LanguageConfig().concept_temperature);
+                (float)LanguageConfig().concept_inference_temperature);
 
             if (!cgr.concept_indices.empty()) {
                 // Build text from predicted concept sequence

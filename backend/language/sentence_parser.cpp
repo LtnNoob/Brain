@@ -44,7 +44,7 @@ std::vector<Token> SentenceParser::tokenize(const std::string& sentence) const {
                 Token tok;
                 tok.surface = lower;
                 tok.position = pos;
-                tok.pos = "UNKNOWN";
+                tok.pos = POSTag::UNKNOWN;
                 tokens.push_back(std::move(tok));
                 ++pos;
                 current.clear();
@@ -170,10 +170,10 @@ void SentenceParser::compute_word_probs(std::vector<Token>& tokens) const {
                 (info->label.substr(0, 5) == "word:" || info->label.substr(0, 4) == "sent:"))
                 continue;
 
-            std::string graph_pos = infer_pos_from_graph(cid);
-            if (graph_pos == "VERB") {
+            POSTag graph_pos = infer_pos_from_graph(cid);
+            if (graph_pos == POSTag::VERB) {
                 tok.p_verb = std::min(0.95, tok.p_verb + 0.30);
-            } else if (graph_pos == "ADJ") {
+            } else if (graph_pos == POSTag::ADJ) {
                 tok.p_adj = std::min(0.95, tok.p_adj + 0.25);
             } else {
                 // CAUSES, HAS_PROPERTY etc. → likely noun (entity)
@@ -195,7 +195,7 @@ void SentenceParser::compute_word_probs(std::vector<Token>& tokens) const {
 }
 
 // Infer POS hint from a concept's graph relations
-std::string SentenceParser::infer_pos_from_graph(ConceptId cid) const {
+POSTag SentenceParser::infer_pos_from_graph(ConceptId cid) const {
     auto rels = ltm_.get_outgoing_relations(cid);
     bool has_causes = false;
     bool has_property = false, has_isa = false;
@@ -210,11 +210,11 @@ std::string SentenceParser::infer_pos_from_graph(ConceptId cid) const {
     }
 
     // Processes/actions with CAUSES/ENABLES → likely VERB
-    if (has_causes && !has_isa) return "VERB";
+    if (has_causes && !has_isa) return POSTag::VERB;
     // Properties → likely ADJ
-    if (has_property && !has_causes) return "ADJ";
+    if (has_property && !has_causes) return POSTag::ADJ;
     // Default: noun-like entity
-    return "NOUN";
+    return POSTag::NOUN;
 }
 
 // =============================================================================
@@ -355,19 +355,23 @@ void SentenceParser::resolve_pos_iterative(std::vector<Token>& tokens) const {
     // Level 1: Compute initial word-level probabilities
     compute_word_probs(tokens);
 
+    // Helper: determine best POS from probabilities
+    auto best_pos = [](const Token& tok) -> POSTag {
+        double max_p = tok.p_func;
+        POSTag best = POSTag::DET;  // function word default
+        if (tok.p_noun > max_p) { max_p = tok.p_noun; best = POSTag::NOUN; }
+        if (tok.p_verb > max_p) { max_p = tok.p_verb; best = POSTag::VERB; }
+        if (tok.p_adj > max_p)  { max_p = tok.p_adj;  best = POSTag::ADJ; }
+        if (tok.p_adv > max_p)  { max_p = tok.p_adv;  best = POSTag::ADV; }
+        return best;
+    };
+
     // Iterate until convergence (max 3 iterations)
     for (int iter = 0; iter < 3; ++iter) {
         // Save old POS assignments for convergence check
-        std::vector<std::string> old_pos;
+        std::vector<POSTag> old_pos;
         for (const auto& tok : tokens) {
-            // Determine current best POS
-            double max_p = tok.p_func;
-            std::string best = "FUNC";
-            if (tok.p_noun > max_p) { max_p = tok.p_noun; best = "NOUN"; }
-            if (tok.p_verb > max_p) { max_p = tok.p_verb; best = "VERB"; }
-            if (tok.p_adj > max_p)  { max_p = tok.p_adj;  best = "ADJ"; }
-            if (tok.p_adv > max_p)  { max_p = tok.p_adv;  best = "ADV"; }
-            old_pos.push_back(best);
+            old_pos.push_back(best_pos(tok));
         }
 
         // Level 2: Estimate sentence structure from current word probs
@@ -379,29 +383,17 @@ void SentenceParser::resolve_pos_iterative(std::vector<Token>& tokens) const {
         // Check convergence: all POS assignments stable?
         bool converged = true;
         for (size_t i = 0; i < tokens.size(); ++i) {
-            double max_p = tokens[i].p_func;
-            std::string best = "FUNC";
-            if (tokens[i].p_noun > max_p) { max_p = tokens[i].p_noun; best = "NOUN"; }
-            if (tokens[i].p_verb > max_p) { max_p = tokens[i].p_verb; best = "VERB"; }
-            if (tokens[i].p_adj > max_p)  { max_p = tokens[i].p_adj;  best = "ADJ"; }
-            if (tokens[i].p_adv > max_p)  { max_p = tokens[i].p_adv;  best = "ADV"; }
-            if (best != old_pos[i]) { converged = false; break; }
+            if (best_pos(tokens[i]) != old_pos[i]) { converged = false; break; }
         }
         if (converged) break;
     }
 
     // Final assignment: pick highest probability POS
     for (auto& tok : tokens) {
-        double max_p = tok.p_func;
-        tok.pos = "DET";  // DET as default for func words
+        tok.pos = best_pos(tok);
 
-        if (tok.p_noun > max_p) { max_p = tok.p_noun; tok.pos = "NOUN"; }
-        if (tok.p_verb > max_p) { max_p = tok.p_verb; tok.pos = "VERB"; }
-        if (tok.p_adj > max_p)  { max_p = tok.p_adj;  tok.pos = "ADJ"; }
-        if (tok.p_adv > max_p)  { max_p = tok.p_adv;  tok.pos = "ADV"; }
-
-        // Refine FUNC → DET/PREP/CONJ
-        if (tok.pos == "DET") {
+        // Refine function words → DET/PREP/CONJ
+        if (tok.pos == POSTag::DET) {
             static const std::unordered_set<std::string> preps = {
                 "in", "auf", "mit", "von", "zu", "bei", "nach", "unter",
                 "to", "from", "with", "at", "by", "for", "of"
@@ -410,8 +402,8 @@ void SentenceParser::resolve_pos_iterative(std::vector<Token>& tokens) const {
                 "und", "oder", "aber", "denn", "weil", "dass",
                 "and", "or", "but", "because"
             };
-            if (preps.count(tok.surface)) tok.pos = "PREP";
-            else if (conjs.count(tok.surface)) tok.pos = "CONJ";
+            if (preps.count(tok.surface)) tok.pos = POSTag::PREP;
+            else if (conjs.count(tok.surface)) tok.pos = POSTag::CONJ;
         }
     }
 }
@@ -421,7 +413,8 @@ void SentenceParser::resolve_pos_iterative(std::vector<Token>& tokens) const {
 // =============================================================================
 
 ConceptId SentenceParser::get_or_create_word_concept(const Token& token) {
-    std::string label = "word:" + token.surface + ":" + token.pos;
+    std::string pos_str = pos_tag_str(token.pos);
+    std::string label = "word:" + token.surface + ":" + pos_str;
 
     // Check existing via label index
     auto existing = ltm_.find_by_label(label);
@@ -433,7 +426,7 @@ ConceptId SentenceParser::get_or_create_word_concept(const Token& token) {
     EpistemicMetadata meta(EpistemicType::DEFINITION, EpistemicStatus::ACTIVE, 0.95);
     ConceptId word_cid = ltm_.store_concept(
         label,
-        "Linguistic word: " + token.surface + " (" + token.pos + ")",
+        "Linguistic word: " + token.surface + " (" + pos_str + ")",
         meta
     );
 
@@ -521,8 +514,8 @@ ParsedSentence SentenceParser::parse_and_store(const std::string& sentence) {
     // Filter to content words (NOUN, VERB, ADJ, ADV)
     std::vector<Token> content_tokens;
     for (const auto& tok : all_tokens) {
-        if (tok.pos == "NOUN" || tok.pos == "VERB" ||
-            tok.pos == "ADJ" || tok.pos == "ADV") {
+        if (tok.pos == POSTag::NOUN || tok.pos == POSTag::VERB ||
+            tok.pos == POSTag::ADJ || tok.pos == POSTag::ADV) {
             content_tokens.push_back(tok);
         }
     }
@@ -543,7 +536,7 @@ ParsedSentence SentenceParser::parse_and_store(const std::string& sentence) {
 
     // Find first verb (highest p_verb among VERB-tagged tokens)
     for (auto& tok : content_tokens) {
-        if (tok.pos == "VERB") {
+        if (tok.pos == POSTag::VERB) {
             verb_token = &tok;
             verb_pos = tok.position;
             break;
@@ -552,7 +545,7 @@ ParsedSentence SentenceParser::parse_and_store(const std::string& sentence) {
 
     // Assign subject/object/modifiers
     for (auto& tok : content_tokens) {
-        if (tok.pos == "NOUN") {
+        if (tok.pos == POSTag::NOUN) {
             if (verb_pos < 0) {
                 if (!subject_token)
                     subject_token = &tok;
@@ -677,12 +670,13 @@ std::vector<ConceptId> SentenceParser::lookup_word(const std::string& surface_fo
     std::transform(lower.begin(), lower.end(), lower.begin(),
                    [](unsigned char c) { return std::tolower(c); });
 
-    static const std::vector<std::string> pos_tags = {
-        "NOUN", "VERB", "ADJ", "ADV", "DET", "PREP", "CONJ"
+    static const POSTag all_pos[] = {
+        POSTag::NOUN, POSTag::VERB, POSTag::ADJ, POSTag::ADV,
+        POSTag::DET, POSTag::PREP, POSTag::CONJ
     };
 
-    for (const auto& pos : pos_tags) {
-        std::string label = "word:" + lower + ":" + pos;
+    for (auto pos : all_pos) {
+        std::string label = "word:" + lower + ":" + pos_tag_str(pos);
         auto found = ltm_.find_by_label(label);
         results.insert(results.end(), found.begin(), found.end());
     }

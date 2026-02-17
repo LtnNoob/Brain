@@ -239,7 +239,7 @@ std::vector<ConceptId> KANLanguageEngine::label_search(const std::string& text) 
     std::string lower_q = text;
     for (auto& c : lower_q) c = static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
 
-    // Extract keywords (words >= 3 chars, no stop words)
+    // Extract keywords (words >= 3 chars)
     std::vector<std::string> keywords;
     std::string word;
     for (char c : lower_q) {
@@ -252,43 +252,49 @@ std::vector<ConceptId> KANLanguageEngine::label_search(const std::string& text) 
     }
     if (word.size() >= 3) keywords.push_back(word);
 
-    // Score concepts
+    // Score concepts via indexed lookup (O(K) instead of O(N))
     struct ScoredConcept {
         ConceptId id;
         double score;
     };
-    std::vector<ScoredConcept> scored;
+    std::unordered_map<ConceptId, double> scores;
 
-    for (auto cid : ltm_.get_all_concept_ids()) {
-        auto info = ltm_.retrieve_concept(cid);
-        if (!info) continue;
-
-        std::string lower_label = info->label;
-        for (auto& c : lower_label) c = static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
-
-        double score = 0.0;
-
-        // Exact label match
-        if (lower_q.find(lower_label) != std::string::npos && lower_label.size() >= 3) {
-            score += 5.0 * (static_cast<double>(lower_label.size()) / lower_q.size());
+    auto add_hits = [&](const std::vector<ConceptId>& hits, double base_score) {
+        for (auto cid : hits) {
+            auto info = ltm_.retrieve_concept(cid);
+            if (!info) continue;
+            // Skip linguistic word/sentence concepts
+            if (info->label.size() >= 5 &&
+                (info->label.substr(0, 5) == "word:" || info->label.substr(0, 5) == "sent:"))
+                continue;
+            double trust_mult = 0.8 + 0.2 * info->epistemic.trust;
+            scores[cid] += base_score * trust_mult;
         }
+    };
 
-        // Keyword match
-        for (const auto& kw : keywords) {
-            if (lower_label.find(kw) != std::string::npos) {
-                score += 3.0;
-            }
-        }
+    // 1. Try full query as a label (highest value)
+    add_hits(ltm_.find_by_label(lower_q), 8.0);
 
-        // Epistemic trust boost
-        score *= (0.8 + 0.2 * info->epistemic.trust);
+    // 2. Try multi-word combinations (adjacent keywords, 3-word and 2-word)
+    for (size_t i = 0; i + 2 < keywords.size(); ++i) {
+        add_hits(ltm_.find_by_label(keywords[i] + " " + keywords[i+1] + " " + keywords[i+2]), 7.0);
+    }
+    for (size_t i = 0; i + 1 < keywords.size(); ++i) {
+        add_hits(ltm_.find_by_label(keywords[i] + " " + keywords[i+1]), 6.0);
+    }
 
-        if (score > 0.0) {
-            scored.push_back({cid, score});
-        }
+    // 3. Try each keyword as an exact label
+    for (const auto& kw : keywords) {
+        add_hits(ltm_.find_by_label(kw), 4.0);
     }
 
     // Sort and take top seeds
+    std::vector<ScoredConcept> scored;
+    scored.reserve(scores.size());
+    for (auto& [cid, score] : scores) {
+        scored.push_back({cid, score});
+    }
+
     std::sort(scored.begin(), scored.end(),
         [](const auto& a, const auto& b) { return a.score > b.score; });
 

@@ -2656,9 +2656,10 @@ std::string LanguageTraining::generate_v2(const std::string& query, size_t max_t
     raw[gate_offset + 0] = 0.8;
     raw[gate_offset + 1] = 0.5;
     raw[gate_offset + 2] = 0.3;
-    // Template (default: general)
+    // Template — must match generate_concept_decoder_data() exactly
     size_t tpl_offset = gate_offset + 5;
-    raw[tpl_offset + 3] = 0.4; raw[tpl_offset + 0] = 0.3; raw[tpl_offset + 1] = 0.3;
+    raw[tpl_offset + 0] = 0.3;
+    raw[tpl_offset + 1] = 0.5;
 
     // Project: raw × projection → R^64
     std::vector<double> fused(FUSED, 0.0);

@@ -385,16 +385,8 @@ void SystemOrchestrator::shutdown() {
         periodic_thread_.join();
     }
 
-    // Auto-checkpoint on shutdown (before setting running_ = false)
-    if (config_.enable_persistence && wal_) {
-        log("  Final checkpoint on shutdown...");
-        create_checkpoint("shutdown");
-        wal_->checkpoint();
-    }
-
-    running_ = false;
-
-    // Stop GDO before clearing callbacks
+    // Stop GDO before checkpoint — GDO callback can modify registry via
+    // create_model(), which would rehash the map during serialization.
     if (gdo_) {
         log("  Stopping GDO...");
         gdo_->set_thinking_callback(nullptr);
@@ -406,8 +398,7 @@ void SystemOrchestrator::shutdown() {
         stream_orch_->set_alert_callback(nullptr);
     }
 
-    // Reverse order of initialization
-    // 13: Streams
+    // Stop streams before checkpoint — no concurrent subsystem access
     if (stream_monitor_) {
         log("  Stopping stream monitor...");
         stream_monitor_->stop();
@@ -420,6 +411,15 @@ void SystemOrchestrator::shutdown() {
         log("  Stopping stream orchestrator...");
         stream_orch_->shutdown(std::chrono::milliseconds{3000});
     }
+
+    // Checkpoint after all concurrent subsystems stopped
+    if (config_.enable_persistence && wal_) {
+        log("  Final checkpoint on shutdown...");
+        create_checkpoint("shutdown");
+        wal_->checkpoint();
+    }
+
+    running_ = false;
 
     // Destroy stream objects BEFORE brain controller frees STM.
     // ThinkStream destructors call stm_.destroy_context(), so the STM must be alive.
@@ -1036,18 +1036,22 @@ ChatResponse SystemOrchestrator::ask(const std::string& question) {
             gdo_thinking_results_.clear();
         }
 
-        // ── Try LibTorch concept prediction first ──
-        if (lang_trainer_ && lang_trainer_->has_v2_model()) {
-            auto v2_text = lang_trainer_->generate_v2(question);
-            if (!v2_text.empty() && v2_text[0] != '[') {
-                ChatResponse resp;
-                resp.answer = v2_text;
-                resp.contains_speculation = false;
-                resp.used_llm = false;
-                resp.intent = intent;
-                return resp;
-            }
-        }
+        // ── LibTorch concept prediction DISABLED ──
+        // Concept prediction val_loss=5.09 (perplexity ~162 over 21K classes) produces
+        // nonsensical outputs (e.g., "Acetaldehyde, Little Women" for "What is gravity?").
+        // Root causes: temperature=0.1 on cosine similarity, train/inference template mismatch.
+        // Re-enable after retraining with fixed temperature and aligned vectors.
+        // if (lang_trainer_ && lang_trainer_->has_v2_model()) {
+        //     auto v2_text = lang_trainer_->generate_v2(question);
+        //     if (!v2_text.empty() && v2_text[0] != '[') {
+        //         ChatResponse resp;
+        //         resp.answer = v2_text;
+        //         resp.contains_speculation = false;
+        //         resp.used_llm = false;
+        //         resp.intent = intent;
+        //         return resp;
+        //     }
+        // }
 
         // ── Try KAN Language Engine (CPU decoder fallback) ──
         if (language_engine_ && language_engine_->is_ready()) {

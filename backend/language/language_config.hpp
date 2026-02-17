@@ -64,7 +64,7 @@ struct LanguageConfig {
     double decoder_lr               = 2.0;
     double fusion_lr                = 0.001;
     size_t encoder_epochs           = 200;
-    size_t decoder_epochs           = 80;
+    size_t decoder_epochs           = 150;
     size_t fusion_epochs            = 300;
 
     // ── Relation Decoder Training ──

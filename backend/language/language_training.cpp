@@ -580,15 +580,14 @@ static bool is_valid_concept(const ConceptInfo& info) {
 std::vector<LanguageTraining::ConceptDecoderPair>
 LanguageTraining::generate_concept_decoder_data() const {
     std::vector<ConceptDecoderPair> pairs;
-    pairs.reserve(300000);
 
     auto& concept_emb_store = engine_.embeddings().concept_embeddings();
     auto all_ids = ltm_.get_all_concept_ids();
 
     size_t filtered = 0, anti_knowledge = 0, invalidated = 0;
-    size_t forward_pairs = 0, reverse_pairs = 0, multihop_pairs = 0, noise_pairs = 0;
+    size_t forward_pairs = 0, noise_pairs = 0;
 
-    // ── Pass 1: Forward per-relation pairs (each relation = separate sample) ──
+    // ── Forward full-sequence pairs (one per concept with outgoing relations) ──
     for (auto cid : all_ids) {
         auto info = ltm_.retrieve_concept(cid);
         if (!info) continue;
@@ -598,7 +597,7 @@ LanguageTraining::generate_concept_decoder_data() const {
         auto rels = ltm_.get_outgoing_relations(cid);
         if (rels.empty()) { filtered++; continue; }
 
-        // (a) Full sequence sample (original behavior)
+        // Build target concept sequence ordered by PARAGRAPH_ORDER
         std::vector<ConceptId> full_targets;
         for (auto type : PARAGRAPH_ORDER) {
             for (const auto& rel : rels) {
@@ -618,7 +617,7 @@ LanguageTraining::generate_concept_decoder_data() const {
 
         if (full_targets.empty()) { filtered++; continue; }
 
-        // Collect embeddings for the full fused vector
+        // Collect embeddings for the fused vector
         std::vector<FlexEmbedding> tgt_embs, rel_embs;
         for (const auto& rel : rels) {
             auto ti = ltm_.retrieve_concept(rel.target);
@@ -631,181 +630,45 @@ LanguageTraining::generate_concept_decoder_data() const {
 
         auto fused = build_concept_fused_vector(cid, tgt_embs, rel_embs);
 
-        // Full-sequence pair
-        {
-            ConceptDecoderPair p;
-            p.embedding = fused;
-            p.target_concepts = full_targets;
-            p.trust_weight = info->epistemic.trust;
-            p.source_concept = cid;
-            pairs.push_back(std::move(p));
-            forward_pairs++;
-        }
-
-        // (b) Per-relation pairs: each outgoing relation as source→[single_target]
-        for (const auto& rel : rels) {
-            auto tgt_info = ltm_.retrieve_concept(rel.target);
-            if (!tgt_info || !is_valid_concept(*tgt_info)) continue;
-
-            // Build fused with this specific target
-            std::vector<FlexEmbedding> single_tgt = {concept_emb_store.get_or_default(rel.target)};
-            std::vector<FlexEmbedding> single_rel = {engine_.embeddings().get_relation_embedding(rel.type)};
-            auto per_rel_fused = build_concept_fused_vector(cid, single_tgt, single_rel);
-
-            ConceptDecoderPair p;
-            p.embedding = std::move(per_rel_fused);
-            p.target_concepts = {rel.target};
-            p.trust_weight = info->epistemic.trust * 0.8;  // slightly lower weight
-            p.source_concept = cid;
-            pairs.push_back(std::move(p));
-            forward_pairs++;
-        }
-    }
-
-    // ── Pass 2: Reverse relation pairs (B→A for every A→B) ──
-    for (auto cid : all_ids) {
-        auto info = ltm_.retrieve_concept(cid);
-        if (!info || !is_valid_concept(*info)) continue;
-
-        auto incoming = ltm_.get_incoming_relations(cid);
-        if (incoming.empty()) continue;
-
-        // Build target list from sources of incoming relations
-        std::vector<ConceptId> rev_targets;
-        std::vector<FlexEmbedding> rev_tgt_embs, rev_rel_embs;
-
-        for (const auto& rel : incoming) {
-            auto src_info = ltm_.retrieve_concept(rel.source);
-            if (!src_info || !is_valid_concept(*src_info)) continue;
-
-            bool dup = false;
-            for (auto tc : rev_targets)
-                if (tc == rel.source) { dup = true; break; }
-            if (dup) continue;
-
-            rev_targets.push_back(rel.source);
-            if (rev_tgt_embs.size() < 5)
-                rev_tgt_embs.push_back(concept_emb_store.get_or_default(rel.source));
-            if (rev_rel_embs.size() < 5)
-                rev_rel_embs.push_back(engine_.embeddings().get_relation_embedding(rel.type));
-
-            if (rev_targets.size() >= LanguageConfig::MAX_CONCEPT_SEQUENCE) break;
-        }
-
-        if (rev_targets.empty()) continue;
-
-        auto fused = build_concept_fused_vector(cid, rev_tgt_embs, rev_rel_embs);
-
         ConceptDecoderPair p;
         p.embedding = std::move(fused);
-        p.target_concepts = std::move(rev_targets);
-        p.trust_weight = info->epistemic.trust * 0.7;  // lower weight for reverse
+        p.target_concepts = std::move(full_targets);
+        p.trust_weight = info->epistemic.trust;
         p.source_concept = cid;
         pairs.push_back(std::move(p));
-        reverse_pairs++;
+        forward_pairs++;
     }
 
-    // ── Pass 3: Multi-hop pairs (A→B→C: train B→C given A's context) ──
-    {
-        std::mt19937 hop_rng(12345);
-        auto shuffled_ids = all_ids;
-        std::shuffle(shuffled_ids.begin(), shuffled_ids.end(), hop_rng);
-        size_t hop_budget = 100000;  // cap multi-hop to avoid explosion
-        size_t hop_count = 0;
-
-        for (auto cid_a : shuffled_ids) {
-            if (hop_count >= hop_budget) break;
-            auto info_a = ltm_.retrieve_concept(cid_a);
-            if (!info_a || !is_valid_concept(*info_a)) continue;
-
-            auto rels_a = ltm_.get_outgoing_relations(cid_a);
-            for (const auto& rel_ab : rels_a) {
-                if (hop_count >= hop_budget) break;
-                auto info_b = ltm_.retrieve_concept(rel_ab.target);
-                if (!info_b || !is_valid_concept(*info_b)) continue;
-                ConceptId cid_b = rel_ab.target;
-
-                auto rels_b = ltm_.get_outgoing_relations(cid_b);
-                if (rels_b.empty()) continue;
-
-                // Collect up to 3 targets from B's relations
-                std::vector<ConceptId> hop_targets;
-                for (const auto& rel_bc : rels_b) {
-                    auto info_c = ltm_.retrieve_concept(rel_bc.target);
-                    if (!info_c || !is_valid_concept(*info_c)) continue;
-                    if (rel_bc.target == cid_a) continue;  // avoid loops
-
-                    bool dup = false;
-                    for (auto tc : hop_targets)
-                        if (tc == rel_bc.target) { dup = true; break; }
-                    if (!dup) {
-                        hop_targets.push_back(rel_bc.target);
-                        if (hop_targets.size() >= 3) break;
-                    }
-                }
-                if (hop_targets.empty()) continue;
-
-                // Build fused for B with A's context blended in
-                std::vector<FlexEmbedding> hop_tgt_embs, hop_rel_embs;
-                for (auto tc : hop_targets)
-                    hop_tgt_embs.push_back(concept_emb_store.get_or_default(tc));
-                for (const auto& rel_bc : rels_b) {
-                    if (hop_rel_embs.size() < 3)
-                        hop_rel_embs.push_back(engine_.embeddings().get_relation_embedding(rel_bc.type));
-                }
-
-                auto fused = build_concept_fused_vector(cid_b, hop_tgt_embs, hop_rel_embs);
-
-                ConceptDecoderPair p;
-                p.embedding = std::move(fused);
-                p.target_concepts = std::move(hop_targets);
-                p.trust_weight = info_b->epistemic.trust * 0.6;
-                p.source_concept = cid_b;
-                pairs.push_back(std::move(p));
-                multihop_pairs++;
-                hop_count++;
-            }
-        }
-    }
-
-    // ── Pass 4: Noise-augmented copies of high-trust forward pairs ──
+    // ── Noise-augmented copies (safe: same targets, slightly perturbed input) ──
     {
         std::mt19937 noise_rng(42424);
         std::normal_distribution<double> noise_dist(0.0, 0.02);
         size_t base_size = pairs.size();
-        size_t noise_budget = 100000;
 
-        for (size_t i = 0; i < base_size && noise_pairs < noise_budget; ++i) {
-            if (pairs[i].trust_weight < 0.5) continue;  // only augment trusted pairs
-            if (pairs[i].target_concepts.size() < 2) continue;  // need multi-target
+        // Create 2 noisy copies per forward pair (3x data total)
+        for (int copy = 0; copy < 2; ++copy) {
+            for (size_t i = 0; i < base_size; ++i) {
+                if (pairs[i].trust_weight < 0.3) continue;  // skip very low trust
 
-            ConceptDecoderPair aug;
-            aug.embedding.resize(pairs[i].embedding.size());
-            for (size_t d = 0; d < pairs[i].embedding.size(); ++d)
-                aug.embedding[d] = pairs[i].embedding[d] + noise_dist(noise_rng);
-            aug.target_concepts = pairs[i].target_concepts;
-            aug.trust_weight = pairs[i].trust_weight * 0.5;  // halved weight for noise
-            aug.source_concept = pairs[i].source_concept;
-            pairs.push_back(std::move(aug));
-            noise_pairs++;
+                ConceptDecoderPair aug;
+                aug.embedding.resize(pairs[i].embedding.size());
+                for (size_t d = 0; d < pairs[i].embedding.size(); ++d)
+                    aug.embedding[d] = pairs[i].embedding[d] + noise_dist(noise_rng);
+                aug.target_concepts = pairs[i].target_concepts;
+                aug.trust_weight = pairs[i].trust_weight * 0.7;  // moderate downweight
+                aug.source_concept = pairs[i].source_concept;
+                pairs.push_back(std::move(aug));
+                noise_pairs++;
+            }
         }
     }
 
     std::cerr << "[LanguageTraining] Concept decoder data: " << pairs.size()
               << " total pairs (forward=" << forward_pairs
-              << ", reverse=" << reverse_pairs
-              << ", multihop=" << multihop_pairs
               << ", noise=" << noise_pairs
               << ", filtered=" << filtered
               << ", anti_knowledge=" << anti_knowledge
               << ", invalidated=" << invalidated << ")\n";
-
-    // Subsample if over budget
-    if (pairs.size() > LanguageConfig::MAX_CONCEPT_DECODER_PAIRS) {
-        std::mt19937 rng(77);
-        std::shuffle(pairs.begin(), pairs.end(), rng);
-        pairs.resize(LanguageConfig::MAX_CONCEPT_DECODER_PAIRS);
-    }
 
     return pairs;
 }

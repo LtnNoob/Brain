@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <cctype>
 #include <chrono>
+#include <cstdlib>
 #include <cstring>
 #include <filesystem>
 #include <iostream>
@@ -264,20 +265,47 @@ bool SystemOrchestrator::initialize() {
             language_engine_->rebuild_dimensional_context();
         }
 
-        // KAN decoder training from KG relations (token + concept prediction)
+        // KAN decoder: load from checkpoint or train from scratch
         if (language_engine_ && language_engine_->is_ready()) {
-            log("    Training KAN decoder (token + concept) from KG relations...");
             lang_trainer_ = std::make_unique<LanguageTraining>(
                 *language_engine_, *ltm_, *registry_);
-            LanguageConfig lang_config;
+
+            std::string weights_path = config_.data_dir + "/kan_v2_weights.bin";
+            bool force_retrain = false;
+            if (auto* env = std::getenv("BRAIN19_FORCE_RETRAIN")) {
+                std::string val(env);
+                force_retrain = (val == "1" || val == "true" || val == "yes");
+            }
+
+            bool loaded = false;
+            if (!force_retrain && std::filesystem::exists(weights_path)) {
+                log("    Loading KAN v2 weights from checkpoint: " + weights_path);
+                loaded = lang_trainer_->load_v2_state(weights_path);
+                if (loaded) {
+                    log("    KAN v2 loaded from checkpoint (training skipped)");
+                } else {
+                    log("    KAN v2 checkpoint load failed, will retrain");
+                }
+            }
+
+            if (!loaded) {
+                log("    Training KAN decoder (token + concept) from KG relations...");
+                LanguageConfig lang_config;
 #ifdef USE_LIBTORCH
-            // LibTorch path: DeepKAN v2 with concept prediction
-            auto lang_result = lang_trainer_->train_stage1_deep_kan_v2(lang_config);
+                auto lang_result = lang_trainer_->train_stage1_deep_kan_v2(lang_config);
 #else
-            auto lang_result = lang_trainer_->train_stage1(lang_config);
+                auto lang_result = lang_trainer_->train_stage1(lang_config);
 #endif
-            log("    KAN decoder: " + std::to_string(lang_result.epochs_run) + " epochs, loss="
-                + std::to_string(lang_result.final_loss));
+                log("    KAN decoder: " + std::to_string(lang_result.epochs_run) + " epochs, loss="
+                    + std::to_string(lang_result.final_loss));
+
+                // Save trained weights for next startup
+                if (lang_trainer_->has_v2_model()) {
+                    if (lang_trainer_->save_v2_state(weights_path)) {
+                        log("    KAN v2 weights saved to " + weights_path);
+                    }
+                }
+            }
         }
 
         // Start GDO
@@ -410,6 +438,14 @@ void SystemOrchestrator::shutdown() {
     if (stream_orch_) {
         log("  Stopping stream orchestrator...");
         stream_orch_->shutdown(std::chrono::milliseconds{3000});
+    }
+
+    // Save KAN v2 weights before final checkpoint
+    if (lang_trainer_ && lang_trainer_->has_v2_model()) {
+        std::string weights_path = config_.data_dir + "/kan_v2_weights.bin";
+        if (lang_trainer_->save_v2_state(weights_path)) {
+            log("  KAN v2 weights saved on shutdown");
+        }
     }
 
     // Checkpoint after all concurrent subsystems stopped

@@ -34,6 +34,18 @@ struct LanguageTrainingResult {
 };
 
 // =============================================================================
+// FEEDBACK ROUND RESULT — per-round metrics from interleaved training
+// =============================================================================
+
+struct FeedbackRoundResult {
+    size_t round = 0;
+    double concept_loss = 1e9;
+    double token_loss = 1e9;
+    size_t relations_proposed = 0;
+    size_t trust_adjustments = 0;
+};
+
+// =============================================================================
 // LANGUAGE TRAINING — Multi-stage training pipeline
 // =============================================================================
 //
@@ -114,6 +126,10 @@ public:
     std::string generate_v2(const std::string& query, size_t max_tokens = 30) const;
     bool has_v2_model() const { return v2_valid_; }
 
+    // Save/load trained v2 state to/from binary file (for checkpoint skip-training)
+    bool save_v2_state(const std::string& path) const;
+    bool load_v2_state(const std::string& path);
+
 private:
     // Stored state from last DeepKAN v2 training (for inference)
     bool v2_valid_ = false;
@@ -131,6 +147,14 @@ private:
     // Concept prediction state (LibTorch)
     struct V2ConceptState;
     std::shared_ptr<V2ConceptState> v2_concept_state_;
+
+    // Bidirectional feedback: KAN discoveries → Graph updates
+    size_t apply_kan_graph_feedback(const LanguageConfig& config,
+        const std::vector<ConceptId>& idx_to_concept, size_t num_concepts);
+
+    // Bidirectional feedback: CM trust adjustment from KAN learning signal
+    size_t apply_cm_trust_feedback(const LanguageConfig& config,
+        const std::vector<ConceptId>& idx_to_concept, size_t num_concepts);
 #endif
     bool v2_concept_valid_ = false;
     std::vector<double> v2_concept_matrix_;      // [NC * 16]

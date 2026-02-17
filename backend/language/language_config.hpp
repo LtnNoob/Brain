@@ -71,6 +71,21 @@ struct LanguageConfig {
     size_t concept_epochs           = 300;   // concept prediction epochs (more classes → needs more)
     size_t fusion_epochs            = 300;
 
+    // ── Interleaved Training (Bidirectional Feedback) ──
+    size_t feedback_rounds            = 6;       // interleaved rounds
+    size_t concept_epochs_per_round   = 50;      // concept epochs per round (6×50=300)
+    size_t token_epochs_per_round     = 25;      // token epochs per round (6×25=150)
+
+    // ── KAN → Graph Feedback ──
+    size_t kan_feedback_sample_size   = 200;     // concepts to run inference on per round
+    double kan_feedback_min_confidence = 0.7;    // min confidence to propose relation
+    double kan_feedback_relation_weight = 0.25;  // weight for proposed ASSOCIATED_WITH relations
+    size_t kan_feedback_max_relations = 50;      // max new relations per round
+
+    // ── CM → Graph Feedback (Trust Adjustment) ──
+    double cm_trust_adjustment_max    = 0.1;     // max trust delta per concept per round
+    size_t cm_min_samples_for_adjust  = 3;       // need ≥3 predictions to judge a relation
+
     // ── Relation Decoder Training ──
     static constexpr size_t MAX_RELATION_DECODER_PAIRS = 20000;
     static constexpr size_t MAX_DEFINITION_DECODER_PAIRS = 20000;  // unified concept descriptions

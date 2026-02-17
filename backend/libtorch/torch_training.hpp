@@ -29,6 +29,7 @@ struct DeepKANv2Config {
     double dropout_p = 0.08;      // dropout probability (0 = no dropout)
     double weight_decay = 0.01;   // L2 regularization (Adam weight decay)
     size_t patience = 25;         // early stopping: stop if val loss doesn't improve for N epochs
+    double max_val_gap = 0.12;    // early stopping: stop if (val - train) > this after warmup
 };
 
 // Run Deep KAN v2 training with LibTorch (autograd + Adam).

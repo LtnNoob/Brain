@@ -549,7 +549,15 @@ bool train_deep_kan_v2(const cuda::TrainingData& data,
                       << " best_val=" << best_val_loss
                       << " (" << t_now << "ms)\n";
 
-            // Early stopping
+            // Early stopping: val-gap overfitting detection
+            if (config.max_val_gap > 0 && epoch > 20 && gap > config.max_val_gap) {
+                std::cerr << "[LibTorch]   Val-gap early stop: gap=" << gap
+                          << " > max_val_gap=" << config.max_val_gap
+                          << " at epoch " << epoch << " (best @ " << best_epoch << ")\n";
+                break;
+            }
+
+            // Early stopping: patience-based
             if (config.patience > 0 && epochs_without_improvement >= config.patience) {
                 std::cerr << "[LibTorch]   Early stopping: no improvement for "
                           << epochs_without_improvement << " epochs (best @ epoch "
@@ -1156,12 +1164,21 @@ bool train_concept_deep_kan_v2(const ConceptTrainingData& data,
                 epochs_without_improvement += 5;
             }
 
+            double gap = val_loss - train_loss;
             std::cerr << "[LibTorch/Concept]   epoch " << epoch << "/" << config.num_epochs
                       << " train=" << train_loss
                       << " val=" << val_loss
-                      << " gap=" << (val_loss - train_loss)
+                      << " gap=" << gap
                       << " best_val=" << best_val_loss
                       << " (" << t_now << "ms)\n";
+
+            // Early stopping: val-gap overfitting detection
+            if (config.max_val_gap > 0 && epoch > 20 && gap > config.max_val_gap) {
+                std::cerr << "[LibTorch/Concept]   Val-gap early stop: gap=" << gap
+                          << " > max_val_gap=" << config.max_val_gap
+                          << " at epoch " << epoch << " (best @ " << best_epoch << ")\n";
+                break;
+            }
 
             if (config.patience > 0 && epochs_without_improvement >= config.patience) {
                 std::cerr << "[LibTorch/Concept]   Early stopping at epoch " << epoch

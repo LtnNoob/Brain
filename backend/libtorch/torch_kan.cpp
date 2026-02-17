@@ -167,9 +167,9 @@ DeepKANv2DecoderImpl::DeepKANv2DecoderImpl(size_t vocab_active, size_t vocab_tot
     output = register_module("output", torch::nn::Linear(
         torch::nn::LinearOptions(128, (long)vocab_active).bias(false)));
 
-    // Concept prediction head: 128 → 16 (concept embedding space)
+    // Concept prediction head: 128 → 32 (concept embedding space)
     concept_proj = register_module("concept_proj", torch::nn::Linear(
-        torch::nn::LinearOptions(128, CONV_EMB_DIM).bias(false)));
+        torch::nn::LinearOptions(128, CONCEPT_PROJ_DIM).bias(false)));
 }
 
 torch::Tensor DeepKANv2DecoderImpl::forward(torch::Tensor h, torch::Tensor tok_ids) {
@@ -193,7 +193,7 @@ torch::Tensor DeepKANv2DecoderImpl::forward(torch::Tensor h, torch::Tensor tok_i
 }
 
 void DeepKANv2DecoderImpl::set_concept_matrix(torch::Tensor matrix, float temperature) {
-    // matrix: [N_concepts, 16] — pre-normalized
+    // matrix: [N_concepts, 32] — pre-normalized
     concept_matrix_ = register_buffer("concept_matrix", matrix);
     concept_temperature_ = temperature;
 }
@@ -220,12 +220,12 @@ torch::Tensor DeepKANv2DecoderImpl::forward_concepts(
     auto features = drop3(kan_l3->forward(k2));     // [B, 128]
 
     // Project to concept embedding space
-    auto proj = concept_proj->forward(features);    // [B, 16]
+    auto proj = concept_proj->forward(features);    // [B, 32]
 
     // L2-normalize projection
     auto proj_norm = proj / proj.norm(2, /*dim=*/-1, /*keepdim=*/true).clamp_min(1e-8f);
 
-    // Cosine similarity: [B, 16] @ [N, 16]^T = [B, N]
+    // Cosine similarity: [B, 32] @ [N, 32]^T = [B, N]
     // concept_matrix_ is already L2-normalized
     auto logits = torch::mm(proj_norm, concept_matrix_.t()) / concept_temperature_;
 

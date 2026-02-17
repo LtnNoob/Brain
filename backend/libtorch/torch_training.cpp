@@ -713,7 +713,7 @@ static ConceptPrecomputedData precompute_concept_hidden_states(
     }
 
     pd.all_h.reserve(total * H_90);
-    pd.all_concept_emb.reserve(total * 16);
+    pd.all_concept_emb.reserve(total * CONV_EMB_DIM);
     pd.all_targets.reserve(total);
     pd.all_trust.reserve(total);
     pd.sample_offsets.resize(data.num_samples);
@@ -745,9 +745,10 @@ static ConceptPrecomputedData precompute_concept_hidden_states(
                         pd.all_h.push_back((float)h[i]);
 
                     // Store current concept's 16D core embedding for CM input
-                    for (size_t d = 0; d < 16; ++d)
+                    // concept_matrix is 32D (core+detail), but CM only uses first 16D
+                    for (size_t d = 0; d < CONV_EMB_DIM; ++d)
                         pd.all_concept_emb.push_back(
-                            (float)data.concept_matrix[(size_t)ci * 16 + d]);
+                            (float)data.concept_matrix[(size_t)ci * CONCEPT_PROJ_DIM + d]);
 
                     pd.all_targets.push_back(next_ci);
                     pd.all_trust.push_back((float)data.trust_weights[s]);
@@ -840,10 +841,10 @@ static void load_concept_model_weights(DeepKANv2Decoder& model,
         m.k1_proj->bias.data().copy_(
             vec_to_tensor(cw.k1_proj_b, {(long)CONV_OUTPUT_DIM}));
 
-    // concept_proj
+    // concept_proj (128 → CONCEPT_PROJ_DIM)
     if (!cw.concept_proj_W.empty())
         m.concept_proj->weight.data().copy_(
-            vec_to_tensor(cw.concept_proj_W, {(long)CONV_EMB_DIM, 128}));
+            vec_to_tensor(cw.concept_proj_W, {(long)CONCEPT_PROJ_DIM, 128}));
 }
 
 // =============================================================================
@@ -999,9 +1000,9 @@ bool train_concept_deep_kan_v2(const ConceptTrainingData& data,
         load_concept_model_weights(model, dkw, cpd, cw);
     }
 
-    // Build and set concept matrix
+    // Build and set concept matrix (32D: core 16D + detail 16D)
     auto cm_tensor = vec_to_tensor(data.concept_matrix,
-        {(long)NC, (long)CONV_EMB_DIM});
+        {(long)NC, (long)CONCEPT_PROJ_DIM});
     model->set_concept_matrix(cm_tensor, concept_temperature);
 
     // Freeze unused parameters (conv_emb, output head)
@@ -1246,7 +1247,7 @@ ConceptGenerateResult generate_concept_deep_kan_v2(
     }
 
     // Set concept matrix
-    auto cm_tensor = vec_to_tensor(concept_matrix, {(long)NC, (long)CONV_EMB_DIM});
+    auto cm_tensor = vec_to_tensor(concept_matrix, {(long)NC, (long)CONCEPT_PROJ_DIM});
     model->set_concept_matrix(cm_tensor, temperature);
 
     torch::Device device = torch::kCPU;
@@ -1267,10 +1268,11 @@ ConceptGenerateResult generate_concept_deep_kan_v2(
         auto h_tensor = torch::from_blob(h.data(), {1, (long)H_90},
             torch::kFloat32).clone().to(device);
 
-        // Look up current concept's 16D embedding for ConvergencePort
-        std::vector<float> ce(16);
-        for (size_t d = 0; d < 16; ++d)
-            ce[d] = (float)concept_matrix[(size_t)current_idx * 16 + d];
+        // Look up current concept's 16D core embedding for ConvergencePort
+        // concept_matrix is 32D (core+detail), but CM input uses first 16D
+        std::vector<float> ce(CONV_EMB_DIM);
+        for (size_t d = 0; d < CONV_EMB_DIM; ++d)
+            ce[d] = (float)concept_matrix[(size_t)current_idx * CONCEPT_PROJ_DIM + d];
         auto emb_tensor_local = torch::from_blob(ce.data(), {1, (long)CONV_EMB_DIM},
             torch::kFloat32).clone().to(device);
 

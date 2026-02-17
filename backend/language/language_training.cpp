@@ -2553,9 +2553,20 @@ LanguageTrainingResult LanguageTraining::train_stage1_deep_kan_v2(const Language
     double best_concept_loss = 1e9;
     double best_token_loss = 1e9;
 
+    // Separate weight tracks: concept training reads/writes concept_dkw/concept_cpd,
+    // token training reads/writes dkw/cpd. This prevents token training's KAN backbone
+    // mutations from destroying concept_proj alignment (catastrophic interference).
+    cuda::DeepKANWeights concept_dkw = dkw;
+    libtorch::ConvergencePortData concept_cpd = cpd;
+
     for (size_t round = 0; round < config.feedback_rounds; ++round) {
+        // Temperature annealing: T=0.5 → 0.1 linearly across rounds
+        double round_temperature = (config.feedback_rounds > 1)
+            ? 0.5 - 0.4 * (double)round / (double)(config.feedback_rounds - 1)
+            : config.concept_train_temperature;
+
         std::cerr << "[FeedbackLoop] ══ Round " << (round+1) << "/"
-                  << config.feedback_rounds << " ══\n";
+                  << config.feedback_rounds << " (T=" << round_temperature << ") ══\n";
 
         // ── A: Generate/regenerate concept data ──
         // Round 0: fresh. Round 1+: regenerate because graph may have changed.
@@ -2589,23 +2600,31 @@ LanguageTrainingResult LanguageTraining::train_stage1_deep_kan_v2(const Language
             ctd.num_samples = concept_data.size();
             ctd.num_concepts = NC;
 
-            ctd.concept_matrix.resize(NC * 16, 0.0);
+            static constexpr size_t CPD = 32;  // CONCEPT_PROJ_DIM
+            ctd.concept_matrix.resize(NC * CPD, 0.0);
             ctd.concept_emb_64d.resize(NC * FUSED_BASE, 0.0);
             ctd.concept_flex_16d.resize(NC * fd, 0.0);
 
             for (size_t i = 0; i < NC; ++i) {
                 auto flex = cpt_emb_store.get_or_default(idx_to_concept[i]);
 
-                double norm = 0.0;
+                // 32D concept_matrix: first 16D = core, next 16D = detail
                 for (size_t d = 0; d < 16; ++d) {
-                    double v = d < flex.core.size() ? flex.core[d] : 0.0;
-                    ctd.concept_matrix[i * 16 + d] = v;
-                    norm += v * v;
+                    ctd.concept_matrix[i * CPD + d] =
+                        d < flex.core.size() ? flex.core[d] : 0.0;
                 }
+                for (size_t d = 0; d < 16; ++d) {
+                    ctd.concept_matrix[i * CPD + 16 + d] =
+                        d < flex.detail.size() ? flex.detail[d] : 0.0;
+                }
+                // L2-normalize over full 32D
+                double norm = 0.0;
+                for (size_t d = 0; d < CPD; ++d)
+                    norm += ctd.concept_matrix[i * CPD + d] * ctd.concept_matrix[i * CPD + d];
                 norm = std::sqrt(norm);
                 if (norm > 1e-8) {
-                    for (size_t d = 0; d < 16; ++d)
-                        ctd.concept_matrix[i * 16 + d] /= norm;
+                    for (size_t d = 0; d < CPD; ++d)
+                        ctd.concept_matrix[i * CPD + d] /= norm;
                 }
 
                 for (size_t d = 0; d < std::min((size_t)16, flex.core.size()); ++d)
@@ -2658,10 +2677,14 @@ LanguageTrainingResult LanguageTraining::train_stage1_deep_kan_v2(const Language
 
             std::cerr << "[FeedbackLoop]   Concept training (round " << (round+1) << ")...\n";
             concept_ok = libtorch::train_concept_deep_kan_v2(
-                ctd, dkw, cpd, v2_cs->cw, concept_dkc,
-                (float)config.concept_train_temperature, concept_tr);
+                ctd, concept_dkw, concept_cpd, v2_cs->cw, concept_dkc,
+                (float)round_temperature, concept_tr);
 
             if (concept_ok) {
+                // Flow concept backbone → token training starting point
+                dkw = concept_dkw;
+                cpd = concept_cpd;
+
                 // Store concept state for inference (needed by feedback + generate_v2)
                 v2_concept_state_ = v2_cs;
                 v2_concept_matrix_ = ctd.concept_matrix;  // copy (need across rounds)
@@ -2670,6 +2693,10 @@ LanguageTrainingResult LanguageTraining::train_stage1_deep_kan_v2(const Language
                 v2_num_concepts_ = NC;
                 v2_idx_to_concept_ = idx_to_concept;  // copy
                 v2_concept_valid_ = true;
+                // Snapshot dkw for inference (feedback functions use v2_dkw_)
+                v2_dkw_ = concept_dkw;
+                v2_cpd_ = std::make_shared<V2ConvergenceState>();
+                v2_cpd_->cpd = concept_cpd;
 
                 if (concept_tr.best_loss < best_concept_loss)
                     best_concept_loss = concept_tr.best_loss;

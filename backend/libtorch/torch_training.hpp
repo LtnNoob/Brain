@@ -68,8 +68,9 @@ GenerateResult generate_deep_kan_v2(
 // instead of token-ID (softmax over VA).
 
 struct ConceptTrainingData {
-    // Concept embedding matrix: [num_concepts × 16], L2-normalized rows
-    std::vector<double> concept_matrix;     // [num_concepts * 16]
+    // Concept embedding matrix: [num_concepts × 32], L2-normalized rows
+    // First 16D = core embedding, next 16D = detail embedding
+    std::vector<double> concept_matrix;     // [num_concepts * 32]
 
     // For hidden state evolution (concept→h feedback):
     std::vector<double> concept_emb_64d;    // [num_concepts * 64] Block 1
@@ -88,7 +89,7 @@ struct ConceptTrainingData {
 
 // Concept-specific weights (concept_proj + k1_proj, not in DeepKANWeights)
 struct ConceptWeights {
-    std::vector<double> concept_proj_W;     // [16 * 128]
+    std::vector<double> concept_proj_W;     // [32 * 128]
     std::vector<double> k1_proj_W;          // [32 * 256]
     std::vector<double> k1_proj_b;          // [32]
 };
@@ -114,7 +115,7 @@ ConceptGenerateResult generate_concept_deep_kan_v2(
     const cuda::DeepKANWeights& dkw,
     const ConvergencePortData& cpd,
     const ConceptWeights& cw,
-    const std::vector<double>& concept_matrix,   // [N * 16]
+    const std::vector<double>& concept_matrix,   // [N * 32]
     const std::vector<double>& concept_emb_64d,  // [N * 64]
     const std::vector<double>& concept_flex_16d,  // [N * 16]
     size_t num_concepts,

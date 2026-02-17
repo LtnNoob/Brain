@@ -157,7 +157,7 @@ private:
         const std::vector<ConceptId>& idx_to_concept, size_t num_concepts);
 #endif
     bool v2_concept_valid_ = false;
-    std::vector<double> v2_concept_matrix_;      // [NC * 16]
+    std::vector<double> v2_concept_matrix_;      // [NC * 32]
     std::vector<double> v2_concept_emb_64d_;     // [NC * 64]
     std::vector<double> v2_concept_flex_16d_;    // [NC * 16]
     size_t v2_num_concepts_ = 0;

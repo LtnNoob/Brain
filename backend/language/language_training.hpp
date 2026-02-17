@@ -91,6 +91,12 @@ public:
     };
     std::vector<ConceptDecoderPair> generate_concept_decoder_data() const;
 
+    // Build fused embedding vector for a source concept with specific target/relation embeddings
+    std::vector<double> build_concept_fused_vector(
+        ConceptId source,
+        const std::vector<FlexEmbedding>& target_embeddings,
+        const std::vector<FlexEmbedding>& rel_type_embeddings) const;
+
     // Generate relation-based decoder data: one compound paragraph per concept
     // combining ALL outgoing relations into 15-30 token training targets.
     // Input vectors use FusionLayer-projected concept embeddings (R^64).

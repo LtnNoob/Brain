@@ -70,6 +70,7 @@ struct LanguageConfig {
     // ── Relation Decoder Training ──
     static constexpr size_t MAX_RELATION_DECODER_PAIRS = 20000;
     static constexpr size_t MAX_DEFINITION_DECODER_PAIRS = 20000;  // unified concept descriptions
+    static constexpr size_t MAX_CONCEPT_DECODER_PAIRS = 500000;    // augmented concept prediction data
 
     // ── KAN Knots ──
     size_t kan_num_knots            = 10;

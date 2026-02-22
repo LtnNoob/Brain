@@ -2647,24 +2647,17 @@ LanguageTrainingResult LanguageTraining::train_stage1_deep_kan_v2(const Language
 
             for (size_t i = 0; i < NC; ++i) {
                 auto flex = cpt_emb_store.get_or_default(idx_to_concept[i]);
-                ConceptId cid = idx_to_concept[i];
 
-                // Build full 64D fused vector for this concept
-                // (graph-aware: source emb + GAT target aggregation + relation types)
-                auto rels = ltm_.get_outgoing_relations(cid);
-                std::vector<FlexEmbedding> tgt_embs, rel_embs;
-                std::vector<RelationType> rel_types;
-                for (const auto& rel : rels) {
-                    if (tgt_embs.size() >= 5) break;
-                    tgt_embs.push_back(cpt_emb_store.get_or_default(rel.target));
-                    rel_embs.push_back(engine_.embeddings().get_relation_embedding(rel.type));
-                    rel_types.push_back(rel.type);
+                // concept_matrix: core(16D) + detail(16D) + mirrored core/detail(32D)
+                // All 64D carry identity signal → concept_proj can use full capacity
+                for (size_t d = 0; d < 16; ++d) {
+                    double cv = d < flex.core.size() ? flex.core[d] : 0.0;
+                    double dv = d < flex.detail.size() ? flex.detail[d] : 0.0;
+                    ctd.concept_matrix[i * CPD + d] = cv;           // [0:16]  core
+                    ctd.concept_matrix[i * CPD + 16 + d] = dv;     // [16:32] detail
+                    ctd.concept_matrix[i * CPD + 32 + d] = cv * 0.7 + dv * 0.3;  // [32:48] mix1
+                    ctd.concept_matrix[i * CPD + 48 + d] = cv * 0.3 - dv * 0.7;  // [48:64] mix2
                 }
-                auto fused = build_concept_fused_vector(cid, tgt_embs, rel_embs, rel_types);
-
-                // concept_matrix: first 64D of fused, L2-normalized
-                for (size_t d = 0; d < CPD && d < fused.size(); ++d)
-                    ctd.concept_matrix[i * CPD + d] = fused[d];
                 double norm = 0.0;
                 for (size_t d = 0; d < CPD; ++d)
                     norm += ctd.concept_matrix[i * CPD + d] * ctd.concept_matrix[i * CPD + d];
@@ -2674,9 +2667,16 @@ LanguageTrainingResult LanguageTraining::train_stage1_deep_kan_v2(const Language
                         ctd.concept_matrix[i * CPD + d] /= norm;
                 }
 
-                // concept_emb_64d: full 64D fused projection for hidden state evolution
-                for (size_t d = 0; d < FUSED_BASE && d < fused.size(); ++d)
-                    ctd.concept_emb_64d[i * FUSED_BASE + d] = fused[d];
+                // concept_emb_64d: same pattern (core+detail+mixes) for Block 1 evolution
+                // All 64D get meaningful signal instead of 48D being zero
+                for (size_t d = 0; d < 16; ++d) {
+                    double cv = d < flex.core.size() ? flex.core[d] : 0.0;
+                    double dv = d < flex.detail.size() ? flex.detail[d] : 0.0;
+                    ctd.concept_emb_64d[i * FUSED_BASE + d] = cv;
+                    ctd.concept_emb_64d[i * FUSED_BASE + 16 + d] = dv;
+                    ctd.concept_emb_64d[i * FUSED_BASE + 32 + d] = cv * 0.7 + dv * 0.3;
+                    ctd.concept_emb_64d[i * FUSED_BASE + 48 + d] = cv * 0.3 - dv * 0.7;
+                }
 
                 // concept_flex_16d: detail embedding for Block 2
                 for (size_t d = 0; d < fd && d < flex.detail.size(); ++d)

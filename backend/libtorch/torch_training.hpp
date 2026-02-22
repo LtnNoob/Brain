@@ -58,7 +58,8 @@ GenerateResult generate_deep_kan_v2(
     const std::vector<uint16_t>& active_tokens,  // [VA] active_idx → token_id
     const std::vector<float>& initial_h,    // [90] initial hidden state
     uint16_t start_token,                   // initial token for conv_emb
-    size_t max_tokens);
+    size_t max_tokens,
+    bool use_lstm_gates = false);
 
 // =============================================================================
 // Concept Prediction — DeepKAN v2 with concept output head
@@ -85,11 +86,12 @@ struct ConceptTrainingData {
 
     size_t num_samples;
     size_t num_concepts;
+    bool use_lstm_gates = false; // content-dependent gating for h evolution
 };
 
 // Concept-specific weights (concept_proj + k1_proj, not in DeepKANWeights)
 struct ConceptWeights {
-    std::vector<double> concept_proj_W;     // [32 * 128]
+    std::vector<double> concept_proj_W;     // [64 * 128]
     std::vector<double> k1_proj_W;          // [32 * 256]
     std::vector<double> k1_proj_b;          // [32]
 };
@@ -122,7 +124,52 @@ ConceptGenerateResult generate_concept_deep_kan_v2(
     const std::vector<float>& initial_h,          // [90]
     int64_t start_concept_idx,
     size_t max_concepts,
-    float temperature = 0.1f);
+    float temperature = 0.1f,
+    bool use_lstm_gates = false);
+
+// =============================================================================
+// Unified Training — token + concept in single shared forward pass
+// =============================================================================
+// Both heads trained simultaneously through the shared KAN backbone.
+// Combined loss prevents catastrophic interference (the root cause of
+// val_con divergence in interleaved training).
+
+struct UnifiedTrainingConfig {
+    size_t num_epochs = 300;
+    double lr_token_head = 0.002;     // W_a (token output projection)
+    double lr_concept_head = 0.002;   // concept_proj
+    double lr_kan = 0.001;            // KAN spline + residual + LN + k1_proj
+    double lr_conv = 0.0005;          // ConvergencePort (shared linear + embedding)
+    size_t warmup_epochs = 10;        // freeze KAN+conv, train heads only
+    size_t batch_size = 2048;
+    double dropout_p = 0.08;
+    double weight_decay = 0.01;
+    size_t patience = 25;
+    double max_val_gap = 0.15;
+    double concept_loss_weight = 1.0; // weight for concept loss in combined loss
+    float concept_temperature = 0.1f;
+    std::vector<double> lr_scale;     // [90] per-input-dim LR scale for KAN L1
+};
+
+struct UnifiedTrainingResult {
+    double best_token_val = 1e9;
+    double best_concept_val = 1e9;
+    double best_combined_val = 1e9;
+    size_t best_epoch = 0;
+};
+
+// Train token prediction + concept prediction through shared KAN backbone.
+// Token and concept batches are processed in each training step with a
+// combined loss: total = token_CE + concept_weight * concept_CE.
+// Gradients from both tasks flow through the shared KAN layers.
+bool train_unified_deep_kan_v2(
+    const cuda::TrainingData& token_data,
+    const ConceptTrainingData& concept_data,
+    cuda::DeepKANWeights& dkw,
+    ConvergencePortData& cpd,
+    ConceptWeights& cw,
+    const UnifiedTrainingConfig& config,
+    UnifiedTrainingResult& result);
 
 } // namespace libtorch
 } // namespace brain19

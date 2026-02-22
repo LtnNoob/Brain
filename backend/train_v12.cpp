@@ -24,6 +24,7 @@
 #include <iostream>
 #include <fstream>
 #include <chrono>
+#include <cstdlib>
 #include <string>
 
 using namespace brain19;
@@ -57,7 +58,7 @@ int main() {
     bool loaded = false;
     for (const auto& path : {"../data/foundation_full.json", "data/foundation_full.json",
                               "../data/foundation.json", "data/foundation.json"}) {
-        if (FoundationConcepts::seed_from_file(ltm, path)) {
+        if (FoundationConcepts::seed_from_file(ltm, path, true /* include_weak_relations */)) {
             log("  Loaded from: " + std::string(path));
             loaded = true;
             break;
@@ -158,6 +159,24 @@ int main() {
         lang_config.decoder_lr = 0.002;      // W_a lr (v2 Adam)
         lang_config.deep_kan_lr = 0.001;     // KAN lr (v2 Adam)
         lang_config.use_deep_kan = true;
+
+        // Phase 3+4 feature flags (set via environment variables)
+        if (std::getenv("USE_LSTM_GATES"))
+            lang_config.use_lstm_gates = true;
+        if (std::getenv("USE_GAT"))
+            lang_config.use_gat = true;
+        if (std::getenv("USE_SAMPLED_SOFTMAX"))
+            lang_config.use_sampled_softmax = true;
+        if (auto* k = std::getenv("SAMPLED_SOFTMAX_K"))
+            lang_config.sampled_softmax_k = std::stoul(k);
+
+        // Full-signal training flags (all on by default, set NO_X to disable)
+        TrainingSignalConfig sig;
+        if (std::getenv("NO_PATTERN_PAIRS"))    sig.use_pattern_pairs = false;
+        if (std::getenv("NO_CONTRASTIVE"))       sig.use_contrastive_loss = false;
+        if (std::getenv("NO_CM_WEIGHTED"))       sig.use_cm_weighted_sampling = false;
+        if (std::getenv("NO_WEAK_RELATIONS"))    sig.use_weak_relations = false;
+        lang_trainer.set_signal_config(sig);
 
         auto t_lang = std::chrono::steady_clock::now();
 #ifdef USE_LIBTORCH

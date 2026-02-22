@@ -71,10 +71,9 @@ struct LanguageConfig {
     size_t concept_epochs           = 300;   // concept prediction epochs (more classes → needs more)
     size_t fusion_epochs            = 300;
 
-    // ── Interleaved Training (Bidirectional Feedback) ──
-    size_t feedback_rounds            = 6;       // interleaved rounds
-    size_t concept_epochs_per_round   = 50;      // concept epochs per round (6×50=300)
-    size_t token_epochs_per_round     = 25;      // token epochs per round (6×25=150)
+    // ── Unified Training (Combined Loss) ──
+    size_t unified_epochs             = 300;     // single unified training loop
+    size_t unified_concept_negatives  = 256;     // sampled softmax negatives
 
     // ── KAN → Graph Feedback ──
     size_t kan_feedback_sample_size   = 200;     // concepts to run inference on per round
@@ -97,6 +96,12 @@ struct LanguageConfig {
     // ── Deep KAN Decoder (V12) ──
     bool use_deep_kan               = false;
     double deep_kan_lr              = 0.01;   // LR for KAN spline + residual weights
+
+    // ── Phase 3+4 Feature Flags ──
+    bool use_lstm_gates             = false;  // RelationLSTM on graph edges
+    bool use_gat                    = false;  // GAT attention on graph
+    bool use_sampled_softmax        = false;  // sampled softmax (K negatives)
+    size_t sampled_softmax_k        = 2048;   // number of negative samples
 
     // ── Convergence Integration ──
     static constexpr size_t CONVERGENCE_DIM = 32;  // = ConvergencePort::OUTPUT_DIM

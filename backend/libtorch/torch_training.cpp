@@ -16,12 +16,18 @@ namespace brain19 {
 namespace libtorch {
 
 // =============================================================================
+// Helper: sigmoid for LSTM-style gating
+// =============================================================================
+static inline double gate_sigmoid(double x) {
+    return 1.0 / (1.0 + std::exp(-x));
+}
+
+// =============================================================================
 // Helper: precompute hidden states h[0:90] from training data
 // =============================================================================
-// Blocks 1-3 are deterministic given embedding tables:
-//   Block 1 [0:64]:  h = 0.8*h + 0.2*emb_table[tok]
-//   Block 2 [64:80]: h = 0.9*h + 0.1*flex_table[tok]
-//   Block 3 [80:90]: h *= 0.95
+// Blocks 1-3 are deterministic given embedding tables.
+// Default (fixed): Block1 h=0.8h+0.2emb, Block2 h=0.9h+0.1flex, Block3 h*=0.95
+// LSTM mode: sigmoid-gated mixing based on h·emb similarity
 //
 // Returns per-sample token ranges so we can split train/val at sample level.
 
@@ -87,19 +93,60 @@ static PrecomputedData precompute_hidden_states(const cuda::TrainingData& data) 
                 }
             }
 
-            // Evolve hidden state (3 blocks only) — always, even for last token
-            for (size_t i = 0; i < FUSED_BASE && i < H_90; ++i) {
-                double emb_val = (tok * FUSED_BASE + i < data.emb_table.size())
-                    ? data.emb_table[tok * FUSED_BASE + i] : 0.0;
-                h[i] = h[i] * 0.8 + emb_val * 0.2;
-            }
-            for (size_t i = 0; i < fd && (FUSED_BASE + i) < H_90; ++i) {
-                double flex_val = (tok * fd + i < data.flex_table.size())
-                    ? data.flex_table[tok * fd + i] : 0.0;
-                h[FUSED_BASE + i] = h[FUSED_BASE + i] * 0.9 + flex_val * 0.1;
-            }
-            for (size_t i = FUSED_BASE + fd; i < H_90; ++i) {
-                h[i] *= 0.95;
+            // Evolve hidden state (3 blocks) — always, even for last token
+            if (data.use_lstm_gates) {
+                // LSTM-style: content-dependent sigmoid gating
+                // Gate = σ(h·emb / sqrt(dim)) → modulates mixing coefficient
+                // Block 1: base=0.2, range [0.1, 0.3]
+                double dot1 = 0;
+                for (size_t i = 0; i < FUSED_BASE && i < H_90; ++i) {
+                    double emb_val = (tok * FUSED_BASE + i < data.emb_table.size())
+                        ? data.emb_table[tok * FUSED_BASE + i] : 0.0;
+                    dot1 += h[i] * emb_val;
+                }
+                double gate1 = gate_sigmoid(dot1 / 8.0);  // sqrt(64)=8
+                double alpha1 = 0.1 + gate1 * 0.2;        // [0.1, 0.3]
+                for (size_t i = 0; i < FUSED_BASE && i < H_90; ++i) {
+                    double emb_val = (tok * FUSED_BASE + i < data.emb_table.size())
+                        ? data.emb_table[tok * FUSED_BASE + i] : 0.0;
+                    h[i] = h[i] * (1.0 - alpha1) + emb_val * alpha1;
+                }
+                // Block 2: base=0.1, range [0.05, 0.15]
+                double dot2 = 0;
+                for (size_t i = 0; i < fd && (FUSED_BASE + i) < H_90; ++i) {
+                    double flex_val = (tok * fd + i < data.flex_table.size())
+                        ? data.flex_table[tok * fd + i] : 0.0;
+                    dot2 += h[FUSED_BASE + i] * flex_val;
+                }
+                double gate2 = gate_sigmoid(dot2 / 4.0);  // sqrt(16)=4
+                double alpha2 = 0.05 + gate2 * 0.1;       // [0.05, 0.15]
+                for (size_t i = 0; i < fd && (FUSED_BASE + i) < H_90; ++i) {
+                    double flex_val = (tok * fd + i < data.flex_table.size())
+                        ? data.flex_table[tok * fd + i] : 0.0;
+                    h[FUSED_BASE + i] = h[FUSED_BASE + i] * (1.0 - alpha2) + flex_val * alpha2;
+                }
+                // Block 3: content-dependent decay [0.93, 0.97]
+                double h3_norm = 0;
+                for (size_t i = FUSED_BASE + fd; i < H_90; ++i)
+                    h3_norm += h[i] * h[i];
+                double decay = 0.93 + gate_sigmoid(-h3_norm + 1.0) * 0.04;
+                for (size_t i = FUSED_BASE + fd; i < H_90; ++i)
+                    h[i] *= decay;
+            } else {
+                // Fixed coefficients (original)
+                for (size_t i = 0; i < FUSED_BASE && i < H_90; ++i) {
+                    double emb_val = (tok * FUSED_BASE + i < data.emb_table.size())
+                        ? data.emb_table[tok * FUSED_BASE + i] : 0.0;
+                    h[i] = h[i] * 0.8 + emb_val * 0.2;
+                }
+                for (size_t i = 0; i < fd && (FUSED_BASE + i) < H_90; ++i) {
+                    double flex_val = (tok * fd + i < data.flex_table.size())
+                        ? data.flex_table[tok * fd + i] : 0.0;
+                    h[FUSED_BASE + i] = h[FUSED_BASE + i] * 0.9 + flex_val * 0.1;
+                }
+                for (size_t i = FUSED_BASE + fd; i < H_90; ++i) {
+                    h[i] *= 0.95;
+                }
             }
         }
 
@@ -609,7 +656,8 @@ GenerateResult generate_deep_kan_v2(
     const std::vector<uint16_t>& active_tokens,
     const std::vector<float>& initial_h,
     uint16_t start_token,
-    size_t max_tokens)
+    size_t max_tokens,
+    bool use_lstm_gates)
 {
     GenerateResult gr;
     const size_t H_90 = 90;
@@ -656,21 +704,57 @@ GenerateResult generate_deep_kan_v2(
         tok = (int64_t)real_tok;
 
         // Evolve hidden state (3-block, matching training)
-        // Block 1: [0, FUSED_BASE) token embedding
-        for (size_t i = 0; i < FUSED_BASE && i < H_90; ++i) {
-            double emb_val = (real_tok * FUSED_BASE + i < emb_table.size())
-                ? emb_table[real_tok * FUSED_BASE + i] : 0.0;
-            h[i] = (float)(h[i] * 0.8 + emb_val * 0.2);
-        }
-        // Block 2: [FUSED_BASE, FUSED_BASE+flex_dim) flex detail
-        for (size_t i = 0; i < flex_dim && (FUSED_BASE + i) < H_90; ++i) {
-            double flex_val = (real_tok * flex_dim + i < flex_table.size())
-                ? flex_table[real_tok * flex_dim + i] : 0.0;
-            h[FUSED_BASE + i] = (float)(h[FUSED_BASE + i] * 0.9 + flex_val * 0.1);
-        }
-        // Block 3: [FUSED_BASE+flex_dim, H_90) slow decay
-        for (size_t i = FUSED_BASE + flex_dim; i < H_90; ++i) {
-            h[i] *= 0.95f;
+        if (use_lstm_gates) {
+            // LSTM-style gating (must match precompute_hidden_states)
+            double dot1 = 0;
+            for (size_t i = 0; i < FUSED_BASE && i < H_90; ++i) {
+                double emb_val = (real_tok * FUSED_BASE + i < emb_table.size())
+                    ? emb_table[real_tok * FUSED_BASE + i] : 0.0;
+                dot1 += h[i] * emb_val;
+            }
+            double gate1 = gate_sigmoid(dot1 / 8.0);
+            double alpha1 = 0.1 + gate1 * 0.2;
+            for (size_t i = 0; i < FUSED_BASE && i < H_90; ++i) {
+                double emb_val = (real_tok * FUSED_BASE + i < emb_table.size())
+                    ? emb_table[real_tok * FUSED_BASE + i] : 0.0;
+                h[i] = (float)(h[i] * (1.0 - alpha1) + emb_val * alpha1);
+            }
+            double dot2 = 0;
+            for (size_t i = 0; i < flex_dim && (FUSED_BASE + i) < H_90; ++i) {
+                double flex_val = (real_tok * flex_dim + i < flex_table.size())
+                    ? flex_table[real_tok * flex_dim + i] : 0.0;
+                dot2 += h[FUSED_BASE + i] * flex_val;
+            }
+            double gate2 = gate_sigmoid(dot2 / 4.0);
+            double alpha2 = 0.05 + gate2 * 0.1;
+            for (size_t i = 0; i < flex_dim && (FUSED_BASE + i) < H_90; ++i) {
+                double flex_val = (real_tok * flex_dim + i < flex_table.size())
+                    ? flex_table[real_tok * flex_dim + i] : 0.0;
+                h[FUSED_BASE + i] = (float)(h[FUSED_BASE + i] * (1.0 - alpha2) + flex_val * alpha2);
+            }
+            double h3_norm = 0;
+            for (size_t i = FUSED_BASE + flex_dim; i < H_90; ++i)
+                h3_norm += h[i] * h[i];
+            double decay = 0.93 + gate_sigmoid(-h3_norm + 1.0) * 0.04;
+            for (size_t i = FUSED_BASE + flex_dim; i < H_90; ++i)
+                h[i] *= (float)decay;
+        } else {
+            // Block 1: [0, FUSED_BASE) token embedding
+            for (size_t i = 0; i < FUSED_BASE && i < H_90; ++i) {
+                double emb_val = (real_tok * FUSED_BASE + i < emb_table.size())
+                    ? emb_table[real_tok * FUSED_BASE + i] : 0.0;
+                h[i] = (float)(h[i] * 0.8 + emb_val * 0.2);
+            }
+            // Block 2: [FUSED_BASE, FUSED_BASE+flex_dim) flex detail
+            for (size_t i = 0; i < flex_dim && (FUSED_BASE + i) < H_90; ++i) {
+                double flex_val = (real_tok * flex_dim + i < flex_table.size())
+                    ? flex_table[real_tok * flex_dim + i] : 0.0;
+                h[FUSED_BASE + i] = (float)(h[FUSED_BASE + i] * 0.9 + flex_val * 0.1);
+            }
+            // Block 3: [FUSED_BASE+flex_dim, H_90) slow decay
+            for (size_t i = FUSED_BASE + flex_dim; i < H_90; ++i) {
+                h[i] *= 0.95f;
+            }
         }
     }
 
@@ -758,16 +842,52 @@ static ConceptPrecomputedData precompute_concept_hidden_states(
             }
 
             // Evolve hidden state using concept embeddings
-            for (size_t i = 0; i < FUSED_BASE && i < H_90; ++i) {
-                double v = data.concept_emb_64d[(size_t)ci * FUSED_BASE + i];
-                h[i] = h[i] * 0.8 + v * 0.2;
-            }
-            for (size_t i = 0; i < fd && (FUSED_BASE + i) < H_90; ++i) {
-                double v = data.concept_flex_16d[(size_t)ci * fd + i];
-                h[FUSED_BASE + i] = h[FUSED_BASE + i] * 0.9 + v * 0.1;
-            }
-            for (size_t i = FUSED_BASE + fd; i < H_90; ++i) {
-                h[i] *= 0.95;
+            if (data.use_lstm_gates) {
+                // LSTM-style: content-dependent sigmoid gating
+                // Block 1: gate from h·emb similarity
+                double dot1 = 0;
+                for (size_t i = 0; i < FUSED_BASE && i < H_90; ++i) {
+                    double v = data.concept_emb_64d[(size_t)ci * FUSED_BASE + i];
+                    dot1 += h[i] * v;
+                }
+                double gate1 = gate_sigmoid(dot1 / 8.0);
+                double alpha1 = 0.1 + gate1 * 0.2;
+                for (size_t i = 0; i < FUSED_BASE && i < H_90; ++i) {
+                    double v = data.concept_emb_64d[(size_t)ci * FUSED_BASE + i];
+                    h[i] = h[i] * (1.0 - alpha1) + v * alpha1;
+                }
+                // Block 2
+                double dot2 = 0;
+                for (size_t i = 0; i < fd && (FUSED_BASE + i) < H_90; ++i) {
+                    double v = data.concept_flex_16d[(size_t)ci * fd + i];
+                    dot2 += h[FUSED_BASE + i] * v;
+                }
+                double gate2 = gate_sigmoid(dot2 / 4.0);
+                double alpha2 = 0.05 + gate2 * 0.1;
+                for (size_t i = 0; i < fd && (FUSED_BASE + i) < H_90; ++i) {
+                    double v = data.concept_flex_16d[(size_t)ci * fd + i];
+                    h[FUSED_BASE + i] = h[FUSED_BASE + i] * (1.0 - alpha2) + v * alpha2;
+                }
+                // Block 3: content-dependent decay
+                double h3_norm = 0;
+                for (size_t i = FUSED_BASE + fd; i < H_90; ++i)
+                    h3_norm += h[i] * h[i];
+                double decay = 0.93 + gate_sigmoid(-h3_norm + 1.0) * 0.04;
+                for (size_t i = FUSED_BASE + fd; i < H_90; ++i)
+                    h[i] *= decay;
+            } else {
+                // Fixed coefficients (original)
+                for (size_t i = 0; i < FUSED_BASE && i < H_90; ++i) {
+                    double v = data.concept_emb_64d[(size_t)ci * FUSED_BASE + i];
+                    h[i] = h[i] * 0.8 + v * 0.2;
+                }
+                for (size_t i = 0; i < fd && (FUSED_BASE + i) < H_90; ++i) {
+                    double v = data.concept_flex_16d[(size_t)ci * fd + i];
+                    h[FUSED_BASE + i] = h[FUSED_BASE + i] * 0.9 + v * 0.1;
+                }
+                for (size_t i = FUSED_BASE + fd; i < H_90; ++i) {
+                    h[i] *= 0.95;
+                }
             }
         }
 
@@ -1231,7 +1351,8 @@ ConceptGenerateResult generate_concept_deep_kan_v2(
     const std::vector<float>& initial_h,
     int64_t start_concept_idx,
     size_t max_concepts,
-    float temperature)
+    float temperature,
+    bool use_lstm_gates)
 {
     ConceptGenerateResult gr;
     const size_t H_90 = 90;
@@ -1288,22 +1409,443 @@ ConceptGenerateResult generate_concept_deep_kan_v2(
         if (best_prob < 0.01 && t > 2) break;
 
         // Evolve hidden state using predicted concept's embeddings
-        for (size_t i = 0; i < FUSED_BASE && i < H_90; ++i) {
-            double v = concept_emb_64d[(size_t)best_idx * FUSED_BASE + i];
-            h[i] = (float)(h[i] * 0.8 + v * 0.2);
-        }
-        for (size_t i = 0; i < fd && (FUSED_BASE + i) < H_90; ++i) {
-            double v = concept_flex_16d[(size_t)best_idx * fd + i];
-            h[FUSED_BASE + i] = (float)(h[FUSED_BASE + i] * 0.9 + v * 0.1);
-        }
-        for (size_t i = FUSED_BASE + fd; i < H_90; ++i) {
-            h[i] *= 0.95f;
+        if (use_lstm_gates) {
+            double dot1 = 0;
+            for (size_t i = 0; i < FUSED_BASE && i < H_90; ++i) {
+                double v = concept_emb_64d[(size_t)best_idx * FUSED_BASE + i];
+                dot1 += h[i] * v;
+            }
+            double gate1 = gate_sigmoid(dot1 / 8.0);
+            double alpha1 = 0.1 + gate1 * 0.2;
+            for (size_t i = 0; i < FUSED_BASE && i < H_90; ++i) {
+                double v = concept_emb_64d[(size_t)best_idx * FUSED_BASE + i];
+                h[i] = (float)(h[i] * (1.0 - alpha1) + v * alpha1);
+            }
+            double dot2 = 0;
+            for (size_t i = 0; i < fd && (FUSED_BASE + i) < H_90; ++i) {
+                double v = concept_flex_16d[(size_t)best_idx * fd + i];
+                dot2 += h[FUSED_BASE + i] * v;
+            }
+            double gate2 = gate_sigmoid(dot2 / 4.0);
+            double alpha2 = 0.05 + gate2 * 0.1;
+            for (size_t i = 0; i < fd && (FUSED_BASE + i) < H_90; ++i) {
+                double v = concept_flex_16d[(size_t)best_idx * fd + i];
+                h[FUSED_BASE + i] = (float)(h[FUSED_BASE + i] * (1.0 - alpha2) + v * alpha2);
+            }
+            double h3_norm = 0;
+            for (size_t i = FUSED_BASE + fd; i < H_90; ++i)
+                h3_norm += h[i] * h[i];
+            double decay = 0.93 + gate_sigmoid(-h3_norm + 1.0) * 0.04;
+            for (size_t i = FUSED_BASE + fd; i < H_90; ++i)
+                h[i] *= (float)decay;
+        } else {
+            for (size_t i = 0; i < FUSED_BASE && i < H_90; ++i) {
+                double v = concept_emb_64d[(size_t)best_idx * FUSED_BASE + i];
+                h[i] = (float)(h[i] * 0.8 + v * 0.2);
+            }
+            for (size_t i = 0; i < fd && (FUSED_BASE + i) < H_90; ++i) {
+                double v = concept_flex_16d[(size_t)best_idx * fd + i];
+                h[FUSED_BASE + i] = (float)(h[FUSED_BASE + i] * 0.9 + v * 0.1);
+            }
+            for (size_t i = FUSED_BASE + fd; i < H_90; ++i) {
+                h[i] *= 0.95f;
+            }
         }
 
         current_idx = best_idx;
     }
 
     return gr;
+}
+
+// =============================================================================
+// train_unified_deep_kan_v2 — Token + Concept in shared forward pass
+// =============================================================================
+// Both heads trained simultaneously: combined loss prevents catastrophic
+// interference where token training destroys concept_proj alignment.
+// In each training step:
+//   1. Token batch → forward() → token_CE
+//   2. Concept batch → forward_concepts() → trust-weighted concept_CE
+//   3. total_loss = token_CE + weight * concept_CE
+//   4. Single backward() → shared KAN backbone gets gradients from both tasks
+
+bool train_unified_deep_kan_v2(
+    const cuda::TrainingData& token_data,
+    const ConceptTrainingData& concept_data,
+    cuda::DeepKANWeights& dkw,
+    ConvergencePortData& cpd,
+    ConceptWeights& cw,
+    const UnifiedTrainingConfig& config,
+    UnifiedTrainingResult& result)
+{
+    auto t_start = std::chrono::steady_clock::now();
+
+    // ── Step 1: Precompute hidden states for both tasks ──
+    std::cerr << "[Unified] Precomputing token hidden states...\n";
+    auto tok_pd = precompute_hidden_states(token_data);
+    std::cerr << "[Unified] Precomputing concept hidden states...\n";
+    auto con_pd = precompute_concept_hidden_states(concept_data);
+
+    size_t N_tok = tok_pd.n_tokens;
+    size_t N_con = con_pd.n_pairs;
+
+    if (N_tok == 0 || N_con == 0) {
+        std::cerr << "[Unified] Need both token and concept data! tok="
+                  << N_tok << " con=" << N_con << "\n";
+        return false;
+    }
+
+    auto t_precomp = std::chrono::duration_cast<std::chrono::milliseconds>(
+        std::chrono::steady_clock::now() - t_start).count();
+    std::cerr << "[Unified]   " << N_tok << " tokens, " << N_con
+              << " concept pairs (" << t_precomp << "ms)\n";
+
+    // ── Step 2: Train/Val splits for both datasets (80/20 at sample level) ──
+    // Token split
+    size_t tok_num_samples = token_data.num_samples;
+    std::vector<size_t> tok_sample_order(tok_num_samples);
+    std::iota(tok_sample_order.begin(), tok_sample_order.end(), 0);
+    { std::mt19937 rng(7777); std::shuffle(tok_sample_order.begin(), tok_sample_order.end(), rng); }
+    size_t tok_n_train = (tok_num_samples * 80) / 100;
+
+    std::vector<int64_t> tok_train_idx, tok_val_idx;
+    tok_train_idx.reserve(N_tok);
+    tok_val_idx.reserve(N_tok / 4);
+    for (size_t i = 0; i < tok_n_train; ++i) {
+        size_t s = tok_sample_order[i];
+        for (size_t t = 0; t < tok_pd.sample_tok_counts[s]; ++t)
+            tok_train_idx.push_back((int64_t)(tok_pd.sample_tok_offsets[s] + t));
+    }
+    for (size_t i = tok_n_train; i < tok_num_samples; ++i) {
+        size_t s = tok_sample_order[i];
+        for (size_t t = 0; t < tok_pd.sample_tok_counts[s]; ++t)
+            tok_val_idx.push_back((int64_t)(tok_pd.sample_tok_offsets[s] + t));
+    }
+
+    // Concept split
+    size_t con_num_samples = concept_data.num_samples;
+    std::vector<size_t> con_sample_order(con_num_samples);
+    std::iota(con_sample_order.begin(), con_sample_order.end(), 0);
+    { std::mt19937 rng(8888); std::shuffle(con_sample_order.begin(), con_sample_order.end(), rng); }
+    size_t con_n_train = (con_num_samples * 80) / 100;
+
+    std::vector<int64_t> con_train_idx, con_val_idx;
+    con_train_idx.reserve(N_con);
+    con_val_idx.reserve(N_con / 4);
+    for (size_t i = 0; i < con_n_train; ++i) {
+        size_t s = con_sample_order[i];
+        for (size_t t = 0; t < con_pd.sample_counts[s]; ++t)
+            con_train_idx.push_back((int64_t)(con_pd.sample_offsets[s] + t));
+    }
+    for (size_t i = con_n_train; i < con_num_samples; ++i) {
+        size_t s = con_sample_order[i];
+        for (size_t t = 0; t < con_pd.sample_counts[s]; ++t)
+            con_val_idx.push_back((int64_t)(con_pd.sample_offsets[s] + t));
+    }
+
+    size_t N_tok_train = tok_train_idx.size();
+    size_t N_tok_val = tok_val_idx.size();
+    size_t N_con_train = con_train_idx.size();
+    size_t N_con_val = con_val_idx.size();
+
+    std::cerr << "[Unified]   Token split: " << N_tok_train << " train, "
+              << N_tok_val << " val\n";
+    std::cerr << "[Unified]   Concept split: " << N_con_train << " train, "
+              << N_con_val << " val\n";
+
+    // ── Step 3: Build model with BOTH heads active ──
+    size_t VA = token_data.VA;
+    size_t V = token_data.V;
+    size_t NC = concept_data.num_concepts;
+
+    DeepKANv2Decoder model(VA, V, config.dropout_p);
+
+    // Load shared KAN backbone + token output + conv_emb/conv_linear
+    load_kan_weights(model, dkw, cpd, V);
+
+    // Load concept-specific weights (k1_proj, concept_proj) if available
+    if (!cw.k1_proj_W.empty())
+        model->k1_proj->weight.data().copy_(
+            vec_to_tensor(cw.k1_proj_W, {(long)CONV_OUTPUT_DIM, 256}));
+    if (!cw.k1_proj_b.empty())
+        model->k1_proj->bias.data().copy_(
+            vec_to_tensor(cw.k1_proj_b, {(long)CONV_OUTPUT_DIM}));
+    if (!cw.concept_proj_W.empty())
+        model->concept_proj->weight.data().copy_(
+            vec_to_tensor(cw.concept_proj_W, {(long)CONCEPT_PROJ_DIM, 128}));
+
+    // Set concept embedding matrix for cosine similarity output
+    auto cm_tensor = vec_to_tensor(concept_data.concept_matrix,
+        {(long)NC, (long)CONCEPT_PROJ_DIM});
+    model->set_concept_matrix(cm_tensor, config.concept_temperature);
+
+    torch::Device device = torch::kCPU;
+    if (torch::cuda::is_available()) {
+        device = torch::Device(torch::kCUDA, 0);
+        std::cerr << "[Unified]   Using CUDA\n";
+    } else {
+        std::cerr << "[Unified]   CUDA not available, using CPU\n";
+    }
+    model->to(device);
+
+    // ── Build tensors ──
+    // Token tensors
+    auto tok_h = torch::from_blob(tok_pd.all_h.data(), {(long)N_tok, 90},
+        torch::kFloat32).clone().to(device);
+    auto tok_ids_t = torch::from_blob(tok_pd.all_toks.data(), {(long)N_tok},
+        torch::kInt64).clone().to(device);
+    auto tok_targets = torch::from_blob(tok_pd.all_targets.data(), {(long)N_tok},
+        torch::kInt64).clone().to(device);
+
+    // Concept tensors
+    auto con_h = torch::from_blob(con_pd.all_h.data(), {(long)N_con, 90},
+        torch::kFloat32).clone().to(device);
+    auto con_emb = torch::from_blob(con_pd.all_concept_emb.data(),
+        {(long)N_con, (long)CONV_EMB_DIM},
+        torch::kFloat32).clone().to(device);
+    auto con_targets = torch::from_blob(con_pd.all_targets.data(), {(long)N_con},
+        torch::kInt64).clone().to(device);
+    auto con_trust = torch::from_blob(con_pd.all_trust.data(), {(long)N_con},
+        torch::kFloat32).clone().to(device);
+
+    // ── Step 4: Optimizer with 4 parameter groups ──
+    std::vector<torch::Tensor> token_head_params;   // output.weight
+    std::vector<torch::Tensor> concept_head_params; // concept_proj.weight
+    std::vector<torch::Tensor> kan_params;           // KAN L1/L2/L3 + k1_proj
+    std::vector<torch::Tensor> conv_params;          // conv_emb + conv_linear
+
+    for (auto& item : model->named_parameters()) {
+        const auto& name = item.key();
+        auto& param = item.value();
+
+        if (name.find("output.") != std::string::npos) {
+            token_head_params.push_back(param);
+        } else if (name.find("concept_proj") != std::string::npos) {
+            concept_head_params.push_back(param);
+        } else if (name.find("conv_emb") != std::string::npos ||
+                   name.find("conv_linear") != std::string::npos) {
+            conv_params.push_back(param);
+        } else {
+            kan_params.push_back(param);
+        }
+    }
+
+    auto make_group = [&config](std::vector<torch::Tensor>& params, double lr) {
+        auto opts = std::make_unique<torch::optim::AdamOptions>(lr);
+        opts->betas(std::make_tuple(0.9, 0.999));
+        opts->weight_decay(config.weight_decay);
+        return torch::optim::OptimizerParamGroup(params, std::move(opts));
+    };
+
+    torch::optim::Adam optimizer({
+        make_group(token_head_params, config.lr_token_head),
+        make_group(concept_head_params, config.lr_concept_head),
+        make_group(kan_params, config.lr_kan),
+        make_group(conv_params, config.lr_conv)
+    });
+
+    // ── Step 5: Training loop ──
+    size_t batch_size = config.batch_size;
+    size_t tok_batches = (N_tok_train + batch_size - 1) / batch_size;
+    size_t con_batches = (N_con_train + batch_size - 1) / batch_size;
+    size_t num_steps = std::max(tok_batches, con_batches);
+
+    double best_combined = 1e9;
+    double best_tok_val = 1e9;
+    double best_con_val = 1e9;
+    size_t best_epoch = 0;
+    size_t epochs_no_improve = 0;
+    std::mt19937 rng(42);
+    std::vector<char> best_model_state;
+
+    std::cerr << "[Unified]   Training: " << config.num_epochs << " epochs, "
+              << N_tok_train << " tok_train, " << N_con_train << " con_train, "
+              << "batch=" << batch_size
+              << ", concept_weight=" << config.concept_loss_weight
+              << ", T=" << config.concept_temperature
+              << ", patience=" << config.patience << "\n";
+
+    for (size_t epoch = 0; epoch < config.num_epochs; ++epoch) {
+        // Cosine LR decay
+        double progress = (double)epoch / std::max(config.num_epochs - 1, (size_t)1);
+        double cos_mult = 0.5 * (1.0 + std::cos(progress * M_PI));
+        double lr_mult = 0.1 + 0.9 * cos_mult;
+
+        {
+            auto& groups = optimizer.param_groups();
+            static_cast<torch::optim::AdamOptions&>(groups[0].options()).lr(
+                config.lr_token_head * lr_mult);
+            static_cast<torch::optim::AdamOptions&>(groups[1].options()).lr(
+                config.lr_concept_head * lr_mult);
+
+            double kan_lr = (epoch < config.warmup_epochs) ? 0.0 : config.lr_kan * lr_mult;
+            double conv_lr = (epoch < config.warmup_epochs) ? 0.0 : config.lr_conv * lr_mult;
+            static_cast<torch::optim::AdamOptions&>(groups[2].options()).lr(kan_lr);
+            static_cast<torch::optim::AdamOptions&>(groups[3].options()).lr(conv_lr);
+        }
+
+        // Shuffle train indices each epoch
+        std::shuffle(tok_train_idx.begin(), tok_train_idx.end(), rng);
+        std::shuffle(con_train_idx.begin(), con_train_idx.end(), rng);
+
+        auto tok_idx_t = torch::from_blob(tok_train_idx.data(), {(long)N_tok_train},
+            torch::kInt64).to(device);
+        auto con_idx_t = torch::from_blob(con_train_idx.data(), {(long)N_con_train},
+            torch::kInt64).to(device);
+
+        model->train();
+
+        for (size_t step = 0; step < num_steps; ++step) {
+            optimizer.zero_grad();
+
+            // ── Token batch → forward → token_loss ──
+            torch::Tensor total_loss;
+            if (step < tok_batches) {
+                size_t start = step * batch_size;
+                size_t end = std::min(start + batch_size, N_tok_train);
+                size_t bs = end - start;
+
+                auto bidx = tok_idx_t.narrow(0, (long)start, (long)bs);
+                auto h_b = tok_h.index_select(0, bidx);
+                auto t_b = tok_ids_t.index_select(0, bidx);
+                auto tgt_b = tok_targets.index_select(0, bidx);
+
+                auto logits = model->forward(h_b, t_b);
+                total_loss = torch::nn::functional::cross_entropy(logits, tgt_b);
+            } else {
+                total_loss = torch::zeros({1}, torch::TensorOptions().device(device));
+            }
+
+            // ── Concept batch → forward_concepts → concept_loss ──
+            {
+                size_t con_step = step % con_batches;  // cycle if fewer concept batches
+                size_t start = con_step * batch_size;
+                size_t end = std::min(start + batch_size, N_con_train);
+                size_t bs = end - start;
+
+                auto bidx = con_idx_t.narrow(0, (long)start, (long)bs);
+                auto h_b = con_h.index_select(0, bidx);
+                auto e_b = con_emb.index_select(0, bidx);
+                auto tgt_b = con_targets.index_select(0, bidx);
+                auto trust_b = con_trust.index_select(0, bidx);
+
+                auto logits = model->forward_concepts(h_b, e_b);
+                auto log_probs = torch::log_softmax(logits, 1);
+                auto nll = torch::nll_loss(log_probs, tgt_b,
+                    /*weight=*/{}, torch::Reduction::None);
+                auto con_loss = (nll * trust_b).mean();
+
+                total_loss = total_loss + config.concept_loss_weight * con_loss;
+            }
+
+            // ── Combined backward through shared KAN backbone ──
+            total_loss.backward();
+
+            if (epoch >= config.warmup_epochs && !config.lr_scale.empty()) {
+                scale_kan_l1_gradients(model, config.lr_scale);
+            }
+
+            optimizer.step();
+        }
+
+        // ── Evaluation every 5 epochs ──
+        bool do_eval = (epoch % 5 == 0) || (epoch == config.num_epochs - 1);
+        auto t_now = std::chrono::duration_cast<std::chrono::milliseconds>(
+            std::chrono::steady_clock::now() - t_start).count();
+
+        if (do_eval) {
+            double tok_train = eval_loss(model, tok_h, tok_ids_t, tok_targets,
+                tok_train_idx, batch_size, device);
+            double tok_val = eval_loss(model, tok_h, tok_ids_t, tok_targets,
+                tok_val_idx, batch_size, device);
+            double con_train = eval_concept_loss(model, con_h, con_emb,
+                con_targets, con_train_idx, batch_size, device);
+            double con_val = eval_concept_loss(model, con_h, con_emb,
+                con_targets, con_val_idx, batch_size, device);
+
+            double combined = tok_val + config.concept_loss_weight * con_val;
+
+            if (combined < best_combined) {
+                best_combined = combined;
+                best_tok_val = tok_val;
+                best_con_val = con_val;
+                best_epoch = epoch;
+                epochs_no_improve = 0;
+
+                // Save best model state
+                std::ostringstream oss;
+                torch::serialize::OutputArchive archive;
+                model->save(archive);
+                archive.save_to(oss);
+                auto s = oss.str();
+                best_model_state.assign(s.begin(), s.end());
+            } else {
+                epochs_no_improve += 5;
+            }
+
+            double tok_gap = tok_val - tok_train;
+            double con_gap = con_val - con_train;
+
+            std::cerr << "[Unified]   epoch " << epoch << "/" << config.num_epochs
+                      << " tok=" << tok_train << "/" << tok_val
+                      << " con=" << con_train << "/" << con_val
+                      << " combined=" << combined
+                      << " best=" << best_combined
+                      << " (" << t_now << "ms)\n";
+
+            // Early stopping: val-gap overfitting
+            if (config.max_val_gap > 0 && epoch > 20 &&
+                (tok_gap > config.max_val_gap || con_gap > config.max_val_gap)) {
+                std::cerr << "[Unified]   Val-gap early stop at epoch " << epoch
+                          << " (tok_gap=" << tok_gap << " con_gap=" << con_gap
+                          << " best @ " << best_epoch << ")\n";
+                break;
+            }
+
+            // Early stopping: patience
+            if (config.patience > 0 && epochs_no_improve >= config.patience) {
+                std::cerr << "[Unified]   Patience early stop at epoch " << epoch
+                          << " (best @ " << best_epoch << ")\n";
+                break;
+            }
+        } else {
+            std::cerr << "[Unified]   epoch " << epoch << "/" << config.num_epochs
+                      << " (" << t_now << "ms)\n";
+        }
+    }
+
+    // ── Step 6: Restore best model and extract ALL weights ──
+    if (!best_model_state.empty()) {
+        std::istringstream iss(std::string(best_model_state.begin(), best_model_state.end()));
+        torch::serialize::InputArchive archive;
+        archive.load_from(iss);
+        model->load(archive);
+        std::cerr << "[Unified]   Restored best model from epoch " << best_epoch << "\n";
+    }
+
+    model->to(torch::kCPU);
+
+    // Extract shared KAN backbone + token output + conv weights
+    extract_kan_weights(model, dkw, cpd);
+
+    // Extract concept-specific weights
+    tensor_to_vec(model->k1_proj->weight, cw.k1_proj_W);
+    tensor_to_vec(model->k1_proj->bias, cw.k1_proj_b);
+    tensor_to_vec(model->concept_proj->weight, cw.concept_proj_W);
+
+    result.best_token_val = best_tok_val;
+    result.best_concept_val = best_con_val;
+    result.best_combined_val = best_combined;
+    result.best_epoch = best_epoch;
+
+    auto t_total = std::chrono::duration_cast<std::chrono::milliseconds>(
+        std::chrono::steady_clock::now() - t_start).count();
+    std::cerr << "[Unified]   Complete: tok_val=" << best_tok_val
+              << " con_val=" << best_con_val
+              << " combined=" << best_combined
+              << " (best @ epoch " << best_epoch << ", " << t_total << "ms)\n";
+
+    return true;
 }
 
 } // namespace libtorch

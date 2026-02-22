@@ -38,6 +38,7 @@ struct TrainingData {
     size_t FUSED_BASE; // base fused dim (for hidden state evolution)
     size_t flex_dim;   // v11: 16 (FlexDetail dims), v10: 0
     size_t conv_dim;   // v12: 32 (ConvergencePort dims), 0 = disabled
+    bool use_lstm_gates = false; // content-dependent gating for h evolution
 };
 
 struct TrainingWeights {
@@ -79,30 +80,30 @@ bool train_sgd_v11_gpu(const TrainingData& data,
 // =============================================================================
 // V12 Deep KAN Training — 3-layer EfficientKAN + Linear→VA
 // V12:    90→256→128→128 (L2 input=256)
-// V12v2:  90→256→(CM-Feedback-Port)→128→128 (L2 input=288, via LibTorch)
+// V12v2:  90→256→128→(CM-Feedback-Port)→128 (L3 input=160, via LibTorch)
 // =============================================================================
 
 struct DeepKANWeights {
-    // Layer 1: 90→256, G=8, k=3, basis_size=11
-    std::vector<double> k1_weights;    // [256 * (90*11)]
+    // Layer 1: 90→256, G=12, k=3, basis_size=15
+    std::vector<double> k1_weights;    // [256 * (90*15)]
     std::vector<double> k1_residual;   // [90 * 256]
     std::vector<double> k1_gamma;      // [256]
     std::vector<double> k1_beta;       // [256]
-    std::vector<double> k1_knots;      // [15]
+    std::vector<double> k1_knots;      // [19] = G + 2*k + 1
 
-    // Layer 2: v12=256→128, v2=288→128, G=5, k=3, basis_size=8
-    std::vector<double> k2_weights;    // [128 * (in*8)]
-    std::vector<double> k2_residual;   // [in * 128]
+    // Layer 2: 256→128, G=8, k=3, basis_size=11
+    std::vector<double> k2_weights;    // [128 * (256*11)]
+    std::vector<double> k2_residual;   // [256 * 128]
     std::vector<double> k2_gamma;      // [128]
     std::vector<double> k2_beta;       // [128]
-    std::vector<double> k2_knots;      // [12]
+    std::vector<double> k2_knots;      // [15]
 
-    // Layer 3: 128→128, G=5, k=3, basis_size=8
-    std::vector<double> k3_weights;    // [128 * (128*8)]
-    std::vector<double> k3_residual;   // [128 * 128]
+    // Layer 3: 160→128, G=8, k=3, basis_size=11 (k2[128] + cm[32])
+    std::vector<double> k3_weights;    // [128 * (160*11)]
+    std::vector<double> k3_residual;   // [160 * 128]
     std::vector<double> k3_gamma;      // [128]
     std::vector<double> k3_beta;       // [128]
-    std::vector<double> k3_knots;      // [12]
+    std::vector<double> k3_knots;      // [15]
 
     // Output projection: [128 * VA]
     std::vector<double> W_a;

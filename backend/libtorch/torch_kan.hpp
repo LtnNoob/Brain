@@ -48,7 +48,7 @@ TORCH_MODULE(EfficientKANLayer);
 static constexpr size_t CONV_EMB_DIM = 16;
 static constexpr size_t CONV_INPUT_DIM = 122;  // 90 + 32
 static constexpr size_t CONV_OUTPUT_DIM = 32;
-static constexpr size_t CONCEPT_PROJ_DIM = 32; // concept prediction head output (> 16 for 25K concepts)
+static constexpr size_t CONCEPT_PROJ_DIM = 64; // concept prediction head output (64D fixes embedding collapse)
 
 struct DeepKANv2DecoderImpl : torch::nn::Module {
     DeepKANv2DecoderImpl(size_t vocab_active, size_t vocab_total,
@@ -78,9 +78,9 @@ struct DeepKANv2DecoderImpl : torch::nn::Module {
     torch::nn::Dropout drop3{nullptr};          // after L3
     torch::nn::Linear output{nullptr};          // 128 → VA (token prediction)
 
-    // Concept prediction head: 128 → 32 (concept embedding space, 32D for 25K concepts)
-    torch::nn::Linear concept_proj{nullptr};    // 128 → 32
-    torch::Tensor concept_matrix_;              // [N_concepts, 32] L2-normed, buffer
+    // Concept prediction head: 128 → 64 (concept embedding space)
+    torch::nn::Linear concept_proj{nullptr};    // 128 → 64
+    torch::Tensor concept_matrix_;              // [N_concepts, 64] L2-normed, buffer
     float concept_temperature_ = 0.1f;
 
     size_t VA_;

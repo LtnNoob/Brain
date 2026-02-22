@@ -12,6 +12,18 @@
 namespace brain19 {
 
 // =============================================================================
+// TRAINING SIGNAL CONFIG — feature flags for data sources
+// =============================================================================
+
+struct TrainingSignalConfig {
+    bool use_pattern_pairs = true;       // Pattern-based concept pairs
+    bool use_contrastive_loss = true;    // Synthetic negative pairs
+    bool use_cm_weighted_sampling = true; // CM-score sampling weights
+    bool use_weak_relations = true;      // Include filtered low-weight relations
+    // trust_weight already exists — no flag needed
+};
+
+// =============================================================================
 // TRAINING EXAMPLE — for fusion training (Stage 2)
 // =============================================================================
 
@@ -94,6 +106,12 @@ public:
     };
     std::vector<DecoderPair> generate_decoder_data() const;
 
+    // Contrastive pair: push unrelated concepts apart in hidden space
+    struct ContrastivePair {
+        ConceptId anchor;
+        ConceptId negative;
+    };
+
     // Concept decoder training data: {fused_vector, target_concept_ids, trust_weight}
     struct ConceptDecoderPair {
         std::vector<double> embedding;               // extended fused vector
@@ -102,14 +120,17 @@ public:
         ConceptId source_concept;                     // for debugging
     };
     std::vector<ConceptDecoderPair> generate_concept_decoder_data() const;
-
-    // Build fused embedding vector for a source concept with specific target/relation embeddings.
-    // rel_types encodes relation type distribution in template slots for graph structure signal.
     std::vector<double> build_concept_fused_vector(
         ConceptId source,
         const std::vector<FlexEmbedding>& target_embeddings,
         const std::vector<FlexEmbedding>& rel_type_embeddings,
-        const std::vector<RelationType>& rel_types = {}) const;
+        const std::vector<RelationType>& rel_types) const;
+
+    // Shared encoder: build 90D initial hidden state for a concept.
+    // ONE function used by ALL paths (training + inference) to eliminate distribution gap.
+    // Pipeline: raw(57D) → projection(64D) → flex_detail(80D) → dim_context(~91D) → truncate(90D)
+    // NO convergence port (the DeepKAN model has its own).
+    std::vector<float> encode_concept_h(ConceptId cid) const;
 
     // Generate relation-based decoder data: one compound paragraph per concept
     // combining ALL outgoing relations into 15-30 token training targets.
@@ -129,6 +150,10 @@ public:
     // Save/load trained v2 state to/from binary file (for checkpoint skip-training)
     bool save_v2_state(const std::string& path) const;
     bool load_v2_state(const std::string& path);
+
+    // Training signal configuration (feature flags for data sources)
+    void set_signal_config(const TrainingSignalConfig& cfg) { signal_config_ = cfg; }
+    const TrainingSignalConfig& signal_config() const { return signal_config_; }
 
 private:
     // Stored state from last DeepKAN v2 training (for inference)
@@ -166,6 +191,13 @@ private:
     KANLanguageEngine& engine_;
     LongTermMemory& ltm_;
     ConceptModelRegistry& registry_;
+    TrainingSignalConfig signal_config_;
+    mutable bool use_gat_ = false;          // set from LanguageConfig before data generation
+    mutable bool use_lstm_gates_ = false;  // set from LanguageConfig before training
+
+    // Contrastive pairs generated during generate_concept_decoder_data()
+    // Stored as member so train_stage1_deep_kan_v2 can access them
+    mutable std::vector<ContrastivePair> last_contrastive_pairs_;
 
     // Concept decoder: closed-form ridge regression for concept projection W
     // Solves: W = (H^T H + λI)^{-1} H^T E where E is [N × 16] target embeddings

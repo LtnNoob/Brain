@@ -89,6 +89,43 @@ std::string oxford_join(const std::vector<std::string>& items) {
     return result;
 }
 
+// GAT: attention-weighted aggregation of target embeddings using source as query.
+// Replaces simple mean with dot-product attention: relevant neighbors get higher weight.
+// Degrades gracefully to uniform weights when all dot products are similar.
+static void gat_aggregate_targets(
+    const FlexEmbedding& src_emb,
+    const std::vector<FlexEmbedding>& target_embeddings,
+    double* raw_slot,   // output: raw[ACT_DIM..2*ACT_DIM]
+    size_t ACT_DIM,
+    double scale = 0.5)
+{
+    if (target_embeddings.empty()) return;
+
+    // Compute dot-product attention weights
+    std::vector<double> attn(target_embeddings.size());
+    double attn_max = -1e9;
+    for (size_t j = 0; j < target_embeddings.size(); ++j) {
+        double dot = 0;
+        for (size_t d = 0; d < ACT_DIM && d < src_emb.core.size(); ++d)
+            dot += src_emb.core[d] * target_embeddings[j].core[d];
+        attn[j] = dot * 4.0;  // temperature-scaled
+        if (attn[j] > attn_max) attn_max = attn[j];
+    }
+    // Stable softmax
+    double attn_sum = 0;
+    for (auto& a : attn) {
+        a = std::exp(std::min(a - attn_max, 80.0));
+        attn_sum += a;
+    }
+    if (attn_sum > 1e-12)
+        for (auto& a : attn) a /= attn_sum;
+
+    // Attention-weighted aggregation
+    for (size_t j = 0; j < target_embeddings.size(); ++j)
+        for (size_t d = 0; d < ACT_DIM; ++d)
+            raw_slot[d] += target_embeddings[j].core[d] * attn[j] * scale;
+}
+
 // Ordered relation types for paragraph generation (most informative first)
 static const std::vector<RelationType> PARAGRAPH_ORDER = {
     RelationType::IS_A,
@@ -105,8 +142,7 @@ static const std::vector<RelationType> PARAGRAPH_ORDER = {
     RelationType::IMPLIES,
     RelationType::SUPPORTS,
     RelationType::CONTRADICTS,
-    RelationType::SIMILAR_TO,
-    RelationType::ASSOCIATED_WITH,
+    // SIMILAR_TO and ASSOCIATED_WITH excluded — too vague, adds noise to concept prediction
     RelationType::SOURCE,
     RelationType::TEMPORAL_BEFORE,
     RelationType::TEMPORAL_AFTER,
@@ -211,10 +247,14 @@ std::vector<LanguageTraining::DecoderPair> LanguageTraining::generate_decoder_da
             raw[d] = src_emb.core[d] * 0.7;
 
         if (!target_embeddings.empty()) {
-            double inv_n = 0.5 / static_cast<double>(target_embeddings.size());
-            for (const auto& temb : target_embeddings)
-                for (size_t d = 0; d < ACT_DIM; ++d)
-                    raw[ACT_DIM + d] += temb.core[d] * inv_n;
+            if (use_gat_) {
+                gat_aggregate_targets(src_emb, target_embeddings, &raw[ACT_DIM], ACT_DIM, 0.5);
+            } else {
+                double inv_n = 0.5 / static_cast<double>(target_embeddings.size());
+                for (const auto& temb : target_embeddings)
+                    for (size_t d = 0; d < ACT_DIM; ++d)
+                        raw[ACT_DIM + d] += temb.core[d] * inv_n;
+            }
         }
 
         if (!rel_type_embeddings.empty()) {
@@ -392,12 +432,16 @@ std::vector<LanguageTraining::DecoderPair> LanguageTraining::generate_relation_d
             raw[d] = src_emb.core[d] * 0.7;
         }
 
-        // Slot 2: mean of target embeddings x 0.5
+        // Slot 2: target embedding aggregation (GAT attention or mean) x 0.5
         if (!target_embeddings.empty()) {
-            double inv_n = 0.5 / static_cast<double>(target_embeddings.size());
-            for (const auto& temb : target_embeddings) {
-                for (size_t d = 0; d < ACT_DIM; ++d) {
-                    raw[ACT_DIM + d] += temb.core[d] * inv_n;
+            if (use_gat_) {
+                gat_aggregate_targets(src_emb, target_embeddings, &raw[ACT_DIM], ACT_DIM, 0.5);
+            } else {
+                double inv_n = 0.5 / static_cast<double>(target_embeddings.size());
+                for (const auto& temb : target_embeddings) {
+                    for (size_t d = 0; d < ACT_DIM; ++d) {
+                        raw[ACT_DIM + d] += temb.core[d] * inv_n;
+                    }
                 }
             }
         }
@@ -514,10 +558,14 @@ std::vector<double> LanguageTraining::build_concept_fused_vector(
         raw[d] = src_emb.core[d] * 0.7;
 
     if (!target_embeddings.empty()) {
-        double inv_n = 0.5 / static_cast<double>(target_embeddings.size());
-        for (const auto& temb : target_embeddings)
-            for (size_t d = 0; d < ACT_DIM; ++d)
-                raw[ACT_DIM + d] += temb.core[d] * inv_n;
+        if (use_gat_) {
+            gat_aggregate_targets(src_emb, target_embeddings, &raw[ACT_DIM], ACT_DIM, 0.5);
+        } else {
+            double inv_n = 0.5 / static_cast<double>(target_embeddings.size());
+            for (const auto& temb : target_embeddings)
+                for (size_t d = 0; d < ACT_DIM; ++d)
+                    raw[ACT_DIM + d] += temb.core[d] * inv_n;
+        }
     }
 
     if (!rel_type_embeddings.empty()) {
@@ -649,8 +697,10 @@ LanguageTraining::generate_concept_decoder_data() const {
         if (rels.empty()) { filtered++; continue; }
 
         // Build target concept sequence ordered by PARAGRAPH_ORDER
+        // Skip SIMILAR_TO and ASSOCIATED_WITH (noise — these are too vague for concept prediction)
         std::vector<ConceptId> full_targets;
         for (auto type : PARAGRAPH_ORDER) {
+            if (type == RelationType::SIMILAR_TO || type == RelationType::ASSOCIATED_WITH) continue;
             for (const auto& rel : rels) {
                 if (rel.type != type) continue;
                 auto tgt_info = ltm_.retrieve_concept(rel.target);
@@ -2362,6 +2412,14 @@ LanguageTrainingResult LanguageTraining::train_stage1_deep_kan_v2(const Language
     std::cerr << "[LanguageTraining] DeepKAN v2 requires USE_LIBTORCH. Build with TORCH=1.\n";
     return result;
 #else
+    // ── Set feature flags before data generation ──
+    use_gat_ = config.use_gat;
+    use_lstm_gates_ = config.use_lstm_gates;
+    if (use_gat_)
+        std::cerr << "[LanguageTraining] GAT attention enabled for target aggregation\n";
+    if (use_lstm_gates_)
+        std::cerr << "[LanguageTraining] LSTM-style gates enabled for hidden state evolution\n";
+
     // ── Generate training data (same pipeline as V12) ──
     std::cerr << "[LanguageTraining] Generating encoder data...\n";
     auto encoder_data = generate_encoder_data();
@@ -2450,6 +2508,7 @@ LanguageTrainingResult LanguageTraining::train_stage1_deep_kan_v2(const Language
     td.H = H_OLD;
     td.FUSED_BASE = FUSED_BASE;
     td.flex_dim = fd;
+    td.use_lstm_gates = config.use_lstm_gates;
 
     // Flatten tokens
     size_t total_toks = 0;
@@ -2543,38 +2602,19 @@ LanguageTrainingResult LanguageTraining::train_stage1_deep_kan_v2(const Language
     libtorch::ConvergencePortData cpd;
 
     // ══════════════════════════════════════════════════════════════════════════
-    // Interleaved Feedback Loop: Concept + Token training in rounds
-    // Each round: Concept(50ep) → Token(25ep) → KAN→Graph → CM→Graph
-    // Graph updates feed back into regenerated concept data next round.
+    // Unified Training: Token + Concept in shared forward pass
+    // Both heads trained simultaneously through shared KAN backbone.
+    // Combined loss prevents catastrophic interference.
     // ══════════════════════════════════════════════════════════════════════════
 
     auto v2_cs = std::make_shared<V2ConceptState>();
     auto& cpt_emb_store = engine_.embeddings().concept_embeddings();
-    double best_concept_loss = 1e9;
-    double best_token_loss = 1e9;
 
-    // Separate weight tracks: concept training reads/writes concept_dkw/concept_cpd,
-    // token training reads/writes dkw/cpd. This prevents token training's KAN backbone
-    // mutations from destroying concept_proj alignment (catastrophic interference).
-    cuda::DeepKANWeights concept_dkw = dkw;
-    libtorch::ConvergencePortData concept_cpd = cpd;
-
-    for (size_t round = 0; round < config.feedback_rounds; ++round) {
-        // Temperature annealing: T=0.5 → 0.1 linearly across rounds
-        double round_temperature = (config.feedback_rounds > 1)
-            ? 0.5 - 0.4 * (double)round / (double)(config.feedback_rounds - 1)
-            : config.concept_train_temperature;
-
-        std::cerr << "[FeedbackLoop] ══ Round " << (round+1) << "/"
-                  << config.feedback_rounds << " (T=" << round_temperature << ") ══\n";
-
-        // ── A: Generate/regenerate concept data ──
-        // Round 0: fresh. Round 1+: regenerate because graph may have changed.
+    {
         auto concept_data = generate_concept_decoder_data();
-        bool concept_ok = false;
 
         if (!concept_data.empty()) {
-            // ── B: Build concept vocabulary + ConceptTrainingData ──
+            // ── Build concept vocabulary + ConceptTrainingData ──
             std::unordered_map<ConceptId, int64_t> concept_to_idx;
             std::vector<ConceptId> idx_to_concept;
 
@@ -2592,15 +2632,15 @@ LanguageTrainingResult LanguageTraining::train_stage1_deep_kan_v2(const Language
             }
 
             size_t NC = idx_to_concept.size();
-            std::cerr << "[FeedbackLoop]   " << concept_data.size()
+            std::cerr << "[Unified]   " << concept_data.size()
                       << " concept samples, " << NC << " unique concepts\n";
 
-            // Build ConceptTrainingData
             libtorch::ConceptTrainingData ctd;
             ctd.num_samples = concept_data.size();
             ctd.num_concepts = NC;
+            ctd.use_lstm_gates = config.use_lstm_gates;
 
-            static constexpr size_t CPD = 32;  // CONCEPT_PROJ_DIM
+            static constexpr size_t CPD = 64;  // CONCEPT_PROJ_DIM
             ctd.concept_matrix.resize(NC * CPD, 0.0);
             ctd.concept_emb_64d.resize(NC * FUSED_BASE, 0.0);
             ctd.concept_flex_16d.resize(NC * fd, 0.0);
@@ -2608,7 +2648,6 @@ LanguageTrainingResult LanguageTraining::train_stage1_deep_kan_v2(const Language
             for (size_t i = 0; i < NC; ++i) {
                 auto flex = cpt_emb_store.get_or_default(idx_to_concept[i]);
 
-                // 32D concept_matrix: first 16D = core, next 16D = detail
                 for (size_t d = 0; d < 16; ++d) {
                     ctd.concept_matrix[i * CPD + d] =
                         d < flex.core.size() ? flex.core[d] : 0.0;
@@ -2617,7 +2656,6 @@ LanguageTrainingResult LanguageTraining::train_stage1_deep_kan_v2(const Language
                     ctd.concept_matrix[i * CPD + 16 + d] =
                         d < flex.detail.size() ? flex.detail[d] : 0.0;
                 }
-                // L2-normalize over full 32D
                 double norm = 0.0;
                 for (size_t d = 0; d < CPD; ++d)
                     norm += ctd.concept_matrix[i * CPD + d] * ctd.concept_matrix[i * CPD + d];
@@ -2654,108 +2692,74 @@ LanguageTrainingResult LanguageTraining::train_stage1_deep_kan_v2(const Language
                 ctd.trust_weights[s] = pair.trust_weight;
             }
 
-            // ── C: Concept training (per-round epochs) ──
-            libtorch::DeepKANv2Config concept_dkc;
-            concept_dkc.num_epochs = config.concept_epochs_per_round;
-            concept_dkc.lr_output = 0.005;
-            concept_dkc.lr_kan = 0.001;
-            concept_dkc.lr_conv = 0.0002;
-            concept_dkc.warmup_epochs = (round == 0) ? 5 : 0;  // warm restart after round 0
-            concept_dkc.batch_size = 2048;
-            concept_dkc.dropout_p = 0.10;
-            concept_dkc.weight_decay = 1e-4;
-            concept_dkc.patience = 15;  // tighter per round
-            concept_dkc.max_val_gap = 0.3;
-            concept_dkc.lr_scale.resize(H_90, 1.0);
+            // ── Unified training: token + concept through shared KAN backbone ──
+            libtorch::UnifiedTrainingConfig ucfg;
+            ucfg.num_epochs = config.unified_epochs;
+            ucfg.lr_token_head = config.decoder_lr;
+            ucfg.lr_concept_head = 0.002;
+            ucfg.lr_kan = config.deep_kan_lr;
+            ucfg.lr_conv = 0.0005;
+            ucfg.warmup_epochs = 10;
+            ucfg.batch_size = 2048;
+            ucfg.dropout_p = 0.08;
+            ucfg.weight_decay = 0.01;
+            ucfg.patience = 25;
+            ucfg.max_val_gap = 0.15;
+            ucfg.concept_loss_weight = 1.0;
+            ucfg.concept_temperature = (float)config.concept_train_temperature;
+            ucfg.lr_scale.resize(H_90, 1.0);
             for (size_t i = FUSED_BASE; i < FUSED_BASE + fd && i < H_90; ++i)
-                concept_dkc.lr_scale[i] = 0.3;
+                ucfg.lr_scale[i] = 0.3;
             for (size_t i = FUSED_BASE + fd; i < H_90; ++i)
-                concept_dkc.lr_scale[i] = 0.1;
+                ucfg.lr_scale[i] = 0.1;
 
-            cuda::TrainingResult concept_tr;
-            concept_tr.best_loss = 1e9;
+            libtorch::UnifiedTrainingResult uresult;
+            std::cerr << "[Unified]   Starting unified training...\n";
+            bool ok = libtorch::train_unified_deep_kan_v2(
+                td, ctd, dkw, cpd, v2_cs->cw, ucfg, uresult);
 
-            std::cerr << "[FeedbackLoop]   Concept training (round " << (round+1) << ")...\n";
-            concept_ok = libtorch::train_concept_deep_kan_v2(
-                ctd, concept_dkw, concept_cpd, v2_cs->cw, concept_dkc,
-                (float)round_temperature, concept_tr);
-
-            if (concept_ok) {
-                // Flow concept backbone → token training starting point
-                dkw = concept_dkw;
-                cpd = concept_cpd;
-
-                // Store concept state for inference (needed by feedback + generate_v2)
+            if (ok) {
+                // Store concept state for inference
                 v2_concept_state_ = v2_cs;
-                v2_concept_matrix_ = ctd.concept_matrix;  // copy (need across rounds)
+                v2_concept_matrix_ = ctd.concept_matrix;
                 v2_concept_emb_64d_ = ctd.concept_emb_64d;
                 v2_concept_flex_16d_ = ctd.concept_flex_16d;
                 v2_num_concepts_ = NC;
-                v2_idx_to_concept_ = idx_to_concept;  // copy
+                v2_idx_to_concept_ = idx_to_concept;
                 v2_concept_valid_ = true;
-                // Snapshot dkw for inference (feedback functions use v2_dkw_)
-                v2_dkw_ = concept_dkw;
-                v2_cpd_ = std::make_shared<V2ConvergenceState>();
-                v2_cpd_->cpd = concept_cpd;
 
-                if (concept_tr.best_loss < best_concept_loss)
-                    best_concept_loss = concept_tr.best_loss;
+                double unified_best = std::min(uresult.best_token_val, uresult.best_concept_val);
+                if (unified_best < best_loss) best_loss = unified_best;
 
-                std::cerr << "[FeedbackLoop]   Concept: best_loss="
-                          << concept_tr.best_loss << ", " << NC << " concepts\n";
-            } else {
-                std::cerr << "[FeedbackLoop]   Concept training failed this round\n";
-            }
-
-            // ── E: KAN → Graph feedback (skip last round) ──
-            if (concept_ok && round < config.feedback_rounds - 1) {
-                size_t added = apply_kan_graph_feedback(config, idx_to_concept, NC);
-                std::cerr << "[FeedbackLoop]   KAN→Graph: +" << added << " relations\n";
-            }
-
-            // ── F: CM → Graph feedback (skip last round) ──
-            if (concept_ok && round < config.feedback_rounds - 1) {
-                size_t adj = apply_cm_trust_feedback(config, idx_to_concept, NC);
-                std::cerr << "[FeedbackLoop]   CM→Graph: " << adj << " trust adjustments\n";
+                std::cerr << "[Unified] Training complete: tok_val="
+                          << uresult.best_token_val << " con_val="
+                          << uresult.best_concept_val << "\n";
             }
         } else {
-            std::cerr << "[FeedbackLoop]   No concept data, skipping concept phase\n";
+            std::cerr << "[Unified]   No concept data, falling back to token-only\n";
+            libtorch::DeepKANv2Config dkc;
+            dkc.num_epochs = config.decoder_epochs;
+            dkc.lr_output = config.decoder_lr;
+            dkc.lr_kan = config.deep_kan_lr;
+            dkc.lr_conv = 0.0005;
+            dkc.warmup_epochs = 10;
+            dkc.batch_size = 2048;
+            dkc.dropout_p = 0.05;
+            dkc.weight_decay = 0.0;
+            dkc.patience = 15;
+            dkc.lr_scale.resize(H_90, 1.0);
+            for (size_t i = FUSED_BASE; i < FUSED_BASE + fd && i < H_90; ++i)
+                dkc.lr_scale[i] = 0.3;
+            for (size_t i = FUSED_BASE + fd; i < H_90; ++i)
+                dkc.lr_scale[i] = 0.1;
+            cuda::TrainingResult tr;
+            tr.best_loss = 1e9;
+            libtorch::train_deep_kan_v2(td, dkw, cpd, dkc, tr);
+            if (tr.best_loss < best_loss) best_loss = tr.best_loss;
         }
-
-        // ── D: Token training (per-round epochs) ──
-        libtorch::DeepKANv2Config dkc;
-        dkc.num_epochs = config.token_epochs_per_round;
-        dkc.lr_output = config.decoder_lr;
-        dkc.lr_kan = config.deep_kan_lr;
-        dkc.lr_conv = 0.0005;
-        dkc.warmup_epochs = (round == 0) ? 10 : 0;  // warm restart after round 0
-        dkc.batch_size = 2048;
-        dkc.dropout_p = 0.05;
-        dkc.weight_decay = 0.0;
-        dkc.patience = 15;  // tighter per round
-        dkc.lr_scale.resize(H_90, 1.0);
-        for (size_t i = FUSED_BASE; i < FUSED_BASE + fd && i < H_90; ++i)
-            dkc.lr_scale[i] = 0.3;
-        for (size_t i = FUSED_BASE + fd; i < H_90; ++i)
-            dkc.lr_scale[i] = 0.1;
-
-        cuda::TrainingResult tr;
-        tr.best_loss = 1e9;
-
-        std::cerr << "[FeedbackLoop]   Token training (round " << (round+1) << ")...\n";
-        bool tok_ok = libtorch::train_deep_kan_v2(td, dkw, cpd, dkc, tr);
-
-        if (tok_ok && tr.best_loss < best_token_loss)
-            best_token_loss = tr.best_loss;
-
-        std::cerr << "[FeedbackLoop] Round " << (round+1) << " done:"
-                  << " concept=" << best_concept_loss
-                  << " token=" << (tok_ok ? tr.best_loss : 1e9) << "\n";
     }
 
-    // ── After loop: total epochs ──
-    result.epochs_run = config.feedback_rounds *
-        (config.concept_epochs_per_round + config.token_epochs_per_round);
+    result.epochs_run = config.unified_epochs;
 
     // ── Writeback: W_a → decoder output projection ──
     auto& W = decoder.output_projection();
@@ -2766,17 +2770,8 @@ LanguageTrainingResult LanguageTraining::train_stage1_deep_kan_v2(const Language
             W[i][active_tokens[a]] = dkw.W_a[i * VA + a];
     }
 
-    // ── Writeback: conv_linear → CM ConvergencePort (shared weights) ──
-    // v2: shared W/b are the same for all tokens, store in cpd for later use
-    // Per-token CM writeback deferred (shared model doesn't map 1:1 to per-token CMs)
-
-    if (best_token_loss < best_loss) best_loss = best_token_loss;
-    if (best_concept_loss < best_loss) best_loss = best_concept_loss;
     result.final_loss = best_loss;
     result.converged = best_loss < 0.1;
-
-    std::cerr << "[FeedbackLoop] Training complete, best concept="
-              << best_concept_loss << " token=" << best_token_loss << "\n";
 
     // ── Store trained state for inference ──
     v2_dkw_ = dkw;
@@ -3064,7 +3059,8 @@ size_t LanguageTraining::apply_kan_graph_feedback(
             v2_dkw_, v2_cpd_->cpd, v2_concept_state_->cw,
             v2_concept_matrix_, v2_concept_emb_64d_, v2_concept_flex_16d_,
             v2_num_concepts_, h, (int64_t)concept_idx, 5,
-            (float)config.concept_inference_temperature);
+            (float)config.concept_inference_temperature,
+            use_lstm_gates_);
 
         for (size_t p = 0; p < cgr.concept_indices.size(); ++p) {
             if (cgr.confidences[p] < config.kan_feedback_min_confidence) continue;
@@ -3139,7 +3135,8 @@ size_t LanguageTraining::apply_cm_trust_feedback(
             v2_concept_matrix_, v2_concept_emb_64d_, v2_concept_flex_16d_,
             v2_num_concepts_, h, (int64_t)concept_idx,
             std::min((size_t)10, actual_rels.size() * 2),
-            (float)config.concept_inference_temperature);
+            (float)config.concept_inference_temperature,
+            use_lstm_gates_);
 
         // Build set of predicted target concept IDs
         std::unordered_set<ConceptId> predicted_targets;
@@ -3318,7 +3315,8 @@ std::string LanguageTraining::generate_v2(const std::string& query, size_t max_t
                 v2_dkw_, v2_cpd_->cpd, v2_concept_state_->cw,
                 v2_concept_matrix_, v2_concept_emb_64d_, v2_concept_flex_16d_,
                 v2_num_concepts_, h, start_idx, max_tokens,
-                (float)LanguageConfig().concept_inference_temperature);
+                (float)LanguageConfig().concept_inference_temperature,
+                use_lstm_gates_);
 
             if (!cgr.concept_indices.empty()) {
                 // Build text from predicted concept sequence
@@ -3354,7 +3352,8 @@ std::string LanguageTraining::generate_v2(const std::string& query, size_t max_t
         v2_emb_table_, v2_flex_table_,
         v2_FUSED_BASE_, v2_flex_dim_,
         v2_active_tokens_,
-        h, start_tok, max_tokens);
+        h, start_tok, max_tokens,
+        use_lstm_gates_);
 
     if (gr.tokens.empty()) return "[No tokens generated]";
 

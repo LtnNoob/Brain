@@ -833,8 +833,8 @@ LanguageTraining::generate_concept_decoder_data() const {
         std::normal_distribution<double> noise_dist(0.0, 0.02);
         size_t base_size = pairs.size();
 
-        // Create 2 noisy copies per pair (3x data total)
-        for (int copy = 0; copy < 2; ++copy) {
+        // Create 1 noisy copy per pair (2x data total)
+        for (int copy = 0; copy < 1; ++copy) {
             for (size_t i = 0; i < base_size; ++i) {
                 if (pairs[i].trust_weight < 0.3) continue;  // skip very low trust
 
@@ -2647,15 +2647,24 @@ LanguageTrainingResult LanguageTraining::train_stage1_deep_kan_v2(const Language
 
             for (size_t i = 0; i < NC; ++i) {
                 auto flex = cpt_emb_store.get_or_default(idx_to_concept[i]);
+                ConceptId cid = idx_to_concept[i];
 
-                for (size_t d = 0; d < 16; ++d) {
-                    ctd.concept_matrix[i * CPD + d] =
-                        d < flex.core.size() ? flex.core[d] : 0.0;
+                // Build full 64D fused vector for this concept
+                // (graph-aware: source emb + GAT target aggregation + relation types)
+                auto rels = ltm_.get_outgoing_relations(cid);
+                std::vector<FlexEmbedding> tgt_embs, rel_embs;
+                std::vector<RelationType> rel_types;
+                for (const auto& rel : rels) {
+                    if (tgt_embs.size() >= 5) break;
+                    tgt_embs.push_back(cpt_emb_store.get_or_default(rel.target));
+                    rel_embs.push_back(engine_.embeddings().get_relation_embedding(rel.type));
+                    rel_types.push_back(rel.type);
                 }
-                for (size_t d = 0; d < 16; ++d) {
-                    ctd.concept_matrix[i * CPD + 16 + d] =
-                        d < flex.detail.size() ? flex.detail[d] : 0.0;
-                }
+                auto fused = build_concept_fused_vector(cid, tgt_embs, rel_embs, rel_types);
+
+                // concept_matrix: first 64D of fused, L2-normalized
+                for (size_t d = 0; d < CPD && d < fused.size(); ++d)
+                    ctd.concept_matrix[i * CPD + d] = fused[d];
                 double norm = 0.0;
                 for (size_t d = 0; d < CPD; ++d)
                     norm += ctd.concept_matrix[i * CPD + d] * ctd.concept_matrix[i * CPD + d];
@@ -2665,9 +2674,11 @@ LanguageTrainingResult LanguageTraining::train_stage1_deep_kan_v2(const Language
                         ctd.concept_matrix[i * CPD + d] /= norm;
                 }
 
-                for (size_t d = 0; d < std::min((size_t)16, flex.core.size()); ++d)
-                    ctd.concept_emb_64d[i * FUSED_BASE + d] = flex.core[d];
+                // concept_emb_64d: full 64D fused projection for hidden state evolution
+                for (size_t d = 0; d < FUSED_BASE && d < fused.size(); ++d)
+                    ctd.concept_emb_64d[i * FUSED_BASE + d] = fused[d];
 
+                // concept_flex_16d: detail embedding for Block 2
                 for (size_t d = 0; d < fd && d < flex.detail.size(); ++d)
                     ctd.concept_flex_16d[i * fd + d] = flex.detail[d];
             }

@@ -80,7 +80,10 @@ STREAMS_SOURCES = streams/think_stream.cpp streams/stream_orchestrator.cpp \
                   streams/stream_scheduler.cpp streams/stream_monitor.cpp
 CURSOR_SOURCES = cursor/focus_cursor.cpp cursor/focus_cursor_manager.cpp \
                  cursor/template_engine.cpp
-REASONING_SOURCES = reasoning/concept_reasoner.cpp reasoning/chain_kan.cpp
+REASONING_SOURCES = reasoning/concept_reasoner.cpp reasoning/chain_kan.cpp \
+                    graph_net/graph_reasoner.cpp
+COLEARN_SOURCES = colearn/episodic_memory.cpp colearn/knowledge_extractor.cpp \
+                  colearn/colearn_loop.cpp colearn/error_collector.cpp
 LANGUAGE_SOURCES = language/bpe_tokenizer.cpp language/kan_encoder.cpp \
                    language/semantic_scorer.cpp language/fusion_layer.cpp \
                    language/kan_decoder.cpp language/kan_language_engine.cpp \
@@ -97,7 +100,8 @@ CORE_SOURCES = $(MEMORY_SOURCES) $(KAN_SOURCES) $(ADAPTER_SOURCES) \
                $(LLM_SOURCES) $(IMPORTER_SOURCES) $(INGESTOR_SOURCES) \
                $(PERSISTENT_SOURCES) $(HYBRID_SOURCES) $(EVOLUTION_SOURCES) \
                $(BOOTSTRAP_SOURCES) $(STREAMS_SOURCES) $(CORE_APP_SOURCES) \
-               $(CURSOR_SOURCES) $(LANGUAGE_SOURCES) $(REASONING_SOURCES)
+               $(CURSOR_SOURCES) $(LANGUAGE_SOURCES) $(REASONING_SOURCES) \
+               $(COLEARN_SOURCES)
 
 CORE_OBJECTS = $(CORE_SOURCES:.cpp=.o) $(CUDA_OBJ) $(TORCH_OBJ)
 
@@ -118,11 +122,14 @@ TARGETS = brain19 \
           test_graph_features \
           test_concept_reasoner \
           test_language_reasoner \
+          test_graph_reasoner \
           train_v10 \
           train_v11 \
           train_v12 \
           train_v12_cpu \
-          analyze_graph
+          analyze_graph \
+          test_colearn \
+          test_logger_system
 
 .PHONY: all clean run
 
@@ -224,6 +231,9 @@ test_concept_reasoner: test_concept_reasoner.o $(REASONER_TEST_OBJECTS)
 test_language_reasoner: test_language_reasoner.o $(REASONER_TEST_OBJECTS)
 	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
+test_graph_reasoner: test_graph_reasoner.o $(REASONER_TEST_OBJECTS)
+	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
+
 train_v10: train_v10.o $(CORE_OBJECTS)
 	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
@@ -234,6 +244,12 @@ train_v12: train_v12.o $(CORE_OBJECTS)
 	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
 train_v12_cpu: train_v12_cpu.o $(CORE_OBJECTS)
+	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
+
+test_colearn: test_colearn.o $(REASONER_TEST_OBJECTS)
+	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
+
+test_logger_system: test_logger_system.o $(REASONER_TEST_OBJECTS)
 	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
 # Graph structure analysis tool (no libtorch deps)

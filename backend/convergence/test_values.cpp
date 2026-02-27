@@ -183,8 +183,8 @@ static void inspect_migration() {
     double max_out = 0.0;
     for (size_t i = 0; i < 32; ++i) max_out = std::max(max_out, std::abs(output[i]));
 
-    std::cout << "  Convergence port all zeros: " << (all_zero ? "YES" : "NO") << "\n";
-    std::cout << "  Max |output| with unit input: " << max_out << " (should be 0.0)\n";
+    std::cout << "  Convergence port W/b all zeros: " << (all_zero ? "YES" : "NO") << "\n";
+    std::cout << "  Max |output| with unit input: " << max_out << " (0.5 with GRU gate: sigmoid(0)=0.5 * prev)\n";
 
     // Bilinear should still work
     FlexEmbedding e, c;

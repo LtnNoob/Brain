@@ -242,16 +242,26 @@ void FlexKAN::initialize_identity() {
 
 void ConvergencePort::compute(const double* input, double* output) const {
     for (size_t i = 0; i < OUTPUT_DIM; ++i) {
-        double sum = b[i];
-        for (size_t j = 0; j < INPUT_DIM; ++j) {
-            sum += W[i * INPUT_DIM + j] * input[j];
-        }
-        output[i] = std::tanh(sum);
+        // Gate: σ(W_gate[i] · input + b_gate[i])
+        double gate_sum = b_gate[i];
+        for (size_t j = 0; j < INPUT_DIM; ++j)
+            gate_sum += W_gate[i * INPUT_DIM + j] * input[j];
+        double gate = 1.0 / (1.0 + std::exp(-gate_sum));
+
+        // New state: tanh(W[i] · input + b[i])
+        double new_sum = b[i];
+        for (size_t j = 0; j < INPUT_DIM; ++j)
+            new_sum += W[i * INPUT_DIM + j] * input[j];
+        double new_val = std::tanh(new_sum);
+
+        // GRU-style: output = gate * new + (1-gate) * prev_state
+        double prev = input[PREV_STATE_OFFSET + i];
+        output[i] = gate * new_val + (1.0 - gate) * prev;
     }
 }
 
 void ConvergencePort::initialize() {
-    // Xavier initialization: scale = sqrt(2 / (fan_in + fan_out))
+    // Xavier initialization for W: scale = sqrt(2 / (fan_in + fan_out))
     double scale = std::sqrt(2.0 / static_cast<double>(INPUT_DIM + OUTPUT_DIM));
     for (size_t i = 0; i < W_SIZE; ++i) {
         double x = std::sin(static_cast<double>(i * 23 + 47)) * 43758.5453;
@@ -259,6 +269,9 @@ void ConvergencePort::initialize() {
         W[i] = (x * 2.0 - 1.0) * scale;
     }
     b.fill(0.0);
+    // Gate: zero init → sigmoid(0) = 0.5 → half update, half retain (neutral)
+    W_gate.fill(0.0);
+    b_gate.fill(0.0);
 }
 
 // =============================================================================
@@ -294,7 +307,8 @@ ConceptModel::ConceptModel() {
 // Forward pass — operates on Core dimensions only
 // =============================================================================
 
-double ConceptModel::predict(const FlexEmbedding& e, const FlexEmbedding& c) const {
+double ConceptModel::predict(const FlexEmbedding& e, const FlexEmbedding& c,
+                              CoreVec* v_out) const {
     CoreVec v;
     for (size_t i = 0; i < CORE_DIM; ++i) {
         double sum = b_[i];
@@ -303,6 +317,9 @@ double ConceptModel::predict(const FlexEmbedding& e, const FlexEmbedding& c) con
         }
         v[i] = sum;
     }
+
+    // Expose intermediate for dimensional flow
+    if (v_out) *v_out = v;
 
     double z = 0.0;
     for (size_t i = 0; i < CORE_DIM; ++i) {
@@ -341,7 +358,9 @@ PredictFeatures ConceptModel::predict_refined_with_features(
     const FlexEmbedding& concept_from, const FlexEmbedding& concept_to) const
 {
     PredictFeatures f;
-    f.bilinear_score = predict(rel_emb, ctx_emb);
+    CoreVec v;
+    f.bilinear_score = predict(rel_emb, ctx_emb, &v);
+    f.dimensional_score = v;
 
     std::array<double, MultiHeadBilinear::K> mh_scores;
     multihead_.compute(concept_from, concept_to, mh_scores);
@@ -852,25 +871,46 @@ void ConceptModel::forward_convergence(const double* input_122, double* output_3
     conv_port_.compute(input_122, output_32);
 }
 
-void ConceptModel::backward_convergence(const double* input_122, const double* cached_output_32,
+void ConceptModel::backward_convergence(const double* input_122, const double* /*cached_output_32*/,
                                          const double* grad_output_32, double learning_rate) {
-    // tanh derivative: dy/dz = 1 - y²
-    // dL/dW[i][j] = dL/dy[i] * (1 - y[i]²) * input[j]
-    // dL/db[i]    = dL/dy[i] * (1 - y[i]²)
+    // GRU-style gate backward:
+    // output = gate * new_val + (1-gate) * prev
+    // gate = σ(W_gate·x + b_gate), new_val = tanh(W·x + b)
 
     constexpr size_t IN = ConvergencePort::INPUT_DIM;
     constexpr size_t OUT = ConvergencePort::OUTPUT_DIM;
+    constexpr size_t PREV_OFF = ConvergencePort::PREV_STATE_OFFSET;
 
     for (size_t i = 0; i < OUT; ++i) {
-        double y = cached_output_32[i];
-        double dL_dz = grad_output_32[i] * (1.0 - y * y);
+        // Recompute gate and new_val from input
+        double gate_sum = conv_port_.b_gate[i];
+        for (size_t j = 0; j < IN; ++j)
+            gate_sum += conv_port_.W_gate[i * IN + j] * input_122[j];
+        double gate = 1.0 / (1.0 + std::exp(-gate_sum));
 
-        conv_port_.b[i] -= learning_rate * dL_dz;
+        double new_sum = conv_port_.b[i];
+        for (size_t j = 0; j < IN; ++j)
+            new_sum += conv_port_.W[i * IN + j] * input_122[j];
+        double new_val = std::tanh(new_sum);
 
-        for (size_t j = 0; j < IN; ++j) {
-            double grad_w = dL_dz * input_122[j];
-            conv_port_.W[i * IN + j] -= learning_rate * grad_w;
-        }
+        double prev = input_122[PREV_OFF + i];
+        double dL_dout = grad_output_32[i];
+
+        // dL/d(new_sum) = dL/dout * gate * (1 - new_val²)
+        double dL_dnew_sum = dL_dout * gate * (1.0 - new_val * new_val);
+
+        // dL/d(gate_sum) = dL/dout * (new_val - prev) * gate * (1 - gate)
+        double dL_dgate_sum = dL_dout * (new_val - prev) * gate * (1.0 - gate);
+
+        // Update W and b (transform path)
+        conv_port_.b[i] -= learning_rate * dL_dnew_sum;
+        for (size_t j = 0; j < IN; ++j)
+            conv_port_.W[i * IN + j] -= learning_rate * dL_dnew_sum * input_122[j];
+
+        // Update W_gate and b_gate (gate path)
+        conv_port_.b_gate[i] -= learning_rate * dL_dgate_sum;
+        for (size_t j = 0; j < IN; ++j)
+            conv_port_.W_gate[i * IN + j] -= learning_rate * dL_dgate_sum * input_122[j];
     }
 }
 
@@ -888,7 +928,7 @@ void ConceptModel::train_kan(double bilinear_score, double ctx_feature,
 }
 
 // =============================================================================
-// Serialization (5836 doubles)
+// Serialization (9772 doubles)
 // =============================================================================
 // Layout: [0..939]     bilinear core (W, b, e_init, c_init, TrainingState)
 //         [940..1579]  MultiHeadBilinear (640)
@@ -897,6 +937,8 @@ void ConceptModel::train_kan(double bilinear_score, double ctx_feature,
 //         [1875..1899] reserved (25)
 //         [1900..5803] ConvergencePort W (3904)
 //         [5804..5835] ConvergencePort b (32)
+//         [5836..9739] ConvergencePort W_gate (3904)
+//         [9740..9771] ConvergencePort b_gate (32)
 
 void ConceptModel::to_flat(std::array<double, CM_FLAT_SIZE>& out) const {
     size_t idx = 0;
@@ -952,7 +994,13 @@ void ConceptModel::to_flat(std::array<double, CM_FLAT_SIZE>& out) const {
     // ConvergencePort b (32)
     for (size_t i = 0; i < ConvergencePort::OUTPUT_DIM; ++i) out[idx++] = conv_port_.b[i];
 
-    // idx = 5836
+    // ConvergencePort W_gate (3904)
+    for (size_t i = 0; i < ConvergencePort::W_GATE_SIZE; ++i) out[idx++] = conv_port_.W_gate[i];
+
+    // ConvergencePort b_gate (32)
+    for (size_t i = 0; i < ConvergencePort::OUTPUT_DIM; ++i) out[idx++] = conv_port_.b_gate[i];
+
+    // idx = 9772
 }
 
 void ConceptModel::from_flat(const std::array<double, CM_FLAT_SIZE>& in) {
@@ -997,6 +1045,12 @@ void ConceptModel::from_flat(const std::array<double, CM_FLAT_SIZE>& in) {
 
     // ConvergencePort b (32)
     for (size_t i = 0; i < ConvergencePort::OUTPUT_DIM; ++i) conv_port_.b[i] = in[idx++];
+
+    // ConvergencePort W_gate (3904)
+    for (size_t i = 0; i < ConvergencePort::W_GATE_SIZE; ++i) conv_port_.W_gate[i] = in[idx++];
+
+    // ConvergencePort b_gate (32)
+    for (size_t i = 0; i < ConvergencePort::OUTPUT_DIM; ++i) conv_port_.b_gate[i] = in[idx++];
 }
 
 } // namespace brain19

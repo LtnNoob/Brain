@@ -234,6 +234,24 @@ std::vector<RelationInfo> LongTermMemory::get_relations_between(ConceptId source
     return result;
 }
 
+bool LongTermMemory::modify_relation_weight(RelationId id, double new_weight) {
+    auto it = relations_.find(id);
+    if (it == relations_.end()) {
+        return false;
+    }
+    // Clamp to [0,1]
+    if (new_weight < 0.0) new_weight = 0.0;
+    if (new_weight > 1.0) new_weight = 1.0;
+    // Reconstruct with new weight (RelationInfo has no setter, weight is clamped in constructor)
+    RelationInfo updated(it->second.id, it->second.source, it->second.target,
+                         it->second.type, new_weight);
+    updated.dynamic_weight = it->second.dynamic_weight;
+    updated.inhibition_factor = it->second.inhibition_factor;
+    updated.structural_strength = it->second.structural_strength;
+    it->second = updated;
+    return true;
+}
+
 bool LongTermMemory::remove_relation(RelationId id) {
     auto it = relations_.find(id);
     if (it == relations_.end()) {

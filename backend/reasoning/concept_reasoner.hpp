@@ -160,6 +160,7 @@ private:
         bool is_causal;  // would this step shift focus?
         std::array<double, 32> simulated_state{};  // chain state if this candidate is picked
         double coherence = 0.0;                     // ChainKAN coherence score
+        CoreVec dimensional_score{};                // per-dim CM activation for this edge
     };
 
     // Focus entry: concept + its embedding
@@ -179,7 +180,8 @@ private:
 
     // EMA context update (with chain state feedback when composition enabled)
     FlexEmbedding update_context(const FlexEmbedding& ctx, ConceptId new_concept,
-                                  const std::array<double, 32>& chain_state) const;
+                                  const std::array<double, 32>& chain_state,
+                                  const CoreVec& dimensional_score = CoreVec{}) const;
 
     // Project 32D chain state to 16D core space
     CoreVec project_chain_to_core(const std::array<double, 32>& chain_state) const;

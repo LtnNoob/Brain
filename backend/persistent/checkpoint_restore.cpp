@@ -343,8 +343,8 @@ bool CheckpointRestore::restore_micromodels(const std::string& path, ConceptMode
 
     uint32_t magic; uint16_t version;
     if (!read_pod(f, magic) || magic != 0x4D4D4442) return false;
-    // Accept v1 (legacy 940), v2 (ConceptModel 1300), v3 (ConceptModel 1900), v4 (5836)
-    if (!read_pod(f, version) || (version < 1 || version > 4)) return false;
+    // Accept v1 (legacy 940), v2 (ConceptModel 1300), v3 (ConceptModel 1900), v4 (5836), v5 (9772)
+    if (!read_pod(f, version) || (version < 1 || version > 5)) return false;
 
     uint64_t n;
     if (!read_pod(f, n)) return false;
@@ -374,26 +374,38 @@ bool CheckpointRestore::restore_micromodels(const std::string& path, ConceptMode
         uint64_t id;
         if (!read_pod(f, id)) return false;
 
-        if (version == 4) {
-            // v4: 5836 doubles — current format with ConvergencePort
+        if (version == 5) {
+            // v5: 9772 doubles — current format with ConvergencePort + gate
             std::array<double, CM_FLAT_SIZE> flat;
             f.read(reinterpret_cast<char*>(flat.data()), sizeof(flat));
             if (!f.good()) return false;
             reg.create_model(id);
             ConceptModel* model = reg.get_model(id);
             if (model) model->from_flat(flat);
+        } else if (version == 4) {
+            // v4: 5836 doubles — migrate to 9772 (zero gate weights)
+            std::array<double, CM_FLAT_SIZE_V6> old_flat;
+            f.read(reinterpret_cast<char*>(old_flat.data()), sizeof(old_flat));
+            if (!f.good()) return false;
+            std::array<double, CM_FLAT_SIZE> flat{};
+            std::copy(old_flat.begin(), old_flat.end(), flat.begin());
+            // Gate weights (5836..9771): already zero (sigmoid(0)=0.5 = neutral)
+            reg.create_model(id);
+            ConceptModel* model = reg.get_model(id);
+            if (model) model->from_flat(flat);
         } else if (version == 3) {
-            // v3: 1900 doubles — migrate to 5836 (zero convergence port)
+            // v3: 1900 doubles — migrate to 9772
             std::array<double, CM_FLAT_SIZE_V5> old_flat;
             f.read(reinterpret_cast<char*>(old_flat.data()), sizeof(old_flat));
             if (!f.good()) return false;
             std::array<double, CM_FLAT_SIZE> flat{};
             std::copy(old_flat.begin(), old_flat.end(), flat.begin());
+            // ConvergencePort + gate (1900..9771): already zero
             reg.create_model(id);
             ConceptModel* model = reg.get_model(id);
             if (model) model->from_flat(flat);
         } else if (version == 2) {
-            // v2: 1300 doubles — migrate to 5836
+            // v2: 1300 doubles — migrate to 9772
             constexpr size_t V2_SIZE = 1300;
             std::array<double, V2_SIZE> old_flat;
             f.read(reinterpret_cast<char*>(old_flat.data()), sizeof(old_flat));
@@ -407,12 +419,12 @@ bool CheckpointRestore::restore_micromodels(const std::string& path, ConceptMode
             init_flexkan_identity(flat, 1580);
             // Copy pattern weights from old offsets 1228..1242 to 1860..1874
             for (size_t j = 0; j < 15; ++j) flat[1860 + j] = old_flat[1228 + j];
-            // ConvergencePort (1900..5835): already zero
+            // ConvergencePort + gate (1900..9771): already zero
             reg.create_model(id);
             ConceptModel* model = reg.get_model(id);
             if (model) model->from_flat(flat);
         } else {
-            // v1: legacy 940 doubles — migrate to 5836
+            // v1: legacy 940 doubles — migrate to 9772
             std::array<double, FLAT_SIZE> old_flat;
             f.read(reinterpret_cast<char*>(old_flat.data()), sizeof(old_flat));
             if (!f.good()) return false;
@@ -423,7 +435,7 @@ bool CheckpointRestore::restore_micromodels(const std::string& path, ConceptMode
             // Default pattern weights at 1860
             flat[1860] = 1.0; flat[1861] = 1.0; flat[1862] = 1.0;
             flat[1863] = 1.0; flat[1864] = 1.0; flat[1865] = 0.85;
-            // ConvergencePort (1900..5835): already zero
+            // ConvergencePort + gate (1900..9771): already zero
             reg.create_model(id);
             ConceptModel* model = reg.get_model(id);
             if (model) model->from_flat(flat);

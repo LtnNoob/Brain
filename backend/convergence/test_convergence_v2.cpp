@@ -223,9 +223,10 @@ TEST(test_cm_convergence_training_reduces_error) {
 // 3. CM Serialization Round-Trip (V6 with ConvergencePort)
 // =============================================================================
 
-TEST(test_cm_flat_size_v6) {
-    // V6 layout: 1900 (old) + 3904 (W) + 32 (b) = 5836
-    ASSERT_EQ(CM_FLAT_SIZE, 5836u);
+TEST(test_cm_flat_size_v7) {
+    // V7 layout: 5836 (V6) + 3904 (W_gate) + 32 (b_gate) = 9772
+    ASSERT_EQ(CM_FLAT_SIZE, 9772u);
+    ASSERT_EQ(CM_FLAT_SIZE_V6, 5836u);
     ASSERT_EQ(CM_FLAT_SIZE_V5, 1900u);
 }
 
@@ -238,6 +239,13 @@ TEST(test_cm_serialization_roundtrip) {
     }
     for (size_t i = 0; i < ConvergencePort::OUTPUT_DIM; ++i) {
         cm1.convergence_port().b[i] = 0.1 * static_cast<double>(i);
+    }
+    // Also modify gate weights
+    for (size_t i = 0; i < ConvergencePort::W_GATE_SIZE; ++i) {
+        cm1.convergence_port().W_gate[i] = 0.03 * std::cos(static_cast<double>(i));
+    }
+    for (size_t i = 0; i < ConvergencePort::OUTPUT_DIM; ++i) {
+        cm1.convergence_port().b_gate[i] = -0.05 * static_cast<double>(i);
     }
 
     // Serialize
@@ -254,6 +262,13 @@ TEST(test_cm_serialization_roundtrip) {
     }
     for (size_t i = 0; i < ConvergencePort::OUTPUT_DIM; ++i) {
         ASSERT_NEAR(cm1.convergence_port().b[i], cm2.convergence_port().b[i], 1e-15);
+    }
+    // Compare gate weights
+    for (size_t i = 0; i < ConvergencePort::W_GATE_SIZE; ++i) {
+        ASSERT_NEAR(cm1.convergence_port().W_gate[i], cm2.convergence_port().W_gate[i], 1e-15);
+    }
+    for (size_t i = 0; i < ConvergencePort::OUTPUT_DIM; ++i) {
+        ASSERT_NEAR(cm1.convergence_port().b_gate[i], cm2.convergence_port().b_gate[i], 1e-15);
     }
 
     // Forward should produce same output
@@ -278,18 +293,22 @@ TEST(test_cm_v5_migration_zero_convergence) {
     for (size_t i = 0; i < CM_FLAT_SIZE_V5; ++i) {
         flat[i] = full_flat[i];
     }
-    // Convergence port region [1900..5835] stays zero
+    // Convergence port + gate region [1900..9771] stays zero
 
     ConceptModel cm_migrated;
     cm_migrated.from_flat(flat);
 
-    // Convergence port should be all zeros (migration safe: tanh(0)=0)
+    // With zero W, b, W_gate, b_gate:
+    // gate = sigmoid(0) = 0.5
+    // new_val = tanh(0) = 0
+    // output = 0.5 * 0 + 0.5 * prev_state = 0.5 * prev_state
+    // prev_state = input[90..121], which we set to 1.0
     double input[122];
     for (size_t i = 0; i < 122; ++i) input[i] = 1.0;
     double output[32];
     cm_migrated.forward_convergence(input, output);
     for (size_t i = 0; i < 32; ++i) {
-        ASSERT_NEAR(output[i], 0.0, 1e-15);
+        ASSERT_NEAR(output[i], 0.5, 1e-15);  // 0.5 * prev_state(1.0) = 0.5
     }
 }
 

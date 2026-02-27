@@ -9,6 +9,7 @@ namespace brain19 {
 namespace persistence {
 
 static constexpr char MAGIC[4] = {'B', 'M', '1', '9'};
+static constexpr uint32_t VERSION_V7 = 7;
 static constexpr uint32_t VERSION_V6 = 6;
 static constexpr uint32_t VERSION_V5 = 5;
 static constexpr uint32_t VERSION_V4 = 4;
@@ -19,6 +20,7 @@ static constexpr size_t HEADER_SIZE = 32;
 static constexpr size_t V3_FLAT_SIZE = 940;
 static constexpr size_t V4_FLAT_SIZE = 1300;
 static constexpr size_t V5_FLAT_SIZE = CM_FLAT_SIZE_V5;  // 1900
+static constexpr size_t V6_FLAT_SIZE = CM_FLAT_SIZE_V6;  // 5836
 
 // XOR checksum over 8-byte blocks
 static uint64_t compute_checksum(const std::vector<uint8_t>& data) {
@@ -98,45 +100,46 @@ static void init_flexkan_identity(std::array<double, CM_FLAT_SIZE>& flat, size_t
     }
 }
 
-// Migrate v3 (940 doubles) to v6 (5836 doubles):
+// Migrate v3 (940 doubles) to v7 (9772 doubles):
 // Copy bilinear core, zero multihead, FlexKAN identity, default patterns,
-// zero convergence port.
-static void migrate_v3_to_v6(const double* v3_data,
-                              std::array<double, CM_FLAT_SIZE>& v6_flat) {
-    v6_flat.fill(0.0);
+// zero convergence port + gate.
+static void migrate_v3_to_v7(const double* v3_data,
+                              std::array<double, CM_FLAT_SIZE>& v7_flat) {
+    v7_flat.fill(0.0);
 
     // Copy bilinear core (940 doubles at offset 0)
     for (size_t i = 0; i < V3_FLAT_SIZE; ++i) {
-        v6_flat[i] = v3_data[i];
+        v7_flat[i] = v3_data[i];
     }
 
     // MultiHeadBilinear (offsets 940..1579): zeros (already filled)
 
     // FlexKAN (offsets 1580..1859): identity init
-    init_flexkan_identity(v6_flat, 1580);
+    init_flexkan_identity(v7_flat, 1580);
 
     // Pattern weights (offsets 1860..1874): defaults
-    v6_flat[1860] = 1.0;   // shared_parent
-    v6_flat[1861] = 1.0;   // transitive_causation
-    v6_flat[1862] = 1.0;   // missing_link
-    v6_flat[1863] = 1.0;   // weak_strengthening
-    v6_flat[1864] = 1.0;   // contradictory_signal
-    v6_flat[1865] = 0.85;  // chain_hypothesis
+    v7_flat[1860] = 1.0;   // shared_parent
+    v7_flat[1861] = 1.0;   // transitive_causation
+    v7_flat[1862] = 1.0;   // missing_link
+    v7_flat[1863] = 1.0;   // weak_strengthening
+    v7_flat[1864] = 1.0;   // contradictory_signal
+    v7_flat[1865] = 0.85;  // chain_hypothesis
 
     // Reserved (offsets 1875..1899): already zero
     // ConvergencePort (offsets 1900..5835): already zero (safe: tanh(0)=0)
+    // Gate weights (offsets 5836..9771): already zero (sigmoid(0)=0.5 = neutral)
 }
 
-// Migrate v4 (1300 doubles) to v6 (5836 doubles):
+// Migrate v4 (1300 doubles) to v7 (9772 doubles):
 // Copy bilinear core (940), skip old EmbeddedKAN (288), copy patterns (15),
-// zero multihead, FlexKAN identity, zero reserved, zero convergence port.
-static void migrate_v4_to_v6(const double* v4_data,
-                              std::array<double, CM_FLAT_SIZE>& v6_flat) {
-    v6_flat.fill(0.0);
+// zero multihead, FlexKAN identity, zero reserved, zero convergence port + gate.
+static void migrate_v4_to_v7(const double* v4_data,
+                              std::array<double, CM_FLAT_SIZE>& v7_flat) {
+    v7_flat.fill(0.0);
 
     // Copy bilinear core (940 doubles at offset 0)
     for (size_t i = 0; i < V3_FLAT_SIZE; ++i) {
-        v6_flat[i] = v4_data[i];
+        v7_flat[i] = v4_data[i];
     }
 
     // Skip old EmbeddedKAN params at v4 offsets 940..1227 (288 doubles)
@@ -144,27 +147,41 @@ static void migrate_v4_to_v6(const double* v4_data,
     // MultiHeadBilinear (offsets 940..1579): zeros (already filled)
 
     // FlexKAN (offsets 1580..1859): identity init
-    init_flexkan_identity(v6_flat, 1580);
+    init_flexkan_identity(v7_flat, 1580);
 
-    // Copy pattern weights from v4 offsets 1228..1242 to v6 offsets 1860..1874
+    // Copy pattern weights from v4 offsets 1228..1242 to v7 offsets 1860..1874
     size_t v4_pat_offset = V3_FLAT_SIZE + 288;  // 940 + 288 = 1228
     for (size_t i = 0; i < 15; ++i) {
-        v6_flat[1860 + i] = v4_data[v4_pat_offset + i];
+        v7_flat[1860 + i] = v4_data[v4_pat_offset + i];
     }
 
     // Reserved (offsets 1875..1899): already zero
     // ConvergencePort (offsets 1900..5835): already zero (safe: tanh(0)=0)
+    // Gate weights (offsets 5836..9771): already zero (sigmoid(0)=0.5 = neutral)
 }
 
-// Migrate v5 (1900 doubles) to v6 (5836 doubles):
-// Copy all 1900 doubles, zero convergence port.
-static void migrate_v5_to_v6(const double* v5_data,
-                              std::array<double, CM_FLAT_SIZE>& v6_flat) {
-    v6_flat.fill(0.0);
+// Migrate v5 (1900 doubles) to v7 (9772 doubles):
+// Copy all 1900 doubles, zero convergence port + gate.
+static void migrate_v5_to_v7(const double* v5_data,
+                              std::array<double, CM_FLAT_SIZE>& v7_flat) {
+    v7_flat.fill(0.0);
     for (size_t i = 0; i < V5_FLAT_SIZE; ++i) {
-        v6_flat[i] = v5_data[i];
+        v7_flat[i] = v5_data[i];
     }
     // ConvergencePort (offsets 1900..5835): already zero (safe: tanh(0)=0)
+    // Gate weights (offsets 5836..9771): already zero (sigmoid(0)=0.5 = neutral)
+}
+
+// Migrate v6 (5836 doubles) to v7 (9772 doubles):
+// Copy all 5836 doubles, zero-fill gate weights.
+// sigmoid(0)=0.5 → half update, half retain = safe neutral behavior.
+static void migrate_v6_to_v7(const double* v6_data,
+                              std::array<double, CM_FLAT_SIZE>& v7_flat) {
+    v7_flat.fill(0.0);
+    for (size_t i = 0; i < V6_FLAT_SIZE; ++i) {
+        v7_flat[i] = v6_data[i];
+    }
+    // Gate weights (offsets 5836..9771): already zero (sigmoid(0)=0.5 = neutral)
 }
 
 // =============================================================================
@@ -187,7 +204,7 @@ bool save_v4(const std::string& filepath,
 
     // Header
     write_bytes(MAGIC, 4);
-    uint32_t version = VERSION_V6;
+    uint32_t version = VERSION_V7;
     write_bytes(&version, 4);
     uint64_t model_count = model_ids.size();
     write_bytes(&model_count, 8);
@@ -296,7 +313,7 @@ bool load_v4(const std::string& filepath,
 
     uint32_t version = 0;
     if (!read_bytes(&version, 4)) return false;
-    if (version != VERSION_V6 && version != VERSION_V5 &&
+    if (version != VERSION_V7 && version != VERSION_V6 && version != VERSION_V5 &&
         version != VERSION_V4 && version != VERSION_V3) return false;
 
     uint64_t model_count = 0;
@@ -310,8 +327,8 @@ bool load_v4(const std::string& filepath,
 
     // Models
     registry.clear();
-    if (version == VERSION_V6) {
-        // v6: 5836 doubles — current format with ConvergencePort
+    if (version == VERSION_V7) {
+        // v7: 9772 doubles — current format with ConvergencePort + gate
         std::array<double, CM_FLAT_SIZE> flat;
         for (uint64_t i = 0; i < model_count; ++i) {
             uint64_t cid = 0;
@@ -324,52 +341,68 @@ bool load_v4(const std::string& filepath,
                 model->from_flat(flat);
             }
         }
+    } else if (version == VERSION_V6) {
+        // v6: 5836 doubles -> migrate to 9772 (zero gate weights)
+        std::array<double, V6_FLAT_SIZE> v6_flat;
+        std::array<double, CM_FLAT_SIZE> v7_flat;
+        for (uint64_t i = 0; i < model_count; ++i) {
+            uint64_t cid = 0;
+            if (!read_bytes(&cid, 8)) return false;
+            if (!read_bytes(v6_flat.data(), V6_FLAT_SIZE * sizeof(double))) return false;
+
+            migrate_v6_to_v7(v6_flat.data(), v7_flat);
+            registry.create_model(static_cast<ConceptId>(cid));
+            ConceptModel* model = registry.get_model(static_cast<ConceptId>(cid));
+            if (model) {
+                model->from_flat(v7_flat);
+            }
+        }
     } else if (version == VERSION_V5) {
-        // v5: 1900 doubles -> migrate to 5836 (zero convergence port)
+        // v5: 1900 doubles -> migrate to 9772
         std::array<double, V5_FLAT_SIZE> v5_flat;
-        std::array<double, CM_FLAT_SIZE> v6_flat;
+        std::array<double, CM_FLAT_SIZE> v7_flat;
         for (uint64_t i = 0; i < model_count; ++i) {
             uint64_t cid = 0;
             if (!read_bytes(&cid, 8)) return false;
             if (!read_bytes(v5_flat.data(), V5_FLAT_SIZE * sizeof(double))) return false;
 
-            migrate_v5_to_v6(v5_flat.data(), v6_flat);
+            migrate_v5_to_v7(v5_flat.data(), v7_flat);
             registry.create_model(static_cast<ConceptId>(cid));
             ConceptModel* model = registry.get_model(static_cast<ConceptId>(cid));
             if (model) {
-                model->from_flat(v6_flat);
+                model->from_flat(v7_flat);
             }
         }
     } else if (version == VERSION_V4) {
-        // v4: 1300 doubles -> migrate to 5836
+        // v4: 1300 doubles -> migrate to 9772
         std::array<double, V4_FLAT_SIZE> v4_flat;
-        std::array<double, CM_FLAT_SIZE> v6_flat;
+        std::array<double, CM_FLAT_SIZE> v7_flat;
         for (uint64_t i = 0; i < model_count; ++i) {
             uint64_t cid = 0;
             if (!read_bytes(&cid, 8)) return false;
             if (!read_bytes(v4_flat.data(), V4_FLAT_SIZE * sizeof(double))) return false;
 
-            migrate_v4_to_v6(v4_flat.data(), v6_flat);
+            migrate_v4_to_v7(v4_flat.data(), v7_flat);
             registry.create_model(static_cast<ConceptId>(cid));
             ConceptModel* model = registry.get_model(static_cast<ConceptId>(cid));
             if (model) {
-                model->from_flat(v6_flat);
+                model->from_flat(v7_flat);
             }
         }
     } else {
-        // v3: 940 doubles -> migrate to 5836
+        // v3: 940 doubles -> migrate to 9772
         std::array<double, V3_FLAT_SIZE> v3_flat;
-        std::array<double, CM_FLAT_SIZE> v6_flat;
+        std::array<double, CM_FLAT_SIZE> v7_flat;
         for (uint64_t i = 0; i < model_count; ++i) {
             uint64_t cid = 0;
             if (!read_bytes(&cid, 8)) return false;
             if (!read_bytes(v3_flat.data(), V3_FLAT_SIZE * sizeof(double))) return false;
 
-            migrate_v3_to_v6(v3_flat.data(), v6_flat);
+            migrate_v3_to_v7(v3_flat.data(), v7_flat);
             registry.create_model(static_cast<ConceptId>(cid));
             ConceptModel* model = registry.get_model(static_cast<ConceptId>(cid));
             if (model) {
-                model->from_flat(v6_flat);
+                model->from_flat(v7_flat);
             }
         }
     }
@@ -437,7 +470,7 @@ bool validate_v4(const std::string& filepath) {
 
     uint32_t version = 0;
     std::memcpy(&version, buffer.data() + 4, 4);
-    if (version != VERSION_V6 && version != VERSION_V5 &&
+    if (version != VERSION_V7 && version != VERSION_V6 && version != VERSION_V5 &&
         version != VERSION_V4 && version != VERSION_V3) return false;
 
     if (buffer.size() < 8) return false;

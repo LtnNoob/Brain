@@ -11,7 +11,8 @@
 namespace brain19 {
 
 static constexpr size_t CM_FLAT_SIZE_V5 = 1900;   // Pre-convergence layout
-static constexpr size_t CM_FLAT_SIZE = 5836;       // V6: adds ConvergencePort (3936 params)
+static constexpr size_t CM_FLAT_SIZE_V6 = 5836;    // V6: ConvergencePort without gate
+static constexpr size_t CM_FLAT_SIZE = 9772;       // V7: adds ConvergencePort gate (3936 params)
 
 // Pattern weights per concept (learned from validation feedback)
 struct ConceptPatternWeights {
@@ -47,15 +48,19 @@ struct MultiHeadBilinear {
 struct ConvergencePort {
     static constexpr size_t INPUT_DIM = 122;
     static constexpr size_t OUTPUT_DIM = 32;
-    static constexpr size_t W_SIZE = OUTPUT_DIM * INPUT_DIM;  // 3904
-    static constexpr size_t TOTAL_PARAMS = W_SIZE + OUTPUT_DIM; // 3936
+    static constexpr size_t PREV_STATE_OFFSET = 90;  // prev_state at input[90..121]
+    static constexpr size_t W_SIZE = OUTPUT_DIM * INPUT_DIM;       // 3904
+    static constexpr size_t W_GATE_SIZE = OUTPUT_DIM * INPUT_DIM;  // 3904
+    static constexpr size_t TOTAL_PARAMS = 2 * W_SIZE + 2 * OUTPUT_DIM; // 7872
 
     std::array<double, W_SIZE> W{};
     std::array<double, OUTPUT_DIM> b{};
+    std::array<double, W_GATE_SIZE> W_gate{};   // GRU-style forget gate weights
+    std::array<double, OUTPUT_DIM> b_gate{};     // GRU-style forget gate biases
 
-    // Forward: output[i] = tanh(W[i] · input + b[i])
+    // Forward: GRU-style gated update
     void compute(const double* input, double* output) const;
-    void initialize();  // Xavier init
+    void initialize();  // Xavier init for W; zero init for gate
 };
 
 // FlexKAN: lightweight [6,4,1] B-spline network per concept
@@ -101,6 +106,7 @@ struct PredictFeatures {
     double bilinear_score = 0.0;
     double dim_fraction = 0.0;
     double refined_score = 0.0;
+    CoreVec dimensional_score{};  // v = W·c + b (16D bilinear intermediate)
 };
 
 class ConceptModel {
@@ -109,7 +115,8 @@ public:
 
     // === Edge Prediction ===
     // Fast bilinear (same as MicroModel): w = sigma(e^T * (W*c+b))
-    double predict(const FlexEmbedding& e, const FlexEmbedding& c) const;
+    double predict(const FlexEmbedding& e, const FlexEmbedding& c,
+                   CoreVec* v_out = nullptr) const;
     // Full prediction: bilinear + multi-head concept features + KAN refinement
     double predict_refined(const FlexEmbedding& rel_emb, const FlexEmbedding& ctx_emb,
                            const FlexEmbedding& concept_from,
@@ -165,6 +172,15 @@ public:
     const CoreVec& bias() const { return b_; }
     const CoreVec& e_init() const { return e_init_; }
     const CoreVec& c_init() const { return c_init_; }
+
+    // === Dual neuron access (for GraphReasoner dual-path forward) ===
+    void multihead_compute(const FlexEmbedding& e_q, const FlexEmbedding& e_k,
+                           std::array<double, MultiHeadBilinear::K>& scores) const {
+        multihead_.compute(e_q, e_k, scores);
+    }
+    double kan_evaluate(const std::array<double, FlexKAN::INPUT_DIM>& input) const {
+        return kan_.evaluate(input);
+    }
 
 private:
     // Bilinear core (940 doubles) — same math as MicroModel

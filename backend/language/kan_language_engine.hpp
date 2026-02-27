@@ -13,6 +13,7 @@
 #include "../micromodel/embedding_manager.hpp"
 #include "../cursor/template_engine.hpp"
 #include "../reasoning/concept_reasoner.hpp"
+#include "../graph_net/graph_reasoner.hpp"
 #include <memory>
 #include <string>
 #include <unordered_map>
@@ -35,6 +36,9 @@ struct LanguageResult {
 
     // Rich reasoning chain (from ConceptReasoner, if available)
     ReasoningChain reasoning_chain;                // Full chain with coherence scores + chain state
+
+    // Graph reasoning chain (from GraphReasoner, if enabled)
+    GraphChain graph_chain;                        // Full audit trail with activation vectors
 };
 
 // =============================================================================
@@ -86,6 +90,8 @@ public:
     const DimensionalContext& dim_context() const { return dim_context_; }
     ConceptReasoner* reasoner() { return reasoner_.get(); }
     const ConceptReasoner* reasoner() const { return reasoner_.get(); }
+    GraphReasoner* graph_reasoner() { return graph_reasoner_.get(); }
+    const GraphReasoner* graph_reasoner() const { return graph_reasoner_.get(); }
 
     // Persistence
     void save(const std::string& dir) const;
@@ -111,6 +117,11 @@ private:
     // Composition-guided reasoner (initialized in initialize())
     std::unique_ptr<ConceptReasoner> reasoner_;
     mutable ReasoningChain last_reasoning_chain_;  // cached from extract_causal_chain()
+
+    // Graph-based reasoner (alternative, config-switched)
+    std::unique_ptr<GraphReasoner> graph_reasoner_;
+    mutable GraphChain last_graph_chain_;          // cached from extract_causal_chain()
+    bool use_graph_reasoner_ = false;              // Config switch
 
     // Seed selection: find LTM concepts matching query text
     std::vector<ConceptId> label_search(const std::string& text) const;

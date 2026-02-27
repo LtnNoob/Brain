@@ -579,7 +579,7 @@ ComponentHash CheckpointManager::write_micromodels(const std::string& dir, const
     if (!f) throw std::runtime_error("Cannot write micromodels.bin");
 
     constexpr uint32_t MAGIC = 0x4D4D4442; // "MMDB"
-    constexpr uint16_t VERSION = 4;  // v4: ConceptModel (CM_FLAT_SIZE=5836, +ConvergencePort)
+    constexpr uint16_t VERSION = 5;  // v5: ConceptModel (CM_FLAT_SIZE=9772, +ConvergencePort gate)
     write_pod(f, MAGIC);
     write_pod(f, VERSION);
 

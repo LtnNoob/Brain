@@ -48,6 +48,7 @@ struct ConceptTrainerStats {
     size_t models_converged = 0;
     size_t kan_updates = 0;
     size_t refined_updates = 0;
+    size_t models_rolled_back = 0;  // Validation gate rollbacks
     // Multi-hop & pattern stats
     size_t multihop_samples = 0;
     size_t pattern_samples = 0;

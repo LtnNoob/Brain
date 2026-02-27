@@ -95,6 +95,23 @@ void KANLanguageEngine::initialize() {
     }
     std::cerr << "[KANLanguageEngine] ConceptReasoner initialized (composition ON)\n";
 
+    // Initialize GraphReasoner as alternative (config-switched)
+    std::cerr << "[KANLanguageEngine] Initializing GraphReasoner...\n";
+    {
+        GraphReasonerConfig gcfg;
+        gcfg.max_steps = 8;
+        gcfg.enable_composition = true;
+        gcfg.chain_coherence_weight = 0.3;
+        gcfg.chain_ctx_blend = 0.15;
+        gcfg.seed_anchor_weight = 0.35;
+        gcfg.seed_anchor_decay = 0.03;
+        gcfg.min_coherence_gate = 0.25;
+        gcfg.min_seed_similarity = 0.25;
+        gcfg.max_consecutive_seed_drops = 2;
+        graph_reasoner_ = std::make_unique<GraphReasoner>(ltm_, registry_, embeddings_, gcfg);
+    }
+    std::cerr << "[KANLanguageEngine] GraphReasoner initialized\n";
+
     initialized_ = true;
 }
 
@@ -148,6 +165,7 @@ LanguageResult KANLanguageEngine::generate(const std::string& query, size_t /*ma
     auto causal_chain = extract_causal_chain(seeds);
     result.causal_chain = causal_chain;
     result.reasoning_chain = last_reasoning_chain_;  // attach full chain with coherence/state
+    result.graph_chain = last_graph_chain_;           // attach graph chain audit trail
 
     // ── Step 5: Build causal pairs for scoring ──
     std::vector<std::pair<ConceptId, ConceptId>> causal_pairs;
@@ -438,13 +456,43 @@ std::unordered_map<ConceptId, std::vector<double>> KANLanguageEngine::build_acti
 std::vector<ConceptId> KANLanguageEngine::extract_causal_chain(
     const std::vector<ConceptId>& seeds
 ) const {
-    // Use ConceptReasoner: ConvergencePort composition, ChainKAN coherence,
+    // GraphReasoner path: full activation vectors, epistemic trace
+    if (use_graph_reasoner_ && graph_reasoner_ && !seeds.empty()) {
+        auto gchain = graph_reasoner_->reason_from(seeds);
+        if (!gchain.empty()) {
+            last_graph_chain_ = std::move(gchain);
+            // Also populate last_reasoning_chain_ for compatibility
+            // (generate_fluent_text uses it for coherence scores and chain state)
+            last_reasoning_chain_.steps.clear();
+            auto cseq = last_graph_chain_.concept_sequence();
+            auto rseq = last_graph_chain_.relation_sequence();
+            for (size_t i = 0; i < cseq.size(); ++i) {
+                ReasoningStep rs;
+                rs.concept_id = cseq[i];
+                rs.relation_type = i > 0 && i - 1 < rseq.size()
+                    ? rseq[i - 1] : RelationType::CUSTOM;
+                rs.confidence = i < last_graph_chain_.steps.size()
+                    ? last_graph_chain_.steps[i].composite_score : 1.0;
+                rs.is_outgoing = i < last_graph_chain_.steps.size()
+                    ? last_graph_chain_.steps[i].is_outgoing : true;
+                rs.coherence_score = i < last_graph_chain_.steps.size()
+                    ? last_graph_chain_.steps[i].chain_coherence : 0.0;
+                rs.seed_similarity = i < last_graph_chain_.steps.size()
+                    ? last_graph_chain_.steps[i].seed_similarity : 1.0;
+                if (i < last_graph_chain_.steps.size())
+                    rs.chain_state = last_graph_chain_.steps[i].chain_state;
+                last_reasoning_chain_.steps.push_back(rs);
+            }
+            last_reasoning_chain_.avg_confidence = last_graph_chain_.avg_confidence;
+            return last_graph_chain_.concept_sequence();
+        }
+    }
+
+    // ConceptReasoner path: ConvergencePort composition, ChainKAN coherence,
     // focus-gated traversal, seed anchoring, coherence-gated termination.
     if (reasoner_ && !seeds.empty()) {
         auto chain = reasoner_->reason_from(seeds);
         if (!chain.empty()) {
-            // Store the full reasoning chain in a thread-local for generate() to pick up
-            // (We cache it so generate() can attach it to LanguageResult)
             last_reasoning_chain_ = std::move(chain);
             return last_reasoning_chain_.concept_sequence();
         }

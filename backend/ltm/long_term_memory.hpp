@@ -151,6 +151,9 @@ public:
     // Get relations between two specific concepts
     std::vector<RelationInfo> get_relations_between(ConceptId source, ConceptId target) const;
 
+    // Modify relation weight (clamps to [0,1])
+    bool modify_relation_weight(RelationId id, double new_weight);
+
     // Remove relation
     bool remove_relation(RelationId id);
 

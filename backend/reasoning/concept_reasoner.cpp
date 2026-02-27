@@ -185,7 +185,10 @@ std::array<double, 90> ConceptReasoner::build_composition_features(
     features[72] = degree;
     features[73] = is_causal_val;
 
-    // [74..89] padding zeros (already initialized to 0)
+    // [74..89] dimensional score from ConceptModel bilinear intermediate
+    for (size_t i = 0; i < CORE_DIM; ++i) {
+        features[74 + i] = pf.dimensional_score[i];
+    }
 
     return features;
 }
@@ -268,19 +271,30 @@ std::vector<ConceptReasoner::ScoredCandidate> ConceptReasoner::score_candidates(
             score += config_.diversity_bonus;
         }
 
-        // Seed-anchor penalty: penalize candidates far from seed topic
+        // Dimensional seed-anchor: penalize drift in seed-relevant dimensions
         if (anchor_strength > 0.0) {
             FlexEmbedding t_emb = embeddings_.concept_embeddings().get_or_default(target);
-            double sim = core_similarity(seed_emb, t_emb);
-            // sim in [-1, 1], map to penalty: low similarity → higher penalty
-            // penalty = anchor_strength * (1 - (sim+1)/2) = anchor_strength * (1 - sim) / 2
-            double penalty = anchor_strength * (1.0 - sim) * 0.5;
-            score -= penalty;
+
+            // Weight penalty by seed magnitude per dimension
+            // Dimensions where seed has strong activation matter more
+            double weighted_penalty = 0.0;
+            double total_seed_weight = 0.0;
+            for (size_t i = 0; i < CORE_DIM; ++i) {
+                double sw = seed_emb.core[i] * seed_emb.core[i];  // seed importance per dim
+                double diff = seed_emb.core[i] - t_emb.core[i];
+                weighted_penalty += sw * diff * diff;
+                total_seed_weight += sw;
+            }
+            if (total_seed_weight > 1e-10) {
+                weighted_penalty /= total_seed_weight;
+            }
+            score -= anchor_strength * weighted_penalty;
         }
 
         // Composition: simulate chain state + ChainKAN coherence
         std::array<double, 32> sim_state{};
         double coherence = 0.0;
+        CoreVec dim_score{};
 
         if (compose) {
             ConceptModel* cm_model = registry_.get_model(current);
@@ -300,6 +314,7 @@ std::vector<ConceptReasoner::ScoredCandidate> ConceptReasoner::score_candidates(
                 pf.dim_fraction = 0.0;
             }
 
+            dim_score = pf.dimensional_score;
             auto features = build_composition_features(current, target, type, ctx, pf);
             sim_state = forward_chain_state(target, features, chain_state);
             coherence = chain_kan_.evaluate(chain_state.data(), sim_state.data());
@@ -308,7 +323,7 @@ std::vector<ConceptReasoner::ScoredCandidate> ConceptReasoner::score_candidates(
             score = (1.0 - ccw) * score + ccw * coherence;
         }
 
-        candidates.push_back({target, type, score, outgoing, causal, sim_state, coherence});
+        candidates.push_back({target, type, score, outgoing, causal, sim_state, coherence, dim_score});
     };
 
     // Outgoing relations
@@ -351,10 +366,17 @@ std::vector<ConceptReasoner::ScoredCandidate> ConceptReasoner::score_candidates(
 // ---------------------------------------------------------------------------
 FlexEmbedding ConceptReasoner::update_context(
     const FlexEmbedding& ctx, ConceptId new_concept,
-    const std::array<double, 32>& chain_state) const
+    const std::array<double, 32>& chain_state,
+    const CoreVec& dimensional_score) const
 {
     FlexEmbedding emb = embeddings_.concept_embeddings().get_or_default(new_concept);
     FlexEmbedding result;
+
+    // Check if dimensional scoring is active (non-zero dimensional_score)
+    double dim_norm = 0.0;
+    for (size_t i = 0; i < CORE_DIM; ++i)
+        dim_norm += dimensional_score[i] * dimensional_score[i];
+    bool use_dimensional = dim_norm > 1e-10;
 
     if (config_.enable_composition && config_.chain_ctx_blend > 0.0) {
         // Project chain state to core space and blend into context
@@ -370,15 +392,26 @@ FlexEmbedding ConceptReasoner::update_context(
             ctx_weight = 0.0;
         }
         for (size_t i = 0; i < CORE_DIM; ++i) {
-            result.core[i] = alpha * emb.core[i]
-                           + ctx_weight * ctx.core[i]
+            // Per-dimension alpha: dimensions with high CM activation blend more
+            double alpha_i = alpha;
+            if (use_dimensional) {
+                double dim_weight = std::abs(dimensional_score[i]) / std::sqrt(dim_norm);
+                alpha_i = alpha * (0.5 + 0.5 * dim_weight);  // range [0.5·α, α]
+            }
+            result.core[i] = alpha_i * emb.core[i]
+                           + (1.0 - alpha_i - beta) * ctx.core[i]
                            + beta * chain_proj[i];
         }
     } else {
         // Original EMA (no composition feedback)
         for (size_t i = 0; i < CORE_DIM; ++i) {
-            result.core[i] = config_.context_alpha * emb.core[i]
-                           + (1.0 - config_.context_alpha) * ctx.core[i];
+            double alpha_i = config_.context_alpha;
+            if (use_dimensional) {
+                double dim_weight = std::abs(dimensional_score[i]) / std::sqrt(dim_norm);
+                alpha_i = config_.context_alpha * (0.5 + 0.5 * dim_weight);
+            }
+            result.core[i] = alpha_i * emb.core[i]
+                           + (1.0 - alpha_i) * ctx.core[i];
         }
     }
     return result;
@@ -451,8 +484,8 @@ ReasoningChain ConceptReasoner::reason_from(ConceptId seed) const {
             chain_state = best.simulated_state;
         }
 
-        // Update EMA context (now includes chain state feedback)
-        ctx = update_context(ctx, best.target, chain_state);
+        // Update EMA context (now includes chain state + dimensional feedback)
+        ctx = update_context(ctx, best.target, chain_state, best.dimensional_score);
 
         // Focus shift
         bool shifted = best.is_causal;

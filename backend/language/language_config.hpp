@@ -49,7 +49,7 @@ struct LanguageConfig {
 
     // ── Concept Prediction ──
     static constexpr size_t CONCEPT_EMBED_DIM    = 16;   // FlexEmbedding core dimension
-    static constexpr size_t MAX_CONCEPT_SEQUENCE  = 10;   // max concepts per prediction
+    static constexpr size_t MAX_CONCEPT_SEQUENCE  = 20;   // max concepts per prediction
     // Separate temperatures for training vs inference:
     //   Training: T=0.1 produces sharp gradients (cosine sim /0.1 → logits in [-10,10])
     //     which helps the model commit to correct targets during learning.
@@ -102,6 +102,15 @@ struct LanguageConfig {
     bool use_gat                    = false;  // GAT attention on graph
     bool use_sampled_softmax        = false;  // sampled softmax (K negatives)
     size_t sampled_softmax_k        = 2048;   // number of negative samples
+
+    // ── Concept Vocab Reduction + Graph Walk Chains ──
+    size_t concept_walks_per_source   = 3;       // random walks per source concept
+    size_t concept_max_walk_length    = 15;      // max steps per walk
+    size_t concept_min_chain_length   = 4;       // discard short walks
+    size_t concept_max_incoming       = 8;       // max incoming targets per reverse pair
+    double concept_incoming_discount  = 0.8;     // trust discount for incoming pairs
+    size_t concept_min_frequency      = 3;       // min appearances in training data for vocab
+    size_t concept_max_vocab          = 12000;   // hard cap on NC
 
     // ── Convergence Integration ──
     static constexpr size_t CONVERGENCE_DIM = 32;  // = ConvergencePort::OUTPUT_DIM

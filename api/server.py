@@ -93,7 +93,7 @@ class Brain19Process:
                 if not line:
                     break
                 text = line.decode("utf-8", errors="replace").rstrip()
-                print(f"[brain19:stderr] {text}")
+                print(f"[brain19:stderr] {text}", flush=True)
         except Exception:
             pass
         self._alive = False

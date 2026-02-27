@@ -43,6 +43,7 @@ struct MultiHopConfig {
     double weight_floor = 0.01;       // Stop extending when path_weight drops below
     size_t max_paths_per_concept = 50; // Keep top-N paths per source concept
     size_t max_bfs_queue = 5000;       // BFS queue cap to prevent runaway on dense graphs
+    size_t max_hops = 3;              // Hard depth limit (prevents exponential fan-out)
 };
 
 class MultiHopSampler {

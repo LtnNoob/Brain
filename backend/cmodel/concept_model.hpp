@@ -95,6 +95,14 @@ struct RefinedAdamState {
     }
 };
 
+// Intermediate features from predict_refined (for composition)
+struct PredictFeatures {
+    std::array<double, 4> multihead_scores{};
+    double bilinear_score = 0.0;
+    double dim_fraction = 0.0;
+    double refined_score = 0.0;
+};
+
 class ConceptModel {
 public:
     ConceptModel();
@@ -106,6 +114,10 @@ public:
     double predict_refined(const FlexEmbedding& rel_emb, const FlexEmbedding& ctx_emb,
                            const FlexEmbedding& concept_from,
                            const FlexEmbedding& concept_to) const;
+    // Same as predict_refined but also returns intermediate features
+    PredictFeatures predict_refined_with_features(
+        const FlexEmbedding& rel_emb, const FlexEmbedding& ctx_emb,
+        const FlexEmbedding& concept_from, const FlexEmbedding& concept_to) const;
     // Backward-compat 2-arg (empty concept embeddings -> s_i=0 -> KAN identity -> bilinear)
     double predict_refined(const FlexEmbedding& e, const FlexEmbedding& c) const;
 

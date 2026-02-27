@@ -182,6 +182,7 @@ ConceptTrainerStats ConceptTrainer::train_all(
 
     struct PrecomputedData {
         ConceptId cid = 0;
+        ConceptModel* model = nullptr;  // cached in Phase 1, used in Phase 2
         std::vector<TrainingSample> samples;
         size_t num_positives = 0;
         std::vector<RefinedInput> refined_inputs;
@@ -195,23 +196,40 @@ ConceptTrainerStats ConceptTrainer::train_all(
     std::vector<PrecomputedData> all_data;
     all_data.reserve(model_ids.size());
 
+    // Skip expensive multi-hop BFS for large graphs (>5000 concepts).
+    // Direct 1-hop samples are sufficient for initial training;
+    // multi-hop paths are added incrementally via training streams.
+    const bool enable_multihop = (model_ids.size() <= 5000);
+
     for (ConceptId cid : model_ids) {
         ConceptModel* model = registry.get_model(cid);
         if (!model) continue;
 
         PrecomputedData data;
         data.cid = cid;
+        data.model = model;  // cache pointer for Phase 2
         data.samples = generate_samples(cid, embeddings, ltm);
 
-        // Append multi-hop samples
-        auto multihop_paths = multihop_sampler_.extract_paths(cid, ltm);
-        auto multihop_samples = multihop_sampler_.generate_samples(cid, embeddings, ltm);
-        data.multihop_count = multihop_samples.size();
-        for (const auto& p : multihop_paths) {
-            data.total_path_depth += static_cast<double>(p.edges.size());
-            data.path_count++;
+        // Extract multi-hop paths (skipped for large graphs)
+        std::vector<MultiHopPath> multihop_paths;
+        if (enable_multihop) {
+            multihop_paths = multihop_sampler_.extract_paths(cid, ltm);
+            for (const auto& p : multihop_paths) {
+                data.total_path_depth += static_cast<double>(p.edges.size());
+                data.path_count++;
+            }
+
+            // Generate multi-hop samples from already-extracted paths
+            static const size_t MH_RECALL_HASH = std::hash<std::string>{}("recall");
+            for (const auto& path : multihop_paths) {
+                TrainingSample sample;
+                sample.relation_embedding = multihop_sampler_.compose_path_embedding(path.edges, embeddings);
+                sample.context_embedding = embeddings.make_target_embedding(MH_RECALL_HASH, cid, path.terminus);
+                sample.target = path.path_weight;
+                data.samples.push_back(std::move(sample));
+                data.multihop_count++;
+            }
         }
-        data.samples.insert(data.samples.end(), multihop_samples.begin(), multihop_samples.end());
 
         // Direct pattern training: patterns ARE the data
         if (auto pit = pattern_index.find(cid); pit != pattern_index.end()) {
@@ -318,7 +336,7 @@ ConceptTrainerStats ConceptTrainer::train_all(
 
         for (size_t i = start; i < end; ++i) {
             auto& data = all_data[i];
-            ConceptModel* model = registry.get_model(data.cid);
+            ConceptModel* model = data.model;  // use cached pointer from Phase 1
             if (!model) continue;
 
             ts.total_samples += data.samples.size();

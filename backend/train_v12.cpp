@@ -20,6 +20,8 @@
 #include "language/kan_language_engine.hpp"
 #include "language/language_training.hpp"
 #include "language/language_config.hpp"
+#include "reasoning/concept_reasoner.hpp"
+#include "ltm/relation.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -180,7 +182,13 @@ int main() {
 
         auto t_lang = std::chrono::steady_clock::now();
 #ifdef USE_LIBTORCH
-        auto lang_result = lang_trainer.train_stage1_deep_kan_v2(lang_config);
+        LanguageTrainingResult lang_result;
+        if (std::getenv("EXPERT_ENSEMBLE")) {
+            log("  Mode: Expert Ensemble (4 heads, frozen backbone)");
+            lang_result = lang_trainer.train_expert_ensemble(lang_config);
+        } else {
+            lang_result = lang_trainer.train_stage1_deep_kan_v2(lang_config);
+        }
 #else
         auto lang_result = lang_trainer.train_stage1(lang_config);
 #endif
@@ -198,12 +206,63 @@ int main() {
     }
 
     // ── Step 7: Inference Test ──
-    if (lang_trainer.has_v2_model()) {
+    if (lang_trainer.has_expert_ensemble()) {
+        log("");
+        log("[7/7] Inference Test (Expert Ensemble)...");
+        for (const auto& query : {"Photosynthesis", "Gravity", "Water", "Evolution", "Electricity"}) {
+            auto text = lang_trainer.generate_v2_ensemble(query, 30);
+            log("  [ensemble] " + std::string(query) + ": " + text);
+        }
+        // Also show single-model inference for comparison
+        log("");
+        log("  (single-model comparison):");
+        for (const auto& query : {"Photosynthesis", "Gravity", "Water"}) {
+            auto text = lang_trainer.generate_v2(query, 30);
+            log("  [single]   " + std::string(query) + ": " + text);
+        }
+    } else if (lang_trainer.has_v2_model()) {
         log("");
         log("[7/7] Inference Test (DeepKAN v2)...");
         for (const auto& query : {"Photosynthesis", "Gravity", "Water", "Evolution", "Electricity"}) {
             auto text = lang_trainer.generate_v2(query, 30);
             log("  " + std::string(query) + ": " + text);
+        }
+    }
+
+    // ── Step 8: ConceptReasoner Test (distributed per-concept reasoning) ──
+    log("");
+    log("[8] ConceptReasoner Test (distributed per-concept reasoning)...");
+    {
+        ReasonerConfig rcfg;
+        rcfg.max_steps = 10;
+        ConceptReasoner reasoner(ltm, registry, embeddings, rcfg);
+
+        for (const auto& query : {"Photosynthesis", "Gravity", "Water", "Evolution", "Electricity"}) {
+            auto seeds = ltm.find_by_label(query);
+            if (seeds.empty()) { log("  " + std::string(query) + ": no concept found"); continue; }
+
+            auto chain = reasoner.reason_from(seeds);
+            if (chain.empty()) { log("  " + std::string(query) + ": empty chain"); continue; }
+
+            // Log chain: Concept --RELATION(0.85)--> Concept --RELATION(0.72)--> ...
+            std::string line = "  [reason] " + std::string(query)
+                + " (" + std::to_string(chain.steps.size()) + " steps, avg_conf="
+                + std::to_string(chain.avg_confidence).substr(0,4) + "): ";
+
+            for (size_t i = 0; i < chain.steps.size(); ++i) {
+                const auto& s = chain.steps[i];
+                auto cinfo = ltm.retrieve_concept(s.concept_id);
+                std::string label = cinfo ? cinfo->label : ("#" + std::to_string(s.concept_id));
+
+                if (i > 0) {
+                    std::string dir = s.is_outgoing ? "--" : "<-";
+                    std::string conf = std::to_string(s.confidence).substr(0,4);
+                    line += " " + dir + relation_type_to_string(s.relation_type)
+                          + "(" + conf + ")" + dir + "> ";
+                }
+                line += label;
+            }
+            log(line);
         }
     }
 

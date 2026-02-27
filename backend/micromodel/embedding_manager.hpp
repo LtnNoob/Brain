@@ -60,6 +60,9 @@ public:
     ConceptEmbeddingStore::LearnResult train_embeddings(const LongTermMemory& ltm,
                                                          double alpha = 0.05,
                                                          size_t iterations = 3);
+    ConceptEmbeddingStore::LearnResult train_embeddings(
+        const LongTermMemory& ltm,
+        const ConceptEmbeddingStore::LearnConfig& config);
 
 private:
     std::unordered_map<std::string, FlexEmbedding> context_embeddings_;

@@ -107,6 +107,7 @@ std::vector<MultiHopPath> MultiHopSampler::extract_paths(
         }
 
         // Extend: try outgoing relations from current terminus
+        if (entry.path.edges.size() >= config_.max_hops) continue;  // depth limit
         auto next_rels = ltm.get_outgoing_relations(current);
         for (const auto& rel : next_rels) {
             // Prevent cycles: don't revisit source or any node in current path

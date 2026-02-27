@@ -85,4 +85,10 @@ EmbeddingManager::train_embeddings(const LongTermMemory& ltm,
     return concept_embeddings_.learn_from_graph(ltm, alpha, iterations);
 }
 
+ConceptEmbeddingStore::LearnResult
+EmbeddingManager::train_embeddings(const LongTermMemory& ltm,
+                                    const ConceptEmbeddingStore::LearnConfig& config) {
+    return concept_embeddings_.learn_from_graph(ltm, config);
+}
+
 } // namespace brain19

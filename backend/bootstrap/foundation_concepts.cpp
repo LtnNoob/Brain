@@ -449,7 +449,8 @@ static EpistemicType parse_epistemic_type(const std::string& s) {
     return EpistemicType::DEFINITION;  // default
 }
 
-bool FoundationConcepts::seed_from_file(LongTermMemory& ltm, const std::string& path) {
+bool FoundationConcepts::seed_from_file(LongTermMemory& ltm, const std::string& path,
+                                        bool include_weak_relations) {
     auto root = JsonParser::parse_file(path);
     if (!root || !root->is_object()) return false;
 
@@ -531,18 +532,22 @@ bool FoundationConcepts::seed_from_file(LongTermMemory& ltm, const std::string& 
             else ch = static_cast<char>(std::toupper(static_cast<unsigned char>(ch)));
         }
 
-        // 1. Drop RELATES_TO / RELATED_TO entirely (zero semantic value)
-        if (norm_type == "RELATES_TO" || norm_type == "RELATED_TO") {
-            ++dropped_relates_to;
-            continue;
-        }
-
-        // 2. Weight threshold >= 0.7
+        // 1. RELATES_TO / RELATED_TO: drop or keep as very weak signal
         double weight = 0.8;
         if (wt_field && wt_field->is_number()) weight = wt_field->as_number();
-        if (weight < 0.7) {
-            ++dropped_low_weight;
-            continue;
+        bool is_weak = false;
+
+        if (norm_type == "RELATES_TO" || norm_type == "RELATED_TO") {
+            if (!include_weak_relations) { ++dropped_relates_to; continue; }
+            weight *= 0.15;  // retain at 15% strength
+            is_weak = true;
+        }
+
+        // 2. Weight threshold >= 0.7 (or keep as weak if flag set)
+        if (weight < 0.7 && !is_weak) {
+            if (!include_weak_relations) { ++dropped_low_weight; continue; }
+            weight *= 0.5;  // retain at 50% strength
+            is_weak = true;
         }
 
         // 3. Resolve source/target concepts

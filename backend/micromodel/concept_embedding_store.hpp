@@ -52,6 +52,15 @@ public:
     // Clear all embeddings
     void clear() { store_.clear(); }
 
+    // Configuration for learn_from_graph
+    struct LearnConfig {
+        double alpha = 0.1;                // Positive nudge strength
+        size_t iterations = 15;            // Training iterations
+        size_t negative_samples = 5;       // Negatives per concept per iteration
+        double negative_alpha_ratio = 0.3; // neg_alpha = alpha * this
+        uint64_t rng_seed = 42;            // For reproducibility
+    };
+
     // Learn embeddings from KG structure: nudge each concept toward
     // the weighted average of its neighbors' embeddings.
     // Returns number of concepts updated.
@@ -62,6 +71,7 @@ public:
     };
     LearnResult learn_from_graph(const LongTermMemory& ltm,
                                  double alpha = 0.05, size_t iterations = 3);
+    LearnResult learn_from_graph(const LongTermMemory& ltm, const LearnConfig& config);
 
     // Direct access for persistence
     const std::unordered_map<ConceptId, FlexEmbedding>& data() const { return store_; }

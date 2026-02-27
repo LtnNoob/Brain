@@ -11,6 +11,10 @@
 
 namespace brain19 {
 
+#ifdef USE_LIBTORCH
+namespace libtorch { struct ConceptTrainingData; }
+#endif
+
 // =============================================================================
 // TRAINING SIGNAL CONFIG — feature flags for data sources
 // =============================================================================
@@ -73,6 +77,17 @@ struct FeedbackRoundResult {
 //   - Epistemic integrity guard: max 10% relative change per model
 //
 
+// =============================================================================
+// CURRICULUM STAGE — controls which pair types are included in concept training
+// =============================================================================
+
+enum class CurriculumStage : uint8_t {
+    FORWARD_ONLY   = 1,   // Direct outgoing relations only
+    PLUS_INHERITED = 2,   // + IS_A chain inheritance
+    PLUS_WALK      = 3,   // + random walk chains
+    ALL            = 4,   // + incoming reverse edges
+};
+
 class LanguageTraining {
 public:
     explicit LanguageTraining(KANLanguageEngine& engine, LongTermMemory& ltm,
@@ -119,12 +134,18 @@ public:
         double trust_weight;                          // epistemic trust as sample weight
         ConceptId source_concept;                     // for debugging
     };
-    std::vector<ConceptDecoderPair> generate_concept_decoder_data() const;
+    std::vector<ConceptDecoderPair> generate_concept_decoder_data(
+        CurriculumStage stage = CurriculumStage::ALL) const;
     std::vector<double> build_concept_fused_vector(
         ConceptId source,
         const std::vector<FlexEmbedding>& target_embeddings,
         const std::vector<FlexEmbedding>& rel_type_embeddings,
         const std::vector<RelationType>& rel_types) const;
+
+    // Rich 90D concept vector: packs ALL graph context about a concept.
+    // Replaces build_concept_fused_vector for concept decoder training.
+    // Only takes ConceptId — pulls everything from graph/LTM/registry directly.
+    std::vector<double> build_rich_concept_vector(ConceptId source) const;
 
     // Shared encoder: build 90D initial hidden state for a concept.
     // ONE function used by ALL paths (training + inference) to eliminate distribution gap.
@@ -146,6 +167,11 @@ public:
     // Generate text using trained DeepKAN v2 model (call after train_stage1_deep_kan_v2)
     std::string generate_v2(const std::string& query, size_t max_tokens = 30) const;
     bool has_v2_model() const { return v2_valid_; }
+
+    // Expert ensemble: frozen backbone, 4 specialized concept heads
+    LanguageTrainingResult train_expert_ensemble(const LanguageConfig& config);
+    std::string generate_v2_ensemble(const std::string& query, size_t max_tokens = 30) const;
+    bool has_expert_ensemble() const { return v2_expert_valid_; }
 
     // Save/load trained v2 state to/from binary file (for checkpoint skip-training)
     bool save_v2_state(const std::string& path) const;
@@ -188,6 +214,14 @@ private:
     size_t v2_num_concepts_ = 0;
     std::vector<ConceptId> v2_idx_to_concept_;
 
+    // Expert ensemble state
+    bool v2_expert_valid_ = false;
+#ifdef USE_LIBTORCH
+    struct V2ExpertState;
+    std::shared_ptr<V2ExpertState> v2_expert_state_;
+#endif
+    std::vector<std::string> v2_expert_names_;               // ["Forward", ...]
+
     KANLanguageEngine& engine_;
     LongTermMemory& ltm_;
     ConceptModelRegistry& registry_;
@@ -195,9 +229,26 @@ private:
     mutable bool use_gat_ = false;          // set from LanguageConfig before data generation
     mutable bool use_lstm_gates_ = false;  // set from LanguageConfig before training
 
+    // Walk config members — set from LanguageConfig before generate_concept_decoder_data()
+    mutable size_t walk_per_source_ = 3;
+    mutable size_t walk_max_length_ = 15;
+    mutable size_t walk_min_chain_ = 4;
+    mutable size_t incoming_max_ = 8;
+    mutable double incoming_discount_ = 0.8;
+
     // Contrastive pairs generated during generate_concept_decoder_data()
     // Stored as member so train_stage1_deep_kan_v2 can access them
     mutable std::vector<ContrastivePair> last_contrastive_pairs_;
+
+#ifdef USE_LIBTORCH
+    // Pack concept decoder pairs into ConceptTrainingData struct for LibTorch training.
+    // Uses pre-built vocab maps for consistent concept indexing across curriculum stages.
+    libtorch::ConceptTrainingData pack_concept_training_data(
+        const std::vector<ConceptDecoderPair>& pairs,
+        const std::unordered_map<ConceptId, int64_t>& concept_to_idx,
+        const std::vector<ConceptId>& idx_to_concept,
+        size_t NC, const LanguageConfig& config) const;
+#endif
 
     // Concept decoder: closed-form ridge regression for concept projection W
     // Solves: W = (H^T H + λI)^{-1} H^T E where E is [N × 16] target embeddings

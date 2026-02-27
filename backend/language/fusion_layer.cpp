@@ -183,10 +183,12 @@ std::vector<double> FusionLayer::build_raw_fused(
 
 std::vector<double> FusedRepresentation::extended_fused_vector() const {
     std::vector<double> result;
-    result.reserve(fused_vector.size() + flex_detail.size() + dimensional_context.size());
+    result.reserve(fused_vector.size() + flex_detail.size()
+                   + dimensional_context.size() + convergence_state.size());
     result = fused_vector;
     result.insert(result.end(), flex_detail.begin(), flex_detail.end());
     result.insert(result.end(), dimensional_context.begin(), dimensional_context.end());
+    result.insert(result.end(), convergence_state.begin(), convergence_state.end());
     return result;
 }
 

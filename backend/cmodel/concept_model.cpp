@@ -336,6 +336,34 @@ double ConceptModel::predict_refined(const FlexEmbedding& rel_emb, const FlexEmb
     return kan_.evaluate(kan_input);
 }
 
+PredictFeatures ConceptModel::predict_refined_with_features(
+    const FlexEmbedding& rel_emb, const FlexEmbedding& ctx_emb,
+    const FlexEmbedding& concept_from, const FlexEmbedding& concept_to) const
+{
+    PredictFeatures f;
+    f.bilinear_score = predict(rel_emb, ctx_emb);
+
+    std::array<double, MultiHeadBilinear::K> mh_scores;
+    multihead_.compute(concept_from, concept_to, mh_scores);
+
+    for (size_t i = 0; i < MultiHeadBilinear::K; ++i) {
+        f.multihead_scores[i] = sigmoid(mh_scores[i]);
+    }
+
+    f.dim_fraction = static_cast<double>(
+        std::min(concept_from.detail.size(), concept_to.detail.size())) / 496.0;
+
+    std::array<double, FlexKAN::INPUT_DIM> kan_input;
+    for (size_t i = 0; i < MultiHeadBilinear::K; ++i) {
+        kan_input[i] = f.multihead_scores[i];
+    }
+    kan_input[4] = f.bilinear_score;
+    kan_input[5] = f.dim_fraction;
+
+    f.refined_score = kan_.evaluate(kan_input);
+    return f;
+}
+
 double ConceptModel::predict_refined(const FlexEmbedding& e, const FlexEmbedding& c) const {
     FlexEmbedding empty;
     return predict_refined(e, c, empty, empty);

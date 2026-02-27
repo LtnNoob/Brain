@@ -1,13 +1,13 @@
 # Brain19 Complete Backend Build
 
 CXX = g++
-CXXFLAGS = -std=c++20 -Wall -Wextra -Wpedantic -O2 -I.
+CXXFLAGS = -std=c++20 -Wall -Wextra -Wpedantic -O1 -g -I.
 LDFLAGS = -lcurl -pthread
 
 # CUDA support: make GPU=1 to enable
 ifdef GPU
 NVCC = nvcc
-NVCCFLAGS = -std=c++20 -O2 -I. -DUSE_CUDA --expt-relaxed-constexpr -arch=sm_75
+NVCCFLAGS = -std=c++20 -O1 -g -I. -DUSE_CUDA --expt-relaxed-constexpr -arch=sm_75
 CXXFLAGS += -DUSE_CUDA
 LDFLAGS += -lcudart -L/usr/local/cuda/lib64
 CUDA_OBJ = cuda/cuda_ops.o cuda/cuda_training.o
@@ -28,8 +28,9 @@ ifdef TORCH
 TORCH_DIR = /home/claude/.openclaw/workspace/venv-sd/lib/python3.12/site-packages/torch
 CXXFLAGS += -I$(TORCH_DIR)/include -I$(TORCH_DIR)/include/torch/csrc/api/include \
             -DUSE_LIBTORCH -D_GLIBCXX_USE_CXX11_ABI=1
+NVSHMEM_DIR = /home/claude/.local/share/pipx/venvs/openai-whisper/lib/python3.12/site-packages/nvidia/nvshmem/lib
 LDFLAGS += -L$(TORCH_DIR)/lib -ltorch -ltorch_cpu -ltorch_cuda -lc10 -lc10_cuda \
-           -Wl,-rpath,$(TORCH_DIR)/lib
+           -Wl,--disable-new-dtags -Wl,-rpath,$(TORCH_DIR)/lib -Wl,-rpath,$(NVSHMEM_DIR) -Wl,--allow-shlib-undefined
 TORCH_OBJ = libtorch/torch_kan.o libtorch/torch_training.o
 libtorch/torch_kan.o: libtorch/torch_kan.cpp libtorch/torch_kan.hpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
@@ -79,6 +80,7 @@ STREAMS_SOURCES = streams/think_stream.cpp streams/stream_orchestrator.cpp \
                   streams/stream_scheduler.cpp streams/stream_monitor.cpp
 CURSOR_SOURCES = cursor/focus_cursor.cpp cursor/focus_cursor_manager.cpp \
                  cursor/template_engine.cpp
+REASONING_SOURCES = reasoning/concept_reasoner.cpp reasoning/chain_kan.cpp
 LANGUAGE_SOURCES = language/bpe_tokenizer.cpp language/kan_encoder.cpp \
                    language/semantic_scorer.cpp language/fusion_layer.cpp \
                    language/kan_decoder.cpp language/kan_language_engine.cpp \
@@ -95,7 +97,7 @@ CORE_SOURCES = $(MEMORY_SOURCES) $(KAN_SOURCES) $(ADAPTER_SOURCES) \
                $(LLM_SOURCES) $(IMPORTER_SOURCES) $(INGESTOR_SOURCES) \
                $(PERSISTENT_SOURCES) $(HYBRID_SOURCES) $(EVOLUTION_SOURCES) \
                $(BOOTSTRAP_SOURCES) $(STREAMS_SOURCES) $(CORE_APP_SOURCES) \
-               $(CURSOR_SOURCES) $(LANGUAGE_SOURCES)
+               $(CURSOR_SOURCES) $(LANGUAGE_SOURCES) $(REASONING_SOURCES)
 
 CORE_OBJECTS = $(CORE_SOURCES:.cpp=.o) $(CUDA_OBJ) $(TORCH_OBJ)
 
@@ -114,10 +116,13 @@ TARGETS = brain19 \
           test_property_inheritance \
           test_flex_activation \
           test_graph_features \
+          test_concept_reasoner \
+          test_language_reasoner \
           train_v10 \
           train_v11 \
           train_v12 \
-          train_v12_cpu
+          train_v12_cpu \
+          analyze_graph
 
 .PHONY: all clean run
 
@@ -210,6 +215,15 @@ test_flex_activation: micromodel/test_flex_activation.o $(CORE_OBJECTS)
 test_graph_features: evolution/test_graph_features.o $(CORE_OBJECTS)
 	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
+# test_concept_reasoner: exclude language_training + system_orchestrator + brain19_app (libtorch deps)
+REASONER_EXCLUDE = language/language_training.o core/system_orchestrator.o core/brain19_app.o
+REASONER_TEST_OBJECTS = $(filter-out $(REASONER_EXCLUDE),$(CORE_OBJECTS))
+test_concept_reasoner: test_concept_reasoner.o $(REASONER_TEST_OBJECTS)
+	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
+
+test_language_reasoner: test_language_reasoner.o $(REASONER_TEST_OBJECTS)
+	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
+
 train_v10: train_v10.o $(CORE_OBJECTS)
 	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
@@ -220,6 +234,10 @@ train_v12: train_v12.o $(CORE_OBJECTS)
 	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
 train_v12_cpu: train_v12_cpu.o $(CORE_OBJECTS)
+	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
+
+# Graph structure analysis tool (no libtorch deps)
+analyze_graph: analyze_graph.o $(REASONER_TEST_OBJECTS)
 	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
 # --- Pattern Rule ---

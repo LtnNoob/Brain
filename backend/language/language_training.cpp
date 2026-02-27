@@ -658,6 +658,202 @@ std::vector<double> LanguageTraining::build_concept_fused_vector(
     return fused;
 }
 
+// Helper: map RelationType → 6 categories for rich concept vector
+// 0=Hierarchical, 1=Causal, 2=Compositional, 3=Similarity, 4=Temporal, 5=Other
+static size_t relation_type_category(RelationType rt) {
+    switch (rt) {
+        case RelationType::IS_A:
+        case RelationType::INSTANCE_OF:
+        case RelationType::DERIVED_FROM:
+            return 0;  // Hierarchical
+        case RelationType::CAUSES:
+        case RelationType::ENABLES:
+        case RelationType::PRODUCES:
+        case RelationType::IMPLIES:
+            return 1;  // Causal
+        case RelationType::HAS_PROPERTY:
+        case RelationType::PART_OF:
+        case RelationType::HAS_PART:
+        case RelationType::REQUIRES:
+        case RelationType::USES:
+            return 2;  // Compositional
+        case RelationType::SIMILAR_TO:
+        case RelationType::ASSOCIATED_WITH:
+        case RelationType::SUPPORTS:
+            return 3;  // Similarity
+        case RelationType::TEMPORAL_BEFORE:
+        case RelationType::TEMPORAL_AFTER:
+        case RelationType::PRECEDES:
+            return 4;  // Temporal
+        default:
+            return 5;  // Other (SUBJECT_OF, OBJECT_OF, VERB_OF, MODIFIER_OF, DENOTES, etc.)
+    }
+}
+
+// =============================================================================
+// Rich Concept Vector: 90D packed graph context
+// =============================================================================
+//
+// Layout:
+//   [0:16]   Weighted mean of ALL outgoing targets' core embeddings
+//   [16:32]  Weighted mean of ALL incoming sources' core embeddings
+//   [32:38]  Outgoing relation type distribution (6 categories, normalized)
+//   [38:44]  Incoming relation type distribution (6 categories, normalized)
+//   [44:50]  CM pattern weights (6D)
+//   [50:54]  Degree: log(1+out)/5, log(1+in)/5, mean_w_out, mean_w_in
+//   [54:58]  Epistemic: trust, complexity, structural_conf, semantic_conf
+//   [58:62]  CM quality: final_loss(clamped), is_converged, log(1+samples)/10, activation
+//   [62:66]  Edge weight stats: out_max, out_std, in_max, in_std
+//   [66:72]  Epistemic type one-hot (6D)
+//   [72:76]  Epistemic status one-hot (4D)
+//   [76:90]  ConvergencePort output [0:14]
+//
+std::vector<double> LanguageTraining::build_rich_concept_vector(ConceptId source) const {
+    std::vector<double> v(90, 0.0);
+    auto& concept_emb_store = engine_.embeddings().concept_embeddings();
+
+    // ── Outgoing relations ──
+    auto out_rels = ltm_.get_outgoing_relations(source);
+    {
+        double total_w = 0.0;
+        double max_w = 0.0, sum_w = 0.0, sum_w2 = 0.0;
+        size_t n_out = out_rels.size();
+        std::array<double, 6> out_cat{};
+
+        for (const auto& rel : out_rels) {
+            double w = std::max(rel.weight, 0.01);
+            total_w += w;
+            sum_w += w;
+            sum_w2 += w * w;
+            if (w > max_w) max_w = w;
+            out_cat[relation_type_category(rel.type)] += 1.0;
+
+            // [0:16] weighted mean of outgoing target core embeddings
+            auto tgt_emb = concept_emb_store.get_or_default(rel.target);
+            for (size_t d = 0; d < 16; ++d)
+                v[d] += tgt_emb.core[d] * w;
+        }
+        if (total_w > 0.0) {
+            for (size_t d = 0; d < 16; ++d)
+                v[d] /= total_w;
+        }
+
+        // [32:38] outgoing relation type distribution (normalized)
+        if (n_out > 0) {
+            double inv = 1.0 / (double)n_out;
+            for (size_t c = 0; c < 6; ++c)
+                v[32 + c] = out_cat[c] * inv;
+        }
+
+        // [50:52] degree stats (out)
+        v[50] = std::log(1.0 + (double)n_out) / 5.0;
+        double mean_w_out = n_out > 0 ? sum_w / (double)n_out : 0.0;
+        v[52] = mean_w_out;
+
+        // [62:64] edge weight stats (out)
+        v[62] = max_w;
+        double var_out = n_out > 0 ? (sum_w2 / (double)n_out - mean_w_out * mean_w_out) : 0.0;
+        v[63] = std::sqrt(std::max(var_out, 0.0));
+    }
+
+    // ── Incoming relations ──
+    auto in_rels = ltm_.get_incoming_relations(source);
+    {
+        double total_w = 0.0;
+        double max_w = 0.0, sum_w = 0.0, sum_w2 = 0.0;
+        size_t n_in = in_rels.size();
+        std::array<double, 6> in_cat{};
+
+        for (const auto& rel : in_rels) {
+            double w = std::max(rel.weight, 0.01);
+            total_w += w;
+            sum_w += w;
+            sum_w2 += w * w;
+            if (w > max_w) max_w = w;
+            in_cat[relation_type_category(rel.type)] += 1.0;
+
+            // [16:32] weighted mean of incoming source core embeddings
+            auto src_emb = concept_emb_store.get_or_default(rel.source);
+            for (size_t d = 0; d < 16; ++d)
+                v[16 + d] += src_emb.core[d] * w;
+        }
+        if (total_w > 0.0) {
+            for (size_t d = 0; d < 16; ++d)
+                v[16 + d] /= total_w;
+        }
+
+        // [38:44] incoming relation type distribution (normalized)
+        if (n_in > 0) {
+            double inv = 1.0 / (double)n_in;
+            for (size_t c = 0; c < 6; ++c)
+                v[38 + c] = in_cat[c] * inv;
+        }
+
+        // [51,53] degree stats (in)
+        v[51] = std::log(1.0 + (double)n_in) / 5.0;
+        double mean_w_in = n_in > 0 ? sum_w / (double)n_in : 0.0;
+        v[53] = mean_w_in;
+
+        // [64:66] edge weight stats (in)
+        v[64] = max_w;
+        double var_in = n_in > 0 ? (sum_w2 / (double)n_in - mean_w_in * mean_w_in) : 0.0;
+        v[65] = std::sqrt(std::max(var_in, 0.0));
+    }
+
+    // ── CM pattern weights [44:50] ──
+    if (registry_.has_model(source)) {
+        auto* cm = registry_.get_model(source);
+        const auto& pw = cm->pattern_weights();
+        v[44] = pw.shared_parent;
+        v[45] = pw.transitive_causation;
+        v[46] = pw.missing_link;
+        v[47] = pw.weak_strengthening;
+        v[48] = pw.contradictory_signal;
+        v[49] = pw.chain_hypothesis;
+
+        // [58:62] CM quality
+        v[58] = std::min(cm->final_loss(), 2.0) / 2.0;  // clamped to [0,1]
+        v[59] = cm->is_converged() ? 1.0 : 0.0;
+        v[60] = std::log(1.0 + (double)cm->sample_count()) / 10.0;
+    }
+
+    // ── Epistemic metadata [54:58] + one-hots [66:76] ──
+    auto info = ltm_.retrieve_concept(source);
+    if (info) {
+        v[54] = info->epistemic.trust;
+        v[55] = (double)info->complexity_score;
+        v[56] = info->structural_confidence;
+        v[57] = info->semantic_confidence;
+
+        // [61] activation score (also CM quality block)
+        v[61] = info->activation_score;
+
+        // [66:72] epistemic type one-hot (6D)
+        size_t type_idx = static_cast<size_t>(info->epistemic.type);
+        if (type_idx < 6) v[66 + type_idx] = 1.0;
+
+        // [72:76] epistemic status one-hot (4D)
+        size_t status_idx = static_cast<size_t>(info->epistemic.status);
+        if (status_idx < 4) v[72 + status_idx] = 1.0;
+    }
+
+    // ── ConvergencePort output [76:90] — 14D of 32D ──
+    if (registry_.has_model(source)) {
+        auto* cm = registry_.get_model(source);
+        // Build a minimal input for the convergence port:
+        // Use the first 90D of our vector as the query component
+        std::vector<double> conv_input(ConvergencePort::INPUT_DIM, 0.0);
+        for (size_t i = 0; i < std::min(size_t(76), size_t(convergence::QUERY_DIM)); ++i)
+            conv_input[i] = v[i];
+        double conv_out[ConvergencePort::OUTPUT_DIM];
+        cm->forward_convergence(conv_input.data(), conv_out);
+        for (size_t d = 0; d < 14 && d < ConvergencePort::OUTPUT_DIM; ++d)
+            v[76 + d] = conv_out[d];
+    }
+
+    return v;
+}
+
 // Helper: check if concept is valid for training
 static bool is_valid_concept(const ConceptInfo& info) {
     return !info.is_anti_knowledge &&
@@ -665,14 +861,22 @@ static bool is_valid_concept(const ConceptInfo& info) {
 }
 
 std::vector<LanguageTraining::ConceptDecoderPair>
-LanguageTraining::generate_concept_decoder_data() const {
+LanguageTraining::generate_concept_decoder_data(CurriculumStage stage) const {
     std::vector<ConceptDecoderPair> pairs;
 
-    auto& concept_emb_store = engine_.embeddings().concept_embeddings();
     auto all_ids = ltm_.get_all_concept_ids();
 
     size_t filtered = 0, anti_knowledge = 0, invalidated = 0;
     size_t forward_pairs = 0, inherited_pairs = 0, noise_pairs = 0;
+
+    // Cache: build_rich_concept_vector once per unique source concept
+    std::unordered_map<ConceptId, std::vector<double>> rich_cache;
+    auto get_rich = [&](ConceptId cid) -> const std::vector<double>& {
+        auto it = rich_cache.find(cid);
+        if (it != rich_cache.end()) return it->second;
+        rich_cache[cid] = build_rich_concept_vector(cid);
+        return rich_cache[cid];
+    };
 
     // Inheritable relation types for IS_A chain walking
     static const std::vector<RelationType> INHERITABLE_TYPES = {
@@ -718,23 +922,8 @@ LanguageTraining::generate_concept_decoder_data() const {
 
         if (full_targets.empty()) { filtered++; continue; }
 
-        // Collect embeddings and relation types for the fused vector
-        std::vector<FlexEmbedding> tgt_embs, rel_embs;
-        std::vector<RelationType> rel_types;
-        for (const auto& rel : rels) {
-            auto ti = ltm_.retrieve_concept(rel.target);
-            if (!ti) continue;
-            if (tgt_embs.size() < 5)
-                tgt_embs.push_back(concept_emb_store.get_or_default(rel.target));
-            if (rel_embs.size() < 5)
-                rel_embs.push_back(engine_.embeddings().get_relation_embedding(rel.type));
-            rel_types.push_back(rel.type);
-        }
-
-        auto fused = build_concept_fused_vector(cid, tgt_embs, rel_embs, rel_types);
-
         ConceptDecoderPair p;
-        p.embedding = std::move(fused);
+        p.embedding = get_rich(cid);
         p.target_concepts = std::move(full_targets);
         p.trust_weight = info->epistemic.trust;
         p.source_concept = cid;
@@ -745,8 +934,8 @@ LanguageTraining::generate_concept_decoder_data() const {
     // ── IS_A inheritance pairs: walk up IS_A chain, inherit ancestor properties ──
     // For each concept C with IS_A parent P, create a training pair:
     //   source=C, targets=P's inheritable targets, trust decayed by hop distance.
-    // The fused vector uses P's targets as context, teaching C to predict
-    // inherited properties (e.g., Water inherits Liquid's HAS_PROPERTY targets).
+    // Rich vector encodes C's full graph context; targets come from parent.
+    if (stage >= CurriculumStage::PLUS_INHERITED)
     for (auto cid : all_ids) {
         auto info = ltm_.retrieve_concept(cid);
         if (!info || !is_valid_concept(*info)) continue;
@@ -775,8 +964,6 @@ LanguageTraining::generate_concept_decoder_data() const {
             // Collect parent's inheritable targets (skip if C already has them)
             auto parent_rels = ltm_.get_outgoing_relations(parent);
             std::vector<ConceptId> inherited_targets;
-            std::vector<FlexEmbedding> inh_tgt_embs, inh_rel_embs;
-            std::vector<RelationType> inh_rel_types;
 
             for (const auto& prel : parent_rels) {
                 // Check if relation type is inheritable
@@ -801,21 +988,12 @@ LanguageTraining::generate_concept_decoder_data() const {
                 if (dup) continue;
 
                 inherited_targets.push_back(prel.target);
-                if (inh_tgt_embs.size() < 5)
-                    inh_tgt_embs.push_back(concept_emb_store.get_or_default(prel.target));
-                if (inh_rel_embs.size() < 5)
-                    inh_rel_embs.push_back(engine_.embeddings().get_relation_embedding(prel.type));
-                inh_rel_types.push_back(prel.type);
-
                 if (inherited_targets.size() >= LanguageConfig::MAX_CONCEPT_SEQUENCE) break;
             }
 
             if (!inherited_targets.empty()) {
-                // Fused vector: source=C, context=parent's targets
-                auto fused = build_concept_fused_vector(cid, inh_tgt_embs, inh_rel_embs, inh_rel_types);
-
                 ConceptDecoderPair p;
-                p.embedding = std::move(fused);
+                p.embedding = get_rich(cid);
                 p.target_concepts = std::move(inherited_targets);
                 p.trust_weight = info->epistemic.trust * trust_decay;
                 p.source_concept = cid;
@@ -824,6 +1002,120 @@ LanguageTraining::generate_concept_decoder_data() const {
             }
 
             current = parent;
+        }
+    }
+
+    // ── Random Walk Chains: follow outgoing relations to build longer sequences ──
+    size_t walk_pairs = 0;
+    if (stage >= CurriculumStage::PLUS_WALK)
+    {
+        std::mt19937 walk_rng(31415);
+        for (auto cid : all_ids) {
+            auto info = ltm_.retrieve_concept(cid);
+            if (!info || !is_valid_concept(*info)) continue;
+
+            auto rels = ltm_.get_outgoing_relations(cid);
+            if (rels.empty()) continue;
+
+            for (size_t w = 0; w < walk_per_source_; ++w) {
+                std::vector<ConceptId> chain;
+                chain.push_back(cid);
+                ConceptId current = cid;
+
+                for (size_t step = 0; step < walk_max_length_; ++step) {
+                    auto cur_rels = ltm_.get_outgoing_relations(current);
+                    // Filter: skip SIMILAR_TO, ASSOCIATED_WITH, and cycles
+                    std::vector<const RelationInfo*> candidates;
+                    for (const auto& rel : cur_rels) {
+                        if (rel.type == RelationType::SIMILAR_TO ||
+                            rel.type == RelationType::ASSOCIATED_WITH) continue;
+                        auto ti = ltm_.retrieve_concept(rel.target);
+                        if (!ti || !is_valid_concept(*ti)) continue;
+                        // Cycle check
+                        bool cycle = false;
+                        for (auto visited : chain)
+                            if (visited == rel.target) { cycle = true; break; }
+                        if (cycle) continue;
+                        candidates.push_back(&rel);
+                    }
+                    if (candidates.empty()) break;
+
+                    // Weighted random selection by edge weight
+                    double total_w = 0.0;
+                    for (auto* r : candidates) total_w += std::max(r->weight, 0.01);
+                    std::uniform_real_distribution<double> pick(0.0, total_w);
+                    double roll = pick(walk_rng);
+                    const RelationInfo* chosen = candidates[0];
+                    double accum = 0.0;
+                    for (auto* r : candidates) {
+                        accum += std::max(r->weight, 0.01);
+                        if (accum >= roll) { chosen = r; break; }
+                    }
+                    chain.push_back(chosen->target);
+                    current = chosen->target;
+                }
+
+                // Only keep walks with enough length
+                if (chain.size() < walk_min_chain_ + 1) continue;  // +1 because chain includes source
+
+                // Trim to MAX_CONCEPT_SEQUENCE (source + targets)
+                if (chain.size() > LanguageConfig::MAX_CONCEPT_SEQUENCE)
+                    chain.resize(LanguageConfig::MAX_CONCEPT_SEQUENCE);
+
+                // Targets = everything after source
+                std::vector<ConceptId> targets(chain.begin() + 1, chain.end());
+
+                ConceptDecoderPair p;
+                p.embedding = get_rich(cid);
+                p.target_concepts = std::move(targets);
+                p.trust_weight = info->epistemic.trust * 0.9;
+                p.source_concept = cid;
+                pairs.push_back(std::move(p));
+                walk_pairs++;
+            }
+        }
+    }
+
+    // ── Incoming Relation Pairs: reverse edges teach concept reachability ──
+    size_t incoming_pairs = 0;
+    if (stage == CurriculumStage::ALL)
+    {
+        for (auto cid : all_ids) {
+            auto info = ltm_.retrieve_concept(cid);
+            if (!info || !is_valid_concept(*info)) continue;
+
+            auto in_rels = ltm_.get_incoming_relations(cid);
+            if (in_rels.size() < 2) continue;
+
+            // Sort by weight descending, take top incoming_max_
+            std::sort(in_rels.begin(), in_rels.end(),
+                [](const RelationInfo& a, const RelationInfo& b) { return a.weight > b.weight; });
+            if (in_rels.size() > incoming_max_)
+                in_rels.erase(in_rels.begin() + (ptrdiff_t)incoming_max_, in_rels.end());
+
+            // Skip vague relation types
+            std::vector<ConceptId> targets;
+            for (const auto& rel : in_rels) {
+                if (rel.type == RelationType::SIMILAR_TO ||
+                    rel.type == RelationType::ASSOCIATED_WITH) continue;
+                auto src_info = ltm_.retrieve_concept(rel.source);
+                if (!src_info || !is_valid_concept(*src_info)) continue;
+                // Avoid duplicates
+                bool dup = false;
+                for (auto tc : targets) if (tc == rel.source) { dup = true; break; }
+                if (dup) continue;
+                targets.push_back(rel.source);
+                if (targets.size() >= LanguageConfig::MAX_CONCEPT_SEQUENCE) break;
+            }
+            if (targets.empty()) continue;
+
+            ConceptDecoderPair p;
+            p.embedding = get_rich(cid);
+            p.target_concepts = std::move(targets);
+            p.trust_weight = info->epistemic.trust * incoming_discount_;
+            p.source_concept = cid;
+            pairs.push_back(std::move(p));
+            incoming_pairs++;
         }
     }
 
@@ -854,10 +1146,13 @@ LanguageTraining::generate_concept_decoder_data() const {
     std::cerr << "[LanguageTraining] Concept decoder data: " << pairs.size()
               << " total pairs (forward=" << forward_pairs
               << ", inherited=" << inherited_pairs
+              << ", walk=" << walk_pairs
+              << ", incoming=" << incoming_pairs
               << ", noise=" << noise_pairs
               << ", filtered=" << filtered
               << ", anti_knowledge=" << anti_knowledge
-              << ", invalidated=" << invalidated << ")\n";
+              << ", invalidated=" << invalidated
+              << ", rich_vectors=" << rich_cache.size() << ")\n";
 
     return pairs;
 }
@@ -2398,6 +2693,88 @@ struct LanguageTraining::V2ConvergenceState {
 struct LanguageTraining::V2ConceptState {
     libtorch::ConceptWeights cw;
 };
+
+struct LanguageTraining::V2ExpertState {
+    std::vector<libtorch::ConceptWeights> cws;   // [4] one per expert
+};
+
+libtorch::ConceptTrainingData LanguageTraining::pack_concept_training_data(
+    const std::vector<ConceptDecoderPair>& pairs,
+    const std::unordered_map<ConceptId, int64_t>& concept_to_idx,
+    const std::vector<ConceptId>& idx_to_concept,
+    size_t NC, const LanguageConfig& config) const
+{
+    const size_t FUSED_BASE = LanguageConfig::FUSED_DIM;  // 64
+    const size_t fd = engine_.decoder().flex_dim();        // 16
+    const size_t H_90 = 90;
+    static constexpr size_t CPD = 64;  // CONCEPT_PROJ_DIM
+
+    auto& cpt_emb_store = engine_.embeddings().concept_embeddings();
+
+    libtorch::ConceptTrainingData ctd;
+    ctd.num_samples = pairs.size();
+    ctd.num_concepts = NC;
+    ctd.use_lstm_gates = config.use_lstm_gates;
+
+    ctd.concept_matrix.resize(NC * CPD, 0.0);
+    ctd.concept_emb_64d.resize(NC * FUSED_BASE, 0.0);
+    ctd.concept_flex_16d.resize(NC * fd, 0.0);
+
+    for (size_t i = 0; i < NC; ++i) {
+        auto flex = cpt_emb_store.get_or_default(idx_to_concept[i]);
+
+        for (size_t d = 0; d < 16; ++d) {
+            double cv = d < flex.core.size() ? flex.core[d] : 0.0;
+            double dv = d < flex.detail.size() ? flex.detail[d] : 0.0;
+            ctd.concept_matrix[i * CPD + d] = cv;
+            ctd.concept_matrix[i * CPD + 16 + d] = dv;
+            ctd.concept_matrix[i * CPD + 32 + d] = cv * 0.7 + dv * 0.3;
+            ctd.concept_matrix[i * CPD + 48 + d] = cv * 0.3 - dv * 0.7;
+        }
+        double norm = 0.0;
+        for (size_t d = 0; d < CPD; ++d)
+            norm += ctd.concept_matrix[i * CPD + d] * ctd.concept_matrix[i * CPD + d];
+        norm = std::sqrt(norm);
+        if (norm > 1e-8) {
+            for (size_t d = 0; d < CPD; ++d)
+                ctd.concept_matrix[i * CPD + d] /= norm;
+        }
+
+        for (size_t d = 0; d < 16; ++d) {
+            double cv = d < flex.core.size() ? flex.core[d] : 0.0;
+            double dv = d < flex.detail.size() ? flex.detail[d] : 0.0;
+            ctd.concept_emb_64d[i * FUSED_BASE + d] = cv;
+            ctd.concept_emb_64d[i * FUSED_BASE + 16 + d] = dv;
+            ctd.concept_emb_64d[i * FUSED_BASE + 32 + d] = cv * 0.7 + dv * 0.3;
+            ctd.concept_emb_64d[i * FUSED_BASE + 48 + d] = cv * 0.3 - dv * 0.7;
+        }
+
+        for (size_t d = 0; d < fd && d < flex.detail.size(); ++d)
+            ctd.concept_flex_16d[i * fd + d] = flex.detail[d];
+    }
+
+    ctd.initial_h.resize(pairs.size() * H_90, 0.0);
+    ctd.seq_offsets.resize(pairs.size());
+    ctd.seq_lengths.resize(pairs.size());
+    ctd.trust_weights.resize(pairs.size());
+
+    for (size_t s = 0; s < pairs.size(); ++s) {
+        const auto& pair = pairs[s];
+
+        for (size_t i = 0; i < H_90 && i < pair.embedding.size(); ++i)
+            ctd.initial_h[s * H_90 + i] = pair.embedding[i];
+
+        ctd.seq_offsets[s] = ctd.concept_seqs.size();
+        ctd.concept_seqs.push_back(concept_to_idx.at(pair.source_concept));
+        for (auto tgt : pair.target_concepts)
+            ctd.concept_seqs.push_back(concept_to_idx.at(tgt));
+        ctd.seq_lengths[s] = 1 + pair.target_concepts.size();
+
+        ctd.trust_weights[s] = pair.trust_weight;
+    }
+
+    return ctd;
+}
 #endif
 
 LanguageTrainingResult LanguageTraining::train_stage1_deep_kan_v2(const LanguageConfig& config) {
@@ -2415,6 +2792,11 @@ LanguageTrainingResult LanguageTraining::train_stage1_deep_kan_v2(const Language
     // ── Set feature flags before data generation ──
     use_gat_ = config.use_gat;
     use_lstm_gates_ = config.use_lstm_gates;
+    walk_per_source_ = config.concept_walks_per_source;
+    walk_max_length_ = config.concept_max_walk_length;
+    walk_min_chain_ = config.concept_min_chain_length;
+    incoming_max_ = config.concept_max_incoming;
+    incoming_discount_ = config.concept_incoming_discount;
     if (use_gat_)
         std::cerr << "[LanguageTraining] GAT attention enabled for target aggregation\n";
     if (use_lstm_gates_)
@@ -2608,113 +2990,89 @@ LanguageTrainingResult LanguageTraining::train_stage1_deep_kan_v2(const Language
     // ══════════════════════════════════════════════════════════════════════════
 
     auto v2_cs = std::make_shared<V2ConceptState>();
-    auto& cpt_emb_store = engine_.embeddings().concept_embeddings();
 
     {
-        auto concept_data = generate_concept_decoder_data();
+        // ══════════════════════════════════════════════════════════════════════
+        // Curriculum Learning: train in stages, simplest pairs first
+        // Stage 1: Forward only  →  Stage 2: +Inherited  →  Stage 3: +Walk  →  Stage 4: All
+        // Vocab is built once from ALL pairs so concept indices stay consistent.
+        // ══════════════════════════════════════════════════════════════════════
 
-        if (!concept_data.empty()) {
-            // ── Build concept vocabulary + ConceptTrainingData ──
+        // Step 1: Generate ALL pairs to build consistent vocab
+        auto all_pairs = generate_concept_decoder_data(CurriculumStage::ALL);
+
+        if (!all_pairs.empty()) {
+            // ── Frequency-filtered concept vocabulary (built from ALL pairs) ──
+            std::unordered_map<ConceptId, size_t> concept_freq;
+            for (const auto& pair : all_pairs) {
+                concept_freq[pair.source_concept]++;
+                for (auto cid : pair.target_concepts)
+                    concept_freq[cid]++;
+            }
+
+            std::vector<std::pair<ConceptId, size_t>> freq_sorted;
+            freq_sorted.reserve(concept_freq.size());
+            for (const auto& [cid, freq] : concept_freq) {
+                if (freq >= config.concept_min_frequency)
+                    freq_sorted.push_back({cid, freq});
+            }
+
+            std::sort(freq_sorted.begin(), freq_sorted.end(),
+                [](const auto& a, const auto& b) { return a.second > b.second; });
+            if (freq_sorted.size() > config.concept_max_vocab)
+                freq_sorted.resize(config.concept_max_vocab);
+
             std::unordered_map<ConceptId, int64_t> concept_to_idx;
             std::vector<ConceptId> idx_to_concept;
-
-            for (const auto& pair : concept_data) {
-                if (concept_to_idx.find(pair.source_concept) == concept_to_idx.end()) {
-                    concept_to_idx[pair.source_concept] = (int64_t)idx_to_concept.size();
-                    idx_to_concept.push_back(pair.source_concept);
-                }
-                for (auto cid : pair.target_concepts) {
-                    if (concept_to_idx.find(cid) == concept_to_idx.end()) {
-                        concept_to_idx[cid] = (int64_t)idx_to_concept.size();
-                        idx_to_concept.push_back(cid);
-                    }
-                }
+            idx_to_concept.reserve(freq_sorted.size());
+            for (const auto& [cid, freq] : freq_sorted) {
+                concept_to_idx[cid] = (int64_t)idx_to_concept.size();
+                idx_to_concept.push_back(cid);
             }
 
             size_t NC = idx_to_concept.size();
-            std::cerr << "[Unified]   " << concept_data.size()
-                      << " concept samples, " << NC << " unique concepts\n";
+            std::cerr << "[Curriculum] Vocab: " << concept_freq.size() << " → " << NC
+                      << " concepts (min_freq=" << config.concept_min_frequency
+                      << ", max_vocab=" << config.concept_max_vocab << ")\n";
 
-            libtorch::ConceptTrainingData ctd;
-            ctd.num_samples = concept_data.size();
-            ctd.num_concepts = NC;
-            ctd.use_lstm_gates = config.use_lstm_gates;
-
-            static constexpr size_t CPD = 64;  // CONCEPT_PROJ_DIM
-            ctd.concept_matrix.resize(NC * CPD, 0.0);
-            ctd.concept_emb_64d.resize(NC * FUSED_BASE, 0.0);
-            ctd.concept_flex_16d.resize(NC * fd, 0.0);
-
-            for (size_t i = 0; i < NC; ++i) {
-                auto flex = cpt_emb_store.get_or_default(idx_to_concept[i]);
-
-                // concept_matrix: core(16D) + detail(16D) + mirrored core/detail(32D)
-                // All 64D carry identity signal → concept_proj can use full capacity
-                for (size_t d = 0; d < 16; ++d) {
-                    double cv = d < flex.core.size() ? flex.core[d] : 0.0;
-                    double dv = d < flex.detail.size() ? flex.detail[d] : 0.0;
-                    ctd.concept_matrix[i * CPD + d] = cv;           // [0:16]  core
-                    ctd.concept_matrix[i * CPD + 16 + d] = dv;     // [16:32] detail
-                    ctd.concept_matrix[i * CPD + 32 + d] = cv * 0.7 + dv * 0.3;  // [32:48] mix1
-                    ctd.concept_matrix[i * CPD + 48 + d] = cv * 0.3 - dv * 0.7;  // [48:64] mix2
+            // Helper: filter pairs to vocab (source in vocab, targets filtered to in-vocab)
+            auto filter_to_vocab = [&](std::vector<ConceptDecoderPair>& pairs) {
+                std::vector<ConceptDecoderPair> filtered;
+                filtered.reserve(pairs.size());
+                for (auto& pair : pairs) {
+                    if (concept_to_idx.find(pair.source_concept) == concept_to_idx.end())
+                        continue;
+                    std::vector<ConceptId> filtered_targets;
+                    for (auto cid : pair.target_concepts) {
+                        if (concept_to_idx.find(cid) != concept_to_idx.end())
+                            filtered_targets.push_back(cid);
+                    }
+                    if (filtered_targets.empty()) continue;
+                    pair.target_concepts = std::move(filtered_targets);
+                    filtered.push_back(std::move(pair));
                 }
-                double norm = 0.0;
-                for (size_t d = 0; d < CPD; ++d)
-                    norm += ctd.concept_matrix[i * CPD + d] * ctd.concept_matrix[i * CPD + d];
-                norm = std::sqrt(norm);
-                if (norm > 1e-8) {
-                    for (size_t d = 0; d < CPD; ++d)
-                        ctd.concept_matrix[i * CPD + d] /= norm;
-                }
+                pairs = std::move(filtered);
+            };
 
-                // concept_emb_64d: same pattern (core+detail+mixes) for Block 1 evolution
-                // All 64D get meaningful signal instead of 48D being zero
-                for (size_t d = 0; d < 16; ++d) {
-                    double cv = d < flex.core.size() ? flex.core[d] : 0.0;
-                    double dv = d < flex.detail.size() ? flex.detail[d] : 0.0;
-                    ctd.concept_emb_64d[i * FUSED_BASE + d] = cv;
-                    ctd.concept_emb_64d[i * FUSED_BASE + 16 + d] = dv;
-                    ctd.concept_emb_64d[i * FUSED_BASE + 32 + d] = cv * 0.7 + dv * 0.3;
-                    ctd.concept_emb_64d[i * FUSED_BASE + 48 + d] = cv * 0.3 - dv * 0.7;
-                }
+            // Step 2: Curriculum stages
+            static constexpr CurriculumStage STAGES[] = {
+                CurriculumStage::FORWARD_ONLY,
+                CurriculumStage::PLUS_INHERITED,
+                CurriculumStage::PLUS_WALK,
+                CurriculumStage::ALL,
+            };
+            static const char* STAGE_NAMES[] = {
+                "Forward", "Forward+Inherited", "Forward+Inherited+Walk", "All"
+            };
 
-                // concept_flex_16d: detail embedding for Block 2
-                for (size_t d = 0; d < fd && d < flex.detail.size(); ++d)
-                    ctd.concept_flex_16d[i * fd + d] = flex.detail[d];
-            }
-
-            ctd.initial_h.resize(concept_data.size() * H_90, 0.0);
-            ctd.seq_offsets.resize(concept_data.size());
-            ctd.seq_lengths.resize(concept_data.size());
-            ctd.trust_weights.resize(concept_data.size());
-
-            for (size_t s = 0; s < concept_data.size(); ++s) {
-                const auto& pair = concept_data[s];
-
-                for (size_t i = 0; i < H_90 && i < pair.embedding.size(); ++i)
-                    ctd.initial_h[s * H_90 + i] = pair.embedding[i];
-
-                ctd.seq_offsets[s] = ctd.concept_seqs.size();
-                ctd.concept_seqs.push_back(concept_to_idx[pair.source_concept]);
-                for (auto tgt : pair.target_concepts)
-                    ctd.concept_seqs.push_back(concept_to_idx[tgt]);
-                ctd.seq_lengths[s] = 1 + pair.target_concepts.size();
-
-                ctd.trust_weights[s] = pair.trust_weight;
-            }
-
-            // ── Unified training: token + concept through shared KAN backbone ──
             libtorch::UnifiedTrainingConfig ucfg;
-            ucfg.num_epochs = config.unified_epochs;
             ucfg.lr_token_head = config.decoder_lr;
             ucfg.lr_concept_head = 0.002;
             ucfg.lr_kan = config.deep_kan_lr;
             ucfg.lr_conv = 0.0005;
-            ucfg.warmup_epochs = 10;
             ucfg.batch_size = 2048;
             ucfg.dropout_p = 0.08;
             ucfg.weight_decay = 0.01;
-            ucfg.patience = 25;
             ucfg.max_val_gap = 0.15;
             ucfg.concept_loss_weight = 1.0;
             ucfg.concept_temperature = (float)config.concept_train_temperature;
@@ -2725,16 +3083,53 @@ LanguageTrainingResult LanguageTraining::train_stage1_deep_kan_v2(const Language
                 ucfg.lr_scale[i] = 0.1;
 
             libtorch::UnifiedTrainingResult uresult;
-            std::cerr << "[Unified]   Starting unified training...\n";
-            bool ok = libtorch::train_unified_deep_kan_v2(
-                td, ctd, dkw, cpd, v2_cs->cw, ucfg, uresult);
+            bool any_ok = false;
 
-            if (ok) {
-                // Store concept state for inference
+            for (size_t si = 0; si < 4; ++si) {
+                auto stage_pairs = generate_concept_decoder_data(STAGES[si]);
+                filter_to_vocab(stage_pairs);
+
+                if (stage_pairs.empty()) {
+                    std::cerr << "[Curriculum] Stage " << (si+1) << "/4: "
+                              << STAGE_NAMES[si] << " — no pairs, skipping\n";
+                    continue;
+                }
+
+                auto ctd = pack_concept_training_data(
+                    stage_pairs, concept_to_idx, idx_to_concept, NC, config);
+
+                ucfg.num_epochs = 75;
+                ucfg.patience = 15;
+                ucfg.warmup_epochs = (si == 0) ? 10 : 0;
+
+                std::cerr << "[Curriculum] Stage " << (si+1) << "/4: "
+                          << STAGE_NAMES[si] << " (" << stage_pairs.size() << " pairs)\n";
+
+                bool ok = libtorch::train_unified_deep_kan_v2(
+                    td, ctd, dkw, cpd, v2_cs->cw, ucfg, uresult);
+
+                if (ok) {
+                    any_ok = true;
+                    std::cerr << "[Curriculum] Stage " << (si+1) << " done: tok_val="
+                              << uresult.best_token_val << " con_val="
+                              << uresult.best_concept_val << "\n";
+                } else {
+                    std::cerr << "[Curriculum] Stage " << (si+1) << " failed\n";
+                }
+            }
+
+            if (any_ok) {
+                // Store concept state for inference.
+                // Concept matrices depend only on vocab, not on pairs — repack from
+                // any filtered set (use all_pairs for completeness).
+                filter_to_vocab(all_pairs);
+                auto final_ctd = pack_concept_training_data(
+                    all_pairs, concept_to_idx, idx_to_concept, NC, config);
+
                 v2_concept_state_ = v2_cs;
-                v2_concept_matrix_ = ctd.concept_matrix;
-                v2_concept_emb_64d_ = ctd.concept_emb_64d;
-                v2_concept_flex_16d_ = ctd.concept_flex_16d;
+                v2_concept_matrix_ = std::move(final_ctd.concept_matrix);
+                v2_concept_emb_64d_ = std::move(final_ctd.concept_emb_64d);
+                v2_concept_flex_16d_ = std::move(final_ctd.concept_flex_16d);
                 v2_num_concepts_ = NC;
                 v2_idx_to_concept_ = idx_to_concept;
                 v2_concept_valid_ = true;
@@ -2742,7 +3137,7 @@ LanguageTrainingResult LanguageTraining::train_stage1_deep_kan_v2(const Language
                 double unified_best = std::min(uresult.best_token_val, uresult.best_concept_val);
                 if (unified_best < best_loss) best_loss = unified_best;
 
-                std::cerr << "[Unified] Training complete: tok_val="
+                std::cerr << "[Curriculum] Complete: tok_val="
                           << uresult.best_token_val << " con_val="
                           << uresult.best_concept_val << "\n";
             }
@@ -3195,6 +3590,625 @@ size_t LanguageTraining::apply_cm_trust_feedback(
     return adjustments;
 }
 #endif  // USE_LIBTORCH
+
+// =============================================================================
+// Expert Ensemble: frozen backbone, 4 specialized concept heads
+// =============================================================================
+
+LanguageTrainingResult LanguageTraining::train_expert_ensemble(const LanguageConfig& config) {
+    LanguageTrainingResult result;
+    result.stage = 1;
+    result.stage_name = "Expert Ensemble (4 heads, frozen backbone)";
+    result.converged = false;
+    result.epochs_run = 0;
+    result.final_loss = 1e9;
+
+#ifndef USE_LIBTORCH
+    std::cerr << "[Expert] Expert ensemble requires USE_LIBTORCH. Build with TORCH=1.\n";
+    return result;
+#else
+    // ── Set feature flags before data generation ──
+    use_gat_ = config.use_gat;
+    use_lstm_gates_ = config.use_lstm_gates;
+    walk_per_source_ = config.concept_walks_per_source;
+    walk_max_length_ = config.concept_max_walk_length;
+    walk_min_chain_ = config.concept_min_chain_length;
+    incoming_max_ = config.concept_max_incoming;
+    incoming_discount_ = config.concept_incoming_discount;
+    if (use_gat_)
+        std::cerr << "[Expert] GAT attention enabled\n";
+    if (use_lstm_gates_)
+        std::cerr << "[Expert] LSTM-style gates enabled\n";
+
+    // ── Generate token training data (same preamble as train_stage1_deep_kan_v2) ──
+    std::cerr << "[Expert] Generating encoder data...\n";
+    auto encoder_data = generate_encoder_data();
+    std::cerr << "[Expert] Generating unified concept descriptions...\n";
+    auto decoder_data = generate_decoder_data();
+    std::cerr << "[Expert] Generating supplemental relation data...\n";
+    auto relation_data = generate_relation_decoder_data();
+    std::cerr << "[Expert] Data: enc=" << encoder_data.size()
+              << " unified=" << decoder_data.size() << " rel=" << relation_data.size() << "\n";
+
+    // Brief encoder training
+    double best_loss = 1e9;
+    if (!encoder_data.empty()) {
+        for (size_t epoch = 0; epoch < config.encoder_epochs; ++epoch) {
+            double loss = train_encoder_epoch(encoder_data, config.encoder_lr);
+            if (loss < best_loss) best_loss = loss;
+            if (loss < 1e-4) break;
+        }
+    }
+
+    // Merge decoder data
+    std::vector<DecoderPair> all_decoder_data;
+    all_decoder_data.reserve(decoder_data.size() + relation_data.size());
+    all_decoder_data.insert(all_decoder_data.end(),
+        std::make_move_iterator(decoder_data.begin()),
+        std::make_move_iterator(decoder_data.end()));
+    all_decoder_data.insert(all_decoder_data.end(),
+        std::make_move_iterator(relation_data.begin()),
+        std::make_move_iterator(relation_data.end()));
+    { std::mt19937 rng(12345); std::shuffle(all_decoder_data.begin(), all_decoder_data.end(), rng); }
+
+    if (all_decoder_data.empty()) return result;
+
+    // ── Pre-tokenize (same as train_stage1_deep_kan_v2) ──
+    const size_t V = LanguageConfig::VOCAB_SIZE;
+    auto& tok = engine_.tokenizer();
+    std::vector<bool> seen(V, false);
+
+    struct PreTokenizedSample {
+        std::vector<uint16_t> tokens;
+        size_t pair_idx;
+    };
+    std::vector<PreTokenizedSample> pretok_samples;
+    pretok_samples.reserve(all_decoder_data.size());
+
+    for (size_t idx = 0; idx < all_decoder_data.size(); ++idx) {
+        auto tokens = tok.encode(all_decoder_data[idx].target_text);
+        if (tokens.empty()) continue;
+        for (auto t : tokens) {
+            if (t < V) seen[t] = true;
+        }
+        pretok_samples.push_back({std::move(tokens), idx});
+    }
+
+    std::vector<uint16_t> active_tokens;
+    std::vector<size_t> compress(V, 0);
+    for (size_t v = 0; v < V; ++v) {
+        if (seen[v]) {
+            compress[v] = active_tokens.size();
+            active_tokens.push_back(static_cast<uint16_t>(v));
+        }
+    }
+    const size_t VA = active_tokens.size();
+    std::cerr << "[Expert] " << pretok_samples.size()
+              << " samples, " << VA << " active tokens\n";
+
+    // ── Dimensions ──
+    auto& decoder = engine_.decoder();
+    auto& emb_table = engine_.encoder().embedding_table();
+    const size_t H_OLD = decoder.extended_fused_dim();
+    const size_t FUSED_BASE = LanguageConfig::FUSED_DIM;
+    const size_t fd = decoder.flex_dim();
+    const size_t H_90 = 90;
+    const size_t FEAT_DIM = 128;
+
+    // ── Pack token TrainingData ──
+    cuda::TrainingData td;
+    td.num_samples = pretok_samples.size();
+    td.V = V;
+    td.VA = VA;
+    td.H = H_OLD;
+    td.FUSED_BASE = FUSED_BASE;
+    td.flex_dim = fd;
+    td.use_lstm_gates = config.use_lstm_gates;
+
+    size_t total_toks = 0;
+    for (const auto& s : pretok_samples) total_toks += s.tokens.size();
+    td.all_tokens.reserve(total_toks);
+    td.sample_offsets.resize(pretok_samples.size());
+    td.sample_lengths.resize(pretok_samples.size());
+    for (size_t i = 0; i < pretok_samples.size(); ++i) {
+        td.sample_offsets[i] = td.all_tokens.size();
+        td.sample_lengths[i] = pretok_samples[i].tokens.size();
+        td.all_tokens.insert(td.all_tokens.end(),
+            pretok_samples[i].tokens.begin(), pretok_samples[i].tokens.end());
+    }
+
+    td.embeddings.resize(pretok_samples.size() * H_OLD, 0.0);
+    for (size_t i = 0; i < pretok_samples.size(); ++i) {
+        const auto& emb = all_decoder_data[pretok_samples[i].pair_idx].embedding;
+        for (size_t j = 0; j < std::min(H_OLD, emb.size()); ++j)
+            td.embeddings[i * H_OLD + j] = emb[j];
+    }
+
+    td.compress.resize(V);
+    for (size_t v = 0; v < V; ++v) td.compress[v] = compress[v];
+    td.active_tokens = active_tokens;
+
+    td.emb_table.resize(V * FUSED_BASE, 0.0);
+    for (size_t v = 0; v < std::min(emb_table.size(), V); ++v) {
+        for (size_t j = 0; j < std::min(emb_table[v].size(), FUSED_BASE); ++j)
+            td.emb_table[v * FUSED_BASE + j] = emb_table[v][j];
+    }
+
+    td.flex_table.resize(V * fd, 0.0);
+    for (size_t v = 0; v < V; ++v) {
+        auto cpt = tok.token_to_concept(static_cast<uint16_t>(v));
+        if (cpt) {
+            auto flex_emb = engine_.embeddings().concept_embeddings().get_or_default(*cpt);
+            for (size_t j = 0; j < std::min(fd, flex_emb.detail.size()); ++j)
+                td.flex_table[v * fd + j] = flex_emb.detail[j];
+        }
+    }
+    td.conv_dim = 0;
+
+    // ── DeepKAN weight initialization ──
+    DeepKAN deep_kan({H_90, 256, 128, FEAT_DIM}, {8, 5, 5}, 3);
+
+    cuda::DeepKANWeights dkw;
+    auto& l1 = deep_kan.layer(0);
+    auto& l3 = deep_kan.layer(2);
+
+    dkw.k1_weights  = l1.spline_weights();
+    dkw.k1_residual = l1.residual_W();
+    dkw.k1_gamma    = l1.ln_gamma();
+    dkw.k1_beta     = l1.ln_beta();
+    dkw.k1_knots    = l1.knots();
+
+    {
+        EfficientKANLayer l2_v2(288, 128, 5, 3);
+        dkw.k2_weights  = l2_v2.spline_weights();
+        dkw.k2_residual = l2_v2.residual_W();
+        dkw.k2_gamma    = l2_v2.ln_gamma();
+        dkw.k2_beta     = l2_v2.ln_beta();
+        dkw.k2_knots    = l2_v2.knots();
+    }
+
+    dkw.k3_weights  = l3.spline_weights();
+    dkw.k3_residual = l3.residual_W();
+    dkw.k3_gamma    = l3.ln_gamma();
+    dkw.k3_beta     = l3.ln_beta();
+    dkw.k3_knots    = l3.knots();
+
+    dkw.W_a.resize(FEAT_DIM * VA);
+    {
+        std::mt19937 rng(42);
+        double scale = std::sqrt(6.0 / (double)(FEAT_DIM + VA));
+        std::uniform_real_distribution<double> dist(-scale, scale);
+        for (auto& w : dkw.W_a) w = dist(rng);
+    }
+
+    libtorch::ConvergencePortData cpd;
+
+    // ══════════════════════════════════════════════════════════════════════════
+    // Build consistent vocab from ALL concept pairs (shared across all experts)
+    // ══════════════════════════════════════════════════════════════════════════
+    auto all_pairs = generate_concept_decoder_data(CurriculumStage::ALL);
+
+    if (all_pairs.empty()) {
+        std::cerr << "[Expert] No concept pairs — cannot train experts\n";
+        return result;
+    }
+
+    std::unordered_map<ConceptId, size_t> concept_freq;
+    for (const auto& pair : all_pairs) {
+        concept_freq[pair.source_concept]++;
+        for (auto cid : pair.target_concepts)
+            concept_freq[cid]++;
+    }
+
+    std::vector<std::pair<ConceptId, size_t>> freq_sorted;
+    freq_sorted.reserve(concept_freq.size());
+    for (const auto& [cid, freq] : concept_freq) {
+        if (freq >= config.concept_min_frequency)
+            freq_sorted.push_back({cid, freq});
+    }
+
+    std::sort(freq_sorted.begin(), freq_sorted.end(),
+        [](const auto& a, const auto& b) { return a.second > b.second; });
+    if (freq_sorted.size() > config.concept_max_vocab)
+        freq_sorted.resize(config.concept_max_vocab);
+
+    std::unordered_map<ConceptId, int64_t> concept_to_idx;
+    std::vector<ConceptId> idx_to_concept;
+    idx_to_concept.reserve(freq_sorted.size());
+    for (const auto& [cid, freq] : freq_sorted) {
+        concept_to_idx[cid] = (int64_t)idx_to_concept.size();
+        idx_to_concept.push_back(cid);
+    }
+
+    size_t NC = idx_to_concept.size();
+    std::cerr << "[Expert] Vocab: " << concept_freq.size() << " → " << NC
+              << " concepts (min_freq=" << config.concept_min_frequency
+              << ", max_vocab=" << config.concept_max_vocab << ")\n";
+
+    // Helper: filter pairs to vocab
+    auto filter_to_vocab = [&](std::vector<ConceptDecoderPair>& pairs) {
+        std::vector<ConceptDecoderPair> filtered;
+        filtered.reserve(pairs.size());
+        for (auto& pair : pairs) {
+            if (concept_to_idx.find(pair.source_concept) == concept_to_idx.end())
+                continue;
+            std::vector<ConceptId> filtered_targets;
+            for (auto cid : pair.target_concepts) {
+                if (concept_to_idx.find(cid) != concept_to_idx.end())
+                    filtered_targets.push_back(cid);
+            }
+            if (filtered_targets.empty()) continue;
+            pair.target_concepts = std::move(filtered_targets);
+            filtered.push_back(std::move(pair));
+        }
+        pairs = std::move(filtered);
+    };
+
+    // ══════════════════════════════════════════════════════════════════════════
+    // Foundation run: train full model on Forward-only data
+    // ══════════════════════════════════════════════════════════════════════════
+    std::cerr << "[Expert] Foundation run: training full model on Forward-only data...\n";
+
+    auto foundation_pairs = generate_concept_decoder_data(CurriculumStage::FORWARD_ONLY);
+    filter_to_vocab(foundation_pairs);
+
+    if (foundation_pairs.empty()) {
+        std::cerr << "[Expert] No Forward-only pairs after filtering — aborting\n";
+        return result;
+    }
+
+    auto foundation_ctd = pack_concept_training_data(
+        foundation_pairs, concept_to_idx, idx_to_concept, NC, config);
+
+    libtorch::UnifiedTrainingConfig ucfg;
+    ucfg.lr_token_head = config.decoder_lr;
+    ucfg.lr_concept_head = 0.002;
+    ucfg.lr_kan = config.deep_kan_lr;
+    ucfg.lr_conv = 0.0005;
+    ucfg.batch_size = 2048;
+    ucfg.dropout_p = 0.08;
+    ucfg.weight_decay = 0.01;
+    ucfg.max_val_gap = 0.15;
+    ucfg.concept_loss_weight = 1.0;
+    ucfg.concept_temperature = (float)config.concept_train_temperature;
+    ucfg.lr_scale.resize(H_90, 1.0);
+    for (size_t i = FUSED_BASE; i < FUSED_BASE + fd && i < H_90; ++i)
+        ucfg.lr_scale[i] = 0.3;
+    for (size_t i = FUSED_BASE + fd; i < H_90; ++i)
+        ucfg.lr_scale[i] = 0.1;
+
+    ucfg.num_epochs = 150;
+    ucfg.warmup_epochs = 10;
+    ucfg.patience = 25;
+
+    auto v2_cs_foundation = std::make_shared<V2ConceptState>();
+    libtorch::UnifiedTrainingResult foundation_result;
+
+    bool foundation_ok = libtorch::train_unified_deep_kan_v2(
+        td, foundation_ctd, dkw, cpd, v2_cs_foundation->cw, ucfg, foundation_result);
+
+    if (!foundation_ok) {
+        std::cerr << "[Expert] Foundation run failed — aborting\n";
+        return result;
+    }
+
+    std::cerr << "[Expert] Foundation done: tok_val=" << foundation_result.best_token_val
+              << " con_val=" << foundation_result.best_concept_val << "\n";
+
+    // Save frozen backbone (dkw + cpd state after foundation)
+    cuda::DeepKANWeights dkw_frozen = dkw;
+    libtorch::ConvergencePortData cpd_frozen = cpd;
+
+    // ══════════════════════════════════════════════════════════════════════════
+    // Expert loop: 4 specialized concept heads on frozen backbone
+    // ══════════════════════════════════════════════════════════════════════════
+    static constexpr CurriculumStage EXPERT_STAGES[] = {
+        CurriculumStage::FORWARD_ONLY,
+        CurriculumStage::PLUS_INHERITED,
+        CurriculumStage::PLUS_WALK,
+        CurriculumStage::ALL,
+    };
+    static const char* EXPERT_NAMES[] = {
+        "Forward", "Forward+Inherited", "Forward+Inherited+Walk", "All"
+    };
+
+    auto expert_state = std::make_shared<V2ExpertState>();
+    expert_state->cws.resize(4);
+    v2_expert_names_.clear();
+
+    for (size_t ei = 0; ei < 4; ++ei) {
+        // Restore frozen backbone
+        dkw = dkw_frozen;
+        cpd = cpd_frozen;
+
+        // Fresh concept weights (empty → random init by LibTorch)
+        libtorch::ConceptWeights cw_expert;
+
+        auto expert_pairs = generate_concept_decoder_data(EXPERT_STAGES[ei]);
+        filter_to_vocab(expert_pairs);
+
+        if (expert_pairs.empty()) {
+            std::cerr << "[Expert] Expert " << (ei+1) << "/4: "
+                      << EXPERT_NAMES[ei] << " — no pairs, skipping\n";
+            v2_expert_names_.push_back(EXPERT_NAMES[ei]);
+            continue;
+        }
+
+        auto expert_ctd = pack_concept_training_data(
+            expert_pairs, concept_to_idx, idx_to_concept, NC, config);
+
+        // Expert config: frozen backbone (warmup=9999), higher dropout
+        libtorch::UnifiedTrainingConfig expert_ucfg = ucfg;
+        expert_ucfg.num_epochs = 100;
+        expert_ucfg.warmup_epochs = 9999;  // backbone frozen forever
+        expert_ucfg.patience = 20;
+        expert_ucfg.dropout_p = 0.10;
+        expert_ucfg.lr_concept_head = 0.003;
+
+        libtorch::UnifiedTrainingResult expert_result;
+
+        std::cerr << "[Expert] Expert " << (ei+1) << "/4: "
+                  << EXPERT_NAMES[ei] << " (" << expert_pairs.size() << " pairs)\n";
+
+        bool ok = libtorch::train_unified_deep_kan_v2(
+            td, expert_ctd, dkw, cpd, cw_expert, expert_ucfg, expert_result);
+
+        if (ok) {
+            std::cerr << "[Expert] Expert " << (ei+1) << "/4: "
+                      << EXPERT_NAMES[ei] << " → con_val="
+                      << expert_result.best_concept_val << "\n";
+        } else {
+            std::cerr << "[Expert] Expert " << (ei+1) << "/4: "
+                      << EXPERT_NAMES[ei] << " — training failed\n";
+        }
+
+        expert_state->cws[ei] = std::move(cw_expert);
+        v2_expert_names_.push_back(EXPERT_NAMES[ei]);
+
+        if (expert_result.best_concept_val < best_loss)
+            best_loss = expert_result.best_concept_val;
+    }
+
+    // ── Restore frozen backbone for inference ──
+    dkw = dkw_frozen;
+    cpd = cpd_frozen;
+
+    // ── Writeback: W_a → decoder output projection ──
+    auto& W = decoder.output_projection();
+    W.resize(FEAT_DIM);
+    for (size_t i = 0; i < FEAT_DIM; ++i) {
+        W[i].assign(V, 0.0);
+        for (size_t a = 0; a < VA; ++a)
+            W[i][active_tokens[a]] = dkw.W_a[i * VA + a];
+    }
+
+    // ── Store state for inference ──
+    v2_dkw_ = dkw;
+    v2_cpd_ = std::make_shared<V2ConvergenceState>();
+    v2_cpd_->cpd = cpd;
+    v2_emb_table_ = td.emb_table;
+    v2_flex_table_ = td.flex_table;
+    v2_active_tokens_ = active_tokens;
+    v2_VA_ = VA;
+    v2_V_ = V;
+    v2_FUSED_BASE_ = FUSED_BASE;
+    v2_flex_dim_ = fd;
+    v2_valid_ = true;
+
+    // Store concept tables for inference
+    filter_to_vocab(all_pairs);
+    auto final_ctd = pack_concept_training_data(
+        all_pairs, concept_to_idx, idx_to_concept, NC, config);
+    v2_concept_matrix_ = std::move(final_ctd.concept_matrix);
+    v2_concept_emb_64d_ = std::move(final_ctd.concept_emb_64d);
+    v2_concept_flex_16d_ = std::move(final_ctd.concept_flex_16d);
+    v2_num_concepts_ = NC;
+    v2_idx_to_concept_ = idx_to_concept;
+    v2_concept_valid_ = true;
+
+    // Mark ensemble as valid
+    v2_expert_state_ = expert_state;
+    v2_expert_valid_ = true;
+
+    result.epochs_run = 150 + 4 * 100;
+    result.final_loss = best_loss;
+    result.converged = best_loss < 6.0;
+
+    std::cerr << "[Expert] Ensemble complete: " << v2_expert_names_.size()
+              << " experts trained, best con_val=" << best_loss << "\n";
+
+    return result;
+#endif
+}
+
+// =============================================================================
+// Expert Ensemble inference: step-wise weighted vote across 4 experts
+// =============================================================================
+
+std::string LanguageTraining::generate_v2_ensemble(const std::string& query, size_t max_tokens) const {
+#ifndef USE_LIBTORCH
+    (void)query; (void)max_tokens;
+    return "[Expert ensemble requires USE_LIBTORCH]";
+#else
+    if (!v2_expert_valid_ || !v2_valid_ || !v2_concept_valid_ || !v2_cpd_ || !v2_expert_state_)
+        return "[No trained expert ensemble]";
+
+    auto& concept_emb_store = engine_.embeddings().concept_embeddings();
+    auto& dim_ctx = engine_.dim_context();
+    auto& projection = engine_.fusion().projection();
+    const size_t ACT_DIM = LanguageConfig::ENCODER_QUERY_DIM;
+    const size_t FUSED = LanguageConfig::FUSED_DIM;
+
+    // Find seed concepts matching query
+    auto seeds = engine_.find_seeds(query);
+    if (seeds.empty()) return "[No concepts found for: " + query + "]";
+
+    ConceptId primary = seeds[0];
+
+    // ── Build initial 90D hidden state (same as generate_v2) ──
+    std::vector<double> raw(3 * ACT_DIM + 5 + LanguageConfig::NUM_TEMPLATE_TYPES, 0.0);
+    auto src_emb = concept_emb_store.get_or_default(primary);
+    for (size_t d = 0; d < ACT_DIM; ++d)
+        raw[d] = src_emb.core[d] * 0.7;
+
+    auto rels = ltm_.get_outgoing_relations(primary);
+    std::vector<FlexEmbedding> target_embs, rel_type_embs;
+    for (const auto& rel : rels) {
+        if (target_embs.size() < 5)
+            target_embs.push_back(concept_emb_store.get_or_default(rel.target));
+        if (rel_type_embs.size() < 5)
+            rel_type_embs.push_back(engine_.embeddings().get_relation_embedding(rel.type));
+    }
+    if (!target_embs.empty()) {
+        double inv_n = 0.5 / (double)target_embs.size();
+        for (const auto& te : target_embs)
+            for (size_t d = 0; d < ACT_DIM; ++d)
+                raw[ACT_DIM + d] += te.core[d] * inv_n;
+    }
+    if (!rel_type_embs.empty()) {
+        double inv_n = 0.3 / (double)rel_type_embs.size();
+        for (const auto& re : rel_type_embs)
+            for (size_t d = 0; d < ACT_DIM; ++d)
+                raw[2 * ACT_DIM + d] += re.core[d] * inv_n;
+    }
+
+    size_t gate_offset = 3 * ACT_DIM;
+    raw[gate_offset + 0] = 0.8;
+    raw[gate_offset + 1] = 0.5;
+    raw[gate_offset + 2] = 0.3;
+    size_t tpl_offset = gate_offset + 5;
+    if (!rels.empty()) {
+        double inv_n = 1.0 / (double)rels.size();
+        for (const auto& rel : rels) {
+            switch (rel.type) {
+                case RelationType::IS_A:
+                case RelationType::INSTANCE_OF:
+                case RelationType::DERIVED_FROM:
+                    raw[tpl_offset + 0] += inv_n; break;
+                case RelationType::CAUSES:
+                case RelationType::ENABLES:
+                case RelationType::PRODUCES:
+                case RelationType::IMPLIES:
+                    raw[tpl_offset + 1] += inv_n; break;
+                case RelationType::HAS_PROPERTY:
+                case RelationType::PART_OF:
+                case RelationType::HAS_PART:
+                case RelationType::REQUIRES:
+                case RelationType::USES:
+                    raw[tpl_offset + 2] += inv_n; break;
+                default:
+                    raw[tpl_offset + 3] += inv_n; break;
+            }
+        }
+    } else {
+        raw[tpl_offset + 0] = 0.3;
+        raw[tpl_offset + 1] = 0.5;
+    }
+
+    std::vector<double> fused(FUSED, 0.0);
+    size_t raw_dim = std::min(raw.size(), projection.size());
+    for (size_t i = 0; i < raw_dim; ++i) {
+        if (std::abs(raw[i]) < 1e-12) continue;
+        for (size_t j = 0; j < FUSED; ++j)
+            fused[j] += raw[i] * projection[i][j];
+    }
+
+    auto flex_emb = concept_emb_store.get_or_default(primary);
+    for (size_t d = 0; d < 16; ++d)
+        fused.push_back(d < flex_emb.detail.size() ? flex_emb.detail[d] : 0.0);
+
+    if (dim_ctx.is_built()) {
+        auto dim_vec = dim_ctx.to_decoder_vec(primary);
+        fused.insert(fused.end(), dim_vec.begin(), dim_vec.end());
+    }
+
+    std::vector<float> h(90, 0.0f);
+    for (size_t i = 0; i < std::min((size_t)90, fused.size()); ++i)
+        h[i] = (float)fused[i];
+
+    // Find primary concept's index in vocab
+    int64_t start_idx = -1;
+    for (size_t i = 0; i < v2_idx_to_concept_.size(); ++i) {
+        if (v2_idx_to_concept_[i] == primary) {
+            start_idx = (int64_t)i;
+            break;
+        }
+    }
+    if (start_idx < 0)
+        return "[Concept not in vocab: " + query + "]";
+
+    // ── Step-wise ensemble: all experts share autoregressive state ──
+    const size_t num_experts = v2_expert_state_->cws.size();
+    float temperature = (float)LanguageConfig().concept_inference_temperature;
+
+    std::string result_text;
+    std::string debug;
+    int64_t current_idx = start_idx;
+
+    for (size_t step = 0; step < max_tokens; ++step) {
+        // Collect votes from all experts for this step
+        std::unordered_map<int64_t, double> vote_scores;
+
+        for (size_t ei = 0; ei < num_experts; ++ei) {
+            // Skip experts with empty weights (failed training)
+            if (v2_expert_state_->cws[ei].concept_proj_W.empty())
+                continue;
+
+            auto cgr = libtorch::generate_concept_deep_kan_v2(
+                v2_dkw_, v2_cpd_->cpd, v2_expert_state_->cws[ei],
+                v2_concept_matrix_, v2_concept_emb_64d_, v2_concept_flex_16d_,
+                v2_num_concepts_, h, current_idx, 1,
+                temperature, use_lstm_gates_);
+
+            if (!cgr.concept_indices.empty()) {
+                int64_t pred_idx = cgr.concept_indices[0];
+                double conf = cgr.confidences[0];
+                vote_scores[pred_idx] += conf;
+            }
+        }
+
+        if (vote_scores.empty()) break;
+
+        // Pick concept with highest weighted vote
+        int64_t best_idx = -1;
+        double best_score = -1.0;
+        for (const auto& [idx, score] : vote_scores) {
+            if (score > best_score) {
+                best_score = score;
+                best_idx = idx;
+            }
+        }
+
+        if (best_idx < 0 || (size_t)best_idx >= v2_idx_to_concept_.size()) break;
+
+        ConceptId cid = v2_idx_to_concept_[(size_t)best_idx];
+        auto cinfo = ltm_.retrieve_concept(cid);
+        std::string label = cinfo ? cinfo->label : "?";
+
+        if (!result_text.empty()) result_text += ", ";
+        result_text += label;
+
+        size_t voters = 0;
+        for (const auto& [idx, score] : vote_scores)
+            if (idx == best_idx) voters++;
+
+        debug += "[" + label + " s=" + std::to_string(best_score).substr(0, 4)
+            + " v=" + std::to_string(vote_scores.size()) + "] ";
+
+        // Feed winning concept as input to all experts for next step
+        current_idx = best_idx;
+
+        // Update h with the chosen concept's embedding (for next step's KAN input)
+        for (size_t d = 0; d < 64 && d < v2_concept_emb_64d_.size() - (size_t)best_idx * 64; ++d)
+            h[d] = (float)v2_concept_emb_64d_[(size_t)best_idx * 64 + d];
+        for (size_t d = 0; d < 16 && d < v2_concept_flex_16d_.size() - (size_t)best_idx * 16; ++d)
+            h[64 + d] = (float)v2_concept_flex_16d_[(size_t)best_idx * 16 + d];
+    }
+
+    std::cerr << "[Inference/Ensemble] " << query << ": " << debug << "\n";
+    return result_text;
+#endif
+}
 
 // =============================================================================
 // DeepKAN v2 inference: generate text for a query

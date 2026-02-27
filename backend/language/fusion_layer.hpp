@@ -30,8 +30,12 @@ struct FusedRepresentation {
     // Empty if no dimensional context is available (backward compatible).
     std::vector<double> dimensional_context;
 
-    // Extended fused: [fused_vector | flex_detail | dimensional_context]
-    // Size = FUSED_DIM + flex_detail.size() + dim_context_size (variable, data-driven)
+    // 32D convergence state from reasoning chain (ConvergencePort composition).
+    // Filled by ConceptReasoner's chain_state when available.
+    std::vector<double> convergence_state;
+
+    // Extended fused: [fused_vector | flex_detail | dimensional_context | convergence_state]
+    // Size = FUSED_DIM + flex_detail.size() + dim_context_size + CONVERGENCE_DIM
     std::vector<double> extended_fused_vector() const;
 
     // Best template type index

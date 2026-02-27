@@ -5,6 +5,8 @@
 #include <algorithm>
 #include <cmath>
 #include <numeric>
+#include <random>
+#include <unordered_set>
 
 namespace brain19 {
 
@@ -83,6 +85,19 @@ void ConceptEmbeddingStore::nudge(ConceptId cid, const FlexEmbedding& target, do
         // New dims blend from zero toward target
         for (size_t i = old_size; i < emb.detail.size(); ++i) {
             emb.detail[i] = alpha * target.detail[i];
+        }
+    }
+
+    // Re-normalize core to unit length (preserve cosine similarity invariant)
+    double norm_sq = 0.0;
+    for (size_t i = 0; i < CORE_DIM; ++i) {
+        norm_sq += emb.core[i] * emb.core[i];
+    }
+    double norm = std::sqrt(norm_sq);
+    if (norm > 1e-10) {
+        double inv_norm = 1.0 / norm;
+        for (size_t i = 0; i < CORE_DIM; ++i) {
+            emb.core[i] *= inv_norm;
         }
     }
 }
@@ -164,6 +179,15 @@ bool ConceptEmbeddingStore::has(ConceptId cid) const {
 ConceptEmbeddingStore::LearnResult
 ConceptEmbeddingStore::learn_from_graph(const LongTermMemory& ltm,
                                          double alpha, size_t iterations) {
+    LearnConfig config;
+    config.alpha = alpha;
+    config.iterations = iterations;
+    return learn_from_graph(ltm, config);
+}
+
+ConceptEmbeddingStore::LearnResult
+ConceptEmbeddingStore::learn_from_graph(const LongTermMemory& ltm,
+                                         const LearnConfig& config) {
     LearnResult result;
     auto all_ids = ltm.get_all_concept_ids();
 
@@ -172,7 +196,11 @@ ConceptEmbeddingStore::learn_from_graph(const LongTermMemory& ltm,
         get(cid);
     }
 
-    for (size_t iter = 0; iter < iterations; ++iter) {
+    std::mt19937 rng(config.rng_seed);
+    std::uniform_int_distribution<size_t> dist(0, all_ids.empty() ? 0 : all_ids.size() - 1);
+    double neg_alpha = config.alpha * config.negative_alpha_ratio;
+
+    for (size_t iter = 0; iter < config.iterations; ++iter) {
         result.iterations = iter + 1;
 
         for (auto cid : all_ids) {
@@ -185,6 +213,7 @@ ConceptEmbeddingStore::learn_from_graph(const LongTermMemory& ltm,
             avg.detail.resize(FlexConfig::INITIAL_DETAIL, 0.0);
             double total_weight = 0.0;
             size_t neighbor_count = 0;
+            std::unordered_set<ConceptId> neighbor_ids;
 
             auto outgoing = ltm.get_outgoing_relations(cid);
             for (const auto& rel : outgoing) {
@@ -195,6 +224,7 @@ ConceptEmbeddingStore::learn_from_graph(const LongTermMemory& ltm,
                     && neighbor_info->complexity_score < 0.3f) continue;
                 bool is_ak = neighbor_info && neighbor_info->is_anti_knowledge;
 
+                neighbor_ids.insert(rel.target);
                 const auto& neighbor_emb = get(rel.target);
 
                 // Relation-type-aware alpha (Convergence v2, Audit #2)
@@ -227,6 +257,7 @@ ConceptEmbeddingStore::learn_from_graph(const LongTermMemory& ltm,
                     && neighbor_info->complexity_score < 0.3f) continue;
                 bool is_ak = neighbor_info && neighbor_info->is_anti_knowledge;
 
+                neighbor_ids.insert(rel.source);
                 const auto& neighbor_emb = get(rel.source);
 
                 // Relation-type-aware alpha for incoming (weaker influence)
@@ -259,10 +290,51 @@ ConceptEmbeddingStore::learn_from_graph(const LongTermMemory& ltm,
                 avg.detail[i] *= inv_w;
             }
 
-            // Nudge toward average
-            nudge(cid, avg, alpha);
+            // Nudge toward average (positive)
+            nudge(cid, avg, config.alpha);
             result.concepts_updated++;
             result.total_neighbors += neighbor_count;
+
+            // --- Contrastive negative sampling ---
+            if (config.negative_samples > 0 && all_ids.size() > neighbor_ids.size() + 1) {
+                FlexEmbedding neg_avg;
+                neg_avg.detail.resize(FlexConfig::INITIAL_DETAIL, 0.0);
+                size_t sampled = 0;
+                size_t max_attempts = config.negative_samples * 3;
+
+                for (size_t attempt = 0; attempt < max_attempts && sampled < config.negative_samples; ++attempt) {
+                    ConceptId neg_cid = all_ids[dist(rng)];
+                    if (neg_cid == cid || neighbor_ids.count(neg_cid)) continue;
+
+                    const auto& neg_emb = get(neg_cid);
+                    for (size_t i = 0; i < CORE_DIM; ++i) {
+                        neg_avg.core[i] += neg_emb.core[i];
+                    }
+                    size_t shared = std::min(neg_avg.detail.size(), neg_emb.detail.size());
+                    for (size_t i = 0; i < shared; ++i) {
+                        neg_avg.detail[i] += neg_emb.detail[i];
+                    }
+                    ++sampled;
+                }
+
+                if (sampled > 0) {
+                    double inv_s = 1.0 / static_cast<double>(sampled);
+                    const auto& current = get(cid);
+
+                    // anti_target = mirror of neg_avg through current embedding
+                    FlexEmbedding anti;
+                    anti.detail.resize(FlexConfig::INITIAL_DETAIL, 0.0);
+                    for (size_t i = 0; i < CORE_DIM; ++i) {
+                        anti.core[i] = 2.0 * current.core[i] - neg_avg.core[i] * inv_s;
+                    }
+                    size_t shared = std::min(anti.detail.size(), current.detail.size());
+                    for (size_t i = 0; i < shared; ++i) {
+                        anti.detail[i] = 2.0 * current.detail[i] - neg_avg.detail[i] * inv_s;
+                    }
+
+                    nudge(cid, anti, neg_alpha);
+                }
+            }
         }
     }
 

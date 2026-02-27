@@ -52,7 +52,7 @@ inline const std::unordered_map<RelationCategory, RelationBehavior>& get_relatio
     static const std::unordered_map<RelationCategory, RelationBehavior> behaviors = {
         //                                        spread_w  dir    emb_α   decay  inherit  inherit_dir
         {RelationCategory::HIERARCHICAL,   {1.0f,  +1.0f,  0.30f,  0.90f, true,  InheritDirection::FORWARD}},
-        {RelationCategory::COMPOSITIONAL,  {0.8f,  +1.0f,  0.20f,  1.00f, true,  InheritDirection::REVERSE}},   // Teil→Ganzes
+        {RelationCategory::COMPOSITIONAL,  {0.8f,  +1.0f,  0.05f,  1.00f, true,  InheritDirection::REVERSE}},   // Teil→Ganzes (0.05: HAS_PROPERTY shared props must not collapse embeddings)
         {RelationCategory::CAUSAL,         {0.7f,  +1.0f,  0.15f,  0.85f, false, InheritDirection::FORWARD}},
         {RelationCategory::SIMILARITY,     {0.6f,  +1.0f,  0.20f,  0.95f, false, InheritDirection::NONE}},      // ≈ ASSOCIATIVE
         {RelationCategory::OPPOSITION,     {0.5f,  -1.0f, -0.25f,  0.00f, false, InheritDirection::NONE}},      // INHIBITORY

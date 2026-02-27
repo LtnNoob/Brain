@@ -12,6 +12,7 @@
 #include "../cmodel/concept_model_registry.hpp"
 #include "../micromodel/embedding_manager.hpp"
 #include "../cursor/template_engine.hpp"
+#include "../reasoning/concept_reasoner.hpp"
 #include <memory>
 #include <string>
 #include <unordered_map>
@@ -31,6 +32,9 @@ struct LanguageResult {
     bool used_template;                            // True if decoder fell back to templates
     size_t template_type;                          // Template type index
     size_t tokens_generated;                       // Number of tokens generated
+
+    // Rich reasoning chain (from ConceptReasoner, if available)
+    ReasoningChain reasoning_chain;                // Full chain with coherence scores + chain state
 };
 
 // =============================================================================
@@ -80,6 +84,8 @@ public:
     FusionLayer& fusion() { return fusion_; }
     EmbeddingManager& embeddings() { return embeddings_; }
     const DimensionalContext& dim_context() const { return dim_context_; }
+    ConceptReasoner* reasoner() { return reasoner_.get(); }
+    const ConceptReasoner* reasoner() const { return reasoner_.get(); }
 
     // Persistence
     void save(const std::string& dir) const;
@@ -102,6 +108,10 @@ private:
     ConceptModelRegistry& registry_;
     EmbeddingManager& embeddings_;
 
+    // Composition-guided reasoner (initialized in initialize())
+    std::unique_ptr<ConceptReasoner> reasoner_;
+    mutable ReasoningChain last_reasoning_chain_;  // cached from extract_causal_chain()
+
     // Seed selection: find LTM concepts matching query text
     std::vector<ConceptId> label_search(const std::string& text) const;
 
@@ -121,11 +131,16 @@ private:
         const std::vector<std::pair<ConceptId, ConceptId>>& pairs
     ) const;
 
-    // Template-based fallback generation
-    std::string template_generate(
-        const std::vector<ConceptId>& chain,
-        size_t template_type
+    // Fluent text generation from reasoning chain + supplementary relations
+    std::string generate_fluent_text(
+        const std::string& query,
+        const std::vector<ConceptId>& seeds,
+        const std::vector<ConceptId>& ordered_concepts
     ) const;
+
+    // Query classification helpers
+    static bool is_causal_query(const std::string& query);
+    static bool is_definitional_query(const std::string& query);
 };
 
 } // namespace brain19

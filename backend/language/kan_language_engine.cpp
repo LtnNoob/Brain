@@ -77,6 +77,24 @@ void KANLanguageEngine::initialize() {
     decoder_.reinitialize_for_extended_dim(ext_dim);
     std::cerr << "[KANLanguageEngine] Decoder reinitialized OK\n";
 
+    // Initialize ConceptReasoner for composition-guided causal chain extraction
+    std::cerr << "[KANLanguageEngine] Initializing ConceptReasoner...\n";
+    {
+        ReasonerConfig rcfg;
+        rcfg.max_steps = 8;                 // language needs focused, shorter chains
+        rcfg.enable_composition = true;
+        rcfg.chain_coherence_weight = 0.3;
+        rcfg.chain_ctx_blend = 0.15;
+        rcfg.seed_anchor_weight = 0.35;     // was 0.15 — stronger anchor keeps topic focus
+        rcfg.seed_anchor_decay = 0.03;      // was 0.08 — stays > 25% influence at step 8
+        rcfg.min_coherence_gate = 0.25;
+        rcfg.enable_chain_validation = true;
+        rcfg.min_seed_similarity = 0.25;
+        rcfg.max_consecutive_drops = 2;
+        reasoner_ = std::make_unique<ConceptReasoner>(ltm_, registry_, embeddings_, rcfg);
+    }
+    std::cerr << "[KANLanguageEngine] ConceptReasoner initialized (composition ON)\n";
+
     initialized_ = true;
 }
 
@@ -126,9 +144,10 @@ LanguageResult KANLanguageEngine::generate(const std::string& query, size_t /*ma
     // ── Step 3: Build concept activations (1-hop subgraph) ──
     auto activations = build_activations(seeds, query_embedding);
 
-    // ── Step 4: Extract causal chain ──
+    // ── Step 4: Extract causal chain (via ConceptReasoner composition) ──
     auto causal_chain = extract_causal_chain(seeds);
     result.causal_chain = causal_chain;
+    result.reasoning_chain = last_reasoning_chain_;  // attach full chain with coherence/state
 
     // ── Step 5: Build causal pairs for scoring ──
     std::vector<std::pair<ConceptId, ConceptId>> causal_pairs;
@@ -149,6 +168,24 @@ LanguageResult KANLanguageEngine::generate(const std::string& query, size_t /*ma
     auto rel_embeddings = build_relation_embeddings(causal_pairs);
     auto scores = scorer_.score(activations, query_embedding, causal_pairs, rel_embeddings);
     result.template_type = scores.best_template();
+
+    // ── Step 6b: Modulate causality scores with coherence from ReasoningChain ──
+    // Each chain transition has a coherence score from ChainKAN — blend it into causality.
+    if (!last_reasoning_chain_.empty() && last_reasoning_chain_.steps.size() >= 2) {
+        const auto& steps = last_reasoning_chain_.steps;
+        for (size_t i = 1; i < steps.size(); ++i) {
+            std::string key = std::to_string(steps[i - 1].concept_id) + ":"
+                            + std::to_string(steps[i].concept_id);
+            auto it = scores.causality.find(key);
+            if (it != scores.causality.end()) {
+                // Blend: 70% KAN causality + 30% ChainKAN coherence
+                it->second = 0.7 * it->second + 0.3 * steps[i].coherence_score;
+            } else {
+                // Chain pair not in causal_pairs — add it with coherence as causality
+                scores.causality[key] = steps[i].coherence_score;
+            }
+        }
+    }
 
     // ── Step 7: Fusion ──
     auto fused = fusion_.fuse(activations, scores, causal_chain);
@@ -181,30 +218,26 @@ LanguageResult KANLanguageEngine::generate(const std::string& query, size_t /*ma
         }
     }
 
-    // ── Step 8: Try concept prediction first ──
-    auto ext_fused = fused.extended_fused_vector();
-    auto concept_output = decoder_.decode_concepts(
-        ext_fused, embeddings_.concept_embeddings());
-
-    if (!concept_output.concept_ids.empty() &&
-        concept_output.confidence >= config_.decoder_confidence_threshold) {
-        // Concept prediction succeeded — build response from concept graph
-        result.tokens_generated = concept_output.concept_ids.size();
-        result.confidence = concept_output.confidence;
-        result.activated_concepts = concept_output.concept_ids;
-
-        // Build rich text from predicted concepts using template_generate
-        result.text = template_generate(concept_output.concept_ids, result.template_type);
-        result.used_template = false;
-        return result;
+    // ── Step 7d: Fill convergence state from reasoning chain (32D) ──
+    // The CONVERGENCE_DIM slot was reserved in the decoder but never filled — now
+    // it carries the accumulated ConvergencePort chain state from ConceptReasoner.
+    {
+        const size_t CONV_DIM = LanguageConfig::CONVERGENCE_DIM;  // 32
+        fused.convergence_state.assign(CONV_DIM, 0.0);
+        if (!last_reasoning_chain_.empty()) {
+            // Use the last step's chain state = full accumulated reasoning context
+            const auto& last_state = last_reasoning_chain_.steps.back().chain_state;
+            for (size_t d = 0; d < CONV_DIM; ++d) {
+                fused.convergence_state[d] = last_state[d];
+            }
+        }
     }
 
-    // ── Step 9: Template fallback ──
-    result.text = template_generate(
-        fused.ordered_concepts.empty() ? seeds : fused.ordered_concepts,
-        result.template_type);
+    // ── Step 8: Generate fluent text ──
+    // (concept decoder path removed — concept_matrix_ is never populated outside LibTorch)
+    result.text = generate_fluent_text(query, seeds, fused.ordered_concepts);
     result.used_template = true;
-    result.confidence = concept_output.confidence;
+    result.confidence = 0.0;
 
     return result;
 }
@@ -239,18 +272,30 @@ std::vector<ConceptId> KANLanguageEngine::label_search(const std::string& text) 
     std::string lower_q = text;
     for (auto& c : lower_q) c = static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
 
-    // Extract keywords (words >= 3 chars)
+    // Stopwords: common function words that produce noise as seeds
+    static const std::unordered_set<std::string> stopwords = {
+        "how", "does", "work", "what", "the", "tell", "about",
+        "why", "who", "when", "where", "which", "that", "this",
+        "are", "was", "were", "been", "being", "have", "has",
+        "had", "did", "can", "could", "would", "should", "will",
+        "may", "might", "shall", "must", "need", "explain",
+        "describe", "define", "many", "much", "some", "any",
+        "all", "most", "more", "very", "also", "just", "not",
+        "its", "with", "from", "into", "for", "and", "but",
+    };
+
+    // Extract keywords (words >= 3 chars, not stopwords)
     std::vector<std::string> keywords;
     std::string word;
     for (char c : lower_q) {
         if (std::isalnum(static_cast<unsigned char>(c))) {
             word += c;
         } else {
-            if (word.size() >= 3) keywords.push_back(word);
+            if (word.size() >= 3 && !stopwords.count(word)) keywords.push_back(word);
             word.clear();
         }
     }
-    if (word.size() >= 3) keywords.push_back(word);
+    if (word.size() >= 3 && !stopwords.count(word)) keywords.push_back(word);
 
     // Score concepts via indexed lookup (O(K) instead of O(N))
     struct ScoredConcept {
@@ -387,22 +432,32 @@ std::unordered_map<ConceptId, std::vector<double>> KANLanguageEngine::build_acti
 }
 
 // =============================================================================
-// Causal Chain Extraction
+// Causal Chain Extraction — via ConceptReasoner (CM Composition + ChainKAN)
 // =============================================================================
 
 std::vector<ConceptId> KANLanguageEngine::extract_causal_chain(
     const std::vector<ConceptId>& seeds
 ) const {
-    // Walk CAUSES/ENABLES/PRODUCES relations from seeds
+    // Use ConceptReasoner: ConvergencePort composition, ChainKAN coherence,
+    // focus-gated traversal, seed anchoring, coherence-gated termination.
+    if (reasoner_ && !seeds.empty()) {
+        auto chain = reasoner_->reason_from(seeds);
+        if (!chain.empty()) {
+            // Store the full reasoning chain in a thread-local for generate() to pick up
+            // (We cache it so generate() can attach it to LanguageResult)
+            last_reasoning_chain_ = std::move(chain);
+            return last_reasoning_chain_.concept_sequence();
+        }
+    }
+
+    // Fallback: simple greedy walk (only if reasoner not available)
     std::vector<ConceptId> chain;
     std::unordered_set<ConceptId> in_chain;
-
     for (auto sid : seeds) {
         if (in_chain.count(sid)) continue;
         chain.push_back(sid);
         in_chain.insert(sid);
 
-        // Follow causal relations (up to 5 hops)
         ConceptId current = sid;
         for (size_t hop = 0; hop < 5; ++hop) {
             auto rels = ltm_.get_outgoing_relations(current);
@@ -457,26 +512,140 @@ std::unordered_map<std::string, std::vector<double>> KANLanguageEngine::build_re
 }
 
 // =============================================================================
-// Template Fallback
+// Query Classification
 // =============================================================================
 
-std::string KANLanguageEngine::template_generate(
-    const std::vector<ConceptId>& chain,
-    size_t /*template_type*/
-) const {
-    if (chain.empty()) return "I don't have enough information to answer.";
+bool KANLanguageEngine::is_causal_query(const std::string& query) {
+    std::string lower = query;
+    for (auto& c : lower) c = static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
+    return lower.find("how does") != std::string::npos ||
+           lower.find("how do") != std::string::npos ||
+           lower.find("what happens") != std::string::npos ||
+           lower.find("what would happen") != std::string::npos ||
+           lower.find("what causes") != std::string::npos ||
+           lower.find("why") != std::string::npos ||
+           lower.find("cause") != std::string::npos ||
+           lower.find("effect") != std::string::npos ||
+           lower.find("result") != std::string::npos ||
+           lower.find("lead to") != std::string::npos ||
+           lower.find("work") != std::string::npos;
+}
 
+bool KANLanguageEngine::is_definitional_query(const std::string& query) {
+    std::string lower = query;
+    for (auto& c : lower) c = static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
+    return lower.find("what is") != std::string::npos ||
+           lower.find("tell me about") != std::string::npos ||
+           lower.find("explain") != std::string::npos ||
+           lower.find("define") != std::string::npos ||
+           lower.find("describe") != std::string::npos;
+}
+
+// =============================================================================
+// Fluent Text Generation
+// =============================================================================
+
+std::string KANLanguageEngine::generate_fluent_text(
+    const std::string& query,
+    const std::vector<ConceptId>& seeds,
+    const std::vector<ConceptId>& ordered_concepts
+) const {
+    if (ordered_concepts.empty() && seeds.empty())
+        return "I don't have enough information to answer.";
+
+    const auto& chain_concepts = ordered_concepts.empty() ? seeds : ordered_concepts;
     auto& reg = RelationTypeRegistry::instance();
+    bool causal = is_causal_query(query);
     std::string output;
 
-    // Primary concept definition
-    auto primary = ltm_.retrieve_concept(chain[0]);
+    // ── Section 1: Primary concept definition ──
+    auto primary = ltm_.retrieve_concept(chain_concepts[0]);
     if (primary) {
         output += "**" + primary->label + "**: " + primary->definition;
     }
 
-    // Group relations by (source, verb) → targets with category ordering
-    if (chain.size() > 1 && primary) {
+    // ── Section 2: Reasoning chain as prose via TemplateEngine ──
+    if (!last_reasoning_chain_.empty() && last_reasoning_chain_.steps.size() >= 2) {
+        auto concept_seq = last_reasoning_chain_.concept_sequence();
+        auto relation_seq = last_reasoning_chain_.relation_sequence();
+
+        if (!concept_seq.empty() && !relation_seq.empty()) {
+            TemplateEngine te(ltm_);
+
+            // Separate chain sentences into causal vs non-causal for ordering
+            struct ChainSentence {
+                std::string text;
+                bool is_causal_rel;
+                float trust;
+                EpistemicType etype;
+            };
+            std::vector<ChainSentence> sentences;
+            size_t num_edges = std::min(relation_seq.size(), concept_seq.size() - 1);
+
+            for (size_t i = 0; i < num_edges; ++i) {
+                auto cat = reg.get_category(relation_seq[i]);
+                bool is_causal_rel = (cat == RelationCategory::CAUSAL ||
+                                      cat == RelationCategory::FUNCTIONAL);
+
+                auto src_info = ltm_.retrieve_concept(concept_seq[i]);
+                auto tgt_info = ltm_.retrieve_concept(concept_seq[i + 1]);
+                if (!src_info || !tgt_info) continue;
+
+                // For incoming (reverse) edges, swap subject/object so template reads correctly
+                // e.g., chain walks Mathematician <-IS_A<- Bolyai → "Bolyai is a Mathematician"
+                bool outgoing = (i + 1 < last_reasoning_chain_.steps.size())
+                                ? last_reasoning_chain_.steps[i + 1].is_outgoing : true;
+                std::string sent;
+                if (outgoing) {
+                    sent = te.relation_sentence_en(src_info->label, tgt_info->label, relation_seq[i]);
+                } else {
+                    sent = te.relation_sentence_en(tgt_info->label, src_info->label, relation_seq[i]);
+                }
+
+                // Epistemic framing for low-trust concepts
+                float trust = static_cast<float>(tgt_info->epistemic.trust);
+                EpistemicType etype = tgt_info->epistemic.type;
+                if (trust < 0.85f) {
+                    sent = TemplateEngine::epistemic_frame(trust, etype, sent);
+                }
+
+                sentences.push_back({sent, is_causal_rel, trust, etype});
+            }
+
+            // Sort: for causal queries, causal sentences first; for definitional, non-causal first
+            if (causal) {
+                std::stable_sort(sentences.begin(), sentences.end(),
+                    [](const ChainSentence& a, const ChainSentence& b) {
+                        return a.is_causal_rel > b.is_causal_rel;  // true (causal) first
+                    });
+            } else {
+                std::stable_sort(sentences.begin(), sentences.end(),
+                    [](const ChainSentence& a, const ChainSentence& b) {
+                        return a.is_causal_rel < b.is_causal_rel;  // false (non-causal) first
+                    });
+            }
+
+            if (!sentences.empty()) {
+                output += "\n\n";
+                for (size_t i = 0; i < sentences.size(); ++i) {
+                    if (i > 0) output += " ";
+                    output += sentences[i].text;
+                }
+            }
+        }
+    }
+
+    // ── Section 3: Grouped supplementary relations (1-hop from primary, not in chain) ──
+    if (primary) {
+        // Build set of chain concept pairs to exclude already-covered relations
+        std::unordered_set<std::string> chain_pairs;
+        if (!last_reasoning_chain_.empty()) {
+            auto cseq = last_reasoning_chain_.concept_sequence();
+            for (size_t i = 0; i + 1 < cseq.size(); ++i) {
+                chain_pairs.insert(std::to_string(cseq[i]) + ":" + std::to_string(cseq[i + 1]));
+            }
+        }
+
         struct RelGroup {
             RelationCategory category;
             std::string source_label;
@@ -484,43 +653,63 @@ std::string KANLanguageEngine::template_generate(
             std::vector<std::string> targets;
         };
         std::vector<RelGroup> groups;
-        std::unordered_set<ConceptId> chain_set(chain.begin(), chain.end());
 
-        for (size_t i = 0; i < chain.size(); ++i) {
-            auto rels = ltm_.get_outgoing_relations(chain[i]);
-            for (const auto& r : rels) {
-                if (!chain_set.count(r.target)) continue;
+        auto rels = ltm_.get_outgoing_relations(primary->id);
+        for (const auto& r : rels) {
+            if (r.weight <= 0.5) continue;  // Filter low-weight
 
-                auto src_info = ltm_.retrieve_concept(r.source);
-                auto tgt_info = ltm_.retrieve_concept(r.target);
-                if (!src_info || !tgt_info) continue;
+            // Skip if already covered by reasoning chain
+            std::string pair_key = std::to_string(r.source) + ":" + std::to_string(r.target);
+            if (chain_pairs.count(pair_key)) continue;
 
-                auto& type_info = reg.get(r.type);
-                RelationCategory cat = type_info.category;
+            auto tgt_info = ltm_.retrieve_concept(r.target);
+            if (!tgt_info) continue;
 
-                // Try to merge into existing group
-                bool merged = false;
-                for (auto& g : groups) {
-                    if (g.source_label == src_info->label && g.verb == type_info.name_en) {
-                        bool dup = false;
-                        for (const auto& t : g.targets) {
-                            if (t == tgt_info->label) { dup = true; break; }
-                        }
-                        if (!dup) g.targets.push_back(tgt_info->label);
-                        merged = true;
-                        break;
+            // Skip linguistic concepts
+            if (tgt_info->label.size() >= 5 &&
+                (tgt_info->label.substr(0, 5) == "word:" || tgt_info->label.substr(0, 5) == "sent:"))
+                continue;
+
+            auto& type_info = reg.get(r.type);
+            RelationCategory cat = type_info.category;
+
+            // Skip generic noise relations
+            if (cat == RelationCategory::SIMILARITY &&
+                (r.type == RelationType::ASSOCIATED_WITH || r.type == RelationType::SIMILAR_TO))
+                continue;
+            // Skip linguistic category
+            if (cat == RelationCategory::LINGUISTIC) continue;
+
+            // Merge into existing group
+            bool merged = false;
+            for (auto& g : groups) {
+                if (g.source_label == primary->label && g.verb == type_info.name_en) {
+                    bool dup = false;
+                    for (const auto& t : g.targets) {
+                        if (t == tgt_info->label) { dup = true; break; }
                     }
+                    if (!dup) g.targets.push_back(tgt_info->label);
+                    merged = true;
+                    break;
                 }
-                if (!merged) {
-                    groups.push_back({cat, src_info->label, type_info.name_en, {tgt_info->label}});
-                }
+            }
+            if (!merged) {
+                groups.push_back({cat, primary->label, type_info.name_en, {tgt_info->label}});
             }
         }
 
-        // Sort by category: HIERARCHICAL, COMPOSITIONAL, FUNCTIONAL, CAUSAL, rest
-        std::stable_sort(groups.begin(), groups.end(),
-            [](const RelGroup& a, const RelGroup& b) {
-                auto prio = [](RelationCategory c) -> int {
+        // Sort by category priority based on query type
+        if (!groups.empty()) {
+            auto cat_priority = [causal](RelationCategory c) -> int {
+                if (causal) {
+                    switch (c) {
+                        case RelationCategory::CAUSAL:        return 0;
+                        case RelationCategory::FUNCTIONAL:    return 1;
+                        case RelationCategory::COMPOSITIONAL: return 2;
+                        case RelationCategory::HIERARCHICAL:  return 3;
+                        default: return 4;
+                    }
+                } else {
                     switch (c) {
                         case RelationCategory::HIERARCHICAL:  return 0;
                         case RelationCategory::COMPOSITIONAL: return 1;
@@ -528,15 +717,20 @@ std::string KANLanguageEngine::template_generate(
                         case RelationCategory::CAUSAL:        return 3;
                         default: return 4;
                     }
-                };
-                return prio(a.category) < prio(b.category);
-            });
+                }
+            };
+            std::stable_sort(groups.begin(), groups.end(),
+                [&](const RelGroup& a, const RelGroup& b) {
+                    return cat_priority(a.category) < cat_priority(b.category);
+                });
 
-        if (!groups.empty()) {
+            // Cap at 4 groups to avoid info-dump
+            if (groups.size() > 4) groups.resize(4);
+
             output += "\n\n";
             bool first_sentence = true;
             for (const auto& g : groups) {
-                // Pronoun substitution
+                // Pronoun substitution: use concept name first, "It" thereafter
                 std::string subject;
                 if (first_sentence || g.source_label != primary->label) {
                     subject = g.source_label;
@@ -562,16 +756,20 @@ std::string KANLanguageEngine::template_generate(
         }
     }
 
-    // Related concept definitions (max 2)
-    size_t extra = 0;
-    for (size_t i = 1; i < chain.size() && extra < 2; ++i) {
-        auto info = ltm_.retrieve_concept(chain[i]);
-        if (!info || info->definition.empty()) continue;
-        if (extra == 0) output += "\n\n";
-        output += "**" + info->label + "**: " + info->definition.substr(0, 100);
-        if (info->definition.size() > 100) output += "...";
-        output += "\n";
-        ++extra;
+    // ── Section 4: Related concept definitions (max 2 from chain) ──
+    if (last_reasoning_chain_.steps.size() >= 2) {
+        auto cseq = last_reasoning_chain_.concept_sequence();
+        size_t extra = 0;
+        for (size_t i = 1; i < cseq.size() && extra < 2; ++i) {
+            if (cseq[i] == chain_concepts[0]) continue;  // skip primary
+            auto info = ltm_.retrieve_concept(cseq[i]);
+            if (!info || info->definition.empty()) continue;
+            if (extra == 0) output += "\n\n";
+            output += "**" + info->label + "**: " + info->definition.substr(0, 120);
+            if (info->definition.size() > 120) output += "...";
+            output += "\n";
+            ++extra;
+        }
     }
 
     return output;

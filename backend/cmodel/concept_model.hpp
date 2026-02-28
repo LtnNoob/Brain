@@ -12,7 +12,31 @@ namespace brain19 {
 
 static constexpr size_t CM_FLAT_SIZE_V5 = 1900;   // Pre-convergence layout
 static constexpr size_t CM_FLAT_SIZE_V6 = 5836;    // V6: ConvergencePort without gate
-static constexpr size_t CM_FLAT_SIZE = 9772;       // V7: adds ConvergencePort gate (3936 params)
+static constexpr size_t CM_FLAT_SIZE_V7 = 9772;   // V7: adds ConvergencePort gate (3936 params)
+static constexpr size_t CM_FLAT_SIZE = 9933;       // V8: adds ContextSuperposition (161 params)
+
+// Context-dependent superposition: low-rank modulation of W based on ctx
+// W_eff = W + Σ αₖ · uₖ · vₖᵀ  where αₖ = softmax(key_k · project(ctx))
+struct ContextSuperposition {
+    static constexpr size_t N_MODES = 4;
+    static constexpr size_t KEY_DIM = 8;
+    static constexpr size_t TOTAL_PARAMS =
+        N_MODES * CORE_DIM * 2 +    // u[4][16] + v[4][16] = 128
+        N_MODES * KEY_DIM +          // keys[4][8] = 32
+        1;                           // enabled flag = 1
+    // Total: 161
+
+    std::array<double, N_MODES * CORE_DIM> u{};      // [mode][dim] low-rank left
+    std::array<double, N_MODES * CORE_DIM> v{};      // [mode][dim] low-rank right
+    std::array<double, N_MODES * KEY_DIM> keys{};    // [mode][key_dim] attention keys
+    double enabled = 0.0;                             // 0.0 = disabled (backward compat)
+
+    // Compute context-modulated W*x: output = W_eff * x
+    // where W_eff = W + Σ αₖ·uₖ·vₖᵀ, αₖ = softmax(key_k · ctx_query)
+    void modulate(const CoreMat& W, const CoreVec& x,
+                  const std::array<double, KEY_DIM>& ctx_query,
+                  CoreVec& output) const;
+};
 
 // Pattern weights per concept (learned from validation feedback)
 struct ConceptPatternWeights {
@@ -142,6 +166,11 @@ public:
     void train_refined(const FlexEmbedding& rel_emb, const FlexEmbedding& ctx_emb,
                        const FlexEmbedding& concept_from, const FlexEmbedding& concept_to,
                        double target, double learning_rate, RefinedAdamState& adam_state);
+    // Train superposition parameters (u, v, keys) with gradient from bilinear prediction.
+    // ctx_query is the pre-projected context (KEY_DIM=8), from GraphReasoner::project_context_for_superposition().
+    void train_superposition_step(const FlexEmbedding& e, const FlexEmbedding& c,
+                                   double target, double learning_rate,
+                                   const std::array<double, ContextSuperposition::KEY_DIM>& ctx_query);
     // Legacy KAN training (backward compat)
     void train_kan(double bilinear_score, double ctx_feature,
                    double validated_target, double learning_rate);
@@ -157,6 +186,10 @@ public:
     // === Pattern Weights ===
     ConceptPatternWeights& pattern_weights() { return patterns_; }
     const ConceptPatternWeights& pattern_weights() const { return patterns_; }
+
+    // === Context Superposition ===
+    ContextSuperposition& superposition() { return superposition_; }
+    const ContextSuperposition& superposition() const { return superposition_; }
 
     // === Serialization (1900 doubles) ===
     void to_flat(std::array<double, CM_FLAT_SIZE>& out) const;
@@ -201,6 +234,9 @@ private:
 
     // Per-concept pattern weights (15 doubles)
     ConceptPatternWeights patterns_;
+
+    // Context superposition (161 doubles)
+    ContextSuperposition superposition_;
 
     // Training quality state
     bool converged_ = false;

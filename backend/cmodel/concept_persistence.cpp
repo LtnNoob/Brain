@@ -9,6 +9,7 @@ namespace brain19 {
 namespace persistence {
 
 static constexpr char MAGIC[4] = {'B', 'M', '1', '9'};
+static constexpr uint32_t VERSION_V8 = 8;
 static constexpr uint32_t VERSION_V7 = 7;
 static constexpr uint32_t VERSION_V6 = 6;
 static constexpr uint32_t VERSION_V5 = 5;
@@ -21,6 +22,7 @@ static constexpr size_t V3_FLAT_SIZE = 940;
 static constexpr size_t V4_FLAT_SIZE = 1300;
 static constexpr size_t V5_FLAT_SIZE = CM_FLAT_SIZE_V5;  // 1900
 static constexpr size_t V6_FLAT_SIZE = CM_FLAT_SIZE_V6;  // 5836
+static constexpr size_t V7_FLAT_SIZE = CM_FLAT_SIZE_V7;  // 9772
 
 // XOR checksum over 8-byte blocks
 static uint64_t compute_checksum(const std::vector<uint8_t>& data) {
@@ -204,7 +206,7 @@ bool save_v4(const std::string& filepath,
 
     // Header
     write_bytes(MAGIC, 4);
-    uint32_t version = VERSION_V7;
+    uint32_t version = VERSION_V8;
     write_bytes(&version, 4);
     uint64_t model_count = model_ids.size();
     write_bytes(&model_count, 8);
@@ -313,8 +315,8 @@ bool load_v4(const std::string& filepath,
 
     uint32_t version = 0;
     if (!read_bytes(&version, 4)) return false;
-    if (version != VERSION_V7 && version != VERSION_V6 && version != VERSION_V5 &&
-        version != VERSION_V4 && version != VERSION_V3) return false;
+    if (version != VERSION_V8 && version != VERSION_V7 && version != VERSION_V6 &&
+        version != VERSION_V5 && version != VERSION_V4 && version != VERSION_V3) return false;
 
     uint64_t model_count = 0;
     if (!read_bytes(&model_count, 8)) return false;
@@ -327,8 +329,8 @@ bool load_v4(const std::string& filepath,
 
     // Models
     registry.clear();
-    if (version == VERSION_V7) {
-        // v7: 9772 doubles — current format with ConvergencePort + gate
+    if (version == VERSION_V8) {
+        // v8: 9933 doubles — V7 + ContextSuperposition (161 params)
         std::array<double, CM_FLAT_SIZE> flat;
         for (uint64_t i = 0; i < model_count; ++i) {
             uint64_t cid = 0;
@@ -339,6 +341,26 @@ bool load_v4(const std::string& filepath,
             ConceptModel* model = registry.get_model(static_cast<ConceptId>(cid));
             if (model) {
                 model->from_flat(flat);
+            }
+        }
+    } else if (version == VERSION_V7) {
+        // v7: 9772 doubles -> migrate to 9933 (zero superposition = disabled)
+        std::array<double, V7_FLAT_SIZE> v7_flat;
+        std::array<double, CM_FLAT_SIZE> v8_flat;
+        for (uint64_t i = 0; i < model_count; ++i) {
+            uint64_t cid = 0;
+            if (!read_bytes(&cid, 8)) return false;
+            if (!read_bytes(v7_flat.data(), V7_FLAT_SIZE * sizeof(double))) return false;
+
+            v8_flat.fill(0.0);
+            for (size_t j = 0; j < V7_FLAT_SIZE; ++j)
+                v8_flat[j] = v7_flat[j];
+            // Superposition params (offsets 9772..9932) already zero = disabled
+
+            registry.create_model(static_cast<ConceptId>(cid));
+            ConceptModel* model = registry.get_model(static_cast<ConceptId>(cid));
+            if (model) {
+                model->from_flat(v8_flat);
             }
         }
     } else if (version == VERSION_V6) {
@@ -470,8 +492,8 @@ bool validate_v4(const std::string& filepath) {
 
     uint32_t version = 0;
     std::memcpy(&version, buffer.data() + 4, 4);
-    if (version != VERSION_V7 && version != VERSION_V6 && version != VERSION_V5 &&
-        version != VERSION_V4 && version != VERSION_V3) return false;
+    if (version != VERSION_V8 && version != VERSION_V7 && version != VERSION_V6 &&
+        version != VERSION_V5 && version != VERSION_V4 && version != VERSION_V3) return false;
 
     if (buffer.size() < 8) return false;
     size_t data_size_val = buffer.size() - 8;

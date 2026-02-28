@@ -44,7 +44,7 @@ endif
 MEMORY_SOURCES = memory/stm.cpp memory/brain_controller.cpp memory/relation_type_registry.cpp
 KAN_SOURCES = kan/kan_node.cpp kan/kan_layer.cpp kan/kan_module.cpp
 ADAPTER_SOURCES = adapter/kan_adapter.cpp
-CURIOSITY_SOURCES = curiosity/curiosity_engine.cpp curiosity/goal_generator.cpp
+CURIOSITY_SOURCES = curiosity/curiosity_engine.cpp curiosity/goal_generator.cpp curiosity/trend_tracker.cpp
 SNAPSHOT_SOURCES = snapshot_generator.cpp
 LTM_SOURCES = ltm/long_term_memory.cpp
 MICROMODEL_SOURCES = micromodel/micro_model.cpp micromodel/micro_model_registry.cpp \
@@ -129,7 +129,10 @@ TARGETS = brain19 \
           train_v12_cpu \
           analyze_graph \
           test_colearn \
-          test_logger_system
+          test_logger_system \
+          test_curiosity_engine \
+          test_parallel_performance \
+          test_superposition
 
 .PHONY: all clean run
 
@@ -250,6 +253,15 @@ test_colearn: test_colearn.o $(REASONER_TEST_OBJECTS)
 	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
 test_logger_system: test_logger_system.o $(REASONER_TEST_OBJECTS)
+	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
+
+test_curiosity_engine: curiosity/test_curiosity_engine.o $(REASONER_TEST_OBJECTS)
+	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
+
+test_parallel_performance: test_parallel_performance.o $(REASONER_TEST_OBJECTS)
+	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
+
+test_superposition: test_superposition.o $(REASONER_TEST_OBJECTS)
 	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
 # Graph structure analysis tool (no libtorch deps)

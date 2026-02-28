@@ -221,6 +221,15 @@ bool SystemOrchestrator::initialize() {
                 + ", avg_path_depth=" + std::to_string(stats.avg_path_depth) + ")");
         }
 
+        // ── GraphReasoner + CoLearnLoop ────────────────────────────────
+        log("    GraphReasoner + Co-Learning...");
+        graph_reasoner_ = std::make_unique<GraphReasoner>(*ltm_, *registry_, *embeddings_);
+        colearn_loop_ = std::make_unique<CoLearnLoop>(*ltm_, *registry_, *embeddings_,
+                                                       *graph_reasoner_, config_.colearn_config);
+        if (curiosity_) {
+            colearn_loop_->set_curiosity_engine(curiosity_.get());
+        }
+
         // Graph densification — only for small graphs where topology-based inference
         // is reliable. Large graphs with noisy wave data amplify errors through
         // transitive closure, so densification is skipped.
@@ -387,6 +396,11 @@ bool SystemOrchestrator::initialize() {
         periodic_running_ = true;
         periodic_thread_ = std::thread([this]() { periodic_task_loop(); });
 
+        // Start proactive Co-Learning if enabled
+        if (config_.enable_proactive_colearn) {
+            start_colearn();
+        }
+
         log("Brain19 initialized successfully!");
         log("  Concepts: " + std::to_string(concept_count()));
         log("  Relations: " + std::to_string(relation_count()));
@@ -405,6 +419,9 @@ bool SystemOrchestrator::initialize() {
 void SystemOrchestrator::shutdown() {
     if (!running_) return;
     log("Shutting down Brain19...");
+
+    // Stop Co-Learning first
+    stop_colearn();
 
     // Stop periodic task thread first (while running_ is still true)
     periodic_running_ = false;
@@ -476,6 +493,8 @@ void SystemOrchestrator::shutdown() {
 
     // Reset all in reverse order
     thinking_.reset();
+    colearn_loop_.reset();
+    graph_reasoner_.reset();
     sentence_parser_.reset();
     graph_densifier_.reset();
     concept_proposer_.reset();
@@ -1257,6 +1276,10 @@ std::string SystemOrchestrator::get_status() const {
     if (stream_orch_) {
         ss << "Streams: " << stream_orch_->running_count() << "/" << stream_orch_->stream_count() << "\n";
     }
+    if (colearn_loop_) {
+        ss << "Co-Learning: " << (colearn_running_.load() ? "active" : "idle")
+           << " (cycles: " << colearn_loop_->cycle_count() << ")\n";
+    }
     return ss.str();
 }
 
@@ -1535,6 +1558,73 @@ void SystemOrchestrator::wal_log_store_concept(
     std::memcpy(buf.data() + sizeof(payload) + label.size(), definition.data(), definition.size());
 
     wal_->append(persistent::WALOpType::STORE_CONCEPT, buf.data(), static_cast<uint32_t>(buf.size()));
+}
+
+// ─── Proactive Co-Learning ───────────────────────────────────────────────────
+
+void SystemOrchestrator::start_colearn() {
+    if (colearn_running_.load() || !colearn_loop_) return;
+    colearn_stop_ = false;
+    colearn_running_ = true;
+    colearn_thread_ = std::thread([this]() { proactive_colearn_loop(); });
+    log("Co-Learning started (proactive mode)");
+}
+
+void SystemOrchestrator::stop_colearn() {
+    if (!colearn_running_.load()) return;
+    colearn_stop_ = true;
+    if (colearn_thread_.joinable()) colearn_thread_.join();
+    log("Co-Learning stopped");
+}
+
+bool SystemOrchestrator::is_colearn_running() const {
+    return colearn_running_.load();
+}
+
+std::string SystemOrchestrator::get_colearn_status() const {
+    std::lock_guard<std::recursive_mutex> lock(subsystem_mtx_);
+    std::ostringstream ss;
+    ss << "=== Co-Learning Status ===\n";
+    ss << "Running: " << (colearn_running_.load() ? "yes" : "no") << "\n";
+    if (colearn_loop_) {
+        ss << "Cycles: " << colearn_loop_->cycle_count() << "\n";
+        ss << "Last quality: " << colearn_loop_->last_avg_quality() << "\n";
+        ss << "Episodes: " << colearn_loop_->episodic_memory().episode_count() << "\n";
+    }
+    return ss.str();
+}
+
+void SystemOrchestrator::proactive_colearn_loop() {
+    while (!colearn_stop_.load()) {
+        try {
+            CoLearnLoop::CycleResult result;
+            {
+                std::lock_guard<std::recursive_mutex> lock(subsystem_mtx_);
+                if (!colearn_loop_ || colearn_stop_.load()) break;
+                result = colearn_loop_->run_cycle();
+            }
+            std::string grow_info;
+            if (result.embeddings_grown > 0 || result.embeddings_shrunk > 0) {
+                grow_info = " grow=" + std::to_string(result.embeddings_grown) +
+                            " shrink=" + std::to_string(result.embeddings_shrunk);
+            }
+            log("  [CoLearn] Cycle " + std::to_string(result.cycle_number) +
+                ": chains=" + std::to_string(result.chains_produced) +
+                " quality=" + std::to_string(result.avg_chain_quality) + grow_info);
+        } catch (const std::exception& e) {
+            log("  [CoLearn] Cycle error: " + std::string(e.what()));
+        }
+        // Sleep in 1-second intervals for responsive shutdown
+        for (size_t i = 0; i < config_.colearn_interval_ms / 1000 && !colearn_stop_.load(); ++i) {
+            std::this_thread::sleep_for(std::chrono::seconds(1));
+        }
+        // Handle sub-second remainder
+        size_t remainder_ms = config_.colearn_interval_ms % 1000;
+        if (remainder_ms > 0 && !colearn_stop_.load()) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(remainder_ms));
+        }
+    }
+    colearn_running_ = false;
 }
 
 } // namespace brain19

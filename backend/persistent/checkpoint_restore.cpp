@@ -343,8 +343,8 @@ bool CheckpointRestore::restore_micromodels(const std::string& path, ConceptMode
 
     uint32_t magic; uint16_t version;
     if (!read_pod(f, magic) || magic != 0x4D4D4442) return false;
-    // Accept v1 (legacy 940), v2 (ConceptModel 1300), v3 (ConceptModel 1900), v4 (5836), v5 (9772)
-    if (!read_pod(f, version) || (version < 1 || version > 5)) return false;
+    // Accept v1 (legacy 940), v2 (1300), v3 (1900), v4 (5836), v5 (9772), v6 (9933)
+    if (!read_pod(f, version) || (version < 1 || version > 6)) return false;
 
     uint64_t n;
     if (!read_pod(f, n)) return false;
@@ -374,11 +374,22 @@ bool CheckpointRestore::restore_micromodels(const std::string& path, ConceptMode
         uint64_t id;
         if (!read_pod(f, id)) return false;
 
-        if (version == 5) {
-            // v5: 9772 doubles — current format with ConvergencePort + gate
+        if (version == 6) {
+            // v6: 9933 doubles — V8 with ContextSuperposition
             std::array<double, CM_FLAT_SIZE> flat;
             f.read(reinterpret_cast<char*>(flat.data()), sizeof(flat));
             if (!f.good()) return false;
+            reg.create_model(id);
+            ConceptModel* model = reg.get_model(id);
+            if (model) model->from_flat(flat);
+        } else if (version == 5) {
+            // v5: 9772 doubles — V7 → migrate to 9933 (zero superposition)
+            std::array<double, CM_FLAT_SIZE_V7> v7_flat;
+            f.read(reinterpret_cast<char*>(v7_flat.data()), sizeof(v7_flat));
+            if (!f.good()) return false;
+            std::array<double, CM_FLAT_SIZE> flat{};
+            std::copy(v7_flat.begin(), v7_flat.end(), flat.begin());
+            // Superposition params (9772..9932): already zero = disabled
             reg.create_model(id);
             ConceptModel* model = reg.get_model(id);
             if (model) model->from_flat(flat);

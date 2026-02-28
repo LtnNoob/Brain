@@ -63,6 +63,7 @@ int Brain19App::run_command(const std::string& command, const std::string& arg) 
     else if (command == "concepts")   { cmd_concepts(); }
     else if (command == "explain")    { cmd_explain(arg); }
     else if (command == "think")      { cmd_think(arg); }
+    else if (command == "colearn")    { cmd_colearn(arg); }
     else if (command == "help")       { cmd_help(); }
     else if (command == "quit" || command == "exit" || command == "q") {
         return -1;
@@ -244,6 +245,30 @@ void Brain19App::cmd_think(const std::string& concept_label) {
     std::cout << "  KAN validations: " << result.validated_hypotheses.size() << "\n";
 }
 
+void Brain19App::cmd_colearn(const std::string& arg) {
+    if (arg == "start") {
+        orchestrator_.start_colearn();
+        std::cout << "Co-Learning started\n";
+    } else if (arg == "stop") {
+        orchestrator_.stop_colearn();
+        std::cout << "Co-Learning stopped\n";
+    } else if (arg == "status") {
+        std::cout << orchestrator_.get_colearn_status();
+    } else if (arg == "cycle") {
+        // Run single cycle manually
+        if (orchestrator_.colearn_loop()) {
+            auto result = orchestrator_.colearn_loop()->run_cycle();
+            std::cout << "Cycle " << result.cycle_number
+                      << ": chains=" << result.chains_produced
+                      << " q=" << result.avg_chain_quality << "\n";
+        } else {
+            std::cout << "Co-Learning not initialized\n";
+        }
+    } else {
+        std::cout << "Usage: colearn [start|stop|status|cycle]\n";
+    }
+}
+
 void Brain19App::cmd_load(const std::string& path) {
     if (path.empty()) {
         std::cout << "Usage: load <file_or_dir>\n";
@@ -337,6 +362,7 @@ void Brain19App::cmd_help() {
     std::cout << "  explain <id>       — Explain a concept\n";
     std::cout << "  status             — System status\n";
     std::cout << "  streams            — Stream monitoring\n";
+    std::cout << "  colearn <cmd>      — Co-Learning [start|stop|status|cycle]\n";
     std::cout << "  checkpoint [tag]   — Save checkpoint\n";
     std::cout << "  restore <dir>      — Restore from checkpoint\n";
     std::cout << "  help               — Show this help\n";

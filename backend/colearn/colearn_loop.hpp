@@ -8,7 +8,14 @@
 #include "../cmodel/concept_trainer.hpp"
 #include "../micromodel/embedding_manager.hpp"
 #include "../graph_net/graph_reasoner.hpp"
+#include "../curiosity/curiosity_engine.hpp"
 
+#include "../concurrent/thread_pool.hpp"
+
+#include <atomic>
+#include <functional>
+#include <memory>
+#include <thread>
 #include <unordered_map>
 #include <vector>
 
@@ -47,11 +54,23 @@ public:
         size_t terminal_corrections = 0;
         size_t quality_drop_corrections = 0;
         size_t success_reinforcements = 0;
+        // Superposition stats
+        size_t superposition_enabled_count = 0;   // Concepts newly enabled this cycle
+        size_t superposition_trained_count = 0;    // Concepts with superposition training updates
+        // FlexEmbedding growth/shrink stats
+        size_t embeddings_grown = 0;
+        size_t embeddings_shrunk = 0;
     };
 
     CoLearnLoop(LongTermMemory& ltm, ConceptModelRegistry& registry,
                 EmbeddingManager& embeddings, GraphReasoner& reasoner,
                 const CoLearnConfig& config = {});
+
+    ~CoLearnLoop();
+
+    // Non-copyable
+    CoLearnLoop(const CoLearnLoop&) = delete;
+    CoLearnLoop& operator=(const CoLearnLoop&) = delete;
 
     // Run one full wake/sleep/train cycle
     CycleResult run_cycle();
@@ -64,9 +83,23 @@ public:
     void sleep_phase();
     void train_phase();
 
+    // Continuous mode: runs wake/sleep/train in a loop on a background thread
+    using CycleCallback = std::function<void(const CycleResult&)>;
+    void start_continuous();
+    void stop_continuous();
+    bool is_running() const;
+    void set_cycle_callback(CycleCallback cb);
+
+    // CuriosityEngine integration
+    void set_curiosity_engine(CuriosityEngine* engine) { curiosity_ = engine; }
+
+    // Expose seed pain scores for CuriosityEngine
+    const std::unordered_map<ConceptId, double>& seed_pain_scores() const { return seed_pain_scores_; }
+
     // Accessors
     EpisodicMemory& episodic_memory() { return episodic_memory_; }
     const EpisodicMemory& episodic_memory() const { return episodic_memory_; }
+    const ErrorCollector& error_collector() const { return error_collector_; }
     size_t cycle_count() const { return cycle_count_; }
     double last_avg_quality() const { return last_avg_quality_; }
 
@@ -92,6 +125,9 @@ private:
     // Pain tracking for seed selection (EMA per seed)
     std::unordered_map<ConceptId, double> seed_pain_scores_;
 
+    // CuriosityEngine: intelligent seed selection (nullable, falls back to 4-way)
+    CuriosityEngine* curiosity_ = nullptr;
+
     // Error-driven learning: collects prediction errors from wake phase
     ErrorCollector error_collector_;
 
@@ -104,8 +140,42 @@ private:
     };
     CorrectionStats last_correction_stats_;
 
+    // Superposition context tracking: per-concept quality grouped by source relation
+    struct SuperpositionTracker {
+        struct ConceptContextStats {
+            std::unordered_map<uint16_t, std::vector<double>> quality_by_relation;
+            size_t total_observations = 0;
+        };
+        std::unordered_map<ConceptId, ConceptContextStats> stats;
+
+        void record(ConceptId cid, RelationType rel, double quality);
+        bool should_enable(ConceptId cid, size_t min_observations,
+                           double min_std) const;
+    };
+    SuperpositionTracker superposition_tracker_;
+    size_t last_superposition_enabled_ = 0;
+    size_t last_superposition_trained_ = 0;
+
+    // FlexEmbedding growth/shrink tracking
+    uint32_t tick_ = 0;
+    size_t last_embeddings_grown_ = 0;
+    size_t last_embeddings_shrunk_ = 0;
+
     // Select diverse seeds for wake phase (4-way: random + hub + low-trust + high-pain)
     std::vector<ConceptId> select_wake_seeds();
+
+    // Parallel wake implementation
+    void wake_phase_serial(const std::vector<ConceptId>& seeds);
+    void wake_phase_parallel(const std::vector<ConceptId>& seeds);
+
+    // Thread pool for parallel wake phase (nullptr if thread_count <= 1)
+    std::unique_ptr<ThreadPool> thread_pool_;
+
+    // Continuous mode
+    std::thread continuous_thread_;
+    std::atomic<bool> continuous_running_{false};
+    std::atomic<bool> continuous_stop_{false};
+    CycleCallback cycle_callback_;
 };
 
 } // namespace brain19

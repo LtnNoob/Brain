@@ -13,6 +13,7 @@ GoalState GoalGenerator::from_trigger(const CuriosityTrigger& trigger) {
     goal.query_text = trigger.description;
 
     switch (trigger.type) {
+        // Legacy types
         case TriggerType::SHALLOW_RELATIONS:
             goal.goal_type = GoalType::EXPLORATION;
             goal.priority_weight = 0.4;
@@ -35,6 +36,40 @@ GoalState GoalGenerator::from_trigger(const CuriosityTrigger& trigger) {
             goal.goal_type = GoalType::PROPERTY_QUERY;
             goal.priority_weight = 0.5;
             goal.threshold = 0.7;
+            break;
+
+        // New 13-signal types — use trigger.priority when available
+        case TriggerType::PAIN_CLUSTER:
+        case TriggerType::PREDICTION_FAILURE_ZONE:
+            goal.goal_type = GoalType::CAUSAL_CHAIN;
+            goal.priority_weight = (trigger.priority > 0.0) ? trigger.priority : 0.7;
+            goal.threshold = 0.7;
+            break;
+
+        case TriggerType::TRUST_DECAY_REGION:
+        case TriggerType::CONTRADICTION_REGION:
+            goal.goal_type = GoalType::PROPERTY_QUERY;
+            goal.priority_weight = (trigger.priority > 0.0) ? trigger.priority : 0.6;
+            goal.threshold = 0.7;
+            break;
+
+        case TriggerType::MODEL_DIVERGENCE:
+        case TriggerType::CROSS_SIGNAL_HOTSPOT:
+            goal.goal_type = GoalType::EXPLORATION;
+            goal.priority_weight = (trigger.priority > 0.0) ? trigger.priority : 0.8;
+            goal.threshold = 0.6;
+            break;
+
+        case TriggerType::QUALITY_REGRESSION:
+            goal.goal_type = GoalType::CAUSAL_CHAIN;
+            goal.priority_weight = (trigger.priority > 0.0) ? trigger.priority : 0.5;
+            goal.threshold = 0.6;
+            break;
+
+        case TriggerType::EPISODIC_STALENESS:
+            goal.goal_type = GoalType::EXPLORATION;
+            goal.priority_weight = (trigger.priority > 0.0) ? trigger.priority : 0.4;
+            goal.threshold = 0.5;
             break;
 
         case TriggerType::UNKNOWN:

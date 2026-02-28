@@ -44,6 +44,8 @@
 #include "../language/kan_language_engine.hpp"
 #include "../language/language_training.hpp"
 #include "../language/sentence_parser.hpp"
+#include "../graph_net/graph_reasoner.hpp"
+#include "../colearn/colearn_loop.hpp"
 #include "thinking_pipeline.hpp"
 
 #include <atomic>
@@ -80,6 +82,11 @@ public:
 
         // ThinkingPipeline
         ThinkingPipeline::Config thinking_config{};
+
+        // Proactive Co-Learning
+        bool enable_proactive_colearn = false;
+        CoLearnConfig colearn_config{};
+        size_t colearn_interval_ms = 5000;  // pause between cycles
     };
 
     SystemOrchestrator();
@@ -134,12 +141,21 @@ public:
 
     void run_periodic_maintenance();
 
+    // ─── Co-Learning ──────────────────────────────────────────────────────────
+
+    void start_colearn();
+    void stop_colearn();
+    bool is_colearn_running() const;
+    std::string get_colearn_status() const;
+
     // ─── Subsystem Access (for advanced use) ─────────────────────────────────
 
     BrainController* brain_controller() { return brain_.get(); }
     CognitiveDynamics* cognitive_dynamics() { return cognitive_.get(); }
     ChatInterface* chat_interface() { return chat_.get(); }
     IngestionPipeline* ingestion_pipeline() { return ingestion_.get(); }
+    GraphReasoner* graph_reasoner() { return graph_reasoner_.get(); }
+    CoLearnLoop* colearn_loop() { return colearn_loop_.get(); }
 
 private:
     Config config_;
@@ -221,6 +237,15 @@ private:
     // Thinking pipeline
     std::unique_ptr<ThinkingPipeline> thinking_;
 
+    // 15. GraphReasoner + CoLearnLoop
+    std::unique_ptr<GraphReasoner> graph_reasoner_;
+    std::unique_ptr<CoLearnLoop> colearn_loop_;
+
+    // Proactive Co-Learning thread
+    std::thread colearn_thread_;
+    std::atomic<bool> colearn_running_{false};
+    std::atomic<bool> colearn_stop_{false};
+
     // Active context for interactive use
     ContextId active_context_ = 0;
 
@@ -255,6 +280,9 @@ private:
 
     // Periodic task loop
     void periodic_task_loop();
+
+    // Proactive Co-Learning loop
+    void proactive_colearn_loop();
 
     // WAL helper: log a store_concept operation
     void wal_log_store_concept(ConceptId cid, const std::string& label,

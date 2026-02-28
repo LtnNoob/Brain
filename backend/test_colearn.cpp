@@ -23,6 +23,9 @@
 #include <cassert>
 #include <fstream>
 #include <cstdio>
+#include <thread>
+#include <atomic>
+#include <vector>
 
 using namespace brain19;
 
@@ -383,7 +386,7 @@ static void test_named_constants() {
     check(CORE_DIM == 16, "CORE_DIM = 16");
     check(FlexConfig::MAX_DIM == 512, "FlexConfig::MAX_DIM = 512");
     check(FlexConfig::MAX_DIM - CORE_DIM == 496, "MAX_DIM - CORE_DIM = 496");
-    check(CM_FLAT_SIZE == 9772, "CM_FLAT_SIZE = 9772 (V7)");
+    check(CM_FLAT_SIZE == 9933, "CM_FLAT_SIZE = 9933 (V8)");
     check(CM_FLAT_SIZE_V6 == 5836, "CM_FLAT_SIZE_V6 = 5836");
 }
 
@@ -764,6 +767,217 @@ static void test_reasoning_logger(GraphReasoner& reasoner, const LongTermMemory&
 }
 
 // =============================================================================
+// Test 17: Parallel wake phase (thread_count=4)
+// =============================================================================
+
+static void test_parallel_wake(LongTermMemory& ltm, ConceptModelRegistry& registry,
+                                EmbeddingManager& embeddings, GraphReasoner& reasoner) {
+    log("--- Test 17: Parallel wake phase ---");
+
+    CoLearnConfig config;
+    config.wake_chains_per_cycle = 8;
+    config.sleep_replay_count = 3;
+    config.retrain_epochs = 2;
+    config.max_episodes = 100;
+    config.thread_count = 4;  // Parallel!
+
+    CoLearnLoop loop(ltm, registry, embeddings, reasoner, config);
+
+    check(loop.cycle_count() == 0, "parallel: initial cycle_count = 0");
+
+    auto results = loop.run_cycles(2);
+    check(results.size() == 2, "parallel: 2 cycle results returned");
+
+    size_t total_chains = 0;
+    for (const auto& r : results) total_chains += r.chains_produced;
+    log("  Parallel chains produced: " + std::to_string(total_chains));
+    check(total_chains > 0, "parallel: chains were produced");
+
+    size_t total_episodes = loop.episodic_memory().episode_count();
+    check(total_episodes > 0, "parallel: episodes were stored");
+
+    check(results[0].cycle_number == 1, "parallel: cycle 1");
+    check(results[1].cycle_number == 2, "parallel: cycle 2");
+
+    log("  Parallel cycle 1: chains=" + std::to_string(results[0].chains_produced)
+        + " quality=" + std::to_string(results[0].avg_chain_quality));
+    log("  Parallel cycle 2: chains=" + std::to_string(results[1].chains_produced)
+        + " quality=" + std::to_string(results[1].avg_chain_quality));
+}
+
+// =============================================================================
+// Test 18: Thread-safe EpisodicMemory (concurrent stores)
+// =============================================================================
+
+static void test_episodic_memory_threadsafe() {
+    log("--- Test 18: Thread-safe EpisodicMemory ---");
+
+    EpisodicMemory mem(2000);
+
+    constexpr size_t NUM_THREADS = 4;
+    constexpr size_t STORES_PER_THREAD = 100;
+
+    std::vector<std::thread> threads;
+    threads.reserve(NUM_THREADS);
+
+    for (size_t t = 0; t < NUM_THREADS; ++t) {
+        threads.emplace_back([&mem, t]() {
+            for (size_t i = 0; i < STORES_PER_THREAD; ++i) {
+                Episode ep;
+                ep.seed = static_cast<ConceptId>(t * 1000 + i);
+                ep.quality = 0.5;
+                EpisodeStep s;
+                s.concept_id = ep.seed;
+                ep.steps.push_back(s);
+                mem.store(ep);
+            }
+        });
+    }
+
+    for (auto& th : threads) th.join();
+
+    size_t count = mem.episode_count();
+    log("  Episodes stored: " + std::to_string(count)
+        + " (expected " + std::to_string(NUM_THREADS * STORES_PER_THREAD) + ")");
+    check(count == NUM_THREADS * STORES_PER_THREAD, "thread-safe: all episodes stored");
+}
+
+// =============================================================================
+// Test 19: Thread-safe ErrorCollector (concurrent collect_from_chain)
+// =============================================================================
+
+static void test_error_collector_threadsafe() {
+    log("--- Test 19: Thread-safe ErrorCollector ---");
+
+    ErrorCollector collector;
+
+    constexpr size_t NUM_THREADS = 4;
+    std::atomic<size_t> chains_submitted{0};
+
+    // Build a minimal chain that will produce a terminal correction
+    auto make_chain = [](ConceptId src, ConceptId tgt) -> GraphChain {
+        GraphChain chain;
+        chain.termination = TerminationReason::NO_VIABLE_CANDIDATES;
+
+        TraceStep s0;
+        s0.step_index = 0;
+        s0.source_id = src;
+        s0.target_id = src;
+        s0.composite_score = 0.8;
+        chain.steps.push_back(s0);
+
+        TraceStep s1;
+        s1.step_index = 1;
+        s1.source_id = src;
+        s1.target_id = tgt;
+        s1.composite_score = 0.9;  // High prediction → terminal error
+        chain.steps.push_back(s1);
+
+        return chain;
+    };
+
+    std::vector<std::thread> threads;
+    threads.reserve(NUM_THREADS);
+
+    for (size_t t = 0; t < NUM_THREADS; ++t) {
+        threads.emplace_back([&, t]() {
+            for (size_t i = 0; i < 10; ++i) {
+                auto chain = make_chain(
+                    static_cast<ConceptId>(t * 100 + i),
+                    static_cast<ConceptId>(t * 100 + i + 1));
+                ChainSignal signal;
+                signal.chain_quality = 0.3;
+                collector.collect_from_chain(chain, signal);
+                ++chains_submitted;
+            }
+        });
+    }
+
+    for (auto& th : threads) th.join();
+
+    size_t total = collector.total_corrections();
+    log("  Total corrections: " + std::to_string(total));
+    log("  Terminal count: " + std::to_string(collector.terminal_count()));
+    check(chains_submitted.load() == NUM_THREADS * 10, "all chains submitted");
+    check(total > 0, "thread-safe: corrections collected");
+    check(collector.terminal_count() > 0, "thread-safe: terminal corrections found");
+}
+
+// =============================================================================
+// Test 20: Continuous mode (start/stop)
+// =============================================================================
+
+static void test_continuous_mode(LongTermMemory& ltm, ConceptModelRegistry& registry,
+                                  EmbeddingManager& embeddings, GraphReasoner& reasoner) {
+    log("--- Test 20: Continuous mode ---");
+
+    CoLearnConfig config;
+    config.wake_chains_per_cycle = 3;
+    config.sleep_replay_count = 2;
+    config.retrain_epochs = 1;
+    config.max_episodes = 100;
+    config.thread_count = 2;
+    config.continuous_interval_ms = 10;  // Small delay for test
+
+    CoLearnLoop loop(ltm, registry, embeddings, reasoner, config);
+
+    std::atomic<size_t> callback_count{0};
+    loop.set_cycle_callback([&callback_count](const CoLearnLoop::CycleResult& /*r*/) {
+        ++callback_count;
+    });
+
+    check(!loop.is_running(), "not running before start");
+
+    loop.start_continuous();
+    check(loop.is_running(), "running after start");
+
+    // Let it run for ~200ms
+    std::this_thread::sleep_for(std::chrono::milliseconds(200));
+
+    loop.stop_continuous();
+    check(!loop.is_running(), "not running after stop");
+
+    size_t cycles = loop.cycle_count();
+    size_t callbacks = callback_count.load();
+    log("  Cycles completed: " + std::to_string(cycles));
+    log("  Callbacks fired: " + std::to_string(callbacks));
+    check(cycles > 0, "continuous: at least 1 cycle completed");
+    check(callbacks > 0, "continuous: callback was called");
+    check(callbacks == cycles, "continuous: callback count matches cycle count");
+
+    // Double stop should be safe
+    loop.stop_continuous();
+    check(true, "double stop_continuous is safe");
+}
+
+// =============================================================================
+// Test 21: Serial fallback equivalence (thread_count=1 produces valid results)
+// =============================================================================
+
+static void test_serial_fallback(LongTermMemory& ltm, ConceptModelRegistry& registry,
+                                  EmbeddingManager& embeddings, GraphReasoner& reasoner) {
+    log("--- Test 21: Serial fallback equivalence ---");
+
+    CoLearnConfig config;
+    config.wake_chains_per_cycle = 5;
+    config.sleep_replay_count = 3;
+    config.retrain_epochs = 2;
+    config.max_episodes = 100;
+    config.thread_count = 1;  // Explicit serial
+
+    CoLearnLoop loop(ltm, registry, embeddings, reasoner, config);
+    auto result = loop.run_cycle();
+
+    check(result.cycle_number == 1, "serial fallback: cycle_number = 1");
+    check(result.chains_produced > 0, "serial fallback: chains produced");
+    check(result.episodes_stored > 0, "serial fallback: episodes stored");
+    check(result.avg_chain_quality >= 0.0, "serial fallback: quality >= 0");
+
+    log("  Serial: chains=" + std::to_string(result.chains_produced)
+        + " quality=" + std::to_string(result.avg_chain_quality));
+}
+
+// =============================================================================
 // Main
 // =============================================================================
 
@@ -857,6 +1071,13 @@ int main() {
 
     // Reasoning logger test
     test_reasoning_logger(reasoner, ltm, embeddings);
+
+    // Parallel CoLearnLoop tests
+    test_parallel_wake(ltm, registry, embeddings, reasoner);
+    test_episodic_memory_threadsafe();
+    test_error_collector_threadsafe();
+    test_continuous_mode(ltm, registry, embeddings, reasoner);
+    test_serial_fallback(ltm, registry, embeddings, reasoner);
 
     // Summary
     log("");

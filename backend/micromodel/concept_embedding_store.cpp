@@ -163,6 +163,73 @@ bool ConceptEmbeddingStore::has(ConceptId cid) const {
 }
 
 // =============================================================================
+// Flex Growth/Shrink — EmbeddingMeta tracking + DimensionManager evaluation
+// =============================================================================
+
+void ConceptEmbeddingStore::record_activation(ConceptId cid, uint32_t tick) {
+    auto& m = meta_[cid];
+    m.concept_id = static_cast<uint64_t>(cid);
+    ++m.activation_count;
+    m.last_access_tick = tick;
+}
+
+void ConceptEmbeddingStore::record_gradient(ConceptId cid, float magnitude) {
+    auto& m = meta_[cid];
+    m.concept_id = static_cast<uint64_t>(cid);
+    // EMA with alpha=0.1
+    m.avg_grad_magnitude = 0.9f * m.avg_grad_magnitude + 0.1f * magnitude;
+}
+
+void ConceptEmbeddingStore::update_relation_count(ConceptId cid, uint32_t count) {
+    auto& m = meta_[cid];
+    m.concept_id = static_cast<uint64_t>(cid);
+    m.relation_count = count;
+}
+
+const EmbeddingMeta& ConceptEmbeddingStore::meta(ConceptId cid) const {
+    static const EmbeddingMeta empty{};
+    auto it = meta_.find(cid);
+    return it != meta_.end() ? it->second : empty;
+}
+
+ConceptEmbeddingStore::ResizeResult
+ConceptEmbeddingStore::evaluate_and_resize(uint32_t current_tick) {
+    ResizeResult result;
+    size_t batch = 0;
+
+    for (auto& [cid, emb] : store_) {
+        if (batch >= FlexConfig::MAX_RESIZE_BATCH) break;
+
+        auto mit = meta_.find(cid);
+        if (mit == meta_.end()) continue;
+        auto& m = mit->second;
+
+        // Update utilization
+        m.dim_utilization = DimensionManager::compute_utilization(emb);
+
+        if (DimensionManager::should_grow(m, emb.dim(), current_tick)) {
+            size_t amount = DimensionManager::growth_amount(m, emb.dim());
+            if (amount > 0) {
+                emb.grow(amount, resize_rng_);
+                m.last_resize_tick = current_tick;
+                ++result.grown;
+                ++batch;
+            }
+        } else if (DimensionManager::should_shrink(m, current_tick)) {
+            size_t before = emb.detail.size();
+            emb.shrink();
+            if (emb.detail.size() < before) {
+                m.last_resize_tick = current_tick;
+                ++result.shrunk;
+                ++batch;
+            }
+        }
+    }
+
+    return result;
+}
+
+// =============================================================================
 // Learn from graph: nudge embeddings toward neighbor averages
 // =============================================================================
 //
@@ -290,10 +357,25 @@ ConceptEmbeddingStore::learn_from_graph(const LongTermMemory& ltm,
                 avg.detail[i] *= inv_w;
             }
 
+            // Snapshot core before nudge to track gradient magnitude
+            CoreVec pre_core = store_[cid].core;
+
             // Nudge toward average (positive)
             nudge(cid, avg, config.alpha);
             result.concepts_updated++;
             result.total_neighbors += neighbor_count;
+
+            // Track gradient magnitude (L2 norm of core change)
+            double change_sq = 0.0;
+            const auto& post_core = store_[cid].core;
+            for (size_t i = 0; i < CORE_DIM; ++i) {
+                double d = post_core[i] - pre_core[i];
+                change_sq += d * d;
+            }
+            record_gradient(cid, static_cast<float>(std::sqrt(change_sq)));
+
+            // Update relation count from neighbor data
+            update_relation_count(cid, static_cast<uint32_t>(neighbor_count));
 
             // --- Contrastive negative sampling ---
             if (config.negative_samples > 0 && all_ids.size() > neighbor_ids.size() + 1) {

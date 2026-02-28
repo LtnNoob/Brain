@@ -112,8 +112,20 @@ struct CoLearnConfig {
     // Episodic memory
     size_t max_episodes = 10000;
 
+    // Parallelism: 1 = serial (backward compat), >1 = parallel wake phase
+    size_t thread_count = 1;
+
+    // Continuous mode: 0 = no delay between cycles
+    size_t continuous_interval_ms = 0;
+
     // Error-driven learning (prediction error → corrective training)
     ErrorCorrectionConfig error_correction;
+
+    // Superposition enabling heuristic (Step 7)
+    size_t superposition_min_observations = 10;  // Min chain observations before enabling
+    double superposition_min_std = 0.15;         // Min std of per-relation quality means
+    double superposition_learning_rate = 0.001;  // LR for u/v/keys gradient updates
+    size_t superposition_epochs = 5;             // Training epochs per retrained concept
 };
 
 } // namespace brain19

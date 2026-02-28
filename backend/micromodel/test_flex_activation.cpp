@@ -446,6 +446,172 @@ void test_grow_from_initial() {
 }
 
 // =============================================================================
+// Test 18: record_activation tracks activation count and tick
+// =============================================================================
+void test_record_activation() {
+    TEST("record_activation tracks activation count");
+
+    ConceptEmbeddingStore store;
+    store.get(1);  // ensure embedding exists
+
+    // Initially no metadata
+    auto m0 = store.meta(1);
+    assert(m0.activation_count == 0);
+
+    // Record activations
+    store.record_activation(1, 10);
+    store.record_activation(1, 11);
+    store.record_activation(1, 12);
+
+    auto m3 = store.meta(1);
+    assert(m3.activation_count == 3);
+    assert(m3.last_access_tick == 12);
+
+    PASS();
+}
+
+// =============================================================================
+// Test 19: record_gradient tracks EMA of gradient magnitude
+// =============================================================================
+void test_record_gradient() {
+    TEST("record_gradient tracks EMA of gradient magnitude");
+
+    ConceptEmbeddingStore store;
+    store.get(1);
+
+    // Record several gradients
+    store.record_gradient(1, 1.0f);  // EMA: 0.0*0.9 + 0.1*1.0 = 0.1
+    assert(std::abs(store.meta(1).avg_grad_magnitude - 0.1f) < 0.001f);
+
+    store.record_gradient(1, 1.0f);  // EMA: 0.1*0.9 + 0.1*1.0 = 0.19
+    assert(std::abs(store.meta(1).avg_grad_magnitude - 0.19f) < 0.001f);
+
+    PASS();
+}
+
+// =============================================================================
+// Test 20: learn_from_graph now tracks gradient and relation count
+// =============================================================================
+void test_learn_from_graph_tracks_meta() {
+    TEST("learn_from_graph populates EmbeddingMeta");
+
+    LongTermMemory ltm;
+    auto a = add_cpt(ltm, "A");
+    auto b = add_cpt(ltm, "B");
+    auto c = add_cpt(ltm, "C");
+    ltm.add_relation(a, b, RelationType::IS_A, 0.9);
+    ltm.add_relation(a, c, RelationType::HAS_PROPERTY, 0.8);
+    ltm.add_relation(b, c, RelationType::IS_A, 0.7);
+
+    ConceptEmbeddingStore store;
+    store.learn_from_graph(ltm, 0.05, 3);
+
+    // Concept A has 2 outgoing + 0 incoming = 2 relations
+    auto ma = store.meta(a);
+    assert(ma.avg_grad_magnitude > 0.0f);  // should have been nudged
+    assert(ma.relation_count >= 2);        // at least outgoing neighbors
+
+    // Concept B has 1 outgoing + 1 incoming = 2 relations
+    auto mb = store.meta(b);
+    assert(mb.avg_grad_magnitude > 0.0f);
+
+    PASS();
+}
+
+// =============================================================================
+// Test 21: DimensionManager should_grow requires all conditions
+// =============================================================================
+void test_dimension_manager_should_grow() {
+    TEST("DimensionManager::should_grow requires all conditions");
+
+    EmbeddingMeta m;
+    m.activation_count = 5;   // < 20: too few
+    m.avg_grad_magnitude = 0.1f;
+    m.relation_count = 30;    // >= 32*0.8=25.6
+    m.last_resize_tick = 0;
+    assert(!DimensionManager::should_grow(m, 32, 200));
+
+    m.activation_count = 25;  // >= 20: enough
+    assert(DimensionManager::should_grow(m, 32, 200));
+
+    m.avg_grad_magnitude = 0.01f;  // < GROWTH_GRAD_MIN: too low
+    assert(!DimensionManager::should_grow(m, 32, 200));
+
+    m.avg_grad_magnitude = 0.1f;
+    m.last_resize_tick = 150;  // cooldown not passed (200 - 150 < 100)
+    assert(!DimensionManager::should_grow(m, 32, 200));
+
+    m.last_resize_tick = 50;   // cooldown passed (200 - 50 >= 100)
+    assert(DimensionManager::should_grow(m, 32, 200));
+
+    // At MAX_DIM: no growth possible
+    assert(!DimensionManager::should_grow(m, FlexConfig::MAX_DIM, 200));
+
+    PASS();
+}
+
+// =============================================================================
+// Test 22: evaluate_and_resize grows qualifying embeddings
+// =============================================================================
+void test_evaluate_and_resize() {
+    TEST("evaluate_and_resize grows qualifying embeddings");
+
+    LongTermMemory ltm;
+    auto a = add_cpt(ltm, "A");
+    auto b = add_cpt(ltm, "B");
+    // Create enough relations for concept A
+    for (int i = 0; i < 30; ++i) {
+        auto x = add_cpt(ltm, "X" + std::to_string(i));
+        ltm.add_relation(a, x, RelationType::HAS_PROPERTY, 0.8);
+    }
+
+    ConceptEmbeddingStore store;
+    store.learn_from_graph(ltm, 0.1, 3);
+
+    size_t initial_dim_a = store.get(a).detail.size();
+
+    // Simulate high activation and gradient for concept A
+    for (int i = 0; i < 25; ++i) {
+        store.record_activation(a, static_cast<uint32_t>(i));
+    }
+    // Push avg_grad_magnitude above threshold
+    for (int i = 0; i < 20; ++i) {
+        store.record_gradient(a, 0.5f);
+    }
+    // Ensure relation_count is high enough
+    store.update_relation_count(a, 40);
+
+    // Evaluate at tick 500 (EVAL_INTERVAL)
+    auto result = store.evaluate_and_resize(500);
+
+    // Concept A should have grown
+    assert(result.grown >= 1);
+    assert(store.get(a).detail.size() > initial_dim_a);
+
+    // Concept B should NOT have grown (low activation)
+    assert(store.get(b).detail.size() == 16);
+
+    PASS();
+}
+
+// =============================================================================
+// Test 23: DimensionManager should_shrink on old unused embeddings
+// =============================================================================
+void test_should_shrink_old_unused() {
+    TEST("DimensionManager shrinks old unused embeddings");
+
+    EmbeddingMeta m;
+    m.last_access_tick = 0;
+    // Very old (current_tick - last_access > 50000)
+    assert(DimensionManager::should_shrink(m, 60000));
+    // Recently used
+    m.last_access_tick = 59000;
+    assert(!DimensionManager::should_shrink(m, 60000));
+
+    PASS();
+}
+
+// =============================================================================
 // Main
 // =============================================================================
 int main() {
@@ -468,6 +634,12 @@ int main() {
     test_get_or_default_has_detail();
     test_deterministic_hash_init();
     test_grow_from_initial();
+    test_record_activation();
+    test_record_gradient();
+    test_learn_from_graph_tracks_meta();
+    test_dimension_manager_should_grow();
+    test_evaluate_and_resize();
+    test_should_shrink_old_unused();
 
     std::cout << "\n=== Results: " << tests_passed << "/" << tests_total
               << " passed ===\n";

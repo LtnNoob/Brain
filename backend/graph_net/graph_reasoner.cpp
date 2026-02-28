@@ -23,6 +23,7 @@ GraphReasoner::GraphReasoner(
 {
     chain_kan_.initialize();
     initialize_chain_ctx_projection();
+    initialize_superposition_projection();
 }
 
 void GraphReasoner::set_logger(ReasoningLogger* logger) {
@@ -54,6 +55,33 @@ CoreVec GraphReasoner::project_chain_to_core(
 }
 
 // =============================================================================
+// Superposition context projection (CORE_DIM -> KEY_DIM)
+// =============================================================================
+
+void GraphReasoner::initialize_superposition_projection() {
+    // Xavier init for CORE_DIM -> KEY_DIM projection
+    double scale = std::sqrt(2.0 / static_cast<double>(CORE_DIM + ContextSuperposition::KEY_DIM));
+    for (size_t i = 0; i < CORE_DIM * ContextSuperposition::KEY_DIM; ++i) {
+        double x = std::sin(static_cast<double>(i * 53 + 89)) * 43758.5453;
+        x = x - std::floor(x);
+        ctx_superposition_W_[i] = (x * 2.0 - 1.0) * scale;
+    }
+    ctx_superposition_b_.fill(0.0);
+}
+
+std::array<double, ContextSuperposition::KEY_DIM>
+GraphReasoner::project_context_for_superposition(const FlexEmbedding& ctx) const {
+    std::array<double, ContextSuperposition::KEY_DIM> q{};
+    for (size_t i = 0; i < ContextSuperposition::KEY_DIM; ++i) {
+        double sum = ctx_superposition_b_[i];
+        for (size_t j = 0; j < CORE_DIM; ++j)
+            sum += ctx_superposition_W_[i * CORE_DIM + j] * ctx.core[j];
+        q[i] = std::tanh(sum);
+    }
+    return q;
+}
+
+// =============================================================================
 // forward_edge --- The core transformation
 // =============================================================================
 //
@@ -71,7 +99,7 @@ EdgeResult GraphReasoner::forward_edge(
     ConceptId source, ConceptId target,
     RelationType rel_type,
     const Activation& input,
-    const FlexEmbedding& /*ctx*/) const
+    const FlexEmbedding& ctx) const
 {
     EdgeResult result;
 
@@ -91,11 +119,19 @@ EdgeResult GraphReasoner::forward_edge(
         const CoreMat& W = model->weights();
         const CoreVec& b = model->bias();
         CoreVec v{};
-        for (size_t i = 0; i < CORE_DIM; ++i) {
-            double sum = b[i];
-            for (size_t j = 0; j < CORE_DIM; ++j)
-                sum += W[i * CORE_DIM + j] * input.core()[j];
-            v[i] = sum;
+        if (model->superposition().enabled > 0.5) {
+            // Superposition path: W_eff = W + Σ αₖ·uₖ·vₖᵀ
+            auto ctx_query = project_context_for_superposition(ctx);
+            model->superposition().modulate(W, input.core(), ctx_query, v);
+            for (size_t i = 0; i < CORE_DIM; ++i) v[i] += b[i];
+        } else {
+            // Original path (byte-identical to V7)
+            for (size_t i = 0; i < CORE_DIM; ++i) {
+                double sum = b[i];
+                for (size_t j = 0; j < CORE_DIM; ++j)
+                    sum += W[i * CORE_DIM + j] * input.core()[j];
+                v[i] = sum;
+            }
         }
         result.dimensional_contrib = v;
 
@@ -212,6 +248,12 @@ EdgeResult GraphReasoner::forward_edge(
     } else {
         result.epistemic_alignment = 0.5;
     }
+
+    // Composite score: edge-level weighted combination (without relation/embedding factors)
+    result.composite_score =
+        config_.weight_transform_quality * result.transform_quality +
+        config_.weight_coherence * result.coherence +
+        config_.weight_epistemic_alignment * result.epistemic_alignment;
 
     return result;
 }
@@ -602,8 +644,11 @@ std::vector<GraphReasoner::ScoredCandidate> GraphReasoner::evaluate_candidates(
 
             auto features = build_composition_features(current, target, type, ctx, pf);
             cand.simulated_state = forward_chain_state(target, features, chain_state);
-            cand.chain_coherence = chain_kan_.evaluate(
-                chain_state.data(), cand.simulated_state.data());
+            {
+                std::lock_guard<std::mutex> kan_lock(chain_kan_mtx_);
+                cand.chain_coherence = chain_kan_.evaluate(
+                    chain_state.data(), cand.simulated_state.data());
+            }
 
             // Blend with chain coherence
             cand.composite_score = (1.0 - ccw) * cand.composite_score

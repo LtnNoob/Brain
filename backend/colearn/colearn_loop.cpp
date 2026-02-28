@@ -1,9 +1,11 @@
 #include "colearn_loop.hpp"
 
 #include <algorithm>
+#include <chrono>
 #include <cmath>
 #include <numeric>
 #include <random>
+#include <thread>
 
 namespace brain19 {
 
@@ -20,6 +22,59 @@ CoLearnLoop::CoLearnLoop(
     , extractor_(ltm, reasoner, config)
     , error_collector_(config.error_correction)
 {
+    if (config_.thread_count > 1) {
+        thread_pool_ = std::make_unique<ThreadPool>(config_.thread_count);
+    }
+}
+
+CoLearnLoop::~CoLearnLoop() {
+    stop_continuous();
+}
+
+// =============================================================================
+// SuperpositionTracker — Context-dependent quality tracking
+// =============================================================================
+
+void CoLearnLoop::SuperpositionTracker::record(
+    ConceptId cid, RelationType rel, double quality)
+{
+    auto& cs = stats[cid];
+    cs.quality_by_relation[static_cast<uint16_t>(rel)].push_back(quality);
+    ++cs.total_observations;
+}
+
+bool CoLearnLoop::SuperpositionTracker::should_enable(
+    ConceptId cid, size_t min_observations, double min_std) const
+{
+    auto it = stats.find(cid);
+    if (it == stats.end()) return false;
+    const auto& cs = it->second;
+    if (cs.total_observations < min_observations) return false;
+    if (cs.quality_by_relation.size() < 2) return false;  // need diverse contexts
+
+    // Compute per-relation mean qualities
+    std::vector<double> means;
+    for (const auto& [rel, qualities] : cs.quality_by_relation) {
+        if (qualities.empty()) continue;
+        double sum = 0.0;
+        for (double q : qualities) sum += q;
+        means.push_back(sum / static_cast<double>(qualities.size()));
+    }
+    if (means.size() < 2) return false;
+
+    // Compute std across relation means
+    double mean_of_means = 0.0;
+    for (double m : means) mean_of_means += m;
+    mean_of_means /= static_cast<double>(means.size());
+
+    double variance = 0.0;
+    for (double m : means) {
+        double d = m - mean_of_means;
+        variance += d * d;
+    }
+    variance /= static_cast<double>(means.size());
+
+    return std::sqrt(variance) > min_std;
 }
 
 // =============================================================================
@@ -27,6 +82,15 @@ CoLearnLoop::CoLearnLoop(
 // =============================================================================
 
 std::vector<ConceptId> CoLearnLoop::select_wake_seeds() {
+    // If CuriosityEngine is wired in, delegate to it
+    if (curiosity_) {
+        curiosity_->refresh(ltm_, registry_, episodic_memory_, error_collector_,
+                            seed_pain_scores_, nullptr, nullptr);
+        auto seeds = curiosity_->select_seeds(config_.wake_chains_per_cycle);
+        if (!seeds.empty()) return seeds;
+        // Fall through to legacy if curiosity returned nothing
+    }
+
     auto all_ids = ltm_.get_all_concept_ids();
     if (all_ids.empty()) return {};
 
@@ -126,6 +190,15 @@ void CoLearnLoop::wake_phase() {
     auto seeds = select_wake_seeds();
     if (seeds.empty()) return;
 
+    if (!thread_pool_ || config_.thread_count <= 1) {
+        wake_phase_serial(seeds);
+    } else {
+        wake_phase_parallel(seeds);
+    }
+}
+
+// Serial wake — byte-identical to original code path
+void CoLearnLoop::wake_phase_serial(const std::vector<ConceptId>& seeds) {
     for (ConceptId seed : seeds) {
         GraphChain chain = reasoner_.reason_from(seed);
         if (chain.empty()) continue;
@@ -153,6 +226,18 @@ void CoLearnLoop::wake_phase() {
             seed_pain_scores_[seed] = pain_score;
         }
 
+        // Track context-dependent quality for superposition heuristic
+        // + record activation for FlexEmbedding growth tracking
+        auto& concept_store = embeddings_.concept_embeddings();
+        concept_store.record_activation(seed, tick_);
+        for (size_t si = 1; si < chain.steps.size(); ++si) {
+            superposition_tracker_.record(
+                chain.steps[si].target_id,
+                chain.steps[si].relation,
+                quality);
+            concept_store.record_activation(chain.steps[si].target_id, tick_);
+        }
+
         // Extract signals and collect prediction errors for corrective training
         ChainSignal signal = reasoner_.extract_signals(chain);
         error_collector_.collect_from_chain(chain, signal);
@@ -160,6 +245,83 @@ void CoLearnLoop::wake_phase() {
         // Convert chain to episode and store
         Episode ep = episodic_memory_.from_chain(chain, seed);
         ep.quality = quality;
+        episodic_memory_.store(ep);
+        ++last_episodes_stored_;
+    }
+}
+
+// Parallel wake — dispatch chains to thread pool, gather + merge single-threaded
+void CoLearnLoop::wake_phase_parallel(const std::vector<ConceptId>& seeds) {
+    struct LocalResult {
+        GraphChain chain;
+        double quality = 0.0;
+        ConceptId seed = 0;
+        double pain_score = 0.0;
+        ChainSignal signal;
+    };
+
+    // Phase 1: Dispatch chains to thread pool
+    std::vector<std::future<LocalResult>> futures;
+    futures.reserve(seeds.size());
+
+    for (ConceptId seed : seeds) {
+        futures.push_back(thread_pool_->submit([this, seed]() -> LocalResult {
+            LocalResult r;
+            r.seed = seed;
+            r.chain = reasoner_.reason_from(seed);  // const, thread-safe reads
+            if (r.chain.empty()) return r;
+
+            r.quality = reasoner_.compute_chain_quality(r.chain);
+
+            // Compute pain locally
+            double term_pain = 0.0;
+            if (r.chain.termination == TerminationReason::NO_VIABLE_CANDIDATES) term_pain = 0.7;
+            else if (r.chain.termination == TerminationReason::TRUST_TOO_LOW) term_pain = 0.6;
+            else if (r.chain.termination == TerminationReason::ACTIVATION_DECAY) term_pain = 0.5;
+            else if (r.chain.termination == TerminationReason::SEED_DRIFT) term_pain = 0.4;
+            else if (r.chain.termination == TerminationReason::COHERENCE_GATE) term_pain = 0.3;
+
+            double quality_pain = std::max(0.0, 1.0 - r.quality);
+            r.pain_score = 0.5 * term_pain + 0.5 * quality_pain;
+
+            r.signal = reasoner_.extract_signals(r.chain);
+            return r;
+        }));
+    }
+
+    // Phase 2: Gather + merge (single-threaded, no locks needed on our state)
+    for (auto& f : futures) {
+        LocalResult r = f.get();
+        if (r.chain.empty()) continue;
+
+        ++last_chains_produced_;
+        last_quality_sum_ += r.quality;
+
+        // Merge pain (no lock — single thread)
+        auto it = seed_pain_scores_.find(r.seed);
+        if (it != seed_pain_scores_.end()) {
+            it->second = 0.7 * it->second + 0.3 * r.pain_score;
+        } else {
+            seed_pain_scores_[r.seed] = r.pain_score;
+        }
+
+        // Track context-dependent quality for superposition heuristic
+        // + record activation for FlexEmbedding growth tracking
+        auto& concept_store = embeddings_.concept_embeddings();
+        concept_store.record_activation(r.seed, tick_);
+        for (size_t si = 1; si < r.chain.steps.size(); ++si) {
+            superposition_tracker_.record(
+                r.chain.steps[si].target_id,
+                r.chain.steps[si].relation,
+                r.quality);
+            concept_store.record_activation(r.chain.steps[si].target_id, tick_);
+        }
+
+        // Collect errors and store episodes (single-threaded merge)
+        error_collector_.collect_from_chain(r.chain, r.signal);
+
+        Episode ep = episodic_memory_.from_chain(r.chain, r.seed);
+        ep.quality = r.quality;
         episodic_memory_.store(ep);
         ++last_episodes_stored_;
     }
@@ -201,6 +363,41 @@ void CoLearnLoop::train_phase() {
     last_train_stats_ = ConceptTrainerStats{};
     pre_train_avg_loss_ = 0.0;
     last_correction_stats_ = {};
+    last_superposition_enabled_ = 0;
+    last_superposition_trained_ = 0;
+
+    // --- Superposition enabling heuristic (Step 7) ---
+    // Check which concepts show context-dependent behavior and enable superposition
+    for (const auto& [cid, cs] : superposition_tracker_.stats) {
+        ConceptModel* m = registry_.get_model(cid);
+        if (!m) continue;
+        if (m->superposition().enabled > 0.5) continue;  // already enabled
+
+        if (superposition_tracker_.should_enable(
+                cid, config_.superposition_min_observations,
+                config_.superposition_min_std)) {
+            // Enable superposition with small random initialization
+            auto& sp = m->superposition();
+            sp.enabled = 1.0;
+            double scale = 0.01;
+            for (size_t i = 0; i < sp.u.size(); ++i) {
+                double x = std::sin(static_cast<double>(i * 71 + cid * 37)) * 43758.5453;
+                x = x - std::floor(x);
+                sp.u[i] = (x * 2.0 - 1.0) * scale;
+            }
+            for (size_t i = 0; i < sp.v.size(); ++i) {
+                double x = std::sin(static_cast<double>(i * 53 + cid * 19)) * 43758.5453;
+                x = x - std::floor(x);
+                sp.v[i] = (x * 2.0 - 1.0) * scale;
+            }
+            for (size_t i = 0; i < sp.keys.size(); ++i) {
+                double x = std::sin(static_cast<double>(i * 97 + cid * 41)) * 43758.5453;
+                x = x - std::floor(x);
+                sp.keys[i] = (x * 2.0 - 1.0) * scale;
+            }
+            ++last_superposition_enabled_;
+        }
+    }
 
     // Also retrain concepts that have correction samples (error-driven)
     const auto& changes = extractor_.cumulative_changes();
@@ -314,6 +511,21 @@ void CoLearnLoop::train_phase() {
             }
         }
 
+        // Superposition training (Step 6): train u/v/keys if enabled
+        if (m->superposition().enabled > 0.5) {
+            for (size_t epoch = 0; epoch < config_.superposition_epochs; ++epoch) {
+                for (const auto& rel : outgoing) {
+                    FlexEmbedding rel_emb = embeddings_.get_relation_embedding(rel.type);
+                    FlexEmbedding ctx_emb = embeddings_.make_target_embedding(RECALL_HASH, cid, rel.target);
+                    auto ctx_query = reasoner_.project_context_for_superposition(ctx_emb);
+                    m->train_superposition_step(
+                        rel_emb, ctx_emb, rel.weight,
+                        config_.superposition_learning_rate, ctx_query);
+                }
+            }
+            ++last_superposition_trained_;
+        }
+
         // Post-retrain: compute MSE on validation set
         double post_mse = 0.0;
         for (const auto& sample : eval_samples) {
@@ -349,6 +561,15 @@ void CoLearnLoop::train_phase() {
     // Clear cumulative changes only for retrained concepts
     extractor_.clear_retrained(to_retrain);
     error_collector_.clear();
+
+    // FlexEmbedding growth/shrink evaluation (every EVAL_INTERVAL ticks)
+    last_embeddings_grown_ = 0;
+    last_embeddings_shrunk_ = 0;
+    if (tick_ > 0 && tick_ % FlexConfig::EVAL_INTERVAL == 0) {
+        auto resize_result = embeddings_.concept_embeddings().evaluate_and_resize(tick_);
+        last_embeddings_grown_ = resize_result.grown;
+        last_embeddings_shrunk_ = resize_result.shrunk;
+    }
 }
 
 // =============================================================================
@@ -357,6 +578,7 @@ void CoLearnLoop::train_phase() {
 
 CoLearnLoop::CycleResult CoLearnLoop::run_cycle() {
     ++cycle_count_;
+    ++tick_;
 
     wake_phase();
     extractor_.set_cycle(cycle_count_);
@@ -386,6 +608,14 @@ CoLearnLoop::CycleResult CoLearnLoop::run_cycle() {
     result.quality_drop_corrections = last_correction_stats_.quality_drop;
     result.success_reinforcements = last_correction_stats_.success;
 
+    // Superposition stats
+    result.superposition_enabled_count = last_superposition_enabled_;
+    result.superposition_trained_count = last_superposition_trained_;
+
+    // FlexEmbedding growth/shrink stats
+    result.embeddings_grown = last_embeddings_grown_;
+    result.embeddings_shrunk = last_embeddings_shrunk_;
+
     // Track quality delta
     result.quality_delta = result.avg_chain_quality - last_avg_quality_;
     last_avg_quality_ = result.avg_chain_quality;
@@ -400,6 +630,45 @@ std::vector<CoLearnLoop::CycleResult> CoLearnLoop::run_cycles(size_t n) {
         results.push_back(run_cycle());
     }
     return results;
+}
+
+// =============================================================================
+// Continuous mode — background thread running wake/sleep/train in a loop
+// =============================================================================
+
+void CoLearnLoop::start_continuous() {
+    if (continuous_running_.load()) return;
+    continuous_stop_.store(false);
+    continuous_running_.store(true);
+    continuous_thread_ = std::thread([this]() {
+        while (!continuous_stop_.load()) {
+            CycleResult result = run_cycle();
+            if (cycle_callback_) {
+                cycle_callback_(result);
+            }
+            if (config_.continuous_interval_ms > 0) {
+                std::this_thread::sleep_for(
+                    std::chrono::milliseconds(config_.continuous_interval_ms));
+            }
+        }
+        continuous_running_.store(false);
+    });
+}
+
+void CoLearnLoop::stop_continuous() {
+    if (!continuous_running_.load()) return;
+    continuous_stop_.store(true);
+    if (continuous_thread_.joinable()) {
+        continuous_thread_.join();
+    }
+}
+
+bool CoLearnLoop::is_running() const {
+    return continuous_running_.load();
+}
+
+void CoLearnLoop::set_cycle_callback(CycleCallback cb) {
+    cycle_callback_ = std::move(cb);
 }
 
 } // namespace brain19

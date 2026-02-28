@@ -1,9 +1,11 @@
 #pragma once
 
 #include "micro_model.hpp"  // FlexEmbedding, CORE_DIM
+#include "flex_embedding.hpp"  // EmbeddingMeta, DimensionManager
 #include "../common/types.hpp"
 
 #include <cstddef>
+#include <random>
 #include <unordered_map>
 #include <utility>
 #include <vector>
@@ -73,12 +75,36 @@ public:
                                  double alpha = 0.05, size_t iterations = 3);
     LearnResult learn_from_graph(const LongTermMemory& ltm, const LearnConfig& config);
 
+    // === Flex Growth/Shrink ===
+
+    // Record that a concept was activated (for growth tracking)
+    void record_activation(ConceptId cid, uint32_t tick);
+
+    // Record gradient magnitude for a concept (EMA update)
+    void record_gradient(ConceptId cid, float magnitude);
+
+    // Update relation count for a concept
+    void update_relation_count(ConceptId cid, uint32_t count);
+
+    // Evaluate all concepts for growth/shrink and apply changes.
+    // Returns number of concepts resized.
+    struct ResizeResult {
+        size_t grown = 0;
+        size_t shrunk = 0;
+    };
+    ResizeResult evaluate_and_resize(uint32_t current_tick);
+
+    // Access metadata
+    const EmbeddingMeta& meta(ConceptId cid) const;
+
     // Direct access for persistence
     const std::unordered_map<ConceptId, FlexEmbedding>& data() const { return store_; }
     std::unordered_map<ConceptId, FlexEmbedding>& data_mut() { return store_; }
 
 private:
     std::unordered_map<ConceptId, FlexEmbedding> store_;
+    std::unordered_map<ConceptId, EmbeddingMeta> meta_;
+    std::mt19937 resize_rng_{42};
 
     // Create a deterministic embedding from concept ID hash
     static FlexEmbedding hash_init(ConceptId cid);

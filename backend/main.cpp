@@ -11,6 +11,7 @@ static void print_usage(const char* prog) {
     std::cout << "  --no-foundation        Skip foundation seeding\n";
     std::cout << "  --max-streams <n>      Max thinking streams (0=auto)\n";
     std::cout << "  --no-monitor           Disable stream monitoring\n";
+    std::cout << "  --proactive            Enable proactive Co-Learning on startup\n";
     std::cout << "  --help                 Show this help\n\n";
     std::cout << "Commands:\n";
     std::cout << "  ask <question>         Ask a question\n";
@@ -46,6 +47,9 @@ int main(int argc, char* argv[]) {
             arg_start = i + 1;
         } else if (std::strcmp(argv[i], "--no-monitor") == 0) {
             config.enable_monitoring = false;
+            arg_start = i + 1;
+        } else if (std::strcmp(argv[i], "--proactive") == 0) {
+            config.enable_proactive_colearn = true;
             arg_start = i + 1;
         } else if (std::strcmp(argv[i], "--help") == 0 || std::strcmp(argv[i], "-h") == 0) {
             print_usage(argv[0]);

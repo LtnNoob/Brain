@@ -10,6 +10,7 @@
 #include "../convergence/convergence_config.hpp"
 
 #include <array>
+#include <mutex>
 #include <unordered_set>
 #include <vector>
 
@@ -109,6 +110,10 @@ public:
     EdgeSignal evaluate_edge(ConceptId source, ConceptId target,
                              RelationType relation) const;
 
+    // Context -> superposition key projection (for training integration in CoLearnLoop)
+    std::array<double, ContextSuperposition::KEY_DIM>
+        project_context_for_superposition(const FlexEmbedding& ctx) const;
+
 protected:
     // --- Core transformation: the heart of graph reasoning ---
 
@@ -176,14 +181,21 @@ private:
     EmbeddingManager& embeddings_;
     GraphReasonerConfig config_;
     mutable ChainKAN chain_kan_;
+    mutable std::mutex chain_kan_mtx_;  // protects chain_kan_ for concurrent evaluate/train
     ReasoningLogger* logger_ = nullptr;
 
     // Chain state -> context projection (OUTPUT_DIM -> CORE_DIM)
     std::array<double, convergence::OUTPUT_DIM * CORE_DIM> chain_ctx_proj_W_{};
     std::array<double, 16> chain_ctx_proj_b_{};
 
+    // Context -> superposition key space (CORE_DIM -> KEY_DIM=8)
+    std::array<double, CORE_DIM * ContextSuperposition::KEY_DIM> ctx_superposition_W_{};
+    std::array<double, ContextSuperposition::KEY_DIM> ctx_superposition_b_{};
+
     void initialize_chain_ctx_projection();
     CoreVec project_chain_to_core(const std::array<double, convergence::OUTPUT_DIM>& chain_state) const;
+
+    void initialize_superposition_projection();
 
     // Build 90D features for ConvergencePort
     std::array<double, convergence::QUERY_DIM> build_composition_features(

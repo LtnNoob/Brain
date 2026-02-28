@@ -37,6 +37,7 @@ private:
     void cmd_concepts();
     void cmd_explain(const std::string& id_str);
     void cmd_think(const std::string& concept_label);
+    void cmd_colearn(const std::string& arg);
     void cmd_load(const std::string& path);
     void cmd_help();
 

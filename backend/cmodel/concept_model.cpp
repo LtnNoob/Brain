@@ -29,6 +29,63 @@ static std::array<double, 20> make_input_vec(const FlexEmbedding& emb) {
 }
 
 // =============================================================================
+// ContextSuperposition::modulate
+// =============================================================================
+//
+// Computes W_eff * x where W_eff = W + Σ αₖ·uₖ·vₖᵀ
+// αₖ = softmax(key_k · ctx_query)
+//
+
+void ContextSuperposition::modulate(const CoreMat& W, const CoreVec& x,
+                                     const std::array<double, KEY_DIM>& ctx_query,
+                                     CoreVec& output) const {
+    // 1. Compute attention weights: αₖ = softmax(key_k · ctx_query)
+    std::array<double, N_MODES> logits{};
+    for (size_t k = 0; k < N_MODES; ++k) {
+        double dot = 0.0;
+        for (size_t d = 0; d < KEY_DIM; ++d)
+            dot += keys[k * KEY_DIM + d] * ctx_query[d];
+        logits[k] = dot;
+    }
+
+    // Stable softmax
+    double max_logit = logits[0];
+    for (size_t k = 1; k < N_MODES; ++k)
+        if (logits[k] > max_logit) max_logit = logits[k];
+
+    std::array<double, N_MODES> alpha{};
+    double sum_exp = 0.0;
+    for (size_t k = 0; k < N_MODES; ++k) {
+        alpha[k] = std::exp(logits[k] - max_logit);
+        sum_exp += alpha[k];
+    }
+    for (size_t k = 0; k < N_MODES; ++k)
+        alpha[k] /= sum_exp;
+
+    // 2. Compute vₖᵀ · x for each mode (inner product)
+    std::array<double, N_MODES> vTx{};
+    for (size_t k = 0; k < N_MODES; ++k) {
+        double dot = 0.0;
+        for (size_t j = 0; j < CORE_DIM; ++j)
+            dot += v[k * CORE_DIM + j] * x[j];
+        vTx[k] = dot;
+    }
+
+    // 3. output = W*x + Σ αₖ·(vₖᵀ·x)·uₖ
+    for (size_t i = 0; i < CORE_DIM; ++i) {
+        double sum = 0.0;
+        for (size_t j = 0; j < CORE_DIM; ++j)
+            sum += W[i * CORE_DIM + j] * x[j];
+
+        // Add low-rank modulation
+        for (size_t k = 0; k < N_MODES; ++k)
+            sum += alpha[k] * vTx[k] * u[k * CORE_DIM + i];
+
+        output[i] = sum;
+    }
+}
+
+// =============================================================================
 // MultiHeadBilinear
 // =============================================================================
 
@@ -928,7 +985,128 @@ void ConceptModel::train_kan(double bilinear_score, double ctx_feature,
 }
 
 // =============================================================================
-// Serialization (9772 doubles)
+// Superposition training — gradient for u, v, keys
+// =============================================================================
+//
+// Forward:  v[i] = Σ_j W[i,j]*c[j] + Σ_k α_k * (v_k·c) * u_k[i] + b[i]
+//           z = e · v,   pred = sigmoid(z)
+//
+// Loss = 0.5 * (pred - target)²
+//
+// Gradients:
+//   delta = (pred - target) * pred * (1 - pred)
+//   grad_v[i] = delta * e[i]
+//
+//   ∂loss/∂u_k[i] = grad_v[i] * α_k * vTx_k
+//   ∂loss/∂v_k[j] = α_k * (Σ_i grad_v[i] * u_k[i]) * c[j]
+//   ∂loss/∂key_k[d] = ctx_query[d] * α_k * (vTx_k * E_k - F)
+//     where E_k = Σ_i grad_v[i] * u_k[i]
+//           F   = Σ_m α_m * vTx_m * E_m
+//
+
+void ConceptModel::train_superposition_step(
+    const FlexEmbedding& e, const FlexEmbedding& c,
+    double target, double learning_rate,
+    const std::array<double, ContextSuperposition::KEY_DIM>& ctx_query)
+{
+    if (superposition_.enabled < 0.5) return;
+
+    constexpr size_t N = ContextSuperposition::N_MODES;
+    constexpr size_t KD = ContextSuperposition::KEY_DIM;
+
+    // --- Forward pass with superposition ---
+
+    // 1. Attention weights: α_k = softmax(key_k · ctx_query)
+    std::array<double, N> logits{};
+    for (size_t k = 0; k < N; ++k) {
+        double dot = 0.0;
+        for (size_t d = 0; d < KD; ++d)
+            dot += superposition_.keys[k * KD + d] * ctx_query[d];
+        logits[k] = dot;
+    }
+
+    double max_logit = logits[0];
+    for (size_t k = 1; k < N; ++k)
+        if (logits[k] > max_logit) max_logit = logits[k];
+
+    std::array<double, N> alpha{};
+    double sum_exp = 0.0;
+    for (size_t k = 0; k < N; ++k) {
+        alpha[k] = std::exp(logits[k] - max_logit);
+        sum_exp += alpha[k];
+    }
+    for (size_t k = 0; k < N; ++k)
+        alpha[k] /= sum_exp;
+
+    // 2. vTx_k = v_k · c.core
+    std::array<double, N> vTx{};
+    for (size_t k = 0; k < N; ++k) {
+        double dot = 0.0;
+        for (size_t j = 0; j < CORE_DIM; ++j)
+            dot += superposition_.v[k * CORE_DIM + j] * c.core[j];
+        vTx[k] = dot;
+    }
+
+    // 3. v = W_eff * c + b, z = e · v
+    double z = 0.0;
+    for (size_t i = 0; i < CORE_DIM; ++i) {
+        double vi = b_[i];
+        for (size_t j = 0; j < CORE_DIM; ++j)
+            vi += W_[i * CORE_DIM + j] * c.core[j];
+        for (size_t k = 0; k < N; ++k)
+            vi += alpha[k] * vTx[k] * superposition_.u[k * CORE_DIM + i];
+        z += e.core[i] * vi;
+    }
+
+    double pred = sigmoid(z);
+    double error = pred - target;
+    double delta = error * pred * (1.0 - pred);
+
+    // --- Backward pass ---
+
+    // grad_v[i] = delta * e.core[i]  (gradient w.r.t. pre-sigmoid output per dim)
+    CoreVec grad_v{};
+    for (size_t i = 0; i < CORE_DIM; ++i)
+        grad_v[i] = delta * e.core[i];
+
+    // E_k = Σ_i grad_v[i] * u_k[i]
+    std::array<double, N> E{};
+    for (size_t k = 0; k < N; ++k) {
+        double sum = 0.0;
+        for (size_t i = 0; i < CORE_DIM; ++i)
+            sum += grad_v[i] * superposition_.u[k * CORE_DIM + i];
+        E[k] = sum;
+    }
+
+    // F = Σ_m α_m * vTx_m * E_m
+    double F = 0.0;
+    for (size_t m = 0; m < N; ++m)
+        F += alpha[m] * vTx[m] * E[m];
+
+    // Update u: ∂loss/∂u_k[i] = grad_v[i] * α_k * vTx_k
+    for (size_t k = 0; k < N; ++k) {
+        double scale = learning_rate * alpha[k] * vTx[k];
+        for (size_t i = 0; i < CORE_DIM; ++i)
+            superposition_.u[k * CORE_DIM + i] -= scale * grad_v[i];
+    }
+
+    // Update v: ∂loss/∂v_k[j] = α_k * E_k * c.core[j]
+    for (size_t k = 0; k < N; ++k) {
+        double scale = learning_rate * alpha[k] * E[k];
+        for (size_t i = 0; i < CORE_DIM; ++i)
+            superposition_.v[k * CORE_DIM + i] -= scale * c.core[i];
+    }
+
+    // Update keys: ∂loss/∂key_k[d] = ctx_query[d] * α_k * (vTx_k * E_k - F)
+    for (size_t k = 0; k < N; ++k) {
+        double scale = learning_rate * alpha[k] * (vTx[k] * E[k] - F);
+        for (size_t d = 0; d < KD; ++d)
+            superposition_.keys[k * KD + d] -= scale * ctx_query[d];
+    }
+}
+
+// =============================================================================
+// Serialization (9933 doubles — V8)
 // =============================================================================
 // Layout: [0..939]     bilinear core (W, b, e_init, c_init, TrainingState)
 //         [940..1579]  MultiHeadBilinear (640)
@@ -939,6 +1117,10 @@ void ConceptModel::train_kan(double bilinear_score, double ctx_feature,
 //         [5804..5835] ConvergencePort b (32)
 //         [5836..9739] ConvergencePort W_gate (3904)
 //         [9740..9771] ConvergencePort b_gate (32)
+//         [9772..9835] ContextSuperposition u (64)
+//         [9836..9899] ContextSuperposition v (64)
+//         [9900..9931] ContextSuperposition keys (32)
+//         [9932]       ContextSuperposition enabled (1)
 
 void ConceptModel::to_flat(std::array<double, CM_FLAT_SIZE>& out) const {
     size_t idx = 0;
@@ -1001,6 +1183,20 @@ void ConceptModel::to_flat(std::array<double, CM_FLAT_SIZE>& out) const {
     for (size_t i = 0; i < ConvergencePort::OUTPUT_DIM; ++i) out[idx++] = conv_port_.b_gate[i];
 
     // idx = 9772
+
+    // ContextSuperposition u (64)
+    for (size_t i = 0; i < ContextSuperposition::N_MODES * CORE_DIM; ++i)
+        out[idx++] = superposition_.u[i];
+    // ContextSuperposition v (64)
+    for (size_t i = 0; i < ContextSuperposition::N_MODES * CORE_DIM; ++i)
+        out[idx++] = superposition_.v[i];
+    // ContextSuperposition keys (32)
+    for (size_t i = 0; i < ContextSuperposition::N_MODES * ContextSuperposition::KEY_DIM; ++i)
+        out[idx++] = superposition_.keys[i];
+    // ContextSuperposition enabled (1)
+    out[idx++] = superposition_.enabled;
+
+    // idx = 9933
 }
 
 void ConceptModel::from_flat(const std::array<double, CM_FLAT_SIZE>& in) {
@@ -1051,6 +1247,22 @@ void ConceptModel::from_flat(const std::array<double, CM_FLAT_SIZE>& in) {
 
     // ConvergencePort b_gate (32)
     for (size_t i = 0; i < ConvergencePort::OUTPUT_DIM; ++i) conv_port_.b_gate[i] = in[idx++];
+
+    // idx = 9772
+
+    // ContextSuperposition u (64)
+    for (size_t i = 0; i < ContextSuperposition::N_MODES * CORE_DIM; ++i)
+        superposition_.u[i] = in[idx++];
+    // ContextSuperposition v (64)
+    for (size_t i = 0; i < ContextSuperposition::N_MODES * CORE_DIM; ++i)
+        superposition_.v[i] = in[idx++];
+    // ContextSuperposition keys (32)
+    for (size_t i = 0; i < ContextSuperposition::N_MODES * ContextSuperposition::KEY_DIM; ++i)
+        superposition_.keys[i] = in[idx++];
+    // ContextSuperposition enabled (1)
+    superposition_.enabled = in[idx++];
+
+    // idx = 9933
 }
 
 } // namespace brain19
